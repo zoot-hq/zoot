@@ -12,11 +12,8 @@ export default class LoginScreen extends React.Component {
 
   render() {
     return (
-      <KeyboardAvoidingView behavior="padding" style={styles.container}>
-        <View style={styles.logoContainer}>
-          <Text style={styles.title}> apres</Text>
-          <View style={styles.formContainer} />
-        </View>
+      <KeyboardAvoidingView style={styles.container}>
+        <Text style={styles.title}>après</Text>
         <TextInput
           placeholder="Email"
           placeholderTextColor="black"
@@ -39,7 +36,7 @@ export default class LoginScreen extends React.Component {
         />
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={this.login}
+          onPress={console.log('logging in')}
         >
           <Text style={styles.buttonText}>log back in!</Text>
         </TouchableOpacity>
@@ -49,25 +46,21 @@ export default class LoginScreen extends React.Component {
 }
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 10,
+    display: 'flex',
+    marginRight: 20,
+    marginLeft: 20,
     justifyContent: 'center',
   },
   title: {
-    marginTop: 10,
-    width: 250,
-    fontSize: 24,
+    top: 0,
+    fontSize: 60,
     fontWeight: '700',
     textAlign: 'center',
-    opacity: 0.8,
+    marginBottom: 50
   },
   input: {
-    height: 60,
-    opacity: 0.5,
-    marginBottom: 15,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderRadius: 12
+    borderBottomWidth: 1,
+    marginTop: 10
   },
   buttonContainer: {
     borderStyle: 'solid', 
@@ -75,12 +68,12 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 20,
     marginBottom: 15,
-    borderRadius: 12
+    marginTop: 80
   },
   buttonText: {
     textAlign: 'center',
     color: 'black',
     fontWeight: '600',
     fontSize: 16,
-  },
+  }
 });

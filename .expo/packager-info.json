@@ -1,9 +1,9 @@
 {
-  "devToolsPort": 19003,
+  "devToolsPort": 19002,
   "expoServerPort": 19000,
-  "packagerPort": 19004,
-  "packagerPid": 30740,
+  "packagerPort": 19001,
+  "packagerPid": 32973,
   "expoServerNgrokUrl": "https://c2-5mq.malkam.zoot.exp.direct",
   "packagerNgrokUrl": "https://packager.c2-5mq.malkam.zoot.exp.direct",
-  "ngrokPid": 30765
+  "ngrokPid": 32988
 }

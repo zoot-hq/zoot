@@ -9,11 +9,12 @@ import Login from './components/Login';
 import { createStackNavigator } from 'react-navigation'
 
 const navigator = createStackNavigator({
+  Login,
   Main,
   Chat,
   Home,
   Signup,
-  Login
+  // Login
 });
 
 export default navigator
