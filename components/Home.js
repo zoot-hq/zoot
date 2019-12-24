@@ -30,8 +30,8 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    marginRight: 20,
-    marginLeft: 20,
+    marginRight: 50,
+    marginLeft: 50,
     justifyContent: 'center',
   },
   title: {
@@ -45,14 +45,13 @@ const styles = StyleSheet.create({
   buttonContainer: {
     borderStyle: 'solid', 
     borderWidth: 1,
-    paddingVertical: 20,
-    paddingHorizontal: 20,
+    paddingVertical: 5,
     marginBottom: 15,
   },
   buttonText: {
     textAlign: 'center',
     color: 'black',
     fontWeight: '600',
-    fontSize: 16,
+    fontSize: 30,
   }
 });

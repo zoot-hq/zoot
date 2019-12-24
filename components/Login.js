@@ -49,8 +49,8 @@ export default class LoginScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    marginRight: 20,
-    marginLeft: 20,
+    marginRight: 50,
+    marginLeft: 50,
     justifyContent: 'center',
   },
   title: {
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     fontSize: 60,
     fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 50
+    marginBottom: 30
   },
   field: {
     display: 'flex',
@@ -75,15 +75,14 @@ const styles = StyleSheet.create({
   buttonContainer: {
     borderStyle: 'solid', 
     borderWidth: 1,
-    paddingVertical: 20,
-    paddingHorizontal: 20,
+    paddingVertical: 5,
     marginBottom: 15,
-    marginTop: 80
+    marginTop: 30
   },
   buttonText: {
     textAlign: 'center',
     color: 'black',
     fontWeight: '600',
-    fontSize: 16,
+    fontSize: 30,
   }
 });
