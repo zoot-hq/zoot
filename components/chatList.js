@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { BackHandler } from 'react-native';
 
-export default class Main extends React.Component {
+export default class chatList extends React.Component {
   constructor(){
     super()
     this.state = ({
