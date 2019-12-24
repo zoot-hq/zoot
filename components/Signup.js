@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { BackHandler } from 'react-native';
 
 export default class SignupScreen extends React.Component {
   constructor() {
@@ -13,6 +14,11 @@ export default class SignupScreen extends React.Component {
       children: '0',
       monthsPostPartum: '0'
     };
+  }
+
+  // remove error from back button press
+  componentWillMount(){
+    BackHandler.addEventListener('hardwareBackPress', () => this.props.navigation.navigate('Home'));
   }
 
   render() {
@@ -119,7 +125,7 @@ export default class SignupScreen extends React.Component {
         </View>
         <TouchableOpacity
           style={styles.buttonContainer}
-          // onPress={}
+          onPress={this.props.navigation.navigate('Main1')}
         >
           <Text style={styles.buttonText}>sign me up!</Text>
         </TouchableOpacity>

@@ -1,6 +1,6 @@
 // Stack Navigation
 
-import Main from './components/Main';
+import Main1 from './components/Main1';
 import Chat from './components/Chat';
 import Home from './components/Home';
 import Signup from './components/Signup';
@@ -10,13 +10,10 @@ import { createStackNavigator } from 'react-navigation'
 
 const navigator = createStackNavigator({
   Home,
-  Main,
+  Main1,
   Chat,
   Signup,
   Login
-},
-{
-  
 });
 
 export default navigator
