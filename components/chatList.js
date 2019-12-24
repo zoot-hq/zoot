@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { BackHandler } from 'react-native';
 
@@ -19,10 +19,10 @@ export default class chatList extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView keyboardVerticalOffset={410} behavior="padding" style={styles.container}>
         {/* titles */}
         <Text style={styles.title}>après</Text>
-        <Text style={styles.subtitle}>Welcome. What types of groups are you looking to explore?</Text>
+        <Text style={styles.subtitle}>Welcome. What type support are you here for?</Text>
 
         {/* search bar - queries all chatrooms to the users query */}
         <Searchbar
@@ -35,21 +35,24 @@ export default class chatList extends React.Component {
           this.setState({ queriedChatrooms });
         }}
         />
-
-        {/* if a query made, queried chatrooms displayed*/}
-        {this.state.queriedChatrooms.length?
-          this.state.queriedChatrooms.map(chatroom => (
-          <TouchableOpacity key={chatroom} style={styles.buttonContainer}>
-          <Text style={styles.buttonText}># {chatroom}</Text>
-        </TouchableOpacity>))
-        :
-        // else display all chatrooms
-        this.state.chatrooms.map(chatroom => (
-          <TouchableOpacity key={chatroom} style={styles.buttonContainer}>
-          <Text style={styles.buttonText}># {chatroom}</Text>
-        </TouchableOpacity>))
-        }
-      </View>
+        <SafeAreaView>
+          <ScrollView>
+            {/* if a query made, queried chatrooms displayed*/}
+            {this.state.queriedChatrooms.length?
+              this.state.queriedChatrooms.map(chatroom => (
+              <TouchableOpacity key={chatroom} style={styles.buttonContainer}>
+              <Text style={styles.buttonText}># {chatroom}</Text>
+            </TouchableOpacity>))
+            :
+            // else display all chatrooms
+            this.state.chatrooms.map(chatroom => (
+              <TouchableOpacity key={chatroom} style={styles.buttonContainer}>
+              <Text style={styles.buttonText}># {chatroom}</Text>
+            </TouchableOpacity>))
+            }
+          </ScrollView>
+        </SafeAreaView>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -66,14 +69,14 @@ const styles = StyleSheet.create({
     fontSize: 60,
     fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   subtitle: {
     top: 0,
     fontSize: 20,
     fontWeight: '300',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 8,
   },
   buttonContainer: {
     borderStyle: 'solid', 
