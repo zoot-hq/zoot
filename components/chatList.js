@@ -7,7 +7,6 @@ export default class chatList extends React.Component {
   constructor(){
     super()
     this.state = ({
-      query: '',
       chatrooms: ['depression', 'anxiety', 'breastfeeding', 'fitness'],
       queriedChatrooms: []
     })
@@ -27,33 +26,29 @@ export default class chatList extends React.Component {
 
         {/* search bar - queries all chatrooms to the users query */}
         <Searchbar
-        style={{ marginTop: 100 }}
+        theme={{colors: {primary: 'black'}}}
         placeholder="Search"
         onChangeText={query => {
-          this.setState({ query });
-          if (!query.length) {
-            this.setState({
-              queriedChatrooms: []
-            })
-          }
-          else {
-            this.state.chatrooms.forEach(chatroom => {
-              if (chatroom.includes(query)){
-                this.setState({
-                  queriedChatrooms: this.state.queriedChatrooms.concat(chatroom)
-                })
-              }
-            })
-          }
+          const queriedChatrooms = this.state.chatrooms.filter(chatroom => {
+            return chatroom.includes(query.toLowerCase())
+          })
+          this.setState({ queriedChatrooms });
         }}
         />
 
-        {/* queried chatrooms*/}
-        {this.state.queriedChatrooms.forEach(chatroom => {
-          <TouchableOpacity onPress={this.onPress}>
-          <Text style={styles.buttonText}>{chatroom}</Text>
-        </TouchableOpacity>
-        })}
+        {/* if a query made, queried chatrooms displayed*/}
+        {this.state.queriedChatrooms.length?
+          this.state.queriedChatrooms.map(chatroom => (
+          <TouchableOpacity key={chatroom} style={styles.buttonContainer}>
+          <Text style={styles.buttonText}># {chatroom}</Text>
+        </TouchableOpacity>))
+        :
+        // else display all chatrooms
+        this.state.chatrooms.map(chatroom => (
+          <TouchableOpacity key={chatroom} style={styles.buttonContainer}>
+          <Text style={styles.buttonText}># {chatroom}</Text>
+        </TouchableOpacity>))
+        }
       </View>
     );
   }
@@ -71,25 +66,29 @@ const styles = StyleSheet.create({
     fontSize: 60,
     fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 50,
+    marginBottom: 20,
   },
   subtitle: {
     top: 0,
     fontSize: 20,
     fontWeight: '300',
     textAlign: 'center',
-    marginBottom: 50,
+    marginBottom: 20,
   },
   buttonContainer: {
     borderStyle: 'solid', 
     borderWidth: 1,
     paddingVertical: 5,
-    marginBottom: 15,
+    marginTop: 5,
+    marginLeft: 5
   },
   buttonText: {
-    textAlign: 'center',
     color: 'black',
     fontWeight: '600',
     fontSize: 30,
+  },
+  searchbar: {
+    color: 'black',
+    marginBottom: 20
   }
 });
