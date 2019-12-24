@@ -14,6 +14,9 @@ const navigator = createStackNavigator({
   Chat,
   Signup,
   Login
+},
+{
+  
 });
 
 export default navigator

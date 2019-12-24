@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image, Text, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 
 export default class LoginScreen extends React.Component {
   constructor() {
@@ -33,12 +33,13 @@ export default class LoginScreen extends React.Component {
           secureTextEntry
           style={styles.input}
           onChangeText={password => this.setState({ password })}
+          blurOnSubmit={false}
           ref={input => (this.passwordInput = input)}
         />
         </View>
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={console.log('logging in')}
+          // onPress={}
         >
           <Text style={styles.buttonText}>log back in!</Text>
         </TouchableOpacity>

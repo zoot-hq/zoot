@@ -9,9 +9,9 @@ export default class SignupScreen extends React.Component {
       username: '',
       password: '',
       city: '',
-      birthday: 0-0-0,
-      children: 0,
-      monthsPostPartum: 0
+      birthday: '000000000',
+      children: '0',
+      monthsPostPartum: '0'
     };
   }
 
@@ -31,6 +31,8 @@ export default class SignupScreen extends React.Component {
             style={styles.input}
             onChangeText={email => this.setState({ email })}
             ref={input => (this.email = input)}
+            keyboardType="email-address"
+            blurOnSubmit={false}
           />
         </View>
         <View style={styles.field}>
@@ -44,6 +46,7 @@ export default class SignupScreen extends React.Component {
             style={styles.input}
             onChangeText={username => this.setState({ username })}
             ref={input => (this.username = input)}
+            blurOnSubmit={false}
           />
         </View>
         <View style={styles.field}>
@@ -55,19 +58,21 @@ export default class SignupScreen extends React.Component {
             style={styles.input}
             onChangeText={password => this.setState({ password })}
             ref={input => (this.password = input)}
+            blurOnSubmit={false}
           />
         </View>
         <View style={styles.field}>
-          <Text>birthday</Text>
+          <Text>birthday (ddmmyyyy)</Text>
           <TextInput
             type="birthday"
             returnKeyType="next"
             onSubmitEditing={() => this.city.focus()}
-            keyboardType="number-pad"
             autoCorrect={false}
             style={styles.input}
             onChangeText={birthday => this.setState({ birthday })}
             ref={input => (this.birthday = input)}
+            keyboardType="number-pad"
+            blurOnSubmit={false}
           />
         </View>
         <View style={styles.field}>
@@ -81,10 +86,11 @@ export default class SignupScreen extends React.Component {
             style={styles.input}
             onChangeText={city => this.setState({ city })}
             ref={input => (this.city = input)}
+            blurOnSubmit={false}
           />
         </View>
         <View style={styles.field}>
-          <Text>children</Text>
+          <Text>children (number)</Text>
           <TextInput
             type="children"
             returnKeyType="next"
@@ -95,24 +101,25 @@ export default class SignupScreen extends React.Component {
             style={styles.input}
             onChangeText={children => this.setState({ children })}
             ref={input => (this.children = input)}
+            keyboardType="number-pad"
+            blurOnSubmit={false}
           />
         </View>
         <View style={styles.field}>
           <Text>months post partum</Text>
           <TextInput
             type="monthsPostPartum"
-            keyboardType="number-pad"
-            returnKeyType="done"
             autoCapitalize="none"
             autoCorrect={false}
             style={styles.input}
             onChangeText={monthsPostPartum => this.setState({ monthsPostPartum })}
+            keyboardType="number-pad"
             ref={input => (this.monthsPostPartum = input)}
           />
         </View>
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={console.log('signing up')}
+          // onPress={}
         >
           <Text style={styles.buttonText}>sign me up!</Text>
         </TouchableOpacity>
