@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { BackHandler } from 'react-native';
 
@@ -7,7 +7,7 @@ export default class chatList extends React.Component {
   constructor(){
     super()
     this.state = ({
-      chatrooms: ['depression', 'anxiety', 'breastfeeding', 'fitness', 'motherhood', 'happiness', 'excitement', 'sleepy', 'scared', 'dads'],
+      chatrooms: ['depression', 'anxiety', 'breastfeeding', 'fitness'],
       queriedChatrooms: []
     })
   }
@@ -19,7 +19,7 @@ export default class chatList extends React.Component {
 
   render() {
     return (
-      <KeyboardAvoidingView keyboardVerticalOffset={410} behavior="padding" style={styles.container}>
+      <KeyboardAvoidingView behavior="padding" style={styles.container}>
         {/* titles */}
         <Text style={styles.title}>après</Text>
         <Text style={styles.subtitle}>Welcome. What type support are you here for?</Text>
