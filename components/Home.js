@@ -6,12 +6,8 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-          {/* title */}
-        <View>
-          <Text
-            style={styles.title}>apres
-          </Text>
-        </View>
+        {/* title */}
+        <Text style={styles.title}>après</Text>
 
         {/* log in button */}
         <TouchableOpacity
@@ -33,27 +29,30 @@ export default class HomeScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 50,
+    display: 'flex',
+    marginRight: 20,
+    marginLeft: 20,
+    justifyContent: 'center',
   },
   title: {
-    marginTop: 10,
-    width: 250,
-    fontSize: 24,
+    top: 0,
+    fontSize: 60,
     fontWeight: '700',
     textAlign: 'center',
+    marginBottom: 50,
+    marginBottom: 50
   },
   buttonContainer: {
-    borderColor: 'black',
+    borderStyle: 'solid', 
     borderWidth: 1,
-    borderStyle: 'solid',
     paddingVertical: 20,
     paddingHorizontal: 20,
     marginBottom: 15,
   },
   buttonText: {
     textAlign: 'center',
+    color: 'black',
     fontWeight: '600',
     fontSize: 16,
-  },
+  }
 });

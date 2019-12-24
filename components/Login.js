@@ -14,9 +14,9 @@ export default class LoginScreen extends React.Component {
     return (
       <KeyboardAvoidingView style={styles.container}>
         <Text style={styles.title}>après</Text>
-        <TextInput
-          placeholder="Email"
-          placeholderTextColor="black"
+        <View style={styles.field}>
+          <Text>email</Text>
+          <TextInput
           returnKeyType="next"
           onSubmitEditing={() => this.passwordInput.focus()}
           keyboardType="email-address"
@@ -25,15 +25,17 @@ export default class LoginScreen extends React.Component {
           style={styles.input}
           onChangeText={email => this.setState({ email })}
         />
-        <TextInput
-          placeholder="Password"
-          placeholderTextColor="black"
-          returnKeyType="go"
+        </View>
+        <View style={styles.field}>
+          <Text>password</Text>
+          <TextInput
+          returnKeyType="done"
           secureTextEntry
           style={styles.input}
           onChangeText={password => this.setState({ password })}
           ref={input => (this.passwordInput = input)}
         />
+        </View>
         <TouchableOpacity
           style={styles.buttonContainer}
           onPress={console.log('logging in')}
@@ -58,9 +60,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 50
   },
+  field: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+  },
   input: {
     borderBottomWidth: 1,
-    marginTop: 10
+    marginTop: 10,
+    flexGrow: 1,
+    textAlignVertical: 'bottom',    
+    marginLeft: 2
   },
   buttonContainer: {
     borderStyle: 'solid', 
