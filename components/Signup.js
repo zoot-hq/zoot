@@ -125,7 +125,7 @@ export default class SignupScreen extends React.Component {
         </View>
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={this.props.navigation.navigate('chatList')}
+          onPress={() => this.props.navigation.navigate('chatList')}
         >
           <Text style={styles.buttonText}>sign me up!</Text>
         </TouchableOpacity>
