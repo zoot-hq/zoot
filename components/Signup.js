@@ -23,7 +23,7 @@ export default class SignupScreen extends React.Component {
 
   render() {
     return (
-      <KeyboardAvoidingView keyboardVerticalOffset={280} behavior="padding" style={styles.container}>
+      <KeyboardAvoidingView keyboardVerticalOffset={450} behavior="padding" style={styles.container}>
         <Text style={styles.title}>après</Text>
         <View style={styles.field}>
           <Text>email</Text>
@@ -139,6 +139,7 @@ const styles = StyleSheet.create({
     marginRight: 50,
     marginLeft: 50,
     justifyContent: 'center',
+    marginTop: 30
   },
   title: {
     top: 0,

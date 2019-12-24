@@ -7,7 +7,7 @@ export default class chatList extends React.Component {
   constructor(){
     super()
     this.state = ({
-      chatrooms: ['depression', 'anxiety', 'breastfeeding', 'fitness'],
+      chatrooms: ['depression', 'anxiety', 'breastfeeding', 'fitness', 'motherhood', 'happiness', 'excitement', 'sleepy', 'scared', 'dads'],
       queriedChatrooms: []
     })
   }
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     marginRight: 50,
     marginLeft: 50,
     justifyContent: 'center',
+    marginTop: 30
   },
   title: {
     top: 0,

@@ -14,6 +14,12 @@ const navigator = createStackNavigator({
   Chat,
   Signup,
   Login
+},
+{
+  headerMode: 'none',
+  navigationOptions: {
+      headerVisible: false,
+  }
 });
 
 export default navigator
