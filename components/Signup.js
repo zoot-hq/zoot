@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 
 export default class SignupScreen extends React.Component {
   constructor() {
@@ -17,100 +17,95 @@ export default class SignupScreen extends React.Component {
 
   render() {
     return (
-      <KeyboardAvoidingView behavior="padding" style={styles.container}>
-        <View style={styles.logoContainer}>
-          <Text style={styles.title}>apres</Text>
-          <View style={styles.formContainer} />
-        </View>
+      <KeyboardAvoidingView keyboardVerticalOffset={280} behavior="padding" style={styles.container}>
+        <Text style={styles.title}>après</Text>
         <TextInput
           type="email"
           placeholder="Email"
           placeholderTextColor="black"
           returnKeyType="next"
-          onSubmitEditing={() => this.passwordInput.focus()}
+          onSubmitEditing={() => this.username.focus()}
           keyboardType="email-address"
           autoCapitalize="none"
           autoCorrect={false}
           style={styles.input}
           onChangeText={email => this.setState({ email })}
-          ref={input => (this.emailInput = input)}
+          ref={input => (this.email = input)}
         />
         <TextInput
           type="username"
           placeholder="username"
           placeholderTextColor="black"
           returnKeyType="next"
-          onSubmitEditing={() => this.passwordInput.focus()}
-          keyboardType="string"
+          onSubmitEditing={() => this.password.focus()}
           autoCapitalize="none"
           autoCorrect={false}
           style={styles.input}
-          onChangeText={email => this.setState({ email })}
-          ref={input => (this.emailInput = input)}
+          onChangeText={username => this.setState({ username })}
+          ref={input => (this.username = input)}
         />
         <TextInput
           placeholder="password"
           placeholderTextColor="black"
           returnKeyType="next"
           secureTextEntry
+          onSubmitEditing={() => this.birthday.focus()}
           style={styles.input}
           onChangeText={password => this.setState({ password })}
-          ref={input => (this.passwordInput = input)}
+          ref={input => (this.password = input)}
         />
         <TextInput
           type="birthday"
-          placeholder="birthday"
+          placeholder="birthday (ddmmyyyy)"
           placeholderTextColor="black"
           returnKeyType="next"
-          onSubmitEditing={() => this.passwordInput.focus()}
-          keyboardType="date"
+          onSubmitEditing={() => this.city.focus()}
+          keyboardType="number-pad"
           autoCorrect={false}
           style={styles.input}
-          onChangeText={email => this.setState({ birthday })}
-          ref={input => (this.emailInput = input)}
+          onChangeText={birthday => this.setState({ birthday })}
+          ref={input => (this.birthday = input)}
         />
         <TextInput
           type="city"
           placeholder="city"
           placeholderTextColor="black"
           returnKeyType="next"
-          onSubmitEditing={() => this.passwordInput.focus()}
-          keyboardType="string"
+          onSubmitEditing={() => this.children.focus()}
           autoCapitalize="none"
           autoCorrect={false}
           style={styles.input}
-          onChangeText={email => this.setState({ city })}
-          ref={input => (this.emailInput = input)}
+          onChangeText={city => this.setState({ city })}
+          ref={input => (this.city = input)}
         />
          <TextInput
-          type="number"
+          type="children"
           placeholder="children (number)"
           placeholderTextColor="black"
           returnKeyType="next"
-          onSubmitEditing={() => this.passwordInput.focus()}
-          keyboardType="number"
+          onSubmitEditing={() => this.monthsPostPartum.focus()}
+          keyboardType="numeric"
           autoCapitalize="none"
           autoCorrect={false}
           style={styles.input}
           onChangeText={children => this.setState({ children })}
-          ref={input => (this.emailInput = input)}
+          ref={input => (this.children = input)}
         />
         <TextInput
-          type="number"
-          placeholder="children (number)"
+          type="monthsPostPartum"
+          placeholder="months post partum"
           placeholderTextColor="black"
+          keyboardType="number-pad"
           returnKeyType="next"
-          onSubmitEditing={() => this.passwordInput.focus()}
-          keyboardType="string"
           autoCapitalize="none"
           autoCorrect={false}
           style={styles.input}
-          onChangeText={children => this.setState({ monthsPostPartum })}
-          ref={input => (this.emailInput = input)}
+          onChangeText={monthsPostPartum => this.setState({ monthsPostPartum })}
+          ref={input => (this.monthsPostPartum = input)}
         />
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={this.signup}
+          onPress={console.log('signing up', this.state)}
         >
           <Text style={styles.buttonText}>sign me up!</Text>
         </TouchableOpacity>
@@ -120,26 +115,21 @@ export default class SignupScreen extends React.Component {
 }
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 10,
+    display: 'flex',
+    marginRight: 20,
+    marginLeft: 20,
     justifyContent: 'center',
   },
   title: {
-    marginTop: 10,
-    width: 250,
-    fontSize: 24,
+    top: 0,
+    fontSize: 60,
     fontWeight: '700',
     textAlign: 'center',
-    opacity: 0.8,
+    marginBottom: 50
   },
   input: {
-    height: 60,
-    opacity: 0.5,
-    marginBottom: 15,
-    paddingHorizontal: 10,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderRadius: 12
+    borderBottomWidth: 1,
+    marginTop: 10
   },
   buttonContainer: {
     borderStyle: 'solid', 
@@ -147,11 +137,12 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 20,
     marginBottom: 15,
-    borderRadius: 12
+    marginTop: 50
   },
   buttonText: {
     textAlign: 'center',
+    color: 'black',
     fontWeight: '600',
     fontSize: 16,
-  },
+  }
 });
