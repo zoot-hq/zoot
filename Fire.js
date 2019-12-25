@@ -41,7 +41,7 @@ class Fire {
         const timestamp = new Date(numberStamp);
         const message = {
             _id,
-            timestamp,
+            createdAt: timestamp,
             text,
             user,
             room
