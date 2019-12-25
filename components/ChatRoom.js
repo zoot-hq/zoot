@@ -23,9 +23,11 @@ export default class ChatRoom extends React.Component {
 
     //get messages for chatroom
     Fire.shared.on(message => {
-      this.setState(previousState => ({
-        messages: GiftedChat.append(previousState.messages, message),
-      }))  
+      if (message.room === this.state.room){
+        this.setState(previousState => ({
+          messages: GiftedChat.append(previousState.messages, message),
+        }))
+      } 
     });
   }
   
@@ -37,8 +39,9 @@ export default class ChatRoom extends React.Component {
     return (
       <GiftedChat
         messages={this.state.messages}
-        onSend={Fire.shared.send}
+        onSend={(messages) => Fire.shared.send(messages, this.state.room)}
         user={this.state.user}
+        room={this.state.room}
       />
     );
   }
