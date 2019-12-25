@@ -39,7 +39,7 @@ class Fire {
         return (firebase.auth().currentUser || {}).username;
     }
 
-    get ref() {
+    ref() {
         return firebase.database().ref('messages');
     }
 
@@ -57,7 +57,7 @@ class Fire {
     };
 
     on = callback =>
-        this.ref
+        this.ref()
         .limitToLast(20)
         .on('child_added', snapshot => callback(this.parse(snapshot)));
 
@@ -77,11 +77,11 @@ class Fire {
         }
     };
 
-    append = message => this.ref.push(message);
+    append = message => this.ref().push(message);
 
     // close the connection to the Backend
     off() {
-        this.ref.off();
+        this.ref().off();
     }
 
     signup = async (email, password, username, birthday, city, children, monthsPostPartum) => {
