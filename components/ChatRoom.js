@@ -1,5 +1,5 @@
 import React from 'react'
-import { BackHandler } from 'react-native'
+import { BackHandler, View, KeyboardAvoidingView } from 'react-native'
 import { GiftedChat } from 'react-native-gifted-chat'
 // import emojiUtils from 'emoji-utils'
 
@@ -60,14 +60,17 @@ export default class ChatRoom extends React.Component {
 
   render() {
     return (
-      <GiftedChat
-        messages={this.state.messages}
-        onSend={(messages) => Fire.shared.send(messages, this.state.room)}
-        user={this.state.user}
-        room={this.state.room}
-        renderMessage={this.renderMessage} 
-        renderAvatar={null}       
-      />
+      
+      <KeyboardAvoidingView behavior="padding" style={{flex:1}}>
+        <GiftedChat
+          messages={this.state.messages}
+          onSend={(messages) => Fire.shared.send(messages, this.state.room)}
+          user={this.state.user}
+          room={this.state.room}
+          renderMessage={this.renderMessage} 
+          renderAvatar={null}
+        />
+        </KeyboardAvoidingView>
     );
   }
 }
