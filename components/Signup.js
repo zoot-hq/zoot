@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { BackHandler } from 'react-native';
+import Fire from '../Fire';
 
 export default class SignupScreen extends React.Component {
   constructor() {
@@ -67,6 +68,9 @@ export default class SignupScreen extends React.Component {
             blurOnSubmit={false}
           />
         </View>
+        {!!this.state.nameError && (
+          <Text style={styles.error}>{this.state.nameError}</Text>
+        )}
         <View style={styles.field}>
           <Text>birthday (ddmmyyyy)</Text>
           <TextInput
@@ -125,7 +129,21 @@ export default class SignupScreen extends React.Component {
         </View>
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={() => this.props.navigation.navigate('ChatList')}
+          onPress={async () => {
+            if (this.state.password.length < 6) {
+              this.setState(() => ({ nameError: "min 6 characters" }));
+            } else {
+              await Fire.shared.signup(
+                this.state.email, 
+                this.state.password, 
+                this.state.username,
+                this.state.birthday,
+                this.state.city,
+                this.state.children,
+                this.state.monthsPostPartum)
+              this.props.navigation.navigate('ChatList')
+            }
+          }}
         >
           <Text style={styles.buttonText}>sign me up!</Text>
         </TouchableOpacity>
@@ -172,5 +190,10 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: '600',
     fontSize: 30,
+  },
+  error: {
+    color: "red",
+    fontSize: 10,
+    marginBottom: 0
   }
 });

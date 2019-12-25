@@ -1,4 +1,5 @@
-import firebase from 'firebase'; // 4.8.1
+import firebase from 'firebase'; 
+import firebaseInfo from './secrets'
 
 class Fire {
     constructor() {
@@ -7,16 +8,7 @@ class Fire {
     }
 
     init = () =>
-        firebase.initializeApp({
-            apiKey: "AIzaSyDxOkTZDgVaTM9cbQ82tfUo5ZeVYBlfPPc",
-            authDomain: "zoot-a3d90.firebaseapp.com",
-            databaseURL: "https://zoot-a3d90.firebaseio.com",
-            projectId: "zoot-a3d90",
-            storageBucket: "zoot-a3d90.appspot.com",
-            messagingSenderId: "78123858213",
-            appId: "1:78123858213:web:f0a9f8ffd39f1c6b2c42cc",
-            measurementId: "G-SCL79MWGSJ"
-        });
+        firebase.initializeApp(firebaseInfo);
 
     observeAuth = () =>
         firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
@@ -31,53 +23,80 @@ class Fire {
         }
     };
 
-    get uid() {
+    uid() {
         return (firebase.auth().currentUser || {}).uid;
+    }  
+
+    username() {
+        return (firebase.auth().currentUser || {}).displayName;
     }
 
-    get ref() {
+    ref() {
         return firebase.database().ref('messages');
     }
 
     parse = snapshot => {
-        const { timestamp: numberStamp, text, user } = snapshot.val();
+        const { timestamp: numberStamp, text, user, room } = snapshot.val();
         const { key: _id } = snapshot;
         const timestamp = new Date(numberStamp);
         const message = {
             _id,
-            timestamp,
+            createdAt: timestamp,
             text,
             user,
+            room
         };
         return message;
     };
 
     on = callback =>
-        this.ref
+        this.ref()
         .limitToLast(20)
         .on('child_added', snapshot => callback(this.parse(snapshot)));
 
     get timestamp() {
-            return firebase.database.ServerValue.TIMESTAMP;
-        }
-        // send the message to the Backend
-    send = messages => {
+        return firebase.database.ServerValue.TIMESTAMP;
+    }
+    // send the message to the Backend
+    send = (messages, room) => {
         for (let i = 0; i < messages.length; i++) {
             const { text, user } = messages[i];
             const message = {
                 text,
                 user,
+                room,
                 timestamp: this.timestamp,
             };
             this.append(message);
         }
     };
 
-    append = message => this.ref.push(message);
+    append = message => this.ref().push(message);
 
     // close the connection to the Backend
     off() {
-        this.ref.off();
+        this.ref().off();
+    }
+
+    signup = async (email, password, username, birthday, city, children, monthsPostPartum) => {
+        try {
+            await firebase.auth().createUserWithEmailAndPassword(email, password)
+            await firebase.auth().signInWithEmailAndPassword(email, password)
+            const user = firebase.auth().currentUser;
+            await user.updateProfile({
+                displayName: username || 'anonymous'
+              })             
+        } catch (error) {
+            return error
+        }
+    }
+
+    login = async (email, password) => {
+        try {
+            await firebase.auth().signInWithEmailAndPassword(email, password)
+        } catch (error) {
+            return error
+        }
     }
 }
 

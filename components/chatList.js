@@ -2,6 +2,7 @@ import * as React from 'react';
 import { StyleSheet, Text, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { BackHandler } from 'react-native';
+import Fire from '../Fire'
 
 export default class ChatList extends React.Component {
   constructor(){
@@ -18,6 +19,7 @@ export default class ChatList extends React.Component {
   }
 
   render() {
+    console.log(Fire.shared.uid())
     return (
       <KeyboardAvoidingView behavior="padding" style={styles.container}>
         {/* titles */}
@@ -40,13 +42,21 @@ export default class ChatList extends React.Component {
             {/* if a query made, queried chatrooms displayed*/}
             {this.state.queriedChatrooms.length?
               this.state.queriedChatrooms.map(chatroom => (
-              <TouchableOpacity key={chatroom} style={styles.buttonContainer}>
+              <TouchableOpacity 
+                key={chatroom} 
+                style={styles.buttonContainer}
+                onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
+              >
               <Text style={styles.buttonText}># {chatroom}</Text>
             </TouchableOpacity>))
             :
             // else display all chatrooms
             this.state.chatrooms.map(chatroom => (
-              <TouchableOpacity key={chatroom} style={styles.buttonContainer}>
+              <TouchableOpacity 
+                key={chatroom} 
+                style={styles.buttonContainer}
+                onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
+              >
               <Text style={styles.buttonText}># {chatroom}</Text>
             </TouchableOpacity>))
             }
