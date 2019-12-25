@@ -1,4 +1,5 @@
-import firebase from 'firebase'; // 4.8.1
+import firebase from 'firebase'; 
+import firebaseInfo from './secrets'
 
 class Fire {
     constructor() {
@@ -7,16 +8,7 @@ class Fire {
     }
 
     init = () =>
-        firebase.initializeApp({
-            apiKey: "AIzaSyAV5RytixuwijrPzNRMSPV3wGtBy4WVcUs",
-            authDomain: "zoot-a3d90.firebaseapp.com",
-            databaseURL: "https://zoot-a3d90.firebaseio.com",
-            projectId: "zoot-27dbb",
-            storageBucket: "zoot-a3d90.appspot.com",
-            messagingSenderId: "78123858213",
-            appId: "1:78123858213:web:f0a9f8ffd39f1c6b2c42cc",
-            measurementId: "G-SCL79MWGSJ"
-        });
+        firebase.initializeApp(firebaseInfo);
 
     observeAuth = () =>
         firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
@@ -33,7 +25,7 @@ class Fire {
 
     uid() {
         return (firebase.auth().currentUser || {}).uid;
-    }
+    }  
 
     username() {
         return (firebase.auth().currentUser || {}).username;
@@ -86,9 +78,12 @@ class Fire {
 
     signup = async (email, password, username, birthday, city, children, monthsPostPartum) => {
         try {
-            const user = await firebase.auth().createUserWithEmailAndPassword(email, password)
-            await user.updateProfile({ username, birthday, city, children, monthsPostPartum })
+            await firebase.auth().createUserWithEmailAndPassword(email, password)
             await firebase.auth().signInWithEmailAndPassword(email, password)
+            const user = firebase.auth().currentUser;
+            await user.updateProfile({
+                displayName: username
+              })             
         } catch (error) {
             return error
         }
