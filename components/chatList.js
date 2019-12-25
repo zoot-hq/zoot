@@ -45,7 +45,7 @@ export default class ChatList extends React.Component {
               <TouchableOpacity 
                 key={chatroom} 
                 style={styles.buttonContainer}
-                onPress={() => this.props.navigation.navigate('Chat')}
+                onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
               >
               <Text style={styles.buttonText}># {chatroom}</Text>
             </TouchableOpacity>))
@@ -55,7 +55,7 @@ export default class ChatList extends React.Component {
               <TouchableOpacity 
                 key={chatroom} 
                 style={styles.buttonContainer}
-                onPress={() => this.props.navigation.navigate('Chat')}
+                onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
               >
               <Text style={styles.buttonText}># {chatroom}</Text>
             </TouchableOpacity>))

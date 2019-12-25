@@ -3,10 +3,11 @@ import { GiftedChat } from 'react-native-gifted-chat'; // 0.3.0
 import Fire from '../Fire';
 import { BackHandler } from 'react-native';
 
-class Chat extends React.Component {
-  constructor() {
-    super()
-    this.state = {
+export default class ChatRoom extends React.Component {
+  constructor(props) {
+    super(props)
+      this.state = {
+      room: this.props.navigation.state.params.chatroom,
       messages: [],
       user: {
         username: Fire.shared.username(),
@@ -42,5 +43,3 @@ class Chat extends React.Component {
     );
   }
 }
-
-export default Chat;
