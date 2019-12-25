@@ -20,7 +20,7 @@ class Chat extends React.Component<Props> {
 
   get user() {
     return {
-      name: 'dummy',
+      name: Fire.shared.username,
       _id: Fire.shared.uid,
     };
   }

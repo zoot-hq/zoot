@@ -35,6 +35,10 @@ class Fire {
         return (firebase.auth().currentUser || {}).uid;
     }
 
+    username() {
+        return (firebase.auth().currentUser || {}).username;
+    }
+
     get ref() {
         return firebase.database().ref('messages');
     }

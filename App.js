@@ -8,6 +8,10 @@ import Login from './components/Login';
 
 import { createStackNavigator } from 'react-navigation'
 
+// disabled yellow comments/alerts
+console.disableYellowBox = true;
+console.ignoredYellowBox = ['Warning: Each', 'Warning: Failed'];
+
 const navigator = createStackNavigator({
   Home,
   ChatList,
