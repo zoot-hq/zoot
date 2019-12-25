@@ -1,7 +1,10 @@
-import React from 'react';
-import { GiftedChat } from 'react-native-gifted-chat'; // 0.3.0
+import React from 'react'
+import { BackHandler } from 'react-native'
+import { GiftedChat } from 'react-native-gifted-chat'
+// import emojiUtils from 'emoji-utils'
+
+import SlackMessage from './SlackMessage'
 import Fire from '../Fire';
-import { BackHandler } from 'react-native';
 
 export default class ChatRoom extends React.Component {
   constructor(props) {
@@ -10,8 +13,9 @@ export default class ChatRoom extends React.Component {
       room: this.props.navigation.state.params.chatroom,
       messages: [],
       user: {
-        username: Fire.shared.username(),
+        name: Fire.shared.username(),
         _id: Fire.shared.uid(),
+        avatar: 'https://placeimg.com/140/140/any'
       }
     };
   }
@@ -35,6 +39,25 @@ export default class ChatRoom extends React.Component {
     Fire.shared.off();
   }
 
+  renderMessage(props) {
+    const {
+      currentMessage: { text: currText },
+    } = props
+
+    let messageTextStyle
+
+    // // Make "pure emoji" messages much bigger than plain text.
+    // if (currText && emojiUtils.isPureEmojiString(currText)) {
+    //   messageTextStyle = {
+    //     fontSize: 28,
+    //     // Emoji get clipped if lineHeight isn't increased; make it consistent across platforms.
+    //     lineHeight: Platform.OS === 'android' ? 34 : 30,
+    //   }
+    // }
+
+    return <SlackMessage {...props} messageTextStyle={messageTextStyle} />
+  }
+
   render() {
     return (
       <GiftedChat
@@ -42,6 +65,8 @@ export default class ChatRoom extends React.Component {
         onSend={(messages) => Fire.shared.send(messages, this.state.room)}
         user={this.state.user}
         room={this.state.room}
+        renderMessage={this.renderMessage} 
+        renderAvatar={null}       
       />
     );
   }
