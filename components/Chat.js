@@ -20,7 +20,7 @@ class Chat extends React.Component<Props> {
 
   get user() {
     return {
-      name: this.props.navigation.state.params.name,
+      name: 'dummy',
       _id: Fire.shared.uid,
     };
   }
@@ -36,11 +36,11 @@ class Chat extends React.Component<Props> {
   }
 
   componentDidMount() {
-    Fire.shared.on(message =>
+    Fire.shared.on(message => {
       this.setState(previousState => ({
         messages: GiftedChat.append(previousState.messages, message),
       }))
-    );
+    });
   }
   componentWillUnmount() {
     Fire.shared.off();

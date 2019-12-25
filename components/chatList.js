@@ -40,13 +40,21 @@ export default class ChatList extends React.Component {
             {/* if a query made, queried chatrooms displayed*/}
             {this.state.queriedChatrooms.length?
               this.state.queriedChatrooms.map(chatroom => (
-              <TouchableOpacity key={chatroom} style={styles.buttonContainer}>
+              <TouchableOpacity 
+                key={chatroom} 
+                style={styles.buttonContainer}
+                onPress={() => this.props.navigation.navigate('Chat')}
+              >
               <Text style={styles.buttonText}># {chatroom}</Text>
             </TouchableOpacity>))
             :
             // else display all chatrooms
             this.state.chatrooms.map(chatroom => (
-              <TouchableOpacity key={chatroom} style={styles.buttonContainer}>
+              <TouchableOpacity 
+                key={chatroom} 
+                style={styles.buttonContainer}
+                onPress={() => this.props.navigation.navigate('Chat')}
+              >
               <Text style={styles.buttonText}># {chatroom}</Text>
             </TouchableOpacity>))
             }
