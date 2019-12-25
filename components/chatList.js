@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, SafeAreaView, ScrollView, KeyboardA
 import { Searchbar } from 'react-native-paper';
 import { BackHandler } from 'react-native';
 
-export default class chatList extends React.Component {
+export default class ChatList extends React.Component {
   constructor(){
     super()
     this.state = ({

@@ -45,7 +45,7 @@ export default class LoginScreen extends React.Component {
         </View>
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={() => this.props.navigation.navigate('chatList')}
+          onPress={() => this.props.navigation.navigate('ChatList')}
         >
           <Text style={styles.buttonText}>log back in!</Text>
         </TouchableOpacity>
