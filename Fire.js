@@ -8,10 +8,10 @@ class Fire {
 
     init = () =>
         firebase.initializeApp({
-            apiKey: "AIzaSyDxOkTZDgVaTM9cbQ82tfUo5ZeVYBlfPPc",
+            apiKey: "AIzaSyAV5RytixuwijrPzNRMSPV3wGtBy4WVcUs",
             authDomain: "zoot-a3d90.firebaseapp.com",
             databaseURL: "https://zoot-a3d90.firebaseio.com",
-            projectId: "zoot-a3d90",
+            projectId: "zoot-27dbb",
             storageBucket: "zoot-a3d90.appspot.com",
             messagingSenderId: "78123858213",
             appId: "1:78123858213:web:f0a9f8ffd39f1c6b2c42cc",
@@ -31,7 +31,7 @@ class Fire {
         }
     };
 
-    get uid() {
+    uid() {
         return (firebase.auth().currentUser || {}).uid;
     }
 
@@ -78,6 +78,24 @@ class Fire {
     // close the connection to the Backend
     off() {
         this.ref.off();
+    }
+
+    signup = async (email, password, username, birthday, city, children, monthsPostPartum) => {
+        try {
+            const user = await firebase.auth().createUserWithEmailAndPassword(email, password)
+            await user.updateProfile({ username, birthday, city, children, monthsPostPartum })
+            await firebase.auth().signInWithEmailAndPassword(email, password)
+        } catch (error) {
+            return error
+        }
+    }
+
+    login = async (email, password) => {
+        try {
+            await firebase.auth().signInWithEmailAndPassword(email, password)
+        } catch (error) {
+            return error
+        }
     }
 }
 

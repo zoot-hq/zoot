@@ -2,6 +2,7 @@ import * as React from 'react';
 import { StyleSheet, Text, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { BackHandler } from 'react-native';
+import Fire from '../Fire'
 
 export default class ChatList extends React.Component {
   constructor(){
@@ -18,6 +19,7 @@ export default class ChatList extends React.Component {
   }
 
   render() {
+    console.log(Fire.shared.uid())
     return (
       <KeyboardAvoidingView behavior="padding" style={styles.container}>
         {/* titles */}
