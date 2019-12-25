@@ -13,7 +13,8 @@ export default class SignupScreen extends React.Component {
       city: '',
       birthday: '000000000',
       children: '0',
-      monthsPostPartum: '0'
+      monthsPostPartum: '0',
+      error: null
     };
   }
 
@@ -26,6 +27,23 @@ export default class SignupScreen extends React.Component {
     return (
       <KeyboardAvoidingView keyboardVerticalOffset={450} behavior="padding" style={styles.container}>
         <Text style={styles.title}>après</Text>
+        <View style={styles.field}>
+          <Text>username</Text>
+          <TextInput
+            type="username"
+            returnKeyType="next"
+            onSubmitEditing={() => this.password.focus()}
+            autoCapitalize="none"
+            autoCorrect={false}
+            style={styles.input}
+            onChangeText={username => this.setState({ username })}
+            ref={input => (this.username = input)}
+            blurOnSubmit={false}
+          />
+        </View>
+        {this.state.error==='username is required.' && (
+          <Text style={styles.error}>{this.state.error}</Text>
+        )}
         <View style={styles.field}>
           <Text>email</Text>
           <TextInput
@@ -42,20 +60,10 @@ export default class SignupScreen extends React.Component {
             blurOnSubmit={false}
           />
         </View>
-        <View style={styles.field}>
-          <Text>username</Text>
-          <TextInput
-            type="username"
-            returnKeyType="next"
-            onSubmitEditing={() => this.password.focus()}
-            autoCapitalize="none"
-            autoCorrect={false}
-            style={styles.input}
-            onChangeText={username => this.setState({ username })}
-            ref={input => (this.username = input)}
-            blurOnSubmit={false}
-          />
-        </View>
+        {(this.state.error==='The email address is badly formatted.' ||
+          this.state.error==='The email address is already in use by another account.')&& (
+          <Text style={styles.error}>{this.state.error}</Text>
+        )}
         <View style={styles.field}>
           <Text>password</Text>
           <TextInput
@@ -68,8 +76,9 @@ export default class SignupScreen extends React.Component {
             blurOnSubmit={false}
           />
         </View>
-        {!!this.state.nameError && (
-          <Text style={styles.error}>{this.state.nameError}</Text>
+        {(this.state.error==='The password must be 6 characters long or more.' || 
+          this.state.error==='Password should be at least 6 characters') && (
+          <Text style={styles.error}>{this.state.error}</Text>
         )}
         <View style={styles.field}>
           <Text>birthday (ddmmyyyy)</Text>
@@ -130,17 +139,33 @@ export default class SignupScreen extends React.Component {
         <TouchableOpacity
           style={styles.buttonContainer}
           onPress={async () => {
-            if (this.state.password.length < 6) {
-              this.setState(() => ({ nameError: "min 6 characters" }));
-            } else {
-              await Fire.shared.signup(
-                this.state.email, 
-                this.state.password, 
-                this.state.username,
-                this.state.birthday,
-                this.state.city,
-                this.state.children,
-                this.state.monthsPostPartum)
+
+            // ensure a username is chosen
+            if (!this.state.username.length) {
+              this.setState({ error: 'username is required.'})
+              return
+            }
+
+            // sign up a user
+            const status = await Fire.shared.signup
+            (
+              this.state.email, 
+              this.state.password, 
+              this.state.username,
+              this.state.birthday,
+              this.state.city,
+              this.state.children,
+              this.state.monthsPostPartum
+            )
+            
+            // if error occured, put it on state
+            if (status) {
+              console.log('error message: ', status)
+              this.setState({ error: status.message})
+            }
+
+            // if everything is good, navigate into the app
+            else {
               this.props.navigation.navigate('ChatList')
             }
           }}
