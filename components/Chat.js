@@ -19,14 +19,12 @@ class Chat extends React.Component {
   componentDidMount() {
     // add back functionality
     BackHandler.addEventListener('hardwareBackPress', () => { this.props.navigation.navigate('ChatList') })
-    
+
     //get messages for chatroom
     Fire.shared.on(message => {
-      const a = Fire.shared.on
-      console.log('aa', a, 'mess', message)
       this.setState(previousState => ({
         messages: GiftedChat.append(previousState.messages, message),
-      }))
+      }))  
     });
   }
   
@@ -39,7 +37,7 @@ class Chat extends React.Component {
       <GiftedChat
         messages={this.state.messages}
         onSend={Fire.shared.send}
-        user={this.state.user.username}
+        user={this.state.user}
       />
     );
   }

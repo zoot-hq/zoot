@@ -28,7 +28,7 @@ class Fire {
     }  
 
     username() {
-        return (firebase.auth().currentUser || {}).username;
+        return (firebase.auth().currentUser || {}).displayName;
     }
 
     ref() {
@@ -54,9 +54,9 @@ class Fire {
         .on('child_added', snapshot => callback(this.parse(snapshot)));
 
     get timestamp() {
-            return firebase.database.ServerValue.TIMESTAMP;
-        }
-        // send the message to the Backend
+        return firebase.database.ServerValue.TIMESTAMP;
+    }
+    // send the message to the Backend
     send = messages => {
         for (let i = 0; i < messages.length; i++) {
             const { text, user } = messages[i];
@@ -82,7 +82,7 @@ class Fire {
             await firebase.auth().signInWithEmailAndPassword(email, password)
             const user = firebase.auth().currentUser;
             await user.updateProfile({
-                displayName: username
+                displayName: username || 'anonymous'
               })             
         } catch (error) {
             return error
