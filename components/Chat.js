@@ -4,33 +4,22 @@ import { GiftedChat } from 'react-native-gifted-chat'; // 0.3.0
 
 import Fire from '../Fire';
 
-type Props = {
-  name?: string,
-};
-
-class Chat extends React.Component<Props> {
-
-  static navigationOptions = ({ navigation }) => ({
-    title: (navigation.state.params || {}).name || 'Chat!',
-  });
+class Chat extends React.Component {
 
   state = {
     messages: [],
+    user: {
+      username: Fire.shared.username(),
+      _id: Fire.shared.uid(),
+    }
   };
-
-  get user() {
-    return {
-      name: Fire.shared.username,
-      _id: Fire.shared.uid,
-    };
-  }
 
   render() {
     return (
       <GiftedChat
         messages={this.state.messages}
         onSend={Fire.shared.send}
-        user={this.user}
+        user={this.state.user}
       />
     );
   }
