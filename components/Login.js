@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { BackHandler } from 'react-native';
 
 export default class LoginScreen extends React.Component {
   constructor() {
@@ -8,6 +9,11 @@ export default class LoginScreen extends React.Component {
       email: '',
       password: '',
     };
+  }
+
+  // remove error from back button press
+  componentWillMount(){
+    BackHandler.addEventListener('hardwareBackPress', () => this.props.navigation.navigate('Home'));
   }
 
   render() {
@@ -39,7 +45,7 @@ export default class LoginScreen extends React.Component {
         </View>
         <TouchableOpacity
           style={styles.buttonContainer}
-          // onPress={}
+          onPress={() => this.props.navigation.navigate('ChatList')}
         >
           <Text style={styles.buttonText}>log back in!</Text>
         </TouchableOpacity>
@@ -53,6 +59,7 @@ const styles = StyleSheet.create({
     marginRight: 50,
     marginLeft: 50,
     justifyContent: 'center',
+    marginTop: 30
   },
   title: {
     top: 0,

@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { BackHandler } from 'react-native';
 
 export default class SignupScreen extends React.Component {
   constructor() {
@@ -15,9 +16,14 @@ export default class SignupScreen extends React.Component {
     };
   }
 
+  // remove error from back button press
+  componentWillMount(){
+    BackHandler.addEventListener('hardwareBackPress', () => this.props.navigation.navigate('Home'));
+  }
+
   render() {
     return (
-      <KeyboardAvoidingView keyboardVerticalOffset={280} behavior="padding" style={styles.container}>
+      <KeyboardAvoidingView keyboardVerticalOffset={450} behavior="padding" style={styles.container}>
         <Text style={styles.title}>après</Text>
         <View style={styles.field}>
           <Text>email</Text>
@@ -119,7 +125,7 @@ export default class SignupScreen extends React.Component {
         </View>
         <TouchableOpacity
           style={styles.buttonContainer}
-          // onPress={}
+          onPress={() => this.props.navigation.navigate('ChatList')}
         >
           <Text style={styles.buttonText}>sign me up!</Text>
         </TouchableOpacity>
@@ -133,6 +139,7 @@ const styles = StyleSheet.create({
     marginRight: 50,
     marginLeft: 50,
     justifyContent: 'center',
+    marginTop: 30
   },
   title: {
     top: 0,
