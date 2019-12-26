@@ -32,7 +32,7 @@ class Fire {
     }
 
     ref() {
-        return firebase.database().ref('messages');
+        return firebase.database().ref('chatrooms');
     }
 
     parse = snapshot => {
@@ -49,8 +49,8 @@ class Fire {
         return message;
     };
 
-    on = callback =>
-        this.ref()
+    on = (room, callback) =>
+        this.ref().child(room)
         .limitToLast(20)
         .on('child_added', snapshot => callback(this.parse(snapshot)));
 
@@ -67,11 +67,11 @@ class Fire {
                 room,
                 timestamp: this.timestamp,
             };
-            this.append(message);
+            this.append(room, message);
         }
     };
 
-    append = message => this.ref().push(message);
+    append = (room, message) => this.ref().child(room).push(message)
 
     // close the connection to the Backend
     off() {

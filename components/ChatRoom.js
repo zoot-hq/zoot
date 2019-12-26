@@ -20,16 +20,14 @@ export default class ChatRoom extends React.Component {
   }
 
 
-  componentDidMount() {
+  componentDidMount = () => {
 
     //get messages for chatroom
-    Fire.shared.on(message => {
-      if (message.room === this.state.room){
+    Fire.shared.on( this.state.room, (message => {
         this.setState(previousState => ({
           messages: GiftedChat.append(previousState.messages, message),
         }))
-      } 
-    });
+    }));
   }
   
   componentWillUnmount() {
@@ -54,7 +52,7 @@ export default class ChatRoom extends React.Component {
 
     return (
       <GestureRecognizer
-        onSwipeRight={() => {this.props.navigation.navigate('ChatList')}}
+        onSwipeRight={() => {this.props.navigation.pop()}}
         config={config}
         style={{
           flex: 1
