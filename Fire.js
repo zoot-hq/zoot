@@ -53,6 +53,12 @@ class Fire {
         .limitToLast(20)
         .on('child_added', snapshot => callback(this.parse(snapshot)));
 
+    getChatRoomNames = () => {
+        const  ref = firebase.database().ref('chatroomnames')
+        const rooms = ref.limitToFirst
+        return rooms
+    }
+
     get timestamp() {
         return firebase.database.ServerValue.TIMESTAMP;
     }

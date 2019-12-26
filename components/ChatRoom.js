@@ -46,6 +46,7 @@ export default class ChatRoom extends React.Component {
 
   render() {
 
+    // config for swipe gesture
     const config = {
       velocityThreshold: 0.3,
       directionalOffsetThreshold: 80
