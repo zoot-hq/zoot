@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-import { BackHandler } from 'react-native';
 import Fire from '../Fire';
+import GestureRecognizer from 'react-native-swipe-gestures';
 
 export default class LoginScreen extends React.Component {
   constructor() {
@@ -13,56 +13,70 @@ export default class LoginScreen extends React.Component {
     };
   }
 
-  // remove error from back button press
-  componentWillMount(){
-    BackHandler.addEventListener('hardwareBackPress', () => this.props.navigation.navigate('Home'));
-  }
-
   render() {
+
+    // config for swipe gesture
+    const config = {
+      velocityThreshold: 0.3,
+      directionalOffsetThreshold: 80
+    };
+
     return (
-      <KeyboardAvoidingView style={styles.container}>
-        <Text style={styles.title}>après</Text>
-        <View style={styles.field}>
-          <Text>email</Text>
-          <TextInput
-          returnKeyType="next"
-          onSubmitEditing={() => this.passwordInput.focus()}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoCorrect={false}
-          style={styles.input}
-          onChangeText={email => this.setState({ email })}
-        />
-        </View>
-        <View style={styles.field}>
-          <Text>password</Text>
-          <TextInput
-          returnKeyType="done"
-          secureTextEntry
-          style={styles.input}
-          onChangeText={password => this.setState({ password })}
-          blurOnSubmit={false}
-          ref={input => (this.passwordInput = input)}
-        />
-        </View>
-        {!!this.state.error && (
-          <Text style={styles.error}> invalid login credentials </Text>
-        )}
-        <TouchableOpacity
-          style={styles.buttonContainer}
-          onPress={ async() => {
-            const status = await Fire.shared.login(this.state.email, this.state.password)
-            if (!status) {
-              this.props.navigation.navigate('ChatList')
-            }
-            else {
-              this.setState({ error : true })
-            }
-          }}
-        >
-          <Text style={styles.buttonText}>log back in!</Text>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
+      <GestureRecognizer
+        onSwipeRight={() => {
+          console.log('swiping')
+          this.props.navigation.pop()}
+        }
+        config={config}
+        style={{
+          flex: 1,
+          resizeMode: 'cover'
+        }}
+      >
+        <KeyboardAvoidingView style={styles.container}>
+          <Text style={styles.title}>après</Text>
+          <View style={styles.field}>
+            <Text>email</Text>
+            <TextInput
+            returnKeyType="next"
+            onSubmitEditing={() => this.passwordInput.focus()}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+            style={styles.input}
+            onChangeText={email => this.setState({ email })}
+          />
+          </View>
+          <View style={styles.field}>
+            <Text>password</Text>
+            <TextInput
+            returnKeyType="done"
+            secureTextEntry
+            style={styles.input}
+            onChangeText={password => this.setState({ password })}
+            blurOnSubmit={false}
+            ref={input => (this.passwordInput = input)}
+          />
+          </View>
+          {!!this.state.error && (
+            <Text style={styles.error}> invalid login credentials </Text>
+          )}
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={ async() => {
+              const status = await Fire.shared.login(this.state.email, this.state.password)
+              if (!status) {
+                this.props.navigation.navigate('ChatList')
+              }
+              else {
+                this.setState({ error : true })
+              }
+            }}
+          >
+            <Text style={styles.buttonText}>log back in!</Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
+      </GestureRecognizer>
     );
   }
 }
