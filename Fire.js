@@ -36,7 +36,7 @@ class Fire {
     }
 
     parse = snapshot => {
-        const { timestamp: numberStamp, text, user, room } = snapshot.val();
+        const { timestamp: numberStamp, text, user } = snapshot.val();
         const { key: _id } = snapshot;
         const timestamp = new Date(numberStamp);
         const message = {
@@ -44,7 +44,6 @@ class Fire {
             createdAt: timestamp,
             text,
             user,
-            room
         };
         return message;
     };
