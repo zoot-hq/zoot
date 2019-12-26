@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, KeyboardAvoidingView, StyleSheet } from 'react-native'
 import { GiftedChat } from 'react-native-gifted-chat'
 import GestureRecognizer from 'react-native-swipe-gestures';
+import { MaterialIndicator } from 'react-native-indicators';
 
 import SlackMessage from './SlackMessage'
 import Fire from '../Fire';
@@ -52,7 +53,7 @@ export default class ChatRoom extends React.Component {
 
     return (
       <GestureRecognizer
-        onSwipeRight={() => {this.props.navigation.pop()}}
+        onSwipeRight={() => {this.props.navigation.navigate('ChatList')}}
         config={config}
         style={{
           flex: 1
@@ -67,6 +68,7 @@ export default class ChatRoom extends React.Component {
             room={this.state.room}
             renderMessage={this.renderMessage} 
             renderAvatar={null}
+            renderLoading={() =>  <MaterialIndicator color='black' />}
           />
         </KeyboardAvoidingView>
       </GestureRecognizer>
