@@ -32,11 +32,11 @@ class Fire {
     }
 
     ref() {
-        return firebase.database().ref('messages');
+        return firebase.database().ref('chatrooms');
     }
 
     parse = snapshot => {
-        const { timestamp: numberStamp, text, user, room } = snapshot.val();
+        const { timestamp: numberStamp, text, user } = snapshot.val();
         const { key: _id } = snapshot;
         const timestamp = new Date(numberStamp);
         const message = {
@@ -44,13 +44,12 @@ class Fire {
             createdAt: timestamp,
             text,
             user,
-            room
         };
         return message;
     };
 
-    on = callback =>
-        this.ref()
+    on = (room, callback) =>
+        this.ref().child(room)
         .limitToLast(20)
         .on('child_added', snapshot => callback(this.parse(snapshot)));
 
@@ -67,11 +66,11 @@ class Fire {
                 room,
                 timestamp: this.timestamp,
             };
-            this.append(message);
+            this.append(room, message);
         }
     };
 
-    append = message => this.ref().push(message);
+    append = (room, message) => this.ref().child(room).push(message)
 
     // close the connection to the Backend
     off() {

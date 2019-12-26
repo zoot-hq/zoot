@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { BackHandler } from 'react-native';
+import Fire from '../Fire';
 
 export default class LoginScreen extends React.Component {
   constructor() {
@@ -8,6 +9,7 @@ export default class LoginScreen extends React.Component {
     this.state = {
       email: '',
       password: '',
+      error: false
     };
   }
 
@@ -43,9 +45,20 @@ export default class LoginScreen extends React.Component {
           ref={input => (this.passwordInput = input)}
         />
         </View>
+        {!!this.state.error && (
+          <Text style={styles.error}> invalid login credentials </Text>
+        )}
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={() => this.props.navigation.navigate('ChatList')}
+          onPress={ async() => {
+            const status = await Fire.shared.login(this.state.email, this.state.password)
+            if (!status) {
+              this.props.navigation.navigate('ChatList')
+            }
+            else {
+              this.setState({ error : true })
+            }
+          }}
         >
           <Text style={styles.buttonText}>log back in!</Text>
         </TouchableOpacity>
@@ -92,5 +105,10 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: '600',
     fontSize: 30,
+  },
+  error: {
+    color: "red",
+    fontSize: 10,
+    marginBottom: 0,
   }
 });
