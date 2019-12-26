@@ -1,7 +1,7 @@
 import React from 'react'
 import { BackHandler, View, Text, KeyboardAvoidingView, StyleSheet } from 'react-native'
 import { GiftedChat } from 'react-native-gifted-chat'
-// import emojiUtils from 'emoji-utils'
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 import SlackMessage from './SlackMessage'
 import Fire from '../Fire';
@@ -22,8 +22,6 @@ export default class ChatRoom extends React.Component {
 
 
   componentDidMount() {
-    // add back functionality
-    BackHandler.addEventListener('hardwareBackPress', () => { this.props.navigation.navigate('ChatList') })
 
     //get messages for chatroom
     Fire.shared.on(message => {
@@ -45,22 +43,24 @@ export default class ChatRoom extends React.Component {
     } = props
 
     let messageTextStyle
-
-    // // Make "pure emoji" messages much bigger than plain text.
-    // if (currText && emojiUtils.isPureEmojiString(currText)) {
-    //   messageTextStyle = {
-    //     fontSize: 28,
-    //     // Emoji get clipped if lineHeight isn't increased; make it consistent across platforms.
-    //     lineHeight: Platform.OS === 'android' ? 34 : 30,
-    //   }
-    // }
-
     return <SlackMessage {...props} messageTextStyle={messageTextStyle} />
   }
 
   render() {
+
+    const config = {
+      velocityThreshold: 0.3,
+      directionalOffsetThreshold: 80
+    };
+
     return (
-      <View style={{flex:1}}>
+      <GestureRecognizer
+        onSwipeRight={() => {this.props.navigation.navigate('ChatList')}}
+        config={config}
+        style={{
+          flex: 1
+        }}
+        >
         <Text style={styles.title}># {this.state.room}</Text>
         <KeyboardAvoidingView behavior="padding" style={{flex:1}}>
           <GiftedChat
@@ -72,7 +72,7 @@ export default class ChatRoom extends React.Component {
             renderAvatar={null}
           />
         </KeyboardAvoidingView>
-      </View>
+      </GestureRecognizer>
     );
   }
 }
