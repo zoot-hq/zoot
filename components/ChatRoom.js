@@ -1,7 +1,7 @@
 import React from 'react'
-import { BackHandler, View, Text, KeyboardAvoidingView, StyleSheet } from 'react-native'
+import { View, Text, KeyboardAvoidingView, StyleSheet } from 'react-native'
 import { GiftedChat } from 'react-native-gifted-chat'
-import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import GestureRecognizer from 'react-native-swipe-gestures';
 
 import SlackMessage from './SlackMessage'
 import Fire from '../Fire';
@@ -15,7 +15,6 @@ export default class ChatRoom extends React.Component {
       user: {
         name: Fire.shared.username(),
         _id: Fire.shared.uid(),
-        avatar: 'https://placeimg.com/140/140/any'
       }
     };
   }
