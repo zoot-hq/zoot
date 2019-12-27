@@ -1,66 +1,90 @@
 import * as React from 'react';
-import { StyleSheet, Text, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { Searchbar } from 'react-native-paper';
-import { BackHandler } from 'react-native';
+import Fire from '../Fire';
+import { MaterialIndicator } from 'react-native-indicators';
 
 export default class ChatList extends React.Component {
   constructor(){
     super()
     this.state = ({
-      chatrooms: ['depression', 'anxiety', 'breastfeeding', 'fitness'],
-      queriedChatrooms: []
+      chatrooms: [],
+      queriedChatrooms: [],      
+      query: ''
     })
   }
 
-  // remove back functionality
   componentWillMount(){
-    BackHandler.addEventListener('hardwareBackPress', () => { return true })
+
+    //grab chatrooms
+    Fire.shared.getChatRoomNames((room => {
+      this.setState({
+        chatrooms: [...this.state.chatrooms, room],
+        queriedChatrooms: [...this.state.queriedChatrooms, room]
+      })
+  }));
   }
 
-  render() {
+  render() { 
     return (
-      <KeyboardAvoidingView behavior="padding" style={styles.container}>
+      <View style={styles.container}>
         {/* titles */}
         <Text style={styles.title}>après</Text>
         <Text style={styles.subtitle}>Welcome. What type support are you here for?</Text>
 
         {/* search bar - queries all chatrooms to the users query */}
         <Searchbar
-        theme={{colors: {primary: 'black'}}}
-        placeholder="Search"
-        onChangeText={query => {
-          const queriedChatrooms = this.state.chatrooms.filter(chatroom => {
-            return chatroom.includes(query.toLowerCase())
-          })
-          this.setState({ queriedChatrooms });
-        }}
-        />
-        <SafeAreaView>
-          <ScrollView>
-            {/* if a query made, queried chatrooms displayed*/}
-            {this.state.queriedChatrooms.length?
-              this.state.queriedChatrooms.map(chatroom => (
-              <TouchableOpacity 
-                key={chatroom} 
-                style={styles.buttonContainer}
-                onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
-              >
-              <Text style={styles.buttonText}># {chatroom}</Text>
-            </TouchableOpacity>))
-            :
-            // else display all chatrooms
-            this.state.chatrooms.map(chatroom => (
-              <TouchableOpacity 
-                key={chatroom} 
-                style={styles.buttonContainer}
-                onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
-              >
-              <Text style={styles.buttonText}># {chatroom}</Text>
-            </TouchableOpacity>))
+          theme={{colors: {primary: 'black'}}}
+          placeholder="Search"
+          onChangeText={query => {
+            const queriedChatrooms = this.state.chatrooms.filter(chatroom => {
+              return chatroom.includes(query.toLowerCase())
+            })
+            this.setState({ queriedChatrooms, query });
+            if (!query.length) {
+              this.setState({ queriedChatrooms: this.state.chatrooms})
             }
-          </ScrollView>
-        </SafeAreaView>
-      </KeyboardAvoidingView>
+          }}
+        />
+
+        <KeyboardAvoidingView behavior="padding">
+          <SafeAreaView >
+            <ScrollView contentContainerStyle={{flexGrow:1}}>
+              {/* if a query made, queried chatrooms displayed*/}
+              {(this.state.queriedChatrooms.length)?
+                this.state.queriedChatrooms.map(chatroom => (
+                <TouchableOpacity 
+                  key={chatroom} 
+                  style={styles.buttonContainer}
+                  onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
+                >
+                <Text style={styles.buttonText}># {chatroom}</Text>
+              </TouchableOpacity>))
+              :
+              // else allow user to create a new chatroom
+              (this.state.chatrooms.length?
+              <View>
+                <Text>no results. would you like to create this chatroom?</Text>
+                <TouchableOpacity 
+                  key={this.state.query} 
+                  style={styles.buttonContainer}
+                  onPress={() => {
+                    Fire.shared.createRoom(this.state.query)
+                    this.props.navigation.navigate('ChatRoom', { chatroom: this.state.query} )}
+                  }
+                >
+                  <Text style={styles.buttonText}>+ {this.state.query} </Text>
+                </TouchableOpacity>
+              </View>
+              : 
+
+              // return loading while grabbing data from database
+              <MaterialIndicator color='black' />)
+              }
+            </ScrollView>
+          </SafeAreaView>
+        </KeyboardAvoidingView>
+      </View>
     );
   }
 }
@@ -92,7 +116,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingVertical: 5,
     marginTop: 5,
-    marginLeft: 5
+    marginLeft: 5,
   },
   buttonText: {
     color: 'black',
