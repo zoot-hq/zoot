@@ -24,7 +24,7 @@ export default class ChatRoom extends React.Component {
   componentDidMount = () => {
 
     //get messages for chatroom
-    Fire.shared.on( this.state.room, (message => {
+    Fire.shared.on(this.state.room, (message => {
         this.setState(previousState => ({
           messages: GiftedChat.append(previousState.messages, message),
         }))

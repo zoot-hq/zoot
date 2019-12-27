@@ -48,20 +48,25 @@ class Fire {
         return message;
     };
 
+    parseRooms = snapshot => {
+        const { name } = snapshot.val();
+        return name;
+    };
+
     on = (room, callback) =>
         this.ref().child(room)
         .limitToLast(20)
         .on('child_added', snapshot => callback(this.parse(snapshot)));
 
-    getChatRoomNames = () => {
-        const  ref = firebase.database().ref('chatroomnames')
-        const rooms = ref.limitToFirst
-        return rooms
-    }
+    getChatRoomNames = (callback) =>
+        firebase.database().ref('chatroomnames')
+        .limitToLast(5)
+        .on('child_added', snapshot => callback(this.parseRooms(snapshot)));
 
     get timestamp() {
         return firebase.database.ServerValue.TIMESTAMP;
     }
+
     // send the message to the Backend
     send = (messages, room) => {
         for (let i = 0; i < messages.length; i++) {
@@ -77,6 +82,15 @@ class Fire {
     };
 
     append = (room, message) => this.ref().child(room).push(message)
+
+    createRoom = room => {
+
+        // add room to chatroomnames
+        firebase.database().ref('chatroomnames').push({name: room})
+
+        // add room to chatrooms
+        this.ref().push({name: room})
+    }
 
     // close the connection to the Backend
     off() {
