@@ -4,24 +4,10 @@ import firebaseInfo from './secrets'
 class Fire {
     constructor() {
         this.init();
-        this.observeAuth();
     }
 
     init = () =>
         firebase.initializeApp(firebaseInfo);
-
-    observeAuth = () =>
-        firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
-
-    onAuthStateChanged = user => {
-        if (!user) {
-            try {
-                firebase.auth().signInAnonymously();
-            } catch ({ message }) {
-                alert(message);
-            }
-        }
-    };
 
     uid() {
         return (firebase.auth().currentUser || {}).uid;
@@ -29,10 +15,6 @@ class Fire {
 
     username() {
         return (firebase.auth().currentUser || {}).displayName;
-    }
-
-    ref() {
-        return firebase.database().ref('chatrooms');
     }
 
     parse = snapshot => {
@@ -48,20 +30,10 @@ class Fire {
         return message;
     };
 
-    parseRooms = snapshot => {
-        const { name } = snapshot.val();
-        return name;
-    };
-
     on = (room, callback) =>
-        this.ref().child(room)
+        firebase.database().ref('chatrooms').child(room)
         .limitToLast(20)
         .on('child_added', snapshot => callback(this.parse(snapshot)));
-
-    getChatRoomNames = (callback) =>
-        firebase.database().ref('chatroomnames')
-        .limitToLast(5)
-        .on('child_added', snapshot => callback(this.parseRooms(snapshot)));
 
     get timestamp() {
         return firebase.database.ServerValue.TIMESTAMP;
@@ -81,30 +53,36 @@ class Fire {
         }
     };
 
-    append = (room, message) => this.ref().child(room).push(message)
-
-    createRoom = room => {
-
-        // add room to chatroomnames
-        firebase.database().ref('chatroomnames').push({name: room})
-
-        // add room to chatrooms
-        this.ref().push({name: room})
-    }
+    append = (room, message) => firebase.database().ref('chatrooms').child(room).push(message)
 
     // close the connection to the Backend
     off() {
-        this.ref().off();
+        firebase.database().ref('chatrooms').off();
     }
 
     signup = async (email, password, username, birthday, city, children, monthsPostPartum) => {
         try {
+
+            // check to see if username already exists
+            const status = await this.userExists(username, {exists: false})
+            if (status.val()) {
+                throw new Error('username already taken.')
+            }
+
             await firebase.auth().createUserWithEmailAndPassword(email, password)
             await firebase.auth().signInWithEmailAndPassword(email, password)
+            
+            
+            // add in custom fields
+            firebase.database().ref('users').child(username).set({ birthday, city, children, monthsPostPartum })
+            firebase.database().ref('users').push({ birthday, city, children, monthsPostPartum })
+            
+            // add displayname
             const user = firebase.auth().currentUser;
             await user.updateProfile({
-                displayName: username || 'anonymous'
-              })             
+                displayName: username
+            })  
+
         } catch (error) {
             return error
         }
@@ -117,6 +95,35 @@ class Fire {
             return error
         }
     }
+
+    // returns true if username exists, false otherwise
+    userExists = async (username, status) => 
+        await firebase.database().ref('users').child(username).once("value", snapshot => {
+            if(snapshot.exists()) {
+                status.exists = true
+            }
+            return status
+        })
+
+    getChatRoomNames = (callback) =>
+        firebase.database().ref('chatroomnames')
+        .limitToLast(5)
+        .on('child_added', snapshot => callback(this.parseRooms(snapshot)));
+
+    parseRooms = snapshot => {
+        const { name } = snapshot.val();
+        return name;
+    };
+
+    createRoom = room => {
+
+        // add room to chatroomnames
+        firebase.database().ref('chatroomnames').push({name: room})
+
+        // add room to chatrooms
+        this.ref().push({name: room})
+    }
+    
 }
 
 Fire.shared = new Fire();

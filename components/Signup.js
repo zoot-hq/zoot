@@ -51,7 +51,7 @@ export default class SignupScreen extends React.Component {
               blurOnSubmit={false}
             />
           </View>
-          {this.state.error==='username is required.' && (
+          {(this.state.error==='username is required.' || this.state.error==='username already taken.')&& (
             <Text style={styles.error}>{this.state.error}</Text>
           )}
           <View style={styles.field}>
