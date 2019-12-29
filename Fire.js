@@ -118,12 +118,20 @@ class Fire {
     createRoom = room => {
 
         // add room to chatroomnames
-        firebase.database().ref('chatroomnames').push({name: room})
+        firebase.database().ref('chatroomnames').child(room).set({ name : room })
+
+        const initMessage = {
+            room,
+            text: `Welcome to # ${room} - send a message to get the conversation started`,
+            timestamp: Date.now(),
+            user: {
+                name: `#${room}`
+            }
+        }
 
         // add room to chatrooms
-        this.ref().push({name: room})
+        firebase.database().ref('chatrooms').child(room).push(initMessage);
     }
-    
 }
 
 Fire.shared = new Fire();
