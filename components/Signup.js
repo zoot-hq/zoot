@@ -1,7 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import Fire from '../Fire';
-import GestureRecognizer from 'react-native-swipe-gestures';
 
 export default class SignupScreen extends React.Component {
   constructor() {
@@ -27,15 +26,7 @@ export default class SignupScreen extends React.Component {
     };
 
     return (
-      <GestureRecognizer
-        onSwipeRight={() => {this.props.navigation.pop()}}
-        config={config}
-        style={{
-          flex: 1,
-          resizeMode: 'cover'
-        }}
-      >
-        <KeyboardAvoidingView keyboardVerticalOffset={450} behavior="padding" style={styles.container}>
+        <View style={styles.container}>
           <Text style={styles.title}>après</Text>
           <View style={styles.field}>
             <Text>username</Text>
@@ -182,8 +173,7 @@ export default class SignupScreen extends React.Component {
           >
             <Text style={styles.buttonText}>sign me up!</Text>
           </TouchableOpacity>
-        </KeyboardAvoidingView>
-      </GestureRecognizer>
+        </View>
     );
   }
 }

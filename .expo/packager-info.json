@@ -1,5 +1,6 @@
 {
   "devToolsPort": 19002,
+<<<<<<< HEAD
   "expoServerPort": null,
   "packagerPort": null,
   "packagerPid": null,
@@ -8,3 +9,12 @@
   "packagerNgrokUrl": null,
   "ngrokPid": null
 }
+=======
+  "expoServerPort": 19000,
+  "packagerPort": 19007,
+  "packagerPid": 21757,
+  "expoServerNgrokUrl": "https://s8-y2p.malkam.zoot.exp.direct",
+  "packagerNgrokUrl": "https://packager.s8-y2p.malkam.zoot.exp.direct",
+  "ngrokPid": 21776
+}
+>>>>>>> 615c5b9f7f7c1761751ca9b9e733997bef7cd99a

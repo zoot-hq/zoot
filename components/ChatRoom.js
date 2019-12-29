@@ -1,7 +1,6 @@
 import React from 'react'
-import { View, Text, KeyboardAvoidingView, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import { GiftedChat } from 'react-native-gifted-chat'
-import GestureRecognizer from 'react-native-swipe-gestures';
 import { MaterialIndicator } from 'react-native-indicators';
 
 import SlackMessage from './SlackMessage'
@@ -46,22 +45,9 @@ export default class ChatRoom extends React.Component {
 
   render() {
 
-    // config for swipe gesture
-    const config = {
-      velocityThreshold: 0.3,
-      directionalOffsetThreshold: 80
-    };
-
     return (
-      <GestureRecognizer
-        onSwipeRight={() => {this.props.navigation.navigate('ChatList')}}
-        config={config}
-        style={{
-          flex: 1
-        }}
-        >
+      <View style={{flex:1}}>
         <Text style={styles.title}># {this.state.room}</Text>
-        <KeyboardAvoidingView behavior="padding" style={{flex:1}}>
           <GiftedChat
             messages={this.state.messages}
             onSend={(messages) => Fire.shared.send(messages, this.state.room)}
@@ -71,8 +57,7 @@ export default class ChatRoom extends React.Component {
             renderAvatar={null}
             renderLoading={() =>  <MaterialIndicator color='black' />}
           />
-        </KeyboardAvoidingView>
-      </GestureRecognizer>
+      </View>
     );
   }
 }
