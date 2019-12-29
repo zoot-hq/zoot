@@ -74,7 +74,6 @@ class Fire {
             
             // add in custom fields
             firebase.database().ref('users').child(username).set({ birthday, city, children, monthsPostPartum })
-            firebase.database().ref('users').push({ birthday, city, children, monthsPostPartum })
             
             // add displayname
             const user = firebase.auth().currentUser;
