@@ -32,7 +32,6 @@ class Fire {
 
     on = (room, callback) =>
         firebase.database().ref('chatrooms').child(room)
-        .limitToLast(20)
         .on('child_added', snapshot => callback(this.parse(snapshot)));
 
     get timestamp() {
@@ -107,7 +106,6 @@ class Fire {
 
     getChatRoomNames = (callback) =>
         firebase.database().ref('chatroomnames')
-        .limitToLast(5)
         .on('child_added', snapshot => callback(this.parseRooms(snapshot)));
 
     parseRooms = snapshot => {
@@ -118,12 +116,20 @@ class Fire {
     createRoom = room => {
 
         // add room to chatroomnames
-        firebase.database().ref('chatroomnames').push({name: room})
+        firebase.database().ref('chatroomnames').child(room).set({ name : room })
+
+        const initMessage = {
+            room,
+            text: `Welcome to # ${room} - send a message to get the conversation started`,
+            timestamp: Date.now(),
+            user: {
+                name: `#${room}`
+            }
+        }
 
         // add room to chatrooms
-        this.ref().push({name: room})
+        firebase.database().ref('chatrooms').child(room).push(initMessage);
     }
-    
 }
 
 Fire.shared = new Fire();

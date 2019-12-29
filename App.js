@@ -14,7 +14,15 @@ console.ignoredYellowBox = ['Warning: Each', 'Warning: Failed'];
 
 const navigator = createStackNavigator({
   Home,
-  ChatList,
+
+  // remove swipe back gesture from chatlist
+  ChatList : {
+    name: 'ChatList',
+    screen: ChatList,
+    navigationOptions: {
+      gesturesEnabled: false,
+    }
+  },
   ChatRoom,
   Signup,
   Login
