@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, ScrollView, Key
 import { Searchbar } from 'react-native-paper';
 import Fire from '../Fire';
 import { MaterialIndicator } from 'react-native-indicators';
+import GestureRecognizer from 'react-native-swipe-gestures';
 
 export default class ChatList extends React.Component {
   constructor(){
@@ -25,9 +26,10 @@ export default class ChatList extends React.Component {
   }));
   }
 
-  render() { 
+  render() {
     return (
       <View style={styles.container}>
+        
         {/* titles */}
         <Text style={styles.title}>après</Text>
         <Text style={styles.subtitle}>Welcome. What type support are you here for?</Text>

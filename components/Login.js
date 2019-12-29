@@ -1,7 +1,6 @@
 import React from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import Fire from '../Fire';
-import GestureRecognizer from 'react-native-swipe-gestures';
 
 export default class LoginScreen extends React.Component {
   constructor() {
@@ -22,18 +21,7 @@ export default class LoginScreen extends React.Component {
     };
 
     return (
-      <GestureRecognizer
-        onSwipeRight={() => {
-          console.log('swiping')
-          this.props.navigation.pop()}
-        }
-        config={config}
-        style={{
-          flex: 1,
-          resizeMode: 'cover'
-        }}
-      >
-        <KeyboardAvoidingView style={styles.container}>
+        <View style={styles.container}>
           <Text style={styles.title}>après</Text>
           <View style={styles.field}>
             <Text>email</Text>
@@ -75,8 +63,7 @@ export default class LoginScreen extends React.Component {
           >
             <Text style={styles.buttonText}>log back in!</Text>
           </TouchableOpacity>
-        </KeyboardAvoidingView>
-      </GestureRecognizer>
+        </View>
     );
   }
 }
