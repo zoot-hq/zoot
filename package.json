@@ -1,23 +1,27 @@
 {
-  "name": "après",
-  "version": "0.0.0",
-  "description": "No description",
-  "author": null,
-  "private": true,
-  "main": "node_modules/expo/AppEntry.js",
-  "devDependencies": {
-    "babel-preset-expo": "^6.0.0"
-  },
-  "dependencies": {
-    "expo": "^34.0.0",
-    "firebase": "4.8.1",
-    "react": "16.8.3",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
-    "react-native-firebase": "^5.6.0",
-    "react-native-gifted-chat": "0.3.0",
-    "react-native-indicators": "^0.17.0",
-    "react-native-paper": "^3.4.0",
-    "react-native-swipe-gestures": "^1.0.4",
-    "react-navigation": "2.3.1"
-  }
+    "main": "node_modules/expo/AppEntry.js",
+    "scripts": {
+        "start": "expo start",
+        "android": "expo start --android",
+        "ios": "expo start --ios",
+        "web": "expo start --web",
+        "eject": "expo eject"
+    },
+    "dependencies": {
+        "expo": "^34.0.0",
+        "firebase": "4.8.1",
+        "react": "16.8.3",
+        "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
+        "react-native-firebase": "^5.6.0",
+        "react-native-gifted-chat": "0.3.0",
+        "react-native-indicators": "^0.17.0",
+        "react-native-paper": "^3.4.0",
+        "react-native-swipe-gestures": "^1.0.4",
+        "react-navigation": "2.3.1"
+    },
+    "devDependencies": {
+        "babel-preset-expo": "~8.0.0",
+        "@babel/core": "^7.0.0"
+    },
+    "private": true
 }
