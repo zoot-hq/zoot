@@ -32,7 +32,6 @@ class Fire {
 
     on = (room, callback) =>
         firebase.database().ref('chatrooms').child(room)
-        .limitToLast(20)
         .on('child_added', snapshot => callback(this.parse(snapshot)));
 
     get timestamp() {
@@ -107,7 +106,6 @@ class Fire {
 
     getChatRoomNames = (callback) =>
         firebase.database().ref('chatroomnames')
-        .limitToLast(5)
         .on('child_added', snapshot => callback(this.parseRooms(snapshot)));
 
     parseRooms = snapshot => {
