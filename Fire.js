@@ -32,13 +32,10 @@ class Fire {
         return message;
     };
 
-    on = (room, callback) => {
-        const ref = firebase.database().ref('chatrooms').child(room)
-        ref.on('child_added', snapshot => callback(this.parse(snapshot)))
-        ref.on('child_changed', snapshot => callback(this.parse(snapshot)));
-    }
-        
-
+    on = (room, callback) => 
+        firebase.database().ref('chatrooms').child(room)
+        .on('child_added', snapshot => callback(this.parse(snapshot)))
+    
     get timestamp() {
         return firebase.database.ServerValue.TIMESTAMP;
     }
@@ -143,7 +140,6 @@ class Fire {
     // a message by 1
     react(message, reaction) {
         const { room, reactions, _id } = message
-        reactions[reaction] ++
         const ref = firebase.database().ref('chatrooms').child(room).child(_id).child('reactions')
         ref.set(reactions)
     }

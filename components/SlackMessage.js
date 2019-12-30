@@ -4,12 +4,20 @@ import React from 'react';
 import { View, ViewPropTypes, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Avatar, Day, utils } from 'react-native-gifted-chat';
 import Bubble from './SlackBubble';
+import { Foundation } from '@expo/vector-icons';
 
 import Fire from '../Fire';
 
 const { isSameUser, isSameDay } = utils;
 
 export default class Message extends React.Component {
+
+  constructor(props){
+    super(props)
+    this.state = {
+      reactions: this.props.currentMessage.reactions || null
+    }
+  }
 
   getInnerComponentProps() {
     const { containerStyle, ...props } = this.props;
@@ -33,14 +41,17 @@ export default class Message extends React.Component {
   }
 
   react(reaction) {
+    const reactions = this.state.reactions
+    reactions[reaction] ++
+    this.setState({reactions})
     Fire.shared.react(this.props.currentMessage, reaction)
   }
 
   renderReactions() {
     return(
       <View style={{display: 'flex', flexDirection: 'row' }}>
-        <TouchableOpacity onPress={() => this.react('like')}><Text>like {this.props.currentMessage.reactions.like || null}</Text></TouchableOpacity>
-        <TouchableOpacity onPress={() => this.react('love')}><Text>love {this.props.currentMessage.reactions.love || null}</Text></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 10}} onPress={() => this.react('like')}><Foundation name='like' size={20}><Text> {this.state.reactions.like || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity onPress={() => this.react('love')}><Foundation name='heart' size={20}><Text> {this.state.reactions.love || null}</Text></Foundation></TouchableOpacity>
       </View>
     )
   }
