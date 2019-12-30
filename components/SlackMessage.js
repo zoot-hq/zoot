@@ -66,7 +66,7 @@ export default class Message extends React.Component {
     return(
       <View style={{display: 'flex', flexDirection: 'row' }}>
         <TouchableOpacity style={{marginRight: 10}} onPress={() => this.react('likes')}><Foundation name='like' size={20}><Text> {this.state.likes.number || null}</Text></Foundation></TouchableOpacity>
-        <TouchableOpacity onPress={() => this.love('loves')}><Foundation name='heart' size={20}><Text> {this.state.loves.number || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity onPress={() => this.react('loves')}><Foundation name='heart' size={20}><Text> {this.state.loves.number || null}</Text></Foundation></TouchableOpacity>
       </View>
     )
   }
