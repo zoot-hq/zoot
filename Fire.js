@@ -18,7 +18,7 @@ class Fire {
     }
 
     parse = snapshot => {
-        const { timestamp: numberStamp, text, user, reactions } = snapshot.val();
+        const { timestamp: numberStamp, text, user, reactions, room } = snapshot.val();
         const { key: _id } = snapshot;
         const timestamp = new Date(numberStamp);
         const message = {
@@ -26,7 +26,8 @@ class Fire {
             createdAt: timestamp,
             text,
             user,
-            reactions
+            reactions,
+            room
         };
         return message;
     };
@@ -128,15 +129,20 @@ class Fire {
             timestamp: Date.now(),
             user: {
                 name: `#${room}`
-            },
-            reactions: {
-                like: 0,
-                love: 0
             }
         }
 
         // add room to chatrooms
         firebase.database().ref('chatrooms').child(room).push(initMessage);
+    }
+
+    // this function updates the database in increasing the reaction type of 
+    // a message by 1
+    react(message, reaction) {
+        const { room, reactions, _id } = message
+        reactions[reaction] ++
+        const ref = firebase.database().ref('chatrooms').child(room).child(_id).child('reactions')
+        ref.set(reactions)
     }
 }
 

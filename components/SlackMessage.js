@@ -5,6 +5,8 @@ import { View, ViewPropTypes, StyleSheet, Text, TouchableOpacity } from 'react-n
 import { Avatar, Day, utils } from 'react-native-gifted-chat';
 import Bubble from './SlackBubble';
 
+import Fire from '../Fire';
+
 const { isSameUser, isSameDay } = utils;
 
 export default class Message extends React.Component {
@@ -30,11 +32,15 @@ export default class Message extends React.Component {
     return null;
   }
 
+  react(reaction) {
+    Fire.shared.react(this.props.currentMessage, reaction)
+  }
+
   renderReactions() {
     return(
       <View style={{display: 'flex', flexDirection: 'row' }}>
-        <TouchableOpacity><Text>like {this.props.currentMessage.reactions.like || null}</Text></TouchableOpacity>
-        <TouchableOpacity><Text>love {this.props.currentMessage.reactions.love || null}</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => this.react('like')}><Text>like {this.props.currentMessage.reactions.like || null}</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => this.react('love')}><Text>love {this.props.currentMessage.reactions.love || null}</Text></TouchableOpacity>
       </View>
     )
   }
@@ -47,7 +53,8 @@ export default class Message extends React.Component {
     return (
       <View>
           <Bubble {...bubbleProps} />  
-          {this.renderReactions()}
+          {/* render reactions on messages with the reation feature */}
+          {this.props.currentMessage.reactions? this.renderReactions() : null}
       </View>
     )
   }
