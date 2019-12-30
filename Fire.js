@@ -18,7 +18,7 @@ class Fire {
     }
 
     parse = snapshot => {
-        const { timestamp: numberStamp, text, user } = snapshot.val();
+        const { timestamp: numberStamp, text, user, reactions } = snapshot.val();
         const { key: _id } = snapshot;
         const timestamp = new Date(numberStamp);
         const message = {
@@ -26,6 +26,7 @@ class Fire {
             createdAt: timestamp,
             text,
             user,
+            reactions
         };
         return message;
     };
@@ -47,6 +48,10 @@ class Fire {
                 user,
                 room,
                 timestamp: this.timestamp,
+                reactions: {
+                    like: 0,
+                    love: 0
+                }
             };
             this.append(room, message);
         }
@@ -123,6 +128,10 @@ class Fire {
             timestamp: Date.now(),
             user: {
                 name: `#${room}`
+            },
+            reactions: {
+                like: 0,
+                love: 0
             }
         }
 

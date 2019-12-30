@@ -1,8 +1,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View, ViewPropTypes, StyleSheet } from 'react-native';
-
+import { View, ViewPropTypes, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Avatar, Day, utils } from 'react-native-gifted-chat';
 import Bubble from './SlackBubble';
 
@@ -31,12 +30,26 @@ export default class Message extends React.Component {
     return null;
   }
 
+  renderReactions() {
+    return(
+      <View style={{display: 'flex', flexDirection: 'row' }}>
+        <TouchableOpacity><Text>like {this.props.currentMessage.reactions.like || null}</Text></TouchableOpacity>
+        <TouchableOpacity><Text>love {this.props.currentMessage.reactions.love || null}</Text></TouchableOpacity>
+      </View>
+    )
+  }
+
   renderBubble() {
     const bubbleProps = this.getInnerComponentProps();
     if (this.props.renderBubble) {
       return this.props.renderBubble(bubbleProps);
     }
-    return <Bubble {...bubbleProps} />;
+    return (
+      <View>
+          <Bubble {...bubbleProps} />  
+          {this.renderReactions()}
+      </View>
+    )
   }
 
   renderAvatar() {
@@ -104,4 +117,9 @@ Message.propTypes = {
     left: ViewPropTypes.style,
     right: ViewPropTypes.style,
   }),
+  reactions: {
+    display: 'flex',
+    flexDirection: 'row',
+    backgroundColor: 'red'
+  }
 };

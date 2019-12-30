@@ -274,5 +274,5 @@ Bubble.propTypes = {
   containerToPreviousStyle: PropTypes.shape({
     left: ViewPropTypes.style,
     right: ViewPropTypes.style,
-  }),
+  })
 };
