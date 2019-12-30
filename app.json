@@ -1,7 +1,7 @@
 {
     "expo": {
-        "name": "project",
-        "slug": "my-project",
+        "name": "après",
+        "slug": "après",
         "privacy": "public",
         "sdkVersion": "33.0.0",
         "platforms": ["ios", "android", "web"],
