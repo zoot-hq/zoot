@@ -47,26 +47,26 @@ export default class Message extends React.Component {
 
     // if user has not yet reacted, react
     if (!reaction.users[currUser]) {
-      reaction.number ++
+      reaction.count ++
       reaction.users[currUser] = true
       this.setState({reaction})
+      Fire.shared.react(this.props.currentMessage, reactionType, ++reaction.count)
     }
 
     // if user has reacted, remove reaction
     else {
-      reaction.number --
+      reaction.count --
       delete reaction.users[currUser]
       this.setState({reaction})
+      Fire.shared.react(this.props.currentMessage, reactionType, --reaction.count)
     }
-
-    // Fire.shared.react(this.props.currentMessage, 'like')
   }
 
   renderReactions() {
     return(
       <View style={{display: 'flex', flexDirection: 'row' }}>
-        <TouchableOpacity style={{marginRight: 10}} onPress={() => this.react('likes')}><Foundation name='like' size={20}><Text> {this.state.likes.number || null}</Text></Foundation></TouchableOpacity>
-        <TouchableOpacity onPress={() => this.react('loves')}><Foundation name='heart' size={20}><Text> {this.state.loves.number || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 10}} onPress={() => this.react('likes')}><Foundation name='like' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity onPress={() => this.react('loves')}><Foundation name='heart' size={20}><Text> {this.state.loves.count || null}</Text></Foundation></TouchableOpacity>
       </View>
     )
   }

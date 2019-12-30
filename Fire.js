@@ -51,11 +51,11 @@ class Fire {
                 room,
                 timestamp: this.timestamp,
                 likes: {
-                    number: 0,
+                    count: 0,
                     users: 0
                 },
                 loves: {
-                    number: 0,
+                    count: 0,
                     users: 0
                 }
             };
@@ -152,15 +152,16 @@ class Fire {
 
     // this function updates the database in increasing the reaction type of 
     // a message by 1
-    react(message, reaction) {
+    react(message, reactionType, updatedCount) {
+        console.log('message', message)
         const { room, _id } = message
-        const ref = firebase.database().ref('chatrooms').child(room).child(_id).child(reaction)
+        const ref = firebase.database().ref('chatrooms').child(room).child(_id).child(reactionType)
 
         // set number of likes/loves
-        ref.set({reaction : message[reaction]})
+        ref.set({count : updatedCount})
 
         //set users object
-        ref.child('users').set(message[reaction][users])
+        ref.child('users').set(message[reactionType].users)
     }
 }
 
