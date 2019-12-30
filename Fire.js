@@ -18,7 +18,7 @@ class Fire {
     }
 
     parse = snapshot => {
-        const { timestamp: numberStamp, text, user, reactions, room } = snapshot.val();
+        const { timestamp: numberStamp, text, user, likes, loves, room } = snapshot.val();
         const { key: _id } = snapshot;
         const timestamp = new Date(numberStamp);
         const message = {
@@ -26,7 +26,8 @@ class Fire {
             createdAt: timestamp,
             text,
             user,
-            reactions,
+            likes,
+            loves,
             room
         };
         return message;
@@ -49,16 +50,29 @@ class Fire {
                 user,
                 room,
                 timestamp: this.timestamp,
-                reactions: {
-                    like: 0,
-                    love: 0
+                likes: {
+                    number: 0,
+                    users: 0
+                },
+                loves: {
+                    number: 0,
+                    users: 0
                 }
             };
-            this.append(room, message);
+
+            // push message to database
+            const refToMessage = firebase.database().ref('chatrooms').child(room).push(message)
+
+            // push users object to database
+            refToMessage.child('likes').child('users').set({_: true})
+            refToMessage.child('loves').child('users').set({_: true})
+
+            // add users field
+            // firebase.database().ref('chatrooms').child(room).child(message)
+
         }
     };
 
-    append = (room, message) => firebase.database().ref('chatrooms').child(room).push(message)
 
     // close the connection to the Backend
     off() {
@@ -139,9 +153,14 @@ class Fire {
     // this function updates the database in increasing the reaction type of 
     // a message by 1
     react(message, reaction) {
-        const { room, reactions, _id } = message
-        const ref = firebase.database().ref('chatrooms').child(room).child(_id).child('reactions')
-        ref.set(reactions)
+        const { room, _id } = message
+        const ref = firebase.database().ref('chatrooms').child(room).child(_id).child(reaction)
+
+        // set number of likes/loves
+        ref.set({reaction : message[reaction]})
+
+        //set users object
+        ref.child('users').set(message[reaction][users])
     }
 }
 

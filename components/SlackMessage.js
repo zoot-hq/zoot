@@ -15,7 +15,8 @@ export default class Message extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      reactions: this.props.currentMessage.reactions || null
+      likes: this.props.currentMessage.likes || null,
+      loves: this.props.currentMessage.loves || null
     }
   }
 
@@ -40,18 +41,32 @@ export default class Message extends React.Component {
     return null;
   }
 
-  react(reaction) {
-    const reactions = this.state.reactions
-    reactions[reaction] ++
-    this.setState({reactions})
-    Fire.shared.react(this.props.currentMessage, reaction)
+  react(reactionType) {
+    const currUser = this.props.currentMessage.user.name
+    const reaction = this.state[reactionType]
+
+    // if user has not yet reacted, react
+    if (!reaction.users[currUser]) {
+      reaction.number ++
+      reaction.users[currUser] = true
+      this.setState({reaction})
+    }
+
+    // if user has reacted, remove reaction
+    else {
+      reaction.number --
+      delete reaction.users[currUser]
+      this.setState({reaction})
+    }
+
+    // Fire.shared.react(this.props.currentMessage, 'like')
   }
 
   renderReactions() {
     return(
       <View style={{display: 'flex', flexDirection: 'row' }}>
-        <TouchableOpacity style={{marginRight: 10}} onPress={() => this.react('like')}><Foundation name='like' size={20}><Text> {this.state.reactions.like || null}</Text></Foundation></TouchableOpacity>
-        <TouchableOpacity onPress={() => this.react('love')}><Foundation name='heart' size={20}><Text> {this.state.reactions.love || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 10}} onPress={() => this.react('likes')}><Foundation name='like' size={20}><Text> {this.state.likes.number || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity onPress={() => this.love('loves')}><Foundation name='heart' size={20}><Text> {this.state.loves.number || null}</Text></Foundation></TouchableOpacity>
       </View>
     )
   }
@@ -65,7 +80,7 @@ export default class Message extends React.Component {
       <View>
           <Bubble {...bubbleProps} />  
           {/* render reactions on messages with the reation feature */}
-          {this.props.currentMessage.reactions? this.renderReactions() : null}
+          {this.props.currentMessage.likes? this.renderReactions() : null}
       </View>
     )
   }
