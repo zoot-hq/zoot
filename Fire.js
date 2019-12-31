@@ -69,10 +69,6 @@ class Fire {
             refToMessage.child('likes').child('users').set({X: true})
             refToMessage.child('loves').child('users').set({X: true})
             refToMessage.child('lightbulbs').child('users').set({X: true})
-
-            // add users field
-            // firebase.database().ref('chatrooms').child(room).child(message)
-
         }
     };
 

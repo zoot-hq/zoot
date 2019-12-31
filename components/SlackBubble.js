@@ -23,8 +23,9 @@ export default class Bubble extends React.Component {
   onLongPress() {
     const messageUsername = this.props.currentMessage.user.name
     const currentUsername = Fire.shared.username()
+    const room = this.props.currentMessage.room
     
-    if (this.props.currentMessage.text && (messageUsername != currentUsername)) {
+    if (this.props.currentMessage.text && (messageUsername != currentUsername) && this.props.currentMessage.text !=`Welcome to # ${room} - send a message to get the conversation started`) {
       const options = [
         this.state.likes.users[currentUsername] ? 'Unlike' : 'Like',
         this.state.loves.users[currentUsername] ? 'Unlove' : 'Love',
