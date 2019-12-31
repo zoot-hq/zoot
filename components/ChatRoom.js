@@ -43,12 +43,16 @@ export default class ChatRoom extends React.Component {
     return <SlackMessage {...props} messageTextStyle={messageTextStyle} />
   }
 
+  // load earlier messages from backend
   loadEarlier = () => {
+    const newMessages = []
     Fire.shared.loadEarlier(this.state.room, this.state.messages[this.state.messages.length-1], (message => {
+      newMessages.push(message)
+    })).then(() =>  
+      // add messages to state
       this.setState(previousState => ({
-        messages: GiftedChat.prepend(previousState.messages, message),
-      }))    
-    }));
+        messages: GiftedChat.prepend(previousState.messages, newMessages),
+      }))  )
   }
 
   render() {
