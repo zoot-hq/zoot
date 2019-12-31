@@ -47,7 +47,7 @@ class Fire {
         .on('child_added', snapshot => callback(this.parse(snapshot)))
 
     loadEarlier = (room, lastMessage, callback) => firebase.database().ref('chatrooms').child(room)
-        .orderByChild('timestamp').endAt(lastMessage.timestamp).limitToLast(2)
+        .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(2)
         .on('child_added', snapshot => callback(this.parse(snapshot)))
     
     get timestamp() {
