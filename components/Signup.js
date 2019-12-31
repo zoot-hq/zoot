@@ -167,7 +167,7 @@ export default class SignupScreen extends React.Component {
 
               // if everything is good, navigate into the app
               else {
-                this.props.navigation.navigate('ChatList')
+                this.props.navigation.navigate('WelcomePage')
               }  
             }}
           >

@@ -92,7 +92,7 @@ class Fire {
             
             
             // add in custom fields
-            firebase.database().ref('users').child(username).set({ birthday, city, children, monthsPostPartum })
+            firebase.database().ref('users').child(username).set({ birthday, city, children, monthsPostPartum, email })
             
             // add displayname
             const user = firebase.auth().currentUser;
@@ -152,7 +152,6 @@ class Fire {
     // this function updates the database in increasing the reaction type of 
     // a message by 1
     react(message, reactionType, updatedCount) {
-        console.log('message', message)
         const { room, _id } = message
         const ref = firebase.database().ref('chatrooms').child(room).child(_id).child(reactionType)
 

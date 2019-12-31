@@ -5,8 +5,9 @@ import ChatRoom from './components/ChatRoom';
 import Home from './components/Home';
 import Signup from './components/Signup';
 import Login from './components/Login';
+import WelcomePage from './components/WelcomePage';
 
-import { createStackNavigator } from 'react-navigation'
+import { createStackNavigator } from 'react-navigation';
 
 // disabled yellow comments/alerts
 console.disableYellowBox = true;
@@ -25,7 +26,8 @@ const navigator = createStackNavigator({
   },
   ChatRoom,
   Signup,
-  Login
+  Login,
+  WelcomePage
 },
 {
   headerMode: 'none',
