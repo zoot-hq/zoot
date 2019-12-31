@@ -17,25 +17,37 @@ class Fire {
         return (firebase.auth().currentUser || {}).displayName;
     }
 
+    parseSnapshots = snapshots => {
+        for (snapshot in snapshots){
+            console.log('snapshot here', snapshot)
+            return this.parse(snapshot)
+        }
+    }
+
     parse = snapshot => {
-        const { timestamp: numberStamp, text, user, likes, loves, lightbulbs, room } = snapshot.val();
+        const { timestamp, text, user, likes, loves, lightbulbs, room } = snapshot.val();
         const { key: _id } = snapshot;
-        const timestamp = new Date(numberStamp);
         const message = {
             _id,
-            createdAt: timestamp,
+            createdAt: new Date(timestamp),
             text,
             user,
             likes,
             loves,
             lightbulbs,
-            room
+            room,
+            timestamp
         };
+        console.log("message", message)
         return message;
     };
 
     on = (room, callback) => 
-        firebase.database().ref('chatrooms').child(room)
+        firebase.database().ref('chatrooms').child(room).limitToLast(2)
+        .on('child_added', snapshot => callback(this.parse(snapshot)))
+
+    loadEarlier = (room, lastMessage, callback) => firebase.database().ref('chatrooms').child(room)
+        .orderByChild('timestamp').endAt(lastMessage.timestamp).limitToLast(2)
         .on('child_added', snapshot => callback(this.parse(snapshot)))
     
     get timestamp() {

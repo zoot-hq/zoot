@@ -43,6 +43,14 @@ export default class ChatRoom extends React.Component {
     return <SlackMessage {...props} messageTextStyle={messageTextStyle} />
   }
 
+  loadEarlier = () => {
+    Fire.shared.loadEarlier(this.state.room, this.state.messages[this.state.messages.length-1], (message => {
+      this.setState(previousState => ({
+        messages: GiftedChat.prepend(previousState.messages, message),
+      }))    
+    }));
+  }
+
   render() {
 
     return (
@@ -56,6 +64,8 @@ export default class ChatRoom extends React.Component {
             renderMessage={this.renderMessage} 
             renderAvatar={null}
             renderLoading={() =>  <MaterialIndicator color='black' />}
+            loadEarlier={true}
+            onLoadEarlier={this.loadEarlier}
           />
       </View>
     );
