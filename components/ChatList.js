@@ -94,8 +94,8 @@ export default class ChatList extends React.Component {
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    marginRight: 10,
-    marginLeft: 10,
+    marginRight: 50,
+    marginLeft: 50,
     justifyContent: 'center',
     marginTop: 30
   },

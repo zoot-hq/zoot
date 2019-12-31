@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes, Platform } from 'react-native';
 import { MessageText, MessageImage, Time, utils } from 'react-native-gifted-chat';
-import { Foundation, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Foundation } from '@expo/vector-icons';
 
 import Fire from '../Fire';
 
@@ -16,41 +16,40 @@ export default class Bubble extends React.Component {
     this.state = {
       likes: this.props.currentMessage.likes || null,
       loves: this.props.currentMessage.loves || null,
-      laughs: this.props.currentMessage.laughs || null
+      lightbulbs: this.props.currentMessage.lightbulbs || null
     } 
   }
 
   onLongPress() {
     const messageUsername = this.props.currentMessage.user.name
     const currentUsername = Fire.shared.username()
-    if (this.props.onLongPress) {
-      this.props.onLongPress(this.context, this.props.currentMessage);
-    } else {
-      if (this.props.currentMessage.text && (messageUsername != currentUsername)) {
-        const options = [
-          this.state.likes.users[currentUsername] ? 'Unlike' : 'Like',
-          this.state.loves.users[currentUsername] ? 'Unlove' : 'Love',
-          this.state.loves.users[currentUsername] ? 'Unlaugh' : 'Laugh',
-          'Cancel'
-        ];
-        const cancelButtonIndex = options.length - 1;
-        this.context.actionSheet().showActionSheetWithOptions({
-          options,
-          cancelButtonIndex,
-        },
-        (buttonIndex) => {
-          switch (buttonIndex) {
-            case 0:
-              // Clipboard.setString(this.props.currentMessage.text);
-              this.react('likes')
-              break;
-            case 1: 
-              this.react('loves')
-            case 2: 
-              this.react('laughs')
-          }
-        });
-      }
+    
+    if (this.props.currentMessage.text && (messageUsername != currentUsername)) {
+      const options = [
+        this.state.likes.users[currentUsername] ? 'Unlike' : 'Like',
+        this.state.loves.users[currentUsername] ? 'Unlove' : 'Love',
+        this.state.lightbulbs.users[currentUsername] ? 'Unlightbulb' : 'Lightbulb',
+        'Cancel'
+      ];
+      const cancelButtonIndex = options.length - 1;
+      this.context.actionSheet().showActionSheetWithOptions({
+        options,
+        cancelButtonIndex,
+      },
+      (buttonIndex) => {
+        switch (buttonIndex) {
+          case 0:
+            // Clipboard.setString(this.props.currentMessage.text);
+            this.react('likes')
+            break;
+          case 1: 
+            this.react('loves')
+            break;
+          case 2: 
+            this.react('lightbulbs')
+            break;
+        }
+      });
     }
   }
 
@@ -143,7 +142,12 @@ export default class Bubble extends React.Component {
   }
 
   react(reactionType) {
-    const currUser = this.props.currentMessage.user.name
+    const messageUsername = this.props.currentMessage.user.name
+    const currUser = Fire.shared.username()
+
+    // don't allow users to react on their own posts
+    if (messageUsername === currUser) return
+
     const reaction = this.state[reactionType]
 
     // if user has not yet reacted, react
@@ -168,7 +172,7 @@ export default class Bubble extends React.Component {
       <View style={{display: 'flex', flexDirection: 'row'}}>
         <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('likes')}><Foundation name='like' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
         <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('loves')}><Foundation name='heart' size={20}><Text> {this.state.loves.count || null}</Text></Foundation></TouchableOpacity>
-        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('laughs')}><MaterialCommunityIcons name='sticker-emoji' size={20}><Text> {this.state.laughs.count || null}</Text></MaterialCommunityIcons></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('lightbulbs')}><Foundation name='lightbulb' size={20}><Text> {this.state.lightbulbs.count || null}</Text></Foundation></TouchableOpacity>
       </View>
     )
   }
