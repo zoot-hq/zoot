@@ -50,7 +50,7 @@ export default class Message extends React.Component {
       reaction.count ++
       reaction.users[currUser] = true
       this.setState({reaction})
-      Fire.shared.react(this.props.currentMessage, reactionType, ++reaction.count)
+      Fire.shared.react(this.props.currentMessage, reactionType, reaction.count)
     }
 
     // if user has reacted, remove reaction
@@ -58,15 +58,15 @@ export default class Message extends React.Component {
       reaction.count --
       delete reaction.users[currUser]
       this.setState({reaction})
-      Fire.shared.react(this.props.currentMessage, reactionType, --reaction.count)
+      Fire.shared.react(this.props.currentMessage, reactionType, reaction.count)
     }
   }
 
   renderReactions() {
     return(
       <View style={{display: 'flex', flexDirection: 'row' }}>
-        <TouchableOpacity style={{marginRight: 10}} onPress={() => this.react('likes')}><Foundation name='like' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
-        <TouchableOpacity onPress={() => this.react('loves')}><Foundation name='heart' size={20}><Text> {this.state.loves.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 10}} onLongPress={() => this.react('likes')}><Foundation name='like' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity onLongPress={() => this.react('loves')}><Foundation name='heart' size={20}><Text> {this.state.loves.count || null}</Text></Foundation></TouchableOpacity>
       </View>
     )
   }
@@ -76,11 +76,13 @@ export default class Message extends React.Component {
     if (this.props.renderBubble) {
       return this.props.renderBubble(bubbleProps);
     }
+    const messageUsername = this.props.currentMessage.user.name
+    const currentUsername = Fire.shared.username()
     return (
       <View>
           <Bubble {...bubbleProps} />  
           {/* render reactions on messages with the reation feature */}
-          {this.props.currentMessage.likes? this.renderReactions() : null}
+          {(this.props.currentMessage.likes && messageUsername != currentUsername) ? this.renderReactions() : null}
       </View>
     )
   }

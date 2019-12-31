@@ -52,11 +52,9 @@ class Fire {
                 timestamp: this.timestamp,
                 likes: {
                     count: 0,
-                    users: 0
                 },
                 loves: {
                     count: 0,
-                    users: 0
                 }
             };
 
@@ -64,8 +62,8 @@ class Fire {
             const refToMessage = firebase.database().ref('chatrooms').child(room).push(message)
 
             // push users object to database
-            refToMessage.child('likes').child('users').set({_: true})
-            refToMessage.child('loves').child('users').set({_: true})
+            refToMessage.child('likes').child('users').set({X: true})
+            refToMessage.child('loves').child('users').set({X: true})
 
             // add users field
             // firebase.database().ref('chatrooms').child(room).child(message)

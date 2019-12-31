@@ -175,9 +175,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
+    marginBottom: 5,
   },
   wrapper: {
-    marginRight: 60,
+    marginRight: 0,
     minHeight: 20,
     justifyContent: 'flex-end',
   },
