@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes, Platform } from 'react-native';
-
 import { MessageText, MessageImage, Time, utils } from 'react-native-gifted-chat';
+import { Foundation } from '@expo/vector-icons';
+
+import Fire from '../Fire';
 
 const { isSameUser, isSameDay } = utils;
 
@@ -11,30 +13,44 @@ export default class Bubble extends React.Component {
   constructor(props) {
     super(props);
     this.onLongPress = this.onLongPress.bind(this);
+    this.state = {
+      likes: this.props.currentMessage.likes || null,
+      loves: this.props.currentMessage.loves || null,
+      lightbulbs: this.props.currentMessage.lightbulbs || null
+    } 
   }
 
   onLongPress() {
-    if (this.props.onLongPress) {
-      this.props.onLongPress(this.context, this.props.currentMessage);
-    } else {
-      if (this.props.currentMessage.text) {
-        const options = [
-          'Copy Text',
-          'Cancel',
-        ];
-        const cancelButtonIndex = options.length - 1;
-        this.context.actionSheet().showActionSheetWithOptions({
-          options,
-          cancelButtonIndex,
-        },
-        (buttonIndex) => {
-          switch (buttonIndex) {
-            case 0:
-              Clipboard.setString(this.props.currentMessage.text);
-              break;
-          }
-        });
-      }
+    const messageUsername = this.props.currentMessage.user.name
+    const currentUsername = Fire.shared.username()
+    const room = this.props.currentMessage.room
+    
+    if (this.props.currentMessage.text && (messageUsername != currentUsername) && this.props.currentMessage.text !=`Welcome to # ${room} - send a message to get the conversation started`) {
+      const options = [
+        this.state.likes.users[currentUsername] ? 'Unlike' : 'Like',
+        this.state.loves.users[currentUsername] ? 'Unlove' : 'Love',
+        this.state.lightbulbs.users[currentUsername] ? 'Unlightbulb' : 'Lightbulb',
+        'Cancel'
+      ];
+      const cancelButtonIndex = options.length - 1;
+      this.context.actionSheet().showActionSheetWithOptions({
+        options,
+        cancelButtonIndex,
+      },
+      (buttonIndex) => {
+        switch (buttonIndex) {
+          case 0:
+            // Clipboard.setString(this.props.currentMessage.text);
+            this.react('likes')
+            break;
+          case 1: 
+            this.react('loves')
+            break;
+          case 2: 
+            this.react('lightbulbs')
+            break;
+        }
+      });
     }
   }
 
@@ -126,6 +142,42 @@ export default class Bubble extends React.Component {
     return null;
   }
 
+  react(reactionType) {
+    const messageUsername = this.props.currentMessage.user.name
+    const currUser = Fire.shared.username()
+
+    // don't allow users to react on their own posts
+    if (messageUsername === currUser) return
+
+    const reaction = this.state[reactionType]
+
+    // if user has not yet reacted, react
+    if (!reaction.users[currUser]) {
+      reaction.count ++
+      reaction.users[currUser] = true
+      this.setState({reaction})
+      Fire.shared.react(this.props.currentMessage, reactionType, reaction.count)
+    }
+
+    // if user has reacted, remove reaction
+    else {
+      reaction.count --
+      delete reaction.users[currUser]
+      this.setState({reaction})
+      Fire.shared.react(this.props.currentMessage, reactionType, reaction.count)
+    }
+  }
+
+  renderReactions() {
+    return(
+      <View style={{display: 'flex', flexDirection: 'row'}}>
+        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('likes')}><Foundation name='like' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('loves')}><Foundation name='heart' size={20}><Text> {this.state.loves.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('lightbulbs')}><Foundation name='lightbulb' size={20}><Text> {this.state.lightbulbs.count || null}</Text></Foundation></TouchableOpacity>
+      </View>
+    )
+  }
+
   render() {
     const messageHeader = (
       <View style={styles.headerView}>
@@ -154,6 +206,9 @@ export default class Bubble extends React.Component {
               {this.renderMessageImage()}
               {this.renderMessageText()}
             </View>
+
+            {/* render reactions on messages with the reaction feature */}
+            {this.props.currentMessage.likes ? this.renderReactions() : null}
           </View>
         </TouchableOpacity>
       </View>
@@ -175,10 +230,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
+    alignSelf: 'stretch',
   },
   wrapper: {
-    marginRight: 60,
+    marginRight: 0,
     minHeight: 20,
+    alignSelf: 'stretch',
     justifyContent: 'flex-end',
   },
   username: {
@@ -274,5 +331,5 @@ Bubble.propTypes = {
   containerToPreviousStyle: PropTypes.shape({
     left: ViewPropTypes.style,
     right: ViewPropTypes.style,
-  }),
+  })
 };

@@ -1,8 +1,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View, ViewPropTypes, StyleSheet } from 'react-native';
-
+import { View, ViewPropTypes, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Avatar, Day, utils } from 'react-native-gifted-chat';
 import Bubble from './SlackBubble';
 
@@ -36,7 +35,11 @@ export default class Message extends React.Component {
     if (this.props.renderBubble) {
       return this.props.renderBubble(bubbleProps);
     }
-    return <Bubble {...bubbleProps} />;
+    return (
+      <View styles={{marginBottom : 20}}>
+          <Bubble {...bubbleProps} />  
+      </View>
+    )
   }
 
   renderAvatar() {
@@ -44,7 +47,7 @@ export default class Message extends React.Component {
   }
 
   render() {
-    const marginBottom = isSameUser(this.props.currentMessage, this.props.nextMessage) ? 2 : 10;
+    const marginBottom = 10
 
     return (
       <View>
@@ -56,7 +59,7 @@ export default class Message extends React.Component {
             this.props.containerStyle,
           ]}
         >
-          {this.renderAvatar()}
+          {/* {this.renderAvatar()} */}
           {this.renderBubble()}
         </View>
       </View>
@@ -103,5 +106,5 @@ Message.propTypes = {
   containerStyle: PropTypes.shape({
     left: ViewPropTypes.style,
     right: ViewPropTypes.style,
-  }),
+  })
 };
