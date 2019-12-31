@@ -19,7 +19,6 @@ class Fire {
 
     parseSnapshots = snapshots => {
         for (snapshot in snapshots){
-            console.log('snapshot here', snapshot)
             return this.parse(snapshot)
         }
     }
@@ -38,17 +37,16 @@ class Fire {
             room,
             timestamp
         };
-        console.log("message", message)
         return message;
     };
 
     on = (room, callback) => 
-        firebase.database().ref('chatrooms').child(room).limitToLast(2)
+        firebase.database().ref('chatrooms').child(room).limitToLast(10)
         .on('child_added', snapshot => callback(this.parse(snapshot)))
 
     loadEarlier = (room, lastMessage, callback) => firebase.database().ref('chatrooms').child(room)
         .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
-        .once('value', snapshot => callback(this.parse(snapshot)))
+        .once('child_added', snapshot => callback(this.parse(snapshot)))
     
     get timestamp() {
         return firebase.database.ServerValue.TIMESTAMP;
