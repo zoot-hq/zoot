@@ -18,7 +18,7 @@ class Fire {
     }
 
     parse = snapshot => {
-        const { timestamp: numberStamp, text, user, likes, loves, room } = snapshot.val();
+        const { timestamp: numberStamp, text, user, likes, loves, laughs, room } = snapshot.val();
         const { key: _id } = snapshot;
         const timestamp = new Date(numberStamp);
         const message = {
@@ -28,6 +28,7 @@ class Fire {
             user,
             likes,
             loves,
+            laughs,
             room
         };
         return message;
@@ -55,6 +56,9 @@ class Fire {
                 },
                 loves: {
                     count: 0,
+                },
+                laughs: {
+                    count: 0
                 }
             };
 
@@ -64,6 +68,7 @@ class Fire {
             // push users object to database
             refToMessage.child('likes').child('users').set({X: true})
             refToMessage.child('loves').child('users').set({X: true})
+            refToMessage.child('laughs').child('users').set({X: true})
 
             // add users field
             // firebase.database().ref('chatrooms').child(room).child(message)

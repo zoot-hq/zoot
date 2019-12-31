@@ -4,21 +4,10 @@ import React from 'react';
 import { View, ViewPropTypes, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Avatar, Day, utils } from 'react-native-gifted-chat';
 import Bubble from './SlackBubble';
-import { Foundation } from '@expo/vector-icons';
-
-import Fire from '../Fire';
 
 const { isSameUser, isSameDay } = utils;
 
 export default class Message extends React.Component {
-
-  constructor(props){
-    super(props)
-    this.state = {
-      likes: this.props.currentMessage.likes || null,
-      loves: this.props.currentMessage.loves || null
-    }
-  }
 
   getInnerComponentProps() {
     const { containerStyle, ...props } = this.props;
@@ -41,48 +30,14 @@ export default class Message extends React.Component {
     return null;
   }
 
-  react(reactionType) {
-    const currUser = this.props.currentMessage.user.name
-    const reaction = this.state[reactionType]
-
-    // if user has not yet reacted, react
-    if (!reaction.users[currUser]) {
-      reaction.count ++
-      reaction.users[currUser] = true
-      this.setState({reaction})
-      Fire.shared.react(this.props.currentMessage, reactionType, reaction.count)
-    }
-
-    // if user has reacted, remove reaction
-    else {
-      reaction.count --
-      delete reaction.users[currUser]
-      this.setState({reaction})
-      Fire.shared.react(this.props.currentMessage, reactionType, reaction.count)
-    }
-  }
-
-  renderReactions() {
-    return(
-      <View style={{display: 'flex', flexDirection: 'row' }}>
-        <TouchableOpacity style={{marginRight: 10}} onLongPress={() => this.react('likes')}><Foundation name='like' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
-        <TouchableOpacity onLongPress={() => this.react('loves')}><Foundation name='heart' size={20}><Text> {this.state.loves.count || null}</Text></Foundation></TouchableOpacity>
-      </View>
-    )
-  }
-
   renderBubble() {
     const bubbleProps = this.getInnerComponentProps();
     if (this.props.renderBubble) {
       return this.props.renderBubble(bubbleProps);
     }
-    const messageUsername = this.props.currentMessage.user.name
-    const currentUsername = Fire.shared.username()
     return (
-      <View>
+      <View styles={{marginBottom : 20}}>
           <Bubble {...bubbleProps} />  
-          {/* render reactions on messages with the reation feature */}
-          {(this.props.currentMessage.likes && messageUsername != currentUsername) ? this.renderReactions() : null}
       </View>
     )
   }
@@ -92,7 +47,7 @@ export default class Message extends React.Component {
   }
 
   render() {
-    const marginBottom = isSameUser(this.props.currentMessage, this.props.nextMessage) ? 2 : 10;
+    const marginBottom = 10
 
     return (
       <View>
@@ -104,7 +59,7 @@ export default class Message extends React.Component {
             this.props.containerStyle,
           ]}
         >
-          {this.renderAvatar()}
+          {/* {this.renderAvatar()} */}
           {this.renderBubble()}
         </View>
       </View>
@@ -151,10 +106,5 @@ Message.propTypes = {
   containerStyle: PropTypes.shape({
     left: ViewPropTypes.style,
     right: ViewPropTypes.style,
-  }),
-  reactions: {
-    display: 'flex',
-    flexDirection: 'row',
-    backgroundColor: 'red'
-  }
+  })
 };

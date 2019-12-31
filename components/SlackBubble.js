@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes, Platform } from 'react-native';
-
 import { MessageText, MessageImage, Time, utils } from 'react-native-gifted-chat';
+import { Foundation, MaterialCommunityIcons } from '@expo/vector-icons';
+
+import Fire from '../Fire';
 
 const { isSameUser, isSameDay } = utils;
 
@@ -11,16 +13,25 @@ export default class Bubble extends React.Component {
   constructor(props) {
     super(props);
     this.onLongPress = this.onLongPress.bind(this);
+    this.state = {
+      likes: this.props.currentMessage.likes || null,
+      loves: this.props.currentMessage.loves || null,
+      laughs: this.props.currentMessage.laughs || null
+    } 
   }
 
   onLongPress() {
+    const messageUsername = this.props.currentMessage.user.name
+    const currentUsername = Fire.shared.username()
     if (this.props.onLongPress) {
       this.props.onLongPress(this.context, this.props.currentMessage);
     } else {
-      if (this.props.currentMessage.text) {
+      if (this.props.currentMessage.text && (messageUsername != currentUsername)) {
         const options = [
-          'Copy Text',
-          'Cancel',
+          this.state.likes.users[currentUsername] ? 'Unlike' : 'Like',
+          this.state.loves.users[currentUsername] ? 'Unlove' : 'Love',
+          this.state.loves.users[currentUsername] ? 'Unlaugh' : 'Laugh',
+          'Cancel'
         ];
         const cancelButtonIndex = options.length - 1;
         this.context.actionSheet().showActionSheetWithOptions({
@@ -30,8 +41,13 @@ export default class Bubble extends React.Component {
         (buttonIndex) => {
           switch (buttonIndex) {
             case 0:
-              Clipboard.setString(this.props.currentMessage.text);
+              // Clipboard.setString(this.props.currentMessage.text);
+              this.react('likes')
               break;
+            case 1: 
+              this.react('loves')
+            case 2: 
+              this.react('laughs')
           }
         });
       }
@@ -126,6 +142,37 @@ export default class Bubble extends React.Component {
     return null;
   }
 
+  react(reactionType) {
+    const currUser = this.props.currentMessage.user.name
+    const reaction = this.state[reactionType]
+
+    // if user has not yet reacted, react
+    if (!reaction.users[currUser]) {
+      reaction.count ++
+      reaction.users[currUser] = true
+      this.setState({reaction})
+      Fire.shared.react(this.props.currentMessage, reactionType, reaction.count)
+    }
+
+    // if user has reacted, remove reaction
+    else {
+      reaction.count --
+      delete reaction.users[currUser]
+      this.setState({reaction})
+      Fire.shared.react(this.props.currentMessage, reactionType, reaction.count)
+    }
+  }
+
+  renderReactions() {
+    return(
+      <View style={{display: 'flex', flexDirection: 'row'}}>
+        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('likes')}><Foundation name='like' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('loves')}><Foundation name='heart' size={20}><Text> {this.state.loves.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('laughs')}><MaterialCommunityIcons name='sticker-emoji' size={20}><Text> {this.state.laughs.count || null}</Text></MaterialCommunityIcons></TouchableOpacity>
+      </View>
+    )
+  }
+
   render() {
     const messageHeader = (
       <View style={styles.headerView}>
@@ -154,6 +201,9 @@ export default class Bubble extends React.Component {
               {this.renderMessageImage()}
               {this.renderMessageText()}
             </View>
+
+            {/* render reactions on messages with the reaction feature */}
+            {this.props.currentMessage.likes ? this.renderReactions() : null}
           </View>
         </TouchableOpacity>
       </View>
@@ -175,11 +225,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
-    marginBottom: 5,
+    alignSelf: 'stretch',
   },
   wrapper: {
     marginRight: 0,
     minHeight: 20,
+    alignSelf: 'stretch',
     justifyContent: 'flex-end',
   },
   username: {
