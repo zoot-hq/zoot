@@ -75,6 +75,7 @@ export default class ChatRoom extends React.Component {
 
   sendImage = (image) => {
     console.log('image in chatoom', this.state.room)
+    Fire.shared.send([image], this.state.room)
   }
 
   render() {
