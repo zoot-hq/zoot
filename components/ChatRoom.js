@@ -47,15 +47,17 @@ export default class ChatRoom extends React.Component {
   loadEarlier = async () => {
     const newMessages = []
 
-    await Fire.shared.loadEarlier(this.state.room, this.state.messages[this.state.messages.length-1], (message => {
-      newMessages.push(message)
-    }))
+    for (let i = 0 ; i < 10; i ++) {
+      await Fire.shared.loadEarlier(this.state.room, this.state.messages[this.state.messages.length-1], (message => {
+        newMessages.push(message)
+      }))
 
-    console.log('new messages', newMessages)
-    // add messages to state
-    this.setState(previousState => ({
-      messages: GiftedChat.prepend(previousState.messages, newMessages),
-    }))
+      this.setState(previousState => ({
+        messages: GiftedChat.prepend(previousState.messages, newMessages.pop()),
+      }))
+
+    }
+    
   }
 
   render() {
