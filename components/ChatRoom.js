@@ -15,7 +15,8 @@ export default class ChatRoom extends React.Component {
       user: {
         name: Fire.shared.username(),
         _id: Fire.shared.uid(),
-      }
+      },
+      loadEarlier: true
     };
   }
 
@@ -24,9 +25,12 @@ export default class ChatRoom extends React.Component {
 
     //get messages for chatroom
     Fire.shared.on(this.state.room, (message => {
-        this.setState(previousState => ({
-          messages: GiftedChat.append(previousState.messages, message),
-        }))
+      if(message.text === `Welcome to # ${this.state.room} - send a message to get the conversation started`) {
+        this.setState( { loadEarlier : false})
+      }
+      this.setState(previousState => ({
+        messages: GiftedChat.append(previousState.messages, message),
+      }))
     }));
   }
   
@@ -52,12 +56,15 @@ export default class ChatRoom extends React.Component {
         newMessages.push(message)
       }))
 
+      if(newMessages[0] === `Welcome to # ${this.state.room} - send a message to get the conversation started`) {
+        this.setState( { loadEarlier : false })
+      }
+
       this.setState(previousState => ({
         messages: GiftedChat.prepend(previousState.messages, newMessages.pop()),
       }))
 
     }
-    
   }
 
   render() {
@@ -73,7 +80,7 @@ export default class ChatRoom extends React.Component {
             renderMessage={this.renderMessage} 
             renderAvatar={null}
             renderLoading={() =>  <MaterialIndicator color='black' />}
-            loadEarlier={true}
+            loadEarlier={this.state.loadEarlier}
             onLoadEarlier={this.loadEarlier}
           />
       </View>
