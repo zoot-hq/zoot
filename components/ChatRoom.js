@@ -106,11 +106,11 @@ export default class ChatRoom extends React.Component {
 
 const styles = StyleSheet.create({
   title: {
-    top: 0,
-    fontSize: 36,
+    top: 15,
+    fontSize: 30,
     fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 20,
     marginTop: 20
   }
 });
