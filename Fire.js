@@ -41,7 +41,7 @@ class Fire {
     };
 
     on = (room, callback) => 
-        firebase.database().ref('chatrooms').child(room).limitToLast(20)
+        firebase.database().ref('chatrooms').child(room).limitToLast(15)
         .on('child_added', snapshot => callback(this.parse(snapshot)))
 
     loadEarlier = (room, lastMessage, callback) => firebase.database().ref('chatrooms').child(room)

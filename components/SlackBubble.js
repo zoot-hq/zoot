@@ -183,7 +183,7 @@ export default class Bubble extends React.Component {
       <View style={styles.headerView}>
         {this.renderUsername()}
         {this.renderTime()}
-        {this.renderTicks()}
+        {/* {this.renderTicks()} */}
       </View>
     );
 
@@ -201,7 +201,7 @@ export default class Bubble extends React.Component {
             ]}
           >
             <View>
-              {this.renderCustomView()}
+              {/* {this.renderCustomView()} */}
               {messageHeader}
               {this.renderMessageImage()}
               {this.renderMessageText()}

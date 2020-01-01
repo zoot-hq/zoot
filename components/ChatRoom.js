@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { GiftedChat } from 'react-native-gifted-chat'
 import { MaterialIndicator } from 'react-native-indicators';
 
@@ -49,6 +49,10 @@ export default class ChatRoom extends React.Component {
 
   // load earlier messages from backend
   loadEarlier = async () => {
+
+    // remove load earlier button while loading
+    this.setState( {loadEarlier : false})
+
     const newMessages = []
 
     for (let i = 0 ; i < 10; i ++) {
@@ -65,6 +69,23 @@ export default class ChatRoom extends React.Component {
       }))
 
     }
+
+    // rerender load earlier button when complete
+    this.setState( {loadEarlier : true})
+  }
+
+  // load earlier button
+  renderLoadEarlier() {
+    // if messages have been grabbed, display
+    if (this.state.messages[0]) {
+      return (
+        <TouchableOpacity style={styles.buttonContainer} onPress={this.loadEarlier}>
+          <Text style={styles.buttonText}>
+            load earlier messages
+          </Text>
+       </TouchableOpacity>
+      ) 
+    } 
   }
 
   render() {
@@ -76,12 +97,10 @@ export default class ChatRoom extends React.Component {
             messages={this.state.messages}
             onSend={(messages) => Fire.shared.send(messages, this.state.room)}
             user={this.state.user}
-            room={this.state.room}
             renderMessage={this.renderMessage} 
             renderAvatar={null}
             renderLoading={() =>  <MaterialIndicator color='black' />}
-            loadEarlier={this.state.loadEarlier}
-            onLoadEarlier={this.loadEarlier}
+            renderLoadEarlier={() => this.renderLoadEarlier()}
           />
       </View>
     );
@@ -96,6 +115,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 10,
     marginTop: 20
-  }
+  },
+  buttonContainer: {
+    borderStyle: 'solid', 
+    borderWidth: 1,
+    paddingVertical: 5,
+    marginBottom: 15,
+    marginTop: 30
+  },
+  buttonText: {
+    textAlign: 'center',
+    color: 'black',
+    fontSize: 15,
+  },
 });
 
