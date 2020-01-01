@@ -17,14 +17,8 @@ class Fire {
         return (firebase.auth().currentUser || {}).displayName;
     }
 
-    parseSnapshots = snapshots => {
-        for (snapshot in snapshots){
-            return this.parse(snapshot)
-        }
-    }
-
     parse = snapshot => {
-        const { timestamp, text, user, likes, loves, lightbulbs, room } = snapshot.val();
+        const { timestamp, text, user, likes, loves, lightbulbs, room, base64 } = snapshot.val();
         const { key: _id } = snapshot;
         const message = {
             _id,
@@ -35,7 +29,8 @@ class Fire {
             loves,
             lightbulbs,
             room,
-            timestamp
+            timestamp,
+            base64
         };
         return message;
     };
@@ -69,7 +64,8 @@ class Fire {
             },
             lightbulbs: {
                 count: 0
-            }
+            },
+            base64: image.base64
         }
 
         // push image to database
