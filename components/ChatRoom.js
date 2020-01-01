@@ -100,6 +100,7 @@ export default class ChatRoom extends React.Component {
             renderMessage={this.renderMessage} 
             renderAvatar={null}
             renderLoading={() =>  <MaterialIndicator color='black' />}
+            loadEarlier={this.state.loadEarlier}
             renderLoadEarlier={() => this.renderLoadEarlier()}
           />
       </View>
