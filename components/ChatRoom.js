@@ -56,7 +56,7 @@ export default class ChatRoom extends React.Component {
         newMessages.push(message)
       }))
 
-      if(newMessages[0] === `Welcome to # ${this.state.room} - send a message to get the conversation started`) {
+      if(newMessages[0].text === `Welcome to # ${this.state.room} - send a message to get the conversation started`) {
         this.setState( { loadEarlier : false })
       }
 
