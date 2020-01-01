@@ -52,9 +52,37 @@ class Fire {
         return firebase.database.ServerValue.TIMESTAMP;
     }
 
+    sendImage = (image, room) => {
+        const message = {
+            text: null,
+            user: {
+                _id: this.uid(),
+                name: this.username()
+            },
+            room,
+            timestamp: this.timestamp,
+            likes: {
+                count: 0,
+            },
+            loves: {
+                count: 0,
+            },
+            lightbulbs: {
+                count: 0
+            }
+        }
+
+        // push image to database
+        const refToMessage = firebase.database().ref('chatrooms').child(room).push(message)
+
+        // push users object to database
+        refToMessage.child('likes').child('users').set({X: true})
+        refToMessage.child('loves').child('users').set({X: true})
+        refToMessage.child('lightbulbs').child('users').set({X: true})
+    }
+
     // send the message to the Backend
     send = (messages, room) => {
-        console.log('mess', messages)
         for (let i = 0; i < messages.length; i++) {
             const { text, user } = messages[i];
             const message = {
