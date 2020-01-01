@@ -25,9 +25,6 @@ export default class ChatRoom extends React.Component {
 
     //get messages for chatroom
     Fire.shared.on(this.state.room, (message => {
-      if(message.text === `Welcome to # ${this.state.room} - send a message to get the conversation started`) {
-        this.setState( { loadEarlier : false})
-      }
       this.setState(previousState => ({
         messages: GiftedChat.append(previousState.messages, message),
       }))
@@ -50,8 +47,7 @@ export default class ChatRoom extends React.Component {
   // load earlier messages from backend
   loadEarlier = async () => {
 
-    // remove load earlier button while loading
-    this.setState( {loadEarlier : false})
+    this.setState( {isLoading : true})
 
     const newMessages = []
 
@@ -60,32 +56,19 @@ export default class ChatRoom extends React.Component {
         newMessages.push(message)
       }))
 
-      if(newMessages[0].text === `Welcome to # ${this.state.room} - send a message to get the conversation started`) {
-        this.setState( { loadEarlier : false })
-      }
-
       this.setState(previousState => ({
         messages: GiftedChat.prepend(previousState.messages, newMessages.pop()),
       }))
 
     }
 
-    // rerender load earlier button when complete
-    this.setState( {loadEarlier : true})
+    this.setState( {isLoading : false})
   }
 
-  // load earlier button
-  renderLoadEarlier() {
-    // if messages have been grabbed, display
-    if (this.state.messages[0]) {
-      return (
-        <TouchableOpacity style={styles.buttonContainer} onPress={this.loadEarlier}>
-          <Text style={styles.buttonText}>
-            load earlier messages
-          </Text>
-       </TouchableOpacity>
-      ) 
-    } 
+  // returns true if a user has scrolled to the top of all messages, false otherwise
+  isCloseToTop({ layoutMeasurement, contentOffset, contentSize }) {
+    const paddingToTop = 80;
+    return contentSize.height - layoutMeasurement.height - paddingToTop <= contentOffset.y;
   }
 
   render() {
@@ -95,13 +78,19 @@ export default class ChatRoom extends React.Component {
         <Text style={styles.title}># {this.state.room}</Text>
           <GiftedChat
             messages={this.state.messages}
+            listViewProps={{
+              scrollEventThrottle: 400,
+              onScroll: ({ nativeEvent }) => {
+                if (this.isCloseToTop(nativeEvent) && !this.state.isLoading) {
+                  this.setState({isLoading: true});
+                  this.loadEarlier();
+                }
+              }
+            }}
             onSend={(messages) => Fire.shared.send(messages, this.state.room)}
             user={this.state.user}
             renderMessage={this.renderMessage} 
             renderAvatar={null}
-            renderLoading={() =>  <MaterialIndicator color='black' />}
-            loadEarlier={this.state.loadEarlier}
-            renderLoadEarlier={() => this.renderLoadEarlier()}
           />
       </View>
     );
@@ -116,18 +105,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 10,
     marginTop: 20
-  },
-  buttonContainer: {
-    borderStyle: 'solid', 
-    borderWidth: 1,
-    paddingVertical: 5,
-    marginBottom: 15,
-    marginTop: 30
-  },
-  buttonText: {
-    textAlign: 'center',
-    color: 'black',
-    fontSize: 15,
-  },
+  }
 });
 
