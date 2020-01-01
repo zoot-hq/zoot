@@ -18,6 +18,8 @@ export default class ChatRoom extends React.Component {
       },
       loadEarlier: true
     };
+
+    this.sendImage.bind(this.sendImage)
   }
 
 
@@ -71,6 +73,10 @@ export default class ChatRoom extends React.Component {
     return contentSize.height - layoutMeasurement.height - paddingToTop <= contentOffset.y;
   }
 
+  sendImage = (image) => {
+    console.log('image in chatoom', this.state.room)
+  }
+
   render() {
 
     return (
@@ -91,6 +97,7 @@ export default class ChatRoom extends React.Component {
             user={this.state.user}
             renderMessage={this.renderMessage} 
             renderAvatar={null}
+            sendImage={this.sendImage}
           />
       </View>
     );
