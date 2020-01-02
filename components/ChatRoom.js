@@ -86,7 +86,6 @@ export default class ChatRoom extends React.Component {
     if (image) {
       Fire.shared.sendImage(image, this.state.room)
     }
-
   }
 
   renderChatFooter = () => {
