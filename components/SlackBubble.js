@@ -171,8 +171,8 @@ export default class Bubble extends React.Component {
     if (otherUsername != currentUsername) {
       const comboName = otherUsername < currentUsername ? otherUsername + '-' + currentUsername : currentUsername + '-' + otherUsername
       await Fire.shared.createRoom(comboName, true)
-      this.props.listViewProps.navigation.pop()
-      this.props.listViewProps.navigation.navigate('ChatRoom', {comboName})
+      // this.props.listViewProps.navigation.pop()
+      this.props.listViewProps.navigation.replace('ChatRoom', {comboName})
     }
   }
 
