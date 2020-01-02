@@ -160,6 +160,20 @@ class Fire {
         firebase.database().ref('chatroomnames')
         .on('child_added', snapshot => callback(this.parseRooms(snapshot)));
 
+    getPMRooms = (callback) => {
+        return firebase.database().ref('chatroomPMs')
+        .on('child_added', snapshot => callback(this.parsePMs(snapshot)));
+    }
+
+    parsePMs = snapshot => {
+        const currentUser = this.username()
+        const { name } = snapshot.val()
+        const names = name.split('-')
+        if (names[0] === currentUser || names[1] === currentUser) {
+            return name
+        }
+    }
+
     parseRooms = snapshot => {
         const { name } = snapshot.val();
         return name;
@@ -200,7 +214,7 @@ class Fire {
 
                     // add room to chatroomPM lists
                     firebase.database().ref('chatroomPMs').child(room).set({ name : room })
-                    
+
                     const initMessage = {
                         room,
                         text: `Welcome to # ${room} - this is the beginning of your private message chat`,
