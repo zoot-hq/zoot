@@ -80,7 +80,7 @@ export default class ChatRoom extends React.Component {
     await Permissions.askAsync(Permissions.CAMERA_ROLL)
 
     // grab picture
-    const image = await ImagePicker.launchImageLibraryAsync({base64:true})
+    const image = await ImagePicker.launchImageLibraryAsync({base64:true, quality:0})
 
     // send to database
     if (image) {
