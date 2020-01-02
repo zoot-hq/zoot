@@ -180,7 +180,7 @@ class Fire {
 
                 if (!PM) {
 
-                    // add room to chatroom lists
+                    // add room to chatroom list
                     firebase.database().ref('chatroomnames').child(room).set({ name : room })
 
                     const initMessage = {
@@ -197,6 +197,10 @@ class Fire {
                 }
 
                 else {
+
+                    // add room to chatroomPM lists
+                    firebase.database().ref('chatroomPMs').child(room).set({ name : room })
+                    
                     const initMessage = {
                         room,
                         text: `Welcome to # ${room} - this is the beginning of your private message chat`,
