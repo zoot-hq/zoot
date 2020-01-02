@@ -111,7 +111,10 @@ class Fire {
     // close the connection to the Backend
     off() {
         firebase.database().ref('chatrooms').off();
+        firebase.database().ref('chatroomnames').off();
+        firebase.database().ref('chatroomPMs').off();
     }
+
 
     signup = async (email, password, username, birthday, city, children, monthsPostPartum) => {
         try {
