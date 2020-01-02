@@ -94,7 +94,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexGrow: 1,
     textAlignVertical: 'bottom',    
-    marginLeft: 2
+    marginLeft: 2,
+    fontFamily: "Futura-Light"
   },
   buttonContainer: {
     borderStyle: 'solid', 
@@ -114,6 +115,7 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 10,
     marginBottom: 0,
+    fontFamily: "Futura-Light"
   },
   text: {
     fontFamily: "Futura-Light"
