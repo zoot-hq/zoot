@@ -29,7 +29,7 @@ export default class SignupScreen extends React.Component {
         <View style={styles.container}>
           <Text style={styles.title}>après</Text>
           <View style={styles.field}>
-            <Text>username</Text>
+            <Text style={styles.text}>username</Text>
             <TextInput
               type="username"
               returnKeyType="next"
@@ -46,7 +46,7 @@ export default class SignupScreen extends React.Component {
             <Text style={styles.error}>{this.state.error}</Text>
           )}
           <View style={styles.field}>
-            <Text>email</Text>
+            <Text style={styles.text}>email</Text>
             <TextInput
               type="email"
               returnKeyType="next"
@@ -66,7 +66,7 @@ export default class SignupScreen extends React.Component {
             <Text style={styles.error}>{this.state.error}</Text>
           )}
           <View style={styles.field}>
-            <Text>password</Text>
+            <Text style={styles.text}>password</Text>
             <TextInput
               returnKeyType="next"
               secureTextEntry
@@ -82,7 +82,7 @@ export default class SignupScreen extends React.Component {
             <Text style={styles.error}>{this.state.error}</Text>
           )}
           <View style={styles.field}>
-            <Text>birthday (ddmmyyyy)</Text>
+            <Text style={styles.text}>birthday (ddmmyyyy)</Text>
             <TextInput
               type="birthday"
               returnKeyType="next"
@@ -96,7 +96,7 @@ export default class SignupScreen extends React.Component {
             />
           </View>
           <View style={styles.field}>
-            <Text>city</Text>
+            <Text style={styles.text}>city</Text>
             <TextInput
               type="city"
               returnKeyType="next"
@@ -110,7 +110,7 @@ export default class SignupScreen extends React.Component {
             />
           </View>
           <View style={styles.field}>
-            <Text>children (number)</Text>
+            <Text style={styles.text}>children (number)</Text>
             <TextInput
               type="children"
               returnKeyType="next"
@@ -126,7 +126,7 @@ export default class SignupScreen extends React.Component {
             />
           </View>
           <View style={styles.field}>
-            <Text>months post partum</Text>
+            <Text style={styles.text}>months post partum</Text>
             <TextInput
               type="monthsPostPartum"
               autoCapitalize="none"
@@ -190,7 +190,8 @@ const styles = StyleSheet.create({
     fontSize: 60,
     fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 25
+    marginBottom: 25,
+    fontFamily: "CormorantGaramond-Light"
   },
   field: {
     display: 'flex',
@@ -202,24 +203,30 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexGrow: 1,
     textAlignVertical: 'bottom',
-    marginLeft: 2
+    marginLeft: 2,
+    fontFamily: "Futura-Light"
   },
   buttonContainer: {
     borderStyle: 'solid', 
     borderWidth: 1,
     paddingVertical: 5,
     marginBottom: 15,
-    marginTop: 30
+    marginTop: 30,
   },
   buttonText: {
     textAlign: 'center',
     color: 'black',
     fontWeight: '600',
     fontSize: 30,
+    fontFamily: "CormorantGaramond-Light"
   },
   error: {
     color: "red",
     fontSize: 10,
-    marginBottom: 0
+    marginBottom: 0,
+    fontFamily: "Futura-Light"
+  },
+  text: {
+    fontFamily: "Futura-Light"
   }
 });

@@ -1,9 +1,27 @@
 import * as React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-
+import * as Font from 'expo-font';
 export default class HomeScreen extends React.Component {
+  constructor(){
+    super()
+    this.state = {
+      fontLoaded : false
+    }
+  }
+  async componentDidMount() {
+    await Font.loadAsync({
+      'CormorantGaramond-Light': require('../assets/fonts/CormorantGaramond-Light.ttf'),
+      'Futura-Light': require('../assets/fonts/FuturaLight.ttf')
+    });
 
+    this.setState({
+      fontLoaded : true
+    })
+  }
   render() {
+    if (!this.state.fontLoaded) {
+      return null
+    }
     return (
       <View style={styles.container}>
         {/* title */}
@@ -33,7 +51,7 @@ const styles = StyleSheet.create({
     marginRight: 50,
     marginLeft: 50,
     justifyContent: 'center',
-    marginTop: 150
+    marginTop: 150,
   },
   title: {
     top: 0,
@@ -41,7 +59,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 50,
-    marginBottom: 50
+    fontFamily: "CormorantGaramond-Light"
   },
   buttonContainer: {
     borderStyle: 'solid', 
@@ -54,5 +72,6 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: '600',
     fontSize: 30,
+    fontFamily: "CormorantGaramond-Light"
   }
 });
