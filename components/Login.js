@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import Fire from '../Fire';
+import * as Font from 'expo-font';
 
 export default class LoginScreen extends React.Component {
   constructor() {
@@ -24,7 +25,7 @@ export default class LoginScreen extends React.Component {
         <View style={styles.container}>
           <Text style={styles.title}>après</Text>
           <View style={styles.field}>
-            <Text>email</Text>
+            <Text style={styles.text}>email</Text>
             <TextInput
             returnKeyType="next"
             onSubmitEditing={() => this.passwordInput.focus()}
@@ -36,7 +37,7 @@ export default class LoginScreen extends React.Component {
           />
           </View>
           <View style={styles.field}>
-            <Text>password</Text>
+            <Text style={styles.text}>password</Text>
             <TextInput
             returnKeyType="done"
             secureTextEntry
@@ -80,7 +81,8 @@ const styles = StyleSheet.create({
     fontSize: 60,
     fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 30
+    marginBottom: 30,
+    fontFamily: "CormorantGaramond-Light"
   },
   field: {
     display: 'flex',
@@ -106,10 +108,14 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: '600',
     fontSize: 30,
+    fontFamily: "CormorantGaramond-Light"
   },
   error: {
     color: "red",
     fontSize: 10,
     marginBottom: 0,
+  },
+  text: {
+    fontFamily: "Futura-Light"
   }
 });
