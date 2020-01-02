@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, ScrollView, Key
 import { Searchbar } from 'react-native-paper';
 import Fire from '../Fire';
 import { MaterialIndicator } from 'react-native-indicators';
-import GestureRecognizer from 'react-native-swipe-gestures';
 
 export default class ChatList extends React.Component {
   constructor(){
@@ -101,17 +100,20 @@ const styles = StyleSheet.create({
   },
   title: {
     top: 15,
+    bottom: 15,
     fontSize: 60,
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 15,
+    fontFamily: "CormorantGaramond-Light"
   },
   subtitle: {
-    top: 0,
     fontSize: 20,
     fontWeight: '300',
     textAlign: 'center',
     marginBottom: 8,
+    fontFamily: "Futura-Light",
+    marginTop: 10
   },
   buttonContainer: {
     borderStyle: 'solid', 
@@ -124,9 +126,11 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: '600',
     fontSize: 28,
+    fontFamily: "Futura-Light"
   },
   searchbar: {
     color: 'black',
-    marginBottom: 20
+    marginBottom: 20,
+    fontFamily: "Futura-Light"
   }
 });
