@@ -94,17 +94,17 @@ export default class ChatList extends React.Component {
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    marginRight: 50,
-    marginLeft: 50,
+    marginRight: 20,
+    marginLeft: 20,
     justifyContent: 'center',
     marginTop: 30
   },
   title: {
-    top: 0,
+    top: 15,
     fontSize: 60,
     fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 15,
   },
   subtitle: {
     top: 0,
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'black',
     fontWeight: '600',
-    fontSize: 30,
+    fontSize: 28,
   },
   searchbar: {
     color: 'black',

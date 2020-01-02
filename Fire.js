@@ -17,14 +17,8 @@ class Fire {
         return (firebase.auth().currentUser || {}).displayName;
     }
 
-    parseSnapshots = snapshots => {
-        for (snapshot in snapshots){
-            return this.parse(snapshot)
-        }
-    }
-
     parse = snapshot => {
-        const { timestamp, text, user, likes, loves, lightbulbs, room } = snapshot.val();
+        const { timestamp, text, user, likes, loves, lightbulbs, room, base64 } = snapshot.val();
         const { key: _id } = snapshot;
         const message = {
             _id,
@@ -35,7 +29,8 @@ class Fire {
             loves,
             lightbulbs,
             room,
-            timestamp
+            timestamp,
+            base64
         };
         return message;
     };
@@ -50,6 +45,36 @@ class Fire {
     
     get timestamp() {
         return firebase.database.ServerValue.TIMESTAMP;
+    }
+
+    sendImage = (image, room) => {
+        const message = {
+            text: null,
+            user: {
+                _id: this.uid(),
+                name: this.username()
+            },
+            room,
+            timestamp: this.timestamp,
+            likes: {
+                count: 0,
+            },
+            loves: {
+                count: 0,
+            },
+            lightbulbs: {
+                count: 0
+            },
+            base64: image.base64
+        }
+
+        // push image to database
+        const refToMessage = firebase.database().ref('chatrooms').child(room).push(message)
+
+        // push users object to database
+        refToMessage.child('likes').child('users').set({X: true})
+        refToMessage.child('loves').child('users').set({X: true})
+        refToMessage.child('lightbulbs').child('users').set({X: true})
     }
 
     // send the message to the Backend

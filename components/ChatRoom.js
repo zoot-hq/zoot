@@ -18,6 +18,8 @@ export default class ChatRoom extends React.Component {
       },
       loadEarlier: true
     };
+
+    this.sendImage.bind(this.sendImage)
   }
 
 
@@ -71,6 +73,10 @@ export default class ChatRoom extends React.Component {
     return contentSize.height - layoutMeasurement.height - paddingToTop <= contentOffset.y;
   }
 
+  sendImage = (image) => {
+    Fire.shared.sendImage(image, this.state.room)
+  }
+
   render() {
 
     return (
@@ -91,6 +97,7 @@ export default class ChatRoom extends React.Component {
             user={this.state.user}
             renderMessage={this.renderMessage} 
             renderAvatar={null}
+            sendImage={this.sendImage}
           />
       </View>
     );
@@ -99,11 +106,11 @@ export default class ChatRoom extends React.Component {
 
 const styles = StyleSheet.create({
   title: {
-    top: 0,
-    fontSize: 36,
+    top: 15,
+    fontSize: 30,
     fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 20,
     marginTop: 20
   }
 });

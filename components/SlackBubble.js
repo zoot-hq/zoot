@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes, Platform } from 'react-native';
+import { Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes, Platform, Image } from 'react-native';
 import { MessageText, MessageImage, Time, utils } from 'react-native-gifted-chat';
 import { Foundation } from '@expo/vector-icons';
 
@@ -72,15 +72,13 @@ export default class Bubble extends React.Component {
     return null;
   }
 
-  renderMessageImage() {
-    if (this.props.currentMessage.image) {
-      const { containerStyle, wrapperStyle, ...messageImageProps } = this.props;
-      if (this.props.renderMessageImage) {
-        return this.props.renderMessageImage(messageImageProps);
-      }
-      return <MessageImage {...messageImageProps} imageStyle={[styles.slackImage, messageImageProps.imageStyle]} />;
+  renderMessageImage = () => {
+    if (this.props.currentMessage.base64) {
+      return  <Image
+        source={{ uri: `data:image/png;base64,${this.props.currentMessage.base64}`}}
+        style={{ height: 300, width: 300 }}
+    />
     }
-    return null;
   }
 
   renderTicks() {
