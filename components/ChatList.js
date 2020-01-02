@@ -15,7 +15,6 @@ export default class ChatList extends React.Component {
   }
 
   componentWillMount(){
-
     //grab chatrooms
     Fire.shared.getChatRoomNames((room => {
       this.setState({

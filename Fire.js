@@ -179,14 +179,6 @@ class Fire {
         return name;
     };
 
-    // function checkIfUserExists(userId) {
-    //     var usersRef = new Firebase(USERS_LOCATION);
-    //     usersRef.child(userId).once('value', function(snapshot) {
-    //       var exists = (snapshot.val() !== null);
-    //       userExistsCallback(userId, exists);
-    //     });
-    //   }
-
     createRoom = async (room, PM) => {
         firebase.database().ref('chatrooms').child(room).once('value', snapshot => {
             const exists = (snapshot.val() !== null)
