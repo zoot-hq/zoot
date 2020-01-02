@@ -25,10 +25,10 @@ export default class Bubble extends React.Component {
     const currentUsername = Fire.shared.username()
     const room = this.props.currentMessage.room
     
-    if (this.props.currentMessage.text && (messageUsername != currentUsername) && (
+    if (this.props.currentMessage.text && (messageUsername != currentUsername) && 
       this.props.currentMessage.text !=`Welcome to # ${room} - 
-      send a message to get the conversation started` || this.props.currentMessage.text != 
-      `Welcome to # ${room} - this is the beginning of your private message chat`)){
+      send a message to get the conversation started` && this.props.currentMessage.text != 
+      `Welcome to # ${room} - this is the beginning of your private message chat`){
       const options = [
         this.state.likes.users[currentUsername] ? 'Unlike' : 'Like',
         this.state.loves.users[currentUsername] ? 'Unlove' : 'Love',
