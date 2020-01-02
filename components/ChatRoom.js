@@ -2,9 +2,11 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { GiftedChat } from 'react-native-gifted-chat'
 import { MaterialIndicator } from 'react-native-indicators';
-
+import { MaterialIcons } from '@expo/vector-icons';
 import SlackMessage from './SlackMessage'
 import Fire from '../Fire';
+import * as Permissions from 'expo-permissions';
+import * as ImagePicker from 'expo-image-picker';
 
 export default class ChatRoom extends React.Component {
   constructor(props) {
@@ -18,8 +20,6 @@ export default class ChatRoom extends React.Component {
       },
       loadEarlier: true
     };
-
-    this.sendImage.bind(this.sendImage)
   }
 
 
@@ -73,8 +73,28 @@ export default class ChatRoom extends React.Component {
     return contentSize.height - layoutMeasurement.height - paddingToTop <= contentOffset.y;
   }
 
-  sendImage = (image) => {
-    Fire.shared.sendImage(image, this.state.room)
+
+  uploadImage = async() => {
+
+    // get permission to access camera roll
+    await Permissions.askAsync(Permissions.CAMERA_ROLL)
+
+    // grab picture
+    const image = await ImagePicker.launchImageLibraryAsync({base64:true})
+
+    // send to database
+    if (image) {
+      Fire.shared.sendImage(image, this.state.room)
+    }
+
+  }
+
+  renderChatFooter = () => {
+    return (
+      <TouchableOpacity style={styles.chatFooter} onLongPress={() => this.uploadImage()}>
+        <MaterialIcons name='photo' size={30}></MaterialIcons>
+      </TouchableOpacity>
+    )
   }
 
   render() {
@@ -99,6 +119,7 @@ export default class ChatRoom extends React.Component {
             renderAvatar={null}
             sendImage={this.sendImage}
             renderLoading={() =>  <MaterialIndicator color='black' />}
+            renderChatFooter={this.renderChatFooter}
           />
       </View>
     );
@@ -113,6 +134,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
     marginTop: 20
+  },
+  chatFooter: {
+    borderTopColor: 'black',
+    borderTopWidth: 1,
+    display: 'flex',
+    justifyContent: 'flex-end'
   }
 });
 
