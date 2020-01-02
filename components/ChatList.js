@@ -85,7 +85,7 @@ export default class ChatList extends React.Component {
             </ScrollView>
           </SafeAreaView>
         </KeyboardAvoidingView>
-        <TouchableOpacity style={{alignSelf: 'center'}} onPress={() => this.props.navigation.navigate('PMList')}>
+        <TouchableOpacity style={{alignSelf: 'flex-end', marginTop: 10}} onPress={() => this.props.navigation.navigate('PMList')}>
           <Ionicons name='ios-chatbubbles' size={30} color='grey'></Ionicons>
         </TouchableOpacity>
       </View>
