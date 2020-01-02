@@ -12,7 +12,7 @@ export default class ChatRoom extends React.Component {
   constructor(props) {
     super(props)
       this.state = {
-      room: this.props.navigation.state.params.chatroom || this.props.navigation.state.params.comboName,
+      room: this.props.navigation.state.params.comboName,
       messages: [],
       user: {
         name: Fire.shared.username(),
@@ -26,7 +26,7 @@ export default class ChatRoom extends React.Component {
   componentDidMount = () => {
 
     //get messages for chatroom
-    Fire.shared.on(this.state.room, (message => {
+    Fire.shared.getPms(this.state.comboName, (message => {
       this.setState(previousState => ({
         messages: GiftedChat.append(previousState.messages, message),
       }))
@@ -54,7 +54,7 @@ export default class ChatRoom extends React.Component {
     const newMessages = []
 
     for (let i = 0 ; i < 10; i ++) {
-      await Fire.shared.loadEarlier(this.state.room, this.state.messages[this.state.messages.length-1], (message => {
+      await Fire.shared.loadEarlierPMs(this.state.room, this.state.messages[this.state.messages.length-1], (message => {
         newMessages.push(message)
       }))
 
@@ -110,10 +110,9 @@ export default class ChatRoom extends React.Component {
                   this.setState({isLoading: true});
                   this.loadEarlier();
                 }
-              },
-              navigation: this.props.navigation
+              }
             }}
-            onSend={(messages) => Fire.shared.send(messages, this.state.room)}
+            onSend={(messages) => Fire.shared.send(messages, this.state.comboName)}
             user={this.state.user}
             renderMessage={this.renderMessage} 
             renderAvatar={null}
@@ -143,4 +142,3 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   }
 });
-

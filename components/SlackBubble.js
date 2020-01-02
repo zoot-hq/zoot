@@ -100,17 +100,15 @@ export default class Bubble extends React.Component {
     return null;
   }
 
-  renderUsername() {
+  renderUsername = () => {
     const username = this.props.currentMessage.user.name;
     if (username) {
-      const { containerStyle, wrapperStyle, ...usernameProps } = this.props;
-      if (this.props.renderUsername) {
-        return this.props.renderUsername(usernameProps);
-      }
       return (
-        <Text style={[styles.standardFont, styles.headerItem, styles.username, this.props.usernameStyle]}>
-          {username}
-        </Text>
+        <TouchableOpacity onLongPress={this.startPM}>
+          <Text style={[styles.standardFont, styles.headerItem, styles.username, this.props.usernameStyle]}>
+            {username}
+          </Text>
+        </TouchableOpacity>
       );
     }
     return null;
@@ -163,6 +161,18 @@ export default class Bubble extends React.Component {
       delete reaction.users[currUser]
       this.setState({reaction})
       Fire.shared.react(this.props.currentMessage, reactionType, reaction.count)
+    }
+  }
+
+  startPM = async () => {
+    const otherUsername = this.props.currentMessage.user.name
+    const currentUsername = Fire.shared.username()
+
+    if (otherUsername != currentUsername) {
+      const comboName = otherUsername < currentUsername ? otherUsername + '-' + currentUsername : currentUsername + '-' + otherUsername
+      await Fire.shared.createRoom(comboName, true)
+      // this.props.listViewProps.navigation.pop()
+      this.props.listViewProps.navigation.replace('ChatRoom', {comboName})
     }
   }
 

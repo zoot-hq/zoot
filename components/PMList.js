@@ -3,21 +3,19 @@ import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, ScrollView, Key
 import { Searchbar } from 'react-native-paper';
 import Fire from '../Fire';
 import { MaterialIndicator } from 'react-native-indicators';
-import { Ionicons } from '@expo/vector-icons';
 
-export default class ChatList extends React.Component {
+export default class PMList extends React.Component {
   constructor(){
     super()
     this.state = ({
       chatrooms: [],
-      queriedChatrooms: [],      
-      query: ''
+      queriedChatrooms: []
     })
   }
 
   componentWillMount(){
     //grab chatrooms
-    Fire.shared.getChatRoomNames((room => {
+    Fire.shared.getPMRooms((room => {
       this.setState({
         chatrooms: [...this.state.chatrooms, room],
         queriedChatrooms: [...this.state.queriedChatrooms, room]
@@ -31,22 +29,12 @@ export default class ChatList extends React.Component {
         
         {/* titles */}
         <Text style={styles.title}>après</Text>
-        <Text style={styles.subtitle}>Welcome. What type support are you here for?</Text>
-
-        {/* search bar - queries all chatrooms to the users query */}
-        <Searchbar
-          theme={{colors: {primary: 'black'}}}
-          placeholder="Search"
-          onChangeText={query => {
-            const queriedChatrooms = this.state.chatrooms.filter(chatroom => {
-              return chatroom.includes(query.toLowerCase())
-            })
-            this.setState({ queriedChatrooms, query });
-            if (!query.length) {
-              this.setState({ queriedChatrooms: this.state.chatrooms})
-            }
-          }}
-        />
+        <Text style={styles.subtitle}>
+            When you start a private message with another user, it will appear here. 
+            To get started, navigate bback to the main page, click on a chatlist, and longpress 
+            on a user's name. A new chat will then open up between you and that user, and it will 
+            also appear on this list. Happy chatting!
+        </Text>
 
         <KeyboardAvoidingView behavior="padding">
           <SafeAreaView >
@@ -62,32 +50,23 @@ export default class ChatList extends React.Component {
                 <Text style={styles.buttonText}># {chatroom}</Text>
               </TouchableOpacity>))
               :
-              // else allow user to create a new chatroom
+              // else list all available rooms
               (this.state.chatrooms.length?
-              <View>
-                <Text>no results. would you like to create this chatroom?</Text>
+                (this.state.queriedChatrooms.map(chatroom => (
                 <TouchableOpacity 
-                  key={this.state.query} 
+                  key={chatroom} 
                   style={styles.buttonContainer}
-                  onPress={() => {
-                    Fire.shared.createRoom(this.state.query)
-                    this.props.navigation.navigate('ChatRoom', { chatroom: this.state.query} )}
-                  }
+                  onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
                 >
-                  <Text style={styles.buttonText}>+ {this.state.query} </Text>
-                </TouchableOpacity>
-              </View>
+                <Text style={styles.buttonText}># {chatroom}</Text>
+              </TouchableOpacity>)))
               : 
-
               // return loading while grabbing data from database
               <MaterialIndicator color='black' />)
               }
             </ScrollView>
           </SafeAreaView>
         </KeyboardAvoidingView>
-        <TouchableOpacity style={{alignSelf: 'flex-end', marginTop: 10}} onPress={() => this.props.navigation.navigate('PMList')}>
-          <Ionicons name='ios-chatbubbles' size={30} color='grey'></Ionicons>
-        </TouchableOpacity>
       </View>
     );
   }

@@ -125,7 +125,6 @@ class Fire {
             await firebase.auth().createUserWithEmailAndPassword(email, password)
             await firebase.auth().signInWithEmailAndPassword(email, password)
             
-            
             // add in custom fields
             firebase.database().ref('users').child(username).set({ birthday, city, children, monthsPostPartum, email })
             
@@ -161,27 +160,68 @@ class Fire {
         firebase.database().ref('chatroomnames')
         .on('child_added', snapshot => callback(this.parseRooms(snapshot)));
 
+    getPMRooms = (callback) => {
+        return firebase.database().ref('chatroomPMs')
+        .on('child_added', snapshot => callback(this.parsePMs(snapshot)));
+    }
+
+    parsePMs = snapshot => {
+        const currentUser = this.username()
+        const { name } = snapshot.val()
+        const names = name.split('-')
+        if (names[0] === currentUser || names[1] === currentUser) {
+            return name
+        }
+    }
+
     parseRooms = snapshot => {
         const { name } = snapshot.val();
         return name;
     };
 
-    createRoom = room => {
+    createRoom = async (room, PM) => {
+        firebase.database().ref('chatrooms').child(room).once('value', snapshot => {
+            const exists = (snapshot.val() !== null)
+            if (!exists) {
 
-        // add room to chatroomnames
-        firebase.database().ref('chatroomnames').child(room).set({ name : room })
+                if (!PM) {
 
-        const initMessage = {
-            room,
-            text: `Welcome to # ${room} - send a message to get the conversation started`,
-            timestamp: Date.now(),
-            user: {
-                name: `#${room}`
+                    // add room to chatroom list
+                    firebase.database().ref('chatroomnames').child(room).set({ name : room })
+
+                    const initMessage = {
+                        room,
+                        text: `Welcome to # ${room} - send a message to get the conversation started`,
+                        timestamp: Date.now(),
+                        user: {
+                            name: `#${room}`
+                            }
+                    }
+        
+                    // add room to chatrooms
+                    firebase.database().ref('chatrooms').child(room).push(initMessage);
+                }
+
+                else {
+
+                    // add room to chatroomPM lists
+                    firebase.database().ref('chatroomPMs').child(room).set({ name : room })
+
+                    const initMessage = {
+                        room,
+                        text: `Welcome to # ${room} - this is the beginning of your private message chat`,
+                        timestamp: Date.now(),
+                        user: {
+                            name: `#${room}`
+                        }
+                    }
+
+                    // add room to chatrooms
+                    firebase.database().ref('chatrooms').child(room).push(initMessage);
+                }
+
             }
-        }
-
-        // add room to chatrooms
-        firebase.database().ref('chatrooms').child(room).push(initMessage);
+        })
     }
 
     // this function updates the database in increasing the reaction type of 
