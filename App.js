@@ -7,6 +7,7 @@ import Signup from './components/Signup';
 import Login from './components/Login';
 import WelcomePage from './components/WelcomePage';
 import PMRoom from './components/PMRoom';
+import PMList from './components/PMList'
 
 import { createStackNavigator } from 'react-navigation';
 
@@ -30,6 +31,7 @@ const navigator = createStackNavigator({
   Signup,
   Login,
   WelcomePage,
+  PMList
 },
 {
   headerMode: 'none',

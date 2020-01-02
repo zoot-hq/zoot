@@ -1,9 +1,9 @@
 {
   "expoServerPort": 19000,
-  "packagerPort": 19005,
-  "packagerPid": 20838,
+  "packagerPort": 19006,
+  "packagerPid": 26254,
   "expoServerNgrokUrl": "https://dg-tcv.malkam.zoot.exp.direct",
   "packagerNgrokUrl": "https://packager.dg-tcv.malkam.zoot.exp.direct",
-  "ngrokPid": 20849,
-  "devToolsPort": 19006
+  "ngrokPid": 26266,
+  "devToolsPort": 19005
 }
