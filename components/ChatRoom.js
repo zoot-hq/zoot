@@ -98,6 +98,7 @@ export default class ChatRoom extends React.Component {
             renderMessage={this.renderMessage} 
             renderAvatar={null}
             sendImage={this.sendImage}
+            renderLoading={() =>  <MaterialIndicator color='black' />}
           />
       </View>
     );
