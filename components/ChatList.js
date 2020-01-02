@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, ScrollView, Key
 import { Searchbar } from 'react-native-paper';
 import Fire from '../Fire';
 import { MaterialIndicator } from 'react-native-indicators';
+import { Ionicons } from '@expo/vector-icons';
 
 export default class ChatList extends React.Component {
   constructor(){
@@ -84,6 +85,9 @@ export default class ChatList extends React.Component {
             </ScrollView>
           </SafeAreaView>
         </KeyboardAvoidingView>
+        <TouchableOpacity style={{alignSelf: 'center'}} onPress={() => this.props.navigation.navigate('PMList')}>
+          <Ionicons name='ios-chatbubbles' size={30} color='grey'></Ionicons>
+        </TouchableOpacity>
       </View>
     );
   }

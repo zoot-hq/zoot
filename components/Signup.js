@@ -100,7 +100,7 @@ export default class SignupScreen extends React.Component {
             <TextInput
               type="city"
               returnKeyType="next"
-              onSubmitEditing={() => this.children.focus()}
+              // onSubmitEditing={() => this.children.focus()}
               autoCapitalize="none"
               autoCorrect={false}
               style={styles.input}
@@ -109,7 +109,7 @@ export default class SignupScreen extends React.Component {
               blurOnSubmit={false}
             />
           </View>
-          <View style={styles.field}>
+          {/* <View style={styles.field}>
             <Text style={styles.text}>children (number)</Text>
             <TextInput
               type="children"
@@ -124,8 +124,8 @@ export default class SignupScreen extends React.Component {
               keyboardType="number-pad"
               blurOnSubmit={false}
             />
-          </View>
-          <View style={styles.field}>
+          </View> */}
+          {/* <View style={styles.field}>
             <Text style={styles.text}>months post partum</Text>
             <TextInput
               type="monthsPostPartum"
@@ -136,7 +136,7 @@ export default class SignupScreen extends React.Component {
               keyboardType="number-pad"
               ref={input => (this.monthsPostPartum = input)}
             />
-          </View>
+          </View> */}
           <TouchableOpacity
             style={styles.buttonContainer}
             onPress={async () => {
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     marginRight: 50,
     marginLeft: 50,
     justifyContent: 'center',
-    marginTop: 70
+    marginTop: 140
   },
   title: {
     top: 0,
