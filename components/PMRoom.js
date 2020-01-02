@@ -96,6 +96,10 @@ export default class ChatRoom extends React.Component {
     )
   }
 
+  componentWillUnmount() {
+    Fire.shared.off();
+  }
+
   render() {
 
     return (
