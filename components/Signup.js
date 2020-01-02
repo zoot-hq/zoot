@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingVertical: 5,
     marginBottom: 15,
-    marginTop: 30
+    marginTop: 30,
   },
   buttonText: {
     textAlign: 'center',

@@ -169,9 +169,9 @@ export default class Bubble extends React.Component {
   renderReactions() {
     return(
       <View style={{display: 'flex', flexDirection: 'row'}}>
-        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('likes')}><Foundation name='like' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
-        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('loves')}><Foundation name='heart' size={20}><Text> {this.state.loves.count || null}</Text></Foundation></TouchableOpacity>
-        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('lightbulbs')}><Foundation name='lightbulb' size={20}><Text> {this.state.lightbulbs.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('likes')}><Foundation name='like' color='grey' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('loves')}><Foundation name='heart' color='grey' size={20}><Text> {this.state.loves.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('lightbulbs')}><Foundation name='lightbulb' color='grey' size={20}><Text> {this.state.lightbulbs.count || null}</Text></Foundation></TouchableOpacity>
       </View>
     )
   }
@@ -224,6 +224,7 @@ const styles = StyleSheet.create({
   slackMessageText: {
     marginLeft: 0,
     marginRight: 0,
+    fontFamily: "Futura-Light"
   },
   container: {
     flex: 1,
@@ -238,10 +239,12 @@ const styles = StyleSheet.create({
   },
   username: {
     fontWeight: 'bold',
+    fontFamily: "CormorantGaramond-Light"
   },
   time: {
     textAlign: 'left',
     fontSize: 12,
+    fontFamily: "CormorantGaramond-Light"
   },
   timeContainer: {
     marginLeft: 0,

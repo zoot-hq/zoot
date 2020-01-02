@@ -91,7 +91,7 @@ export default class ChatRoom extends React.Component {
   renderChatFooter = () => {
     return (
       <TouchableOpacity style={styles.chatFooter} onLongPress={() => this.uploadImage()}>
-        <MaterialIcons name='photo' size={30}></MaterialIcons>
+        <MaterialIcons name='photo' color='grey' size={30}></MaterialIcons>
       </TouchableOpacity>
     )
   }
@@ -132,7 +132,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 20,
-    marginTop: 20
+    marginTop: 20,
+    fontFamily: "CormorantGaramond-Light"
   },
   chatFooter: {
     borderTopColor: 'black',
