@@ -34,7 +34,7 @@ export default class ChatRoom extends React.Component {
 
     setTimeout(() => { 
       Fire.shared.enterRoom(this.state.room)
-    }, 2000);
+    }, 1500);
   }
   
   componentWillUnmount = () => {
