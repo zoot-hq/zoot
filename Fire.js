@@ -18,7 +18,7 @@ class Fire {
     }
 
     parse = snapshot => {
-        const { timestamp, text, user, likes, loves, lightbulbs, room, base64 } = snapshot.val();
+        const { timestamp, text, user, likes, loves, lightbulbs, room, base64, react } = snapshot.val();
         const { key: _id } = snapshot;
         const message = {
             _id,
@@ -30,7 +30,8 @@ class Fire {
             lightbulbs,
             room,
             timestamp,
-            base64
+            base64,
+            react
         };
         return message;
     };
@@ -106,6 +107,34 @@ class Fire {
             refToMessage.child('lightbulbs').child('users').set({X: true})
         }
     };
+
+    enterRoom(room) {
+        const user = this.username()
+        const text = `${user} has joined the chat!`
+        const message = {
+            text,
+            user,
+            room,
+            timestamp: this.timestamp,
+            react: false
+        };
+
+        firebase.database().ref('chatrooms').child(room).push(message)
+    }
+
+    leaveRoom(room) {
+        const user = this.username()
+        const text = `${user} has left the chat`
+        const message = {
+            text,
+            user,
+            room,
+            timestamp: this.timestamp,
+            react: false
+        };
+
+        firebase.database().ref('chatrooms').child(room).push(message)
+    }
 
 
     // close the connection to the Backend
@@ -198,7 +227,8 @@ class Fire {
                         timestamp: Date.now(),
                         user: {
                             name: `#${room}`
-                            }
+                        },
+                        react: false
                     }
         
                     // add room to chatrooms
@@ -216,7 +246,8 @@ class Fire {
                         timestamp: Date.now(),
                         user: {
                             name: `#${room}`
-                        }
+                        },
+                        react: false
                     }
 
                     // add room to chatrooms

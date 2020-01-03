@@ -31,9 +31,14 @@ export default class ChatRoom extends React.Component {
         messages: GiftedChat.append(previousState.messages, message),
       }))
     }));
+
+    setTimeout(() => { 
+      Fire.shared.enterRoom(this.state.room)
+    }, 2000);
   }
   
-  componentWillUnmount() {
+  componentWillUnmount = () => {
+    Fire.shared.leaveRoom(this.state.room)
     Fire.shared.off();
   }
 
