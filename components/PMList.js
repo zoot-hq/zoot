@@ -9,7 +9,8 @@ export default class PMList extends React.Component {
     super()
     this.state = ({
       chatrooms: [],
-      queriedChatrooms: []
+      queriedChatrooms: [],
+      grabbed: false
     })
   }
 
@@ -18,12 +19,17 @@ export default class PMList extends React.Component {
     Fire.shared.getPMRooms((room => {
       this.setState({
         chatrooms: [...this.state.chatrooms, room],
-        queriedChatrooms: [...this.state.queriedChatrooms, room]
+        queriedChatrooms: [...this.state.queriedChatrooms, room],
+        grabbed: true
       })
   }));
   }
 
   render() {
+    if (!this.state.grabbed) {
+      return (<MaterialIndicator color='black' />)
+
+    }
     return (
       <View style={styles.outerContainer}>
         <View style={styles.container}>
@@ -40,19 +46,8 @@ export default class PMList extends React.Component {
           <KeyboardAvoidingView behavior="padding">
             <SafeAreaView >
               <ScrollView contentContainerStyle={{flexGrow:1}}>
-                {/* if a query made, queried chatrooms displayed*/}
-                {(this.state.queriedChatrooms.length)?
-                  this.state.queriedChatrooms.map(chatroom => (
-                  <TouchableOpacity 
-                    key={chatroom} 
-                    style={styles.buttonContainer}
-                    onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
-                  >
-                  <Text style={styles.buttonText}># {chatroom}</Text>
-                </TouchableOpacity>))
-                :
-                // else list all available rooms
-                (this.state.chatrooms.length?
+  
+                {(this.state.chatrooms.length?
                   (this.state.queriedChatrooms.map(chatroom => (
                   <TouchableOpacity 
                     key={chatroom} 
@@ -62,8 +57,7 @@ export default class PMList extends React.Component {
                   <Text style={styles.buttonText}># {chatroom}</Text>
                 </TouchableOpacity>)))
                 : 
-                // return loading while grabbing data from database
-                <MaterialIndicator color='black' />)
+                null)
                 }
               </ScrollView>
             </SafeAreaView>
