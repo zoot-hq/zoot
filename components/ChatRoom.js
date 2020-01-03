@@ -104,7 +104,7 @@ export default class ChatRoom extends React.Component {
   render() {
 
     return (
-      <View style={{flex:1}}>
+      <View style={styles.container}>
         <Text style={styles.title}># {this.state.room}</Text>
           <GiftedChat
             messages={this.state.messages}
@@ -132,14 +132,18 @@ export default class ChatRoom extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white'
+  },
   title: {
-    top: 15,
+    top: 20,
     fontSize: 30,
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 20,
     marginTop: 20,
-    fontFamily: "CormorantGaramond-Light"
+    fontFamily: "CormorantGaramond-Light",
   },
   chatFooter: {
     borderTopColor: 'black',
