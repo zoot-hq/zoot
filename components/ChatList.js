@@ -102,11 +102,11 @@ const styles = StyleSheet.create({
     flex: 1
   },
   innerView: {
+    marginTop: 50,
     marginRight: 20,
     marginLeft: 20
   },
   title: {
-    top: 15,
     bottom: 15,
     fontSize: 60,
     fontWeight: '700',

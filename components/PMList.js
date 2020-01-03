@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
     marginLeft: 20,
     justifyContent: 'center',
-    marginTop: 30,
+    marginTop: 50,
   },
   title: {
     top: 15,
