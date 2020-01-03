@@ -9,7 +9,6 @@ export default class PMList extends React.Component {
     super()
     this.state = ({
       chatrooms: [],
-      queriedChatrooms: [],
       grabbed: false
     })
   }
@@ -19,12 +18,11 @@ export default class PMList extends React.Component {
     Fire.shared.getPMRooms((room => {
       this.setState({
         chatrooms: [...this.state.chatrooms, room],
-        queriedChatrooms: [...this.state.queriedChatrooms, room],
         grabbed: true
       })
   }));
   }
-
+    
   render() {
     if (!this.state.grabbed) {
       return (<MaterialIndicator color='black' />)
@@ -48,7 +46,7 @@ export default class PMList extends React.Component {
               <ScrollView contentContainerStyle={{flexGrow:1}}>
   
                 {(this.state.chatrooms.length?
-                  (this.state.queriedChatrooms.map(chatroom => (
+                  (this.state.chatrooms.map(chatroom => (
                   <TouchableOpacity 
                     key={chatroom} 
                     style={styles.buttonContainer}

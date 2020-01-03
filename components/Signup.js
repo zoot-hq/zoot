@@ -228,7 +228,9 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 10,
     marginBottom: 0,
-    fontFamily: "Futura-Light"
+    fontFamily: "Futura-Light",
+    marginRight: 50,
+    marginLeft: 50,
   },
   text: {
     fontFamily: "Futura-Light"
