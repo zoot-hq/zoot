@@ -31,7 +31,7 @@ export default class PMList extends React.Component {
         <Text style={styles.title}>après</Text>
         <Text style={styles.subtitle}>
             When you start a private message with another user, it will appear here. 
-            To get started, navigate bback to the main page, click on a chatlist, and longpress 
+            To get started, navigate back to the main page, click on a chatlist, and longpress 
             on a user's name. A new chat will then open up between you and that user, and it will 
             also appear on this list. Happy chatting!
         </Text>
