@@ -105,7 +105,7 @@ export default class ChatRoom extends React.Component {
 
     return (
       <View style={styles.container}>
-        <View style={{flex: 1, marginBottom: 20}}>
+        <View style={{flex: 1, marginBottom: 40}}>
           <Text style={styles.title}># {this.state.room}</Text>
             <GiftedChat
               messages={this.state.messages}

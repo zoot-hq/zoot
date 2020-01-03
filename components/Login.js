@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     backgroundColor: 'white',
-    flex: 1
+    flex: 1,
   },
   title: {
     top: 0,
