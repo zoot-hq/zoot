@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import Fire from '../Fire';
 
 export default class SignupScreen extends React.Component {
@@ -26,6 +26,7 @@ export default class SignupScreen extends React.Component {
     };
 
     return (
+      <KeyboardAvoidingView behavior='padding' style={{flex:1}}>
         <View style={styles.container}>
           <Text style={styles.title}>après</Text>
           <View style={styles.field}>
@@ -174,17 +175,16 @@ export default class SignupScreen extends React.Component {
             <Text style={styles.buttonText}>sign me up!</Text>
           </TouchableOpacity>
         </View>
+      </KeyboardAvoidingView>
     );
   }
 }
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    marginRight: 50,
-    marginLeft: 50,
     justifyContent: 'center',
-    marginTop: 140
-  },
+    backgroundColor: 'white',
+    flex: 1  },
   title: {
     top: 0,
     fontSize: 60,
@@ -197,6 +197,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-end',
+    marginRight: 50,
+    marginLeft: 50,
   },
   input: {
     borderBottomWidth: 1,
@@ -212,6 +214,8 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     marginBottom: 15,
     marginTop: 30,
+    marginRight: 50,
+    marginLeft: 50,
   },
   buttonText: {
     textAlign: 'center',
@@ -224,7 +228,9 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 10,
     marginBottom: 0,
-    fontFamily: "Futura-Light"
+    fontFamily: "Futura-Light",
+    marginRight: 50,
+    marginLeft: 50,
   },
   text: {
     fontFamily: "Futura-Light"

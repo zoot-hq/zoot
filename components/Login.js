@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import Fire from '../Fire';
 import * as Font from 'expo-font';
 
@@ -15,13 +15,8 @@ export default class LoginScreen extends React.Component {
 
   render() {
 
-    // config for swipe gesture
-    const config = {
-      velocityThreshold: 0.3,
-      directionalOffsetThreshold: 80
-    };
-
     return (
+      <KeyboardAvoidingView behavior='padding' style={{flex:1}}>
         <View style={styles.container}>
           <Text style={styles.title}>après</Text>
           <View style={styles.field}>
@@ -65,16 +60,16 @@ export default class LoginScreen extends React.Component {
             <Text style={styles.buttonText}>log back in!</Text>
           </TouchableOpacity>
         </View>
+      </KeyboardAvoidingView>
     );
   }
 }
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    marginRight: 50,
-    marginLeft: 50,
     justifyContent: 'center',
-    marginTop: 150
+    backgroundColor: 'white',
+    flex: 1,
   },
   title: {
     top: 0,
@@ -88,6 +83,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-end',
+    marginRight: 50,
+    marginLeft: 50,
   },
   input: {
     borderBottomWidth: 1,
@@ -103,6 +100,8 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     marginBottom: 15,
     marginTop: 30,
+    marginRight: 50,
+    marginLeft: 50,
   },
   buttonText: {
     textAlign: 'center',
@@ -115,7 +114,9 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 10,
     marginBottom: 0,
-    fontFamily: "Futura-Light"
+    fontFamily: "Futura-Light",
+    marginRight: 50,
+    marginLeft: 50,
   },
   text: {
     fontFamily: "Futura-Light"

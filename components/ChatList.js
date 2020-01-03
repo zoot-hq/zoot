@@ -28,66 +28,68 @@ export default class ChatList extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        
-        {/* titles */}
-        <Text style={styles.title}>après</Text>
-        <Text style={styles.subtitle}>Welcome. What type support are you here for?</Text>
+        <View style={styles.innerView}>
+      
+          {/* titles */}
+          <Text style={styles.title}>après</Text>
+          <Text style={styles.subtitle}>Welcome. What type support are you here for?</Text>
 
-        {/* search bar - queries all chatrooms to the users query */}
-        <Searchbar
-          theme={{colors: {primary: 'black'}}}
-          placeholder="Search"
-          onChangeText={query => {
-            const queriedChatrooms = this.state.chatrooms.filter(chatroom => {
-              return chatroom.includes(query.toLowerCase())
-            })
-            this.setState({ queriedChatrooms, query });
-            if (!query.length) {
-              this.setState({ queriedChatrooms: this.state.chatrooms})
-            }
-          }}
-        />
-
-        <KeyboardAvoidingView behavior="padding">
-          <SafeAreaView >
-            <ScrollView contentContainerStyle={{flexGrow:1}}>
-              {/* if a query made, queried chatrooms displayed*/}
-              {(this.state.queriedChatrooms.length)?
-                this.state.queriedChatrooms.map(chatroom => (
-                <TouchableOpacity 
-                  key={chatroom} 
-                  style={styles.buttonContainer}
-                  onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
-                >
-                <Text style={styles.buttonText}># {chatroom}</Text>
-              </TouchableOpacity>))
-              :
-              // else allow user to create a new chatroom
-              (this.state.chatrooms.length?
-              <View>
-                <Text>no results. would you like to create this chatroom?</Text>
-                <TouchableOpacity 
-                  key={this.state.query} 
-                  style={styles.buttonContainer}
-                  onPress={() => {
-                    Fire.shared.createRoom(this.state.query)
-                    this.props.navigation.navigate('ChatRoom', { chatroom: this.state.query} )}
-                  }
-                >
-                  <Text style={styles.buttonText}>+ {this.state.query} </Text>
-                </TouchableOpacity>
-              </View>
-              : 
-
-              // return loading while grabbing data from database
-              <MaterialIndicator color='black' />)
+          {/* search bar - queries all chatrooms to the users query */}
+          <Searchbar
+            theme={{colors: {primary: 'black'}}}
+            placeholder="Search"
+            onChangeText={query => {
+              const queriedChatrooms = this.state.chatrooms.filter(chatroom => {
+                return chatroom.includes(query.toLowerCase())
+              })
+              this.setState({ queriedChatrooms, query });
+              if (!query.length) {
+                this.setState({ queriedChatrooms: this.state.chatrooms})
               }
-            </ScrollView>
-          </SafeAreaView>
-        </KeyboardAvoidingView>
-        <TouchableOpacity style={{alignSelf: 'flex-end', marginTop: 10}} onPress={() => this.props.navigation.navigate('PMList')}>
-          <Ionicons name='ios-chatbubbles' size={30} color='grey'></Ionicons>
-        </TouchableOpacity>
+            }}
+          />
+
+          <KeyboardAvoidingView behavior="padding">
+            <SafeAreaView >
+              <ScrollView contentContainerStyle={{flexGrow:1}}>
+                {/* if a query made, queried chatrooms displayed*/}
+                {(this.state.queriedChatrooms.length)?
+                  this.state.queriedChatrooms.map(chatroom => (
+                  <TouchableOpacity 
+                    key={chatroom} 
+                    style={styles.buttonContainer}
+                    onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
+                  >
+                  <Text style={styles.buttonText}># {chatroom}</Text>
+                </TouchableOpacity>))
+                :
+                // else allow user to create a new chatroom
+                (this.state.chatrooms.length?
+                <View>
+                  <Text>no results. would you like to create this chatroom?</Text>
+                  <TouchableOpacity 
+                    key={this.state.query} 
+                    style={styles.buttonContainer}
+                    onPress={() => {
+                      Fire.shared.createRoom(this.state.query)
+                      this.props.navigation.navigate('ChatRoom', { chatroom: this.state.query} )}
+                    }
+                  >
+                    <Text style={styles.buttonText}>+ {this.state.query} </Text>
+                  </TouchableOpacity>
+                </View>
+                : 
+
+                // return loading while grabbing data from database
+                <MaterialIndicator color='black' />)
+                }
+              </ScrollView>
+            </SafeAreaView>
+          </KeyboardAvoidingView>
+          <TouchableOpacity style={{alignSelf: 'flex-end', marginTop: 10}} onPress={() => this.props.navigation.navigate('PMList')}>
+            <Ionicons name='ios-chatbubbles' size={30} color='grey'></Ionicons>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -96,19 +98,21 @@ export default class ChatList extends React.Component {
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
+    backgroundColor: 'white',
+    flex: 1
+  },
+  innerView: {
+    marginTop: 50,
     marginRight: 20,
-    marginLeft: 20,
-    justifyContent: 'center',
-    marginTop: 30
+    marginLeft: 20
   },
   title: {
-    top: 15,
     bottom: 15,
     fontSize: 60,
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 15,
-    fontFamily: "CormorantGaramond-Light"
+    fontFamily: "CormorantGaramond-Light",
   },
   subtitle: {
     fontSize: 20,
@@ -116,7 +120,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 8,
     fontFamily: "Futura-Light",
-    marginTop: 10
+    marginTop: 10,
   },
   buttonContainer: {
     borderStyle: 'solid', 
@@ -134,6 +138,5 @@ const styles = StyleSheet.create({
   searchbar: {
     color: 'black',
     marginBottom: 20,
-    fontFamily: "Futura-Light"
   }
 });

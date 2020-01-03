@@ -3,6 +3,7 @@ import { Text, StyleSheet, TouchableOpacity, View } from 'react-native'
 
 export default WelcomePage = props => {
     return (
+      <View style={styles.outerContainer}>
         <View style={styles.container}>
           <Text style={styles.title}>Welcome to après! {"\n"}</Text>
           <Text style={styles.text}>
@@ -18,10 +19,15 @@ export default WelcomePage = props => {
               </Text>
           </TouchableOpacity>
         </View>
+      </View>
     )
 }
 
 const styles = StyleSheet.create({
+    outerContainer: {
+      flex: 1,
+      backgroundColor: 'white'
+    },
     container: {
       display: 'flex',
       marginRight: 50,

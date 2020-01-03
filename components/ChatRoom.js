@@ -31,9 +31,14 @@ export default class ChatRoom extends React.Component {
         messages: GiftedChat.append(previousState.messages, message),
       }))
     }));
+
+    setTimeout(() => { 
+      Fire.shared.enterRoom(this.state.room)
+    }, 1500);
   }
   
-  componentWillUnmount() {
+  componentWillUnmount = () => {
+    Fire.shared.leaveRoom(this.state.room)
     Fire.shared.off();
   }
 
@@ -99,42 +104,48 @@ export default class ChatRoom extends React.Component {
   render() {
 
     return (
-      <View style={{flex:1}}>
-        <Text style={styles.title}># {this.state.room}</Text>
-          <GiftedChat
-            messages={this.state.messages}
-            listViewProps={{
-              scrollEventThrottle: 400,
-              onScroll: ({ nativeEvent }) => {
-                if (this.isCloseToTop(nativeEvent) && !this.state.isLoading) {
-                  this.setState({isLoading: true});
-                  this.loadEarlier();
-                }
-              },
-              navigation: this.props.navigation
-            }}
-            onSend={(messages) => Fire.shared.send(messages, this.state.room)}
-            user={this.state.user}
-            renderMessage={this.renderMessage} 
-            renderAvatar={null}
-            sendImage={this.sendImage}
-            renderLoading={() =>  <MaterialIndicator color='black' />}
-            renderChatFooter={this.renderChatFooter}
-          />
+      <View style={styles.container}>
+        <View style={{flex: 1, marginBottom: 40}}>
+          <Text style={styles.title}># {this.state.room}</Text>
+            <GiftedChat
+              messages={this.state.messages}
+              listViewProps={{
+                scrollEventThrottle: 400,
+                onScroll: ({ nativeEvent }) => {
+                  if (this.isCloseToTop(nativeEvent) && !this.state.isLoading) {
+                    this.setState({isLoading: true});
+                    this.loadEarlier();
+                  }
+                },
+                navigation: this.props.navigation
+              }}
+              onSend={(messages) => Fire.shared.send(messages, this.state.room)}
+              user={this.state.user}
+              renderMessage={this.renderMessage} 
+              renderAvatar={null}
+              sendImage={this.sendImage}
+              renderLoading={() =>  <MaterialIndicator color='black' />}
+              renderChatFooter={this.renderChatFooter}
+            />
+        </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white'
+  },
   title: {
-    top: 15,
+    top: 30,
     fontSize: 30,
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 20,
     marginTop: 20,
-    fontFamily: "CormorantGaramond-Light"
+    fontFamily: "CormorantGaramond-Light",
   },
   chatFooter: {
     borderTopColor: 'black',
