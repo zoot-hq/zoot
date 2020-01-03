@@ -25,60 +25,66 @@ export default class PMList extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        
-        {/* titles */}
-        <Text style={styles.title}>après</Text>
-        <Text style={styles.subtitle}>
-            When you start a private message with another user, it will appear here. 
-            To get started, navigate back to the main page, click on a chatlist, and longpress 
-            on a user's name. A new chat will then open up between you and that user, and it will 
-            also appear on this list. Happy chatting!
-        </Text>
+      <View style={styles.outerContainer}>
+        <View style={styles.container}>
+          
+          {/* titles */}
+          <Text style={styles.title}>après</Text>
+          <Text style={styles.subtitle}>
+              When you start a private message with another user, it will appear here. 
+              To get started, navigate back to the main page, click on a chatlist, and longpress 
+              on a user's name. A new chat will then open up between you and that user, and it will 
+              also appear on this list. Happy chatting!
+          </Text>
 
-        <KeyboardAvoidingView behavior="padding">
-          <SafeAreaView >
-            <ScrollView contentContainerStyle={{flexGrow:1}}>
-              {/* if a query made, queried chatrooms displayed*/}
-              {(this.state.queriedChatrooms.length)?
-                this.state.queriedChatrooms.map(chatroom => (
-                <TouchableOpacity 
-                  key={chatroom} 
-                  style={styles.buttonContainer}
-                  onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
-                >
-                <Text style={styles.buttonText}># {chatroom}</Text>
-              </TouchableOpacity>))
-              :
-              // else list all available rooms
-              (this.state.chatrooms.length?
-                (this.state.queriedChatrooms.map(chatroom => (
-                <TouchableOpacity 
-                  key={chatroom} 
-                  style={styles.buttonContainer}
-                  onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
-                >
-                <Text style={styles.buttonText}># {chatroom}</Text>
-              </TouchableOpacity>)))
-              : 
-              // return loading while grabbing data from database
-              <MaterialIndicator color='black' />)
-              }
-            </ScrollView>
-          </SafeAreaView>
-        </KeyboardAvoidingView>
+          <KeyboardAvoidingView behavior="padding">
+            <SafeAreaView >
+              <ScrollView contentContainerStyle={{flexGrow:1}}>
+                {/* if a query made, queried chatrooms displayed*/}
+                {(this.state.queriedChatrooms.length)?
+                  this.state.queriedChatrooms.map(chatroom => (
+                  <TouchableOpacity 
+                    key={chatroom} 
+                    style={styles.buttonContainer}
+                    onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
+                  >
+                  <Text style={styles.buttonText}># {chatroom}</Text>
+                </TouchableOpacity>))
+                :
+                // else list all available rooms
+                (this.state.chatrooms.length?
+                  (this.state.queriedChatrooms.map(chatroom => (
+                  <TouchableOpacity 
+                    key={chatroom} 
+                    style={styles.buttonContainer}
+                    onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
+                  >
+                  <Text style={styles.buttonText}># {chatroom}</Text>
+                </TouchableOpacity>)))
+                : 
+                // return loading while grabbing data from database
+                <MaterialIndicator color='black' />)
+                }
+              </ScrollView>
+            </SafeAreaView>
+          </KeyboardAvoidingView>
+        </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  outerContainer: {
+    backgroundColor: 'white',
+    flex: 1
+  },
   container: {
     display: 'flex',
     marginRight: 20,
     marginLeft: 20,
     justifyContent: 'center',
-    marginTop: 30
+    marginTop: 30,
   },
   title: {
     top: 15,
