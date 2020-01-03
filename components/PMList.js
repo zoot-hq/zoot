@@ -47,15 +47,16 @@ export default class PMList extends React.Component {
   
                 {(this.state.chatrooms.length?
                   (this.state.chatrooms.map(chatroom => (
-                  <TouchableOpacity 
-                    key={chatroom} 
-                    style={styles.buttonContainer}
-                    onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
-                  >
-                  <Text style={styles.buttonText}># {chatroom}</Text>
-                </TouchableOpacity>)))
-                : 
-                null)
+                    !!chatroom ?
+                    <TouchableOpacity 
+                      key={chatroom} 
+                      style={styles.buttonContainer}
+                      onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
+                        >
+                    <Text style={styles.buttonText}># {chatroom}</Text>
+                   </TouchableOpacity>
+                    : null)))
+                    : null)
                 }
               </ScrollView>
             </SafeAreaView>
