@@ -12,7 +12,7 @@ export default class Bubble extends React.Component {
 
   constructor(props) {
     super(props);
-    this.onLongPress = this.onLongPress.bind(this);
+    this.onPress = this.onPress.bind(this);
     this.state = {
       likes: this.props.currentMessage.likes || null,
       loves: this.props.currentMessage.loves || null,
@@ -20,7 +20,7 @@ export default class Bubble extends React.Component {
     } 
   }
 
-  onLongPress() {
+  onPress() {
     const messageUsername = this.props.currentMessage.user.name
     const currentUsername = Fire.shared.username()
     const room = this.props.currentMessage.room
@@ -104,7 +104,7 @@ export default class Bubble extends React.Component {
     const username = this.props.currentMessage.user.name;
     if (username) {
       return (
-        <TouchableOpacity onLongPress={this.startPM}>
+        <TouchableOpacity onPress={this.startPM}>
           <Text style={[styles.standardFont, styles.headerItem, styles.username, this.props.usernameStyle]}>
             {username}
           </Text>
@@ -179,9 +179,9 @@ export default class Bubble extends React.Component {
   renderReactions() {
     return(
       <View style={{display: 'flex', flexDirection: 'row'}}>
-        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('likes')}><Foundation name='like' color='grey' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
-        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('loves')}><Foundation name='heart' color='grey' size={20}><Text> {this.state.loves.count || null}</Text></Foundation></TouchableOpacity>
-        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('lightbulbs')}><Foundation name='lightbulb' color='grey' size={20}><Text> {this.state.lightbulbs.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 20}} onPress={() => this.react('likes')}><Foundation name='like' color='grey' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 20}} onPress={() => this.react('loves')}><Foundation name='heart' color='grey' size={20}><Text> {this.state.loves.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 20}} onPress={() => this.react('lightbulbs')}><Foundation name='lightbulb' color='grey' size={20}><Text> {this.state.lightbulbs.count || null}</Text></Foundation></TouchableOpacity>
       </View>
     )
   }
@@ -198,7 +198,7 @@ export default class Bubble extends React.Component {
     return (
       <View style={[styles.container, this.props.containerStyle]}>
         <TouchableOpacity
-          onLongPress={this.onLongPress}
+          onPress={this.onPress}
           accessibilityTraits="text"
           {...this.props.touchableProps}
         >
@@ -292,7 +292,7 @@ Bubble.contextTypes = {
 
 Bubble.defaultProps = {
   touchableProps: {},
-  onLongPress: null,
+  onPress: null,
   renderMessageImage: null,
   renderMessageText: null,
   renderCustomView: null,
@@ -313,7 +313,7 @@ Bubble.defaultProps = {
 
 Bubble.propTypes = {
   touchableProps: PropTypes.object,
-  onLongPress: PropTypes.func,
+  onPress: PropTypes.func,
   renderMessageImage: PropTypes.func,
   renderMessageText: PropTypes.func,
   renderCustomView: PropTypes.func,

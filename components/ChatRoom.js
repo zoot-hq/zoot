@@ -32,11 +32,11 @@ export default class ChatRoom extends React.Component {
       }))
     }));
 
-    setTimeout(() => { 
+    setTimeout(() => {
       Fire.shared.enterRoom(this.state.room)
     }, 1500);
   }
-  
+
   componentWillUnmount = () => {
     Fire.shared.leaveRoom(this.state.room)
     Fire.shared.off();
@@ -93,13 +93,13 @@ export default class ChatRoom extends React.Component {
     }
   }
 
-  renderChatFooter = () => {
-    return (
-      <TouchableOpacity style={styles.chatFooter} onLongPress={() => this.uploadImage()}>
-        <MaterialIcons name='photo' color='grey' size={30}></MaterialIcons>
-      </TouchableOpacity>
-    )
-  }
+  // renderChatFooter = () => {
+  //   return (
+  //     <TouchableOpacity style={styles.chatFooter} onPress={() => this.uploadImage()}>
+  //       <MaterialIcons name='photo' color='grey' size={30}></MaterialIcons>
+  //     </TouchableOpacity>
+  //   )
+  // }
 
   render() {
 
@@ -121,11 +121,11 @@ export default class ChatRoom extends React.Component {
               }}
               onSend={(messages) => Fire.shared.send(messages, this.state.room)}
               user={this.state.user}
-              renderMessage={this.renderMessage} 
+              renderMessage={this.renderMessage}
               renderAvatar={null}
               sendImage={this.sendImage}
               renderLoading={() =>  <MaterialIndicator color='black' />}
-              renderChatFooter={this.renderChatFooter}
+              // renderChatFooter={this.renderChatFooter}
             />
         </View>
       </View>
