@@ -93,13 +93,13 @@ export default class ChatRoom extends React.Component {
     }
   }
 
-  renderChatFooter = () => {
-    return (
-      <TouchableOpacity style={styles.chatFooter} onPress={() => this.uploadImage()}>
-        <MaterialIcons name='photo' color='grey' size={30}></MaterialIcons>
-      </TouchableOpacity>
-    )
-  }
+  // renderChatFooter = () => {
+  //   return (
+  //     <TouchableOpacity style={styles.chatFooter} onPress={() => this.uploadImage()}>
+  //       <MaterialIcons name='photo' color='grey' size={30}></MaterialIcons>
+  //     </TouchableOpacity>
+  //   )
+  // }
 
   render() {
 
@@ -125,7 +125,7 @@ export default class ChatRoom extends React.Component {
               renderAvatar={null}
               sendImage={this.sendImage}
               renderLoading={() =>  <MaterialIndicator color='black' />}
-              renderChatFooter={this.renderChatFooter}
+              // renderChatFooter={this.renderChatFooter}
             />
         </View>
       </View>
