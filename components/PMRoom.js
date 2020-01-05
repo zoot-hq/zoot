@@ -90,7 +90,7 @@ export default class ChatRoom extends React.Component {
 
   renderChatFooter = () => {
     return (
-      <TouchableOpacity style={styles.chatFooter} onLongPress={() => this.uploadImage()}>
+      <TouchableOpacity style={styles.chatFooter} onPress={() => this.uploadImage()}>
         <MaterialIcons name='photo' color='grey' size={30}></MaterialIcons>
       </TouchableOpacity>
     )
