@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes, Platform, Image, Alert } from 'react-native';
 import { MessageText, MessageImage, Time, utils } from 'react-native-gifted-chat';
-import { Foundation } from '@expo/vector-icons';
+import { Foundation, MaterialIcons } from '@expo/vector-icons';
 
 import Fire from '../Fire';
 
@@ -14,7 +14,6 @@ export default class Bubble extends React.Component {
     super(props);
     this.onLongPress = this.onLongPress.bind(this);
     this.state = {
-      flags: this.props.currentMessage.flags || null,
       likes: this.props.currentMessage.likes || null,
       loves: this.props.currentMessage.loves || null,
       lightbulbs: this.props.currentMessage.lightbulbs || null,
@@ -215,7 +214,7 @@ export default class Bubble extends React.Component {
   }
 
   renderReactions() {
-    return(
+    return (
       <View style={{display: 'flex', flexDirection: 'row'}}>
         <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('likes')}><Foundation name='like' color='grey' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
         <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('loves')}><Foundation name='heart' color='grey' size={20}><Text> {this.state.loves.count || null}</Text></Foundation></TouchableOpacity>
@@ -225,11 +224,42 @@ export default class Bubble extends React.Component {
     )
   }
 
+  renderBlock() {
+    const messageUsername = this.props.currentMessage.user.name
+    const currUser = Fire.shared.username()    
+    if (this.props.currentMessage.react && messageUsername != currUser) {
+      return (
+        <TouchableOpacity onPress={this.blockPopup}>
+          <MaterialIcons name='block' size={15}></MaterialIcons>
+        </TouchableOpacity>
+      )
+    }
+  }
+
+  blockPopup = () => {
+    console.log('in here')
+    const user = this.props.currentMessage.user.name
+    Alert.alert(
+      'Block User',
+      `Are you sure you would like to block ${user}?`,
+      [
+        { text: 'No', onPress: () => false},
+        { text: 'Yes', onPress: () => this.blockUser() },
+      ],
+      { cancelable: false }
+    );
+  }
+
+  blockUser = () => {
+    Fire.shared.blockUser(this.props.currentMessage.user.name)
+  }
+
   render() {
     const messageHeader = (
       <View style={styles.headerView}>
         {this.renderUsername()}
         {this.renderTime()}
+        {this.renderBlock()}
         {/* {this.renderTicks()} */}
       </View>
     );
