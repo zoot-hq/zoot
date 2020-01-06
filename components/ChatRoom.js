@@ -12,7 +12,7 @@ export default class ChatRoom extends React.Component {
   constructor(props) {
     super(props)
       this.state = {
-      room: this.props.navigation.state.params.chatroom || this.props.navigation.state.params.comboName,
+      room: this.props.navigation.state.params.chatroom,
       messages: [],
       user: {
         name: Fire.shared.username(),
