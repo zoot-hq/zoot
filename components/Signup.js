@@ -78,7 +78,7 @@ export default class SignupScreen extends React.Component {
               blurOnSubmit={false}
             />
           </View>
-          {(this.state.error==='The password must be 6 characters long or more.' || 
+          {(this.state.error==='The password must be 6 characters long or more.' ||
             this.state.error==='Password should be at least 6 characters') && (
             <Text style={styles.error}>{this.state.error}</Text>
           )}
@@ -151,15 +151,15 @@ export default class SignupScreen extends React.Component {
               // sign up a user
               const status = await Fire.shared.signup
               (
-                this.state.email, 
-                this.state.password, 
+                this.state.email,
+                this.state.password,
                 this.state.username,
                 this.state.birthday,
                 this.state.city,
                 this.state.children,
                 this.state.monthsPostPartum
               )
-              
+
               // if error occured, put it on state
               if (status) {
                 console.log('error message: ', status)
@@ -169,12 +169,22 @@ export default class SignupScreen extends React.Component {
               // if everything is good, navigate into the app
               else {
                 this.props.navigation.navigate('WelcomePage')
-              }  
+              }
             }}
           >
             <Text style={styles.buttonText}>sign me up!</Text>
           </TouchableOpacity>
         </View>
+
+        <View style={styles.eula}>
+                <Text style={styles.eulaText}>By proceeding with signing in and clicking 'Sign me up!', you agree to our terms as listed in our</Text>
+                <Text style={styles.link}
+            onPress={() => Linking.openURL('http://gist.githubusercontent.com/lisjak/5196333df14d1f708563804a885a1b66/raw/8ed9e754f8cbddd156472f02487ef8bcf4ef52ff/apres-eula')}>
+        End-User License Agreement (EULA) of Après.
+        </Text>
+        </View>
+
+
       </KeyboardAvoidingView>
     );
   }
@@ -184,13 +194,42 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     backgroundColor: 'white',
-    flex: 1  },
+    flex: 1,
+  },
+  eula: {
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    textAlign: 'center',
+    flex: 0,
+    paddingBottom: 50,
+  },
+  eulaText: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginRight: 50,
+    marginLeft: 50,
+    letterSpacing: 1,
+    fontFamily: "Futura-Light",
+  },
+  link: {
+    color: 'blue',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginRight: 50,
+    marginLeft: 50,
+    letterSpacing: 1,
+    fontFamily: "Futura-Light",
+  },
   title: {
     top: 0,
     fontSize: 60,
     fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 25,
+    marginBottom: 30,
+    marginTop: 80,
     fontFamily: "CormorantGaramond-Light"
   },
   field: {
@@ -209,7 +248,7 @@ const styles = StyleSheet.create({
     fontFamily: "Futura-Light"
   },
   buttonContainer: {
-    borderStyle: 'solid', 
+    borderStyle: 'solid',
     borderWidth: 1,
     paddingVertical: 5,
     marginBottom: 15,
