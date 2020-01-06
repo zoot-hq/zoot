@@ -68,11 +68,9 @@ export default class Bubble extends React.Component {
     })
   }
 
-  renderMessageText() {
-    const messageUsername = this.props.currentMessage.user.name
-    const currUser = Fire.shared.username()
+  renderMessageText = () => {
     // check if message should be hidden
-    if (this.state.hidden && messageUsername != currUser) {
+    if (this.state.hidden && this.isSameUser()) {
       return (
         <TouchableOpacity onLongPress={() => this.unhideMessage()}>
           <Text>This message has been flagged by a user - longpress here to view anyway</Text>
@@ -163,11 +161,11 @@ export default class Bubble extends React.Component {
   }
 
   react(reactionType) {
-    const messageUsername = this.props.currentMessage.user.name
+
     const currUser = Fire.shared.username()
 
     // don't allow users to react on their own posts
-    if (messageUsername === currUser) return
+    if (this.isSameUser()) return
 
     const reaction = this.state[reactionType]
 
@@ -188,11 +186,14 @@ export default class Bubble extends React.Component {
     }
   }
 
-  startPM = async () => {
+  isSameUser = () => {
     const otherUsername = this.props.currentMessage.user.name
     const currentUsername = Fire.shared.username()
+    return otherUsername === currentUsername
+  }
 
-    if (otherUsername != currentUsername) {
+  startPM = async () => {
+    if (this.isSameUser()) {
       const comboName = otherUsername < currentUsername ? otherUsername + '-' + currentUsername : currentUsername + '-' + otherUsername
       await Fire.shared.createRoom(comboName, true)
       // this.props.listViewProps.navigation.pop()
@@ -200,7 +201,8 @@ export default class Bubble extends React.Component {
     }
   }
 
-  flag () {
+  flag = () => {
+    if (this.isSameUser()) return
     Alert.alert(
       'Flag Message',
       `You are about to flag this message as objectionable. Are you sure you would like to proceed?`,
