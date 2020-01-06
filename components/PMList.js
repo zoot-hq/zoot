@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView } from 'react-native';
-import { Searchbar } from 'react-native-paper';
 import Fire from '../Fire';
 import { MaterialIndicator } from 'react-native-indicators';
 
@@ -21,6 +20,17 @@ export default class PMList extends React.Component {
         grabbed: true
       })
   }));
+  }
+
+  getRoomName(name) {
+    const currentUser = Fire.shared.username()
+    const names = name.split('-')
+    if (names[0] === currentUser){
+        return names[1]
+    }
+    else if (names[1] === currentUser) {
+        return names[0]
+    }
   }
     
   render() {
@@ -53,7 +63,7 @@ export default class PMList extends React.Component {
                       style={styles.buttonContainer}
                       onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
                         >
-                    <Text style={styles.buttonText}># {chatroom}</Text>
+                    <Text style={styles.buttonText}># {this.getRoomName(chatroom)}</Text>
                    </TouchableOpacity>
                     : null)))
                     : null)

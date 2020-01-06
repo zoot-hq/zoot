@@ -18,7 +18,7 @@ class Fire {
     }
 
     parse = snapshot => {
-        const { timestamp, text, user, likes, loves, lightbulbs, room, base64, react, blockedUsers, flags } = snapshot.val();
+        const { timestamp, text, user, likes, loves, lightbulbs, flags, room, base64, react, hidden } = snapshot.val();
         const { key: _id } = snapshot;
         const message = {
             _id,
@@ -32,7 +32,7 @@ class Fire {
             timestamp,
             base64,
             react,
-            flags
+            hidden
         };
         console.log('blockedusers', blockedUsers)
         return message;
@@ -77,8 +77,8 @@ class Fire {
             flags: {
                 count: 0
             },
-            react: true,
-            base64: image.base64
+            base64: image.base64,
+            react: true
         }
 
         // push image to database
@@ -109,6 +109,10 @@ class Fire {
                 lightbulbs: {
                     count: 0
                 },
+                flags: {
+                    count: 0
+                },
+                hidden: false,
                 react: true
             };
 
@@ -216,14 +220,7 @@ class Fire {
     parsePMs = snapshot => {
         const currentUser = this.username()
         const { name } = snapshot.val()
-        const names = name.split('-')
-        if (names[0] === currentUser){
-            return names[1]
-        }
-
-        else if (names[1] === currentUser) {
-            return names[0]
-        }
+        return name
     }
 
     parseRooms = snapshot => {
@@ -282,13 +279,18 @@ class Fire {
     // a message by 1
     react(message, reactionType, updatedCount) {
         const { room, _id } = message
-        const ref = firebase.database().ref('chatrooms').child(room).child(_id).child(reactionType)
+        const ref = firebase.database().ref('chatrooms').child(room).child(_id)
 
         // set number of likes/loves
-        ref.set({count : updatedCount})
+        ref.child(reactionType).set({count : updatedCount})
 
         //set users object
-        ref.child('users').set(message[reactionType].users)
+        ref.child(reactionType).child('users').set(message[reactionType].users)
+
+        if (reactionType === 'flags' && updatedCount) {
+            ref.child('hidden').set(true)
+            ref.child('react').set(false)
+        }
     }
 
     // takes in the user to be blocked by current user 
