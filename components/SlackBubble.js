@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes, Platform, Image } from 'react-native';
+import { Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes, Platform, Image, Alert } from 'react-native';
 import { MessageText, MessageImage, Time, utils } from 'react-native-gifted-chat';
 import { Foundation, MaterialIcons } from '@expo/vector-icons';
-import { Alert } from 'expo'
 
 import Fire from '../Fire';
 
@@ -188,24 +187,26 @@ export default class Bubble extends React.Component {
   }
 
   renderBlock() {
-    return (
-      <TouchableOpacity onPress={() => this.blockPopup}>
-        <MaterialIcons name='block' size={20}></MaterialIcons>
-      </TouchableOpacity>
-    )
+    const messageUsername = this.props.currentMessage.user.name
+    const currUser = Fire.shared.username()    
+    if (this.props.currentMessage.react && messageUsername != currUser) {
+      return (
+        <TouchableOpacity onPress={this.blockPopup}>
+          <MaterialIcons name='block' size={15}></MaterialIcons>
+        </TouchableOpacity>
+      )
+    }
   }
 
   blockPopup = () => {
+    console.log('in here')
     const user = this.props.currentMessage.user.name
     Alert.alert(
       'Block User',
-      `Are you sure you would like to block ${user}`,
+      `Are you sure you would like to block ${user}?`,
       [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        { text: 'Yes', onPress: () => this.blockUser },
+        { text: 'No', onPress: () => false},
+        { text: 'Yes', onPress: () => this.blockUser() },
       ],
       { cancelable: false }
     );

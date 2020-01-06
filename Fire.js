@@ -71,6 +71,7 @@ class Fire {
             flags: {
                 count: 0
             },
+            react: true,
             base64: image.base64
         }
 
@@ -101,7 +102,8 @@ class Fire {
                 },
                 lightbulbs: {
                     count: 0
-                }
+                },
+                react: true
             };
 
             // push message to database
@@ -284,16 +286,18 @@ class Fire {
     }
 
     // takes in the user to be blocked by current user 
-    blockUser(userToBlock) {
+    blockUser = (userToBlock) => {
         const currentUser = this.username()
+
+        console.log('blocking', userToBlock, currentUser)
 
         // block one way
         const refToBlocker = firebase.database().ref('users').child(currentUser).child('blockedUsers')
-        refToBlocker.set({userToBlock : true})
+        refToBlocker.set({[userToBlock] : true})
 
         // block the other way
         const refToBlocked = firebase.database().ref('users').child(userToBlock).child('blockedUsers')
-        refToBlocked.set({currentUser : true}) 
+        refToBlocked.set({[currentUser] : true}) 
     }
 }
 
