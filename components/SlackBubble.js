@@ -3,6 +3,7 @@ import React from 'react';
 import { Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes, Platform, Image, Alert } from 'react-native';
 import { MessageText, MessageImage, Time, utils } from 'react-native-gifted-chat';
 import { Foundation, MaterialIcons } from '@expo/vector-icons';
+import * as MailComposer from 'expo-mail-composer';
 
 import Fire from '../Fire';
 
@@ -70,10 +71,10 @@ export default class Bubble extends React.Component {
 
   renderMessageText = () => {
     // check if message should be hidden
-    if (this.state.hidden && this.isSameUser()) {
+    if (this.state.hidden && !this.isSameUser()) {
       return (
         <TouchableOpacity onLongPress={() => this.unhideMessage()}>
-          <Text>This message has been flagged by a user as abusive. Longpress here to view messages that may contain objectionable content at your own volition and risk. </Text>
+          <Text>This message has been flagged by a user as abusive. Longpress here to view this message which may contain objectionable content at your own volition and risk. </Text>
         </TouchableOpacity>
       )
     }
@@ -202,20 +203,47 @@ export default class Bubble extends React.Component {
     }
   }
 
+  contactAdmin = async() => {
+    const message = this.props.currentMessage
+    const options = {
+      recipients: ['aprshq@gmail.com'],
+      subject: 'Objectionable Content',
+      body: `The following messgage was marked as objectionable: 
+      message info: ${message}
+      --- reported by: ${Fire.shared.username()}`
+    }
+    try {
+      await MailComposer.composeAsync(options)
+    }
+    catch(error) {
+      if (error.message === 'Mail services are not available.') {
+        Alert.alert(
+          'Contact Administrators',
+          'We were unable to open up your mail app. Please contact our admins directly at aprshq@gmail.com if you think this message should be removed. In your email, please include the thread it was sent in, the username of the message, date and time it was sent, and the message text itself. Thank you for helping us keep our content safe. '
+        )
+      }
+    }
+
+    this.react('flags')
+  }
+
   flag = () => {
     if (this.isSameUser()) return
     Alert.alert(
       'Flag Message',
-      `You are about to flag this message as abusive or objectionable. Are you sure you would like to proceed?`,
+      `You are about to flag this message as objectionable. Flagging the message will simple hide the message
+      from public view. To have the message removed, please choose the Contact Administrators option.`,
       [
-        { text: 'No', onPress: () => false},
-        { text: 'Yes', onPress: () => this.react('flags') },
+        { text: 'Cancel', onPress: () => false},
+        { text: 'Flag Message', onPress: () => this.react('flags') },
+        { text: 'Contact Administrators', onPress: () => this.contactAdmin()},
       ],
       { cancelable: false }
     );
   }
 
-  renderReactions() {
+  renderReactions = () => {
+    if (this.state.react || this.isSameUser() )
     return (
       <View style={{display: 'flex', flexDirection: 'row'}}>
         <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('likes')}><Foundation name='like' color='grey' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
@@ -309,7 +337,7 @@ export default class Bubble extends React.Component {
               {this.renderMessageText()}
 
               {/* render reactions on messages with the reaction feature */}
-              {this.state.react? this.renderReactions() : null}
+              {this.renderReactions()}
             </View>
           </View>
         </TouchableOpacity>
