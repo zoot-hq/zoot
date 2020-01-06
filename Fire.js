@@ -35,19 +35,12 @@ class Fire {
             react,
             hidden
         };
-        // console.log('blockedusers', blockedUsers)
         return message;
     };
 
     on = (room, callback) =>
         firebase.database().ref('chatrooms').child(room).limitToLast(10)
         .on('child_added', snapshot => callback(this.parse(snapshot)))
-
-    getBlockedUsers = () =>
-    firebase.database().ref('users').child(this.username())
-        .child('blockedUsers').once('value', function(snapshot) {
-            return snapshot.val()
-    });
 
     loadEarlier = (room, lastMessage, callback) => firebase.database().ref('chatrooms').child(room)
         .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
@@ -179,7 +172,6 @@ class Fire {
             // add in custom fields
             const refToUser = firebase.database().ref('users').child(username)
             refToUser.set({ birthday, city, children, monthsPostPartum, email })
-            refToUser.child('blockedUsers').set({X: true})
 
             // add displayname
             const user = firebase.auth().currentUser;
@@ -298,15 +290,9 @@ class Fire {
     blockUser = (userToBlock) => {
         const currentUser = this.username()
 
-        console.log('blocking', userToBlock, currentUser)
+        const comboName = userToBlock < currentUser ? userToBlock + '-' + currentUser : currentUser + '-' + userToBlock
 
-        // block one way
-        const refToBlocker = firebase.database().ref('users').child(currentUser)
-        refToBlocker.child('blockedUsers').child(userToBlock).set(true)
-
-        // block the other way
-        const refToBlocked = firebase.database().ref('users').child(userToBlock)
-        refToBlocked.child('blockedUsers').child(currentUser).set(true)
+        firebase.database().ref('blockedUserRelationships').child(comboName).set(true)
     }
 }
 

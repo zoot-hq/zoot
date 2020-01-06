@@ -74,7 +74,7 @@ export default class Bubble extends React.Component {
     if (this.state.hidden && !this.isSameUser()) {
       return (
         <TouchableOpacity onLongPress={() => this.unhideMessage()}>
-          <Text>This message has been flagged by a user as abusive. Longpress here to view this message which may contain objectionable content at your own volition and risk. </Text>
+          <Text style={styles.slackMessageText}>This message has been flagged by a user as abusive. Longpress here to view this message which may contain objectionable content at your own volition and risk. </Text>
         </TouchableOpacity>
       )
     }
@@ -195,7 +195,10 @@ export default class Bubble extends React.Component {
   }
 
   startPM = async () => {
-    if (this.isSameUser()) {
+    const otherUsername = this.props.currentMessage.user.name
+    const currentUsername = Fire.shared.username()
+    
+    if (!this.isSameUser()) {
       const comboName = otherUsername < currentUsername ? otherUsername + '-' + currentUsername : currentUsername + '-' + otherUsername
       await Fire.shared.createRoom(comboName, true)
       // this.props.listViewProps.navigation.pop()
@@ -257,7 +260,7 @@ export default class Bubble extends React.Component {
   renderBlock() {
     const messageUsername = this.props.currentMessage.user.name
     const currUser = Fire.shared.username()
-    if (this.props.currentMessage.react && messageUsername != currUser) {
+    if (this.state.react && messageUsername != currUser) {
       return (
         <TouchableOpacity onPress={this.blockPopup}>
           <MaterialIcons name='block' size={15}></MaterialIcons>
@@ -267,21 +270,20 @@ export default class Bubble extends React.Component {
   }
 
   blockPopup = () => {
-    console.log('in here')
     const user = this.props.currentMessage.user.name
     Alert.alert(
       'Block User',
       `Are you sure you would like to block ${user}? This user will no longer be able to contact you. This action cannot be undone. `,
       [
         { text: 'No', onPress: () => false},
-        { text: 'Yes', onPress: () => this.blockedPopup() },
+        { text: 'Yes', onPress: () => this.blockUser() },
       ],
       { cancelable: false }
     );
   }
 
 
-  blockedPopup = () => {
+  successBlock = () => {
     const blockedUser = this.props.currentMessage.user.name
     Alert.alert(
       'User blocked',
@@ -293,19 +295,32 @@ export default class Bubble extends React.Component {
     );
   }
 
-  // blockUser = () => {
-  //   Fire.shared.blockUser(this.props.currentMessage.user.name)
-  // }
-
-  blockUser = async () => {
-    if (this.isSameUser()) {
-      const comboBlockName = otherUsername < currentUsername ? otherUsername + '-' + currentUsername : currentUsername + '-' + otherUsername
-      await Fire.shared.createRoom(comboBlockName, true)
-      await this.blockedPopup()
-      // this.props.listViewProps.navigation.pop()
-      // this.props.listViewProps.navigation.replace('ChatRoom', {comboName})
+  blockUser = () => {
+    try {
+      Fire.shared.blockUser(this.props.currentMessage.user.name)
+      this.successBlock()
+    }
+    catch(error){
+      Alert.alert(
+        'Error',
+        `There was an error blocking ${blockedUser}. Please check your network connection and try again.`,
+        [
+          {text: 'OK', onPress: () => true}
+        ],
+        { cancelable: false }
+      );
     }
   }
+
+  // blockUser = async () => {
+  //   if (this.isSameUser()) {
+  //     const comboBlockName = otherUsername < currentUsername ? otherUsername + '-' + currentUsername : currentUsername + '-' + otherUsername
+  //     await Fire.shared.createRoom(comboBlockName, true)
+  //     this.blockedPopup()
+  //     // this.props.listViewProps.navigation.pop()
+  //     // this.props.listViewProps.navigation.replace('ChatRoom', {comboName})
+  //   }
+  // }
 
   render() {
     const messageHeader = (
