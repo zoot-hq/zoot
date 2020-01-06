@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes, Platform, Image } from 'react-native';
+import { Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes, Platform, Image, Alert } from 'react-native';
 import { MessageText, MessageImage, Time, utils } from 'react-native-gifted-chat';
 import { Foundation } from '@expo/vector-icons';
 
@@ -69,8 +69,10 @@ export default class Bubble extends React.Component {
   }
 
   renderMessageText() {
+    const messageUsername = this.props.currentMessage.user.name
+    const currUser = Fire.shared.username()
     // check if message should be hidden
-    if (this.state.hidden) {
+    if (this.state.hidden && messageUsername != currUser) {
       return (
         <TouchableOpacity onLongPress={() => this.unhideMessage()}>
           <Text>This message has been flagged by a user - longpress here to view anyway</Text>
@@ -178,7 +180,7 @@ export default class Bubble extends React.Component {
     }
 
     // if user has reacted, remove reaction
-    else {
+    else if (reactionType !='flags'){
       reaction.count --
       delete reaction.users[currUser]
       this.setState({reaction})
@@ -198,13 +200,25 @@ export default class Bubble extends React.Component {
     }
   }
 
+  flag () {
+    Alert.alert(
+      'Flag Message',
+      `You are about to flag this message as objectionable. Are you sure you would like to proceed?`,
+      [
+        { text: 'No', onPress: () => false},
+        { text: 'Yes', onPress: () => this.react('flags') },
+      ],
+      { cancelable: false }
+    );
+  }
+
   renderReactions() {
     return(
       <View style={{display: 'flex', flexDirection: 'row'}}>
         <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('likes')}><Foundation name='like' color='grey' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
         <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('loves')}><Foundation name='heart' color='grey' size={20}><Text> {this.state.loves.count || null}</Text></Foundation></TouchableOpacity>
         <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('lightbulbs')}><Foundation name='lightbulb' color='grey' size={20}><Text> {this.state.lightbulbs.count || null}</Text></Foundation></TouchableOpacity>
-        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('flags')}><Foundation name='flag' color='red' size={20}><Text> {this.state.flags.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.flag()}><Foundation name='flag' color='red' size={20}><Text> {this.state.flags.count || null}</Text></Foundation></TouchableOpacity>
       </View>
     )
   }
