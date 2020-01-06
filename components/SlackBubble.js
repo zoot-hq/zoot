@@ -200,14 +200,14 @@ export default class Bubble extends React.Component {
 
     if (!this.isSameUser()) {
       const comboName = otherUsername < currentUsername ? otherUsername + '-' + currentUsername : currentUsername + '-' + otherUsername
-      const status = await Fire.shared.createRoom(comboName, true)
-      if (!status) {
+      const isBlocked = await Fire.shared.createRoom(comboName, true)
+      if (isBlocked) {
         Alert.alert(
           'Error',
           `${this.props.currentMessage.user.name} is not available for private messaging.`
         )
       }
-      else this.props.listViewProps.navigation.replace('ChatRoom', {comboName})
+      else this.props.listViewProps.navigation.replace('ChatRoom', {chatroom : comboName})
     }
   }
 
@@ -301,31 +301,9 @@ export default class Bubble extends React.Component {
   }
 
   blockUser = () => {
-    try {
-      Fire.shared.blockUser(this.props.currentMessage.user.name)
-      this.successBlock()
-    }
-    catch(error){
-      Alert.alert(
-        'Error',
-        `There was an error blocking ${blockedUser}. Please check your network connection and try again.`,
-        [
-          {text: 'OK', onPress: () => true}
-        ],
-        { cancelable: false }
-      );
-    }
+    Fire.shared.blockUser(this.props.currentMessage.user.name)
+    this.successBlock()
   }
-
-  // blockUser = async () => {
-  //   if (this.isSameUser()) {
-  //     const comboBlockName = otherUsername < currentUsername ? otherUsername + '-' + currentUsername : currentUsername + '-' + otherUsername
-  //     await Fire.shared.createRoom(comboBlockName, true)
-  //     this.blockedPopup()
-  //     // this.props.listViewProps.navigation.pop()
-  //     // this.props.listViewProps.navigation.replace('ChatRoom', {comboName})
-  //   }
-  // }
 
   render() {
     const messageHeader = (

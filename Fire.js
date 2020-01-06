@@ -224,6 +224,7 @@ class Fire {
     createRoom = async (room, PM) => {
         firebase.database().ref('chatrooms').child(room).once('value', snapshot => {
             const exists = (snapshot.val() !== null)
+
             if (!exists) {
 
                 if (!PM) {
@@ -251,9 +252,9 @@ class Fire {
                     firebase.database().ref('blockedUserRelationships').child(room).once('value', snapshot => {
                         const exists = (snapshot.val() !== null)
 
-                        // if user is blocked, return false
+                        // if user is blocked, return true
                         if (exists) {
-                            return false
+                            return true
                         }
 
                         // else continue to create the chatroom
@@ -303,9 +304,9 @@ class Fire {
     blockUser = (userToBlock) => {
         const currentUser = this.username()
 
-        const comboName = userToBlock < currentUser ? userToBlock + '-' + currentUser : currentUser + '-' + userToBlock
+        const comboname = userToBlock < currentUser ? userToBlock + '-' + currentUser : currentUser + '-' + userToBlock
 
-        firebase.database().ref('blockedUserRelationships').child(comboName).set(true)
+        firebase.database().ref('blockedUserRelationships').child(comboname).set(true)
         firebase.database().ref('chatroomPMs').child(comboname).set(false)
         firebase.database().ref('chatrooms').child(comboname).set(false)
     }
