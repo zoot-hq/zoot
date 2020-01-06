@@ -42,6 +42,12 @@ class Fire {
         firebase.database().ref('chatrooms').child(room).limitToLast(10)
         .on('child_added', snapshot => callback(this.parse(snapshot)))
 
+    getBlockedUsers = () => 
+    firebase.database().ref('users').child(this.username())
+        .child('blockedUsers').once('value', function(snapshot) {
+            return snapshot.val()
+    });
+
     loadEarlier = (room, lastMessage, callback) => firebase.database().ref('chatrooms').child(room)
         .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
         .once('child_added', snapshot => callback(this.parse(snapshot)))
