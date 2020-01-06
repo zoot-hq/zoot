@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Linking} from 'react-native';
 import Fire from '../Fire';
 import * as Font from 'expo-font';
+
 
 export default class LoginScreen extends React.Component {
   constructor() {
@@ -60,6 +61,13 @@ export default class LoginScreen extends React.Component {
             <Text style={styles.buttonText}>log back in!</Text>
           </TouchableOpacity>
         </View>
+        <View style={styles.eula}>
+                <Text style={styles.eulaText}>By proceeding with logging in and clicking 'Log back in!', you agree to our terms as listed in our</Text>
+                <Text style={styles.link}
+            onPress={() => Linking.openURL('http://gist.githubusercontent.com/lisjak/5196333df14d1f708563804a885a1b66/raw/8ed9e754f8cbddd156472f02487ef8bcf4ef52ff/apres-eula')}>
+        End-User License Agreement (EULA) of Après.
+        </Text>
+        </View>
       </KeyboardAvoidingView>
     );
   }
@@ -71,12 +79,40 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flex: 1,
   },
+  eula: {
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    textAlign: 'center',
+    flex: 0,
+    paddingBottom: 50,
+  },
+  eulaText: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginRight: 50,
+    marginLeft: 50,
+    letterSpacing: 1,
+    fontFamily: "Futura-Light",
+  },
+  link: {
+    color: 'blue',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginRight: 50,
+    marginLeft: 50,
+    letterSpacing: 1,
+    fontFamily: "Futura-Light"
+  },
   title: {
     top: 0,
     fontSize: 60,
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 30,
+    marginTop: 80,
     fontFamily: "CormorantGaramond-Light"
   },
   field: {
@@ -90,12 +126,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginTop: 10,
     flexGrow: 1,
-    textAlignVertical: 'bottom',    
+    textAlignVertical: 'bottom',
     marginLeft: 2,
     fontFamily: "Futura-Light"
   },
   buttonContainer: {
-    borderStyle: 'solid', 
+    borderStyle: 'solid',
     borderWidth: 1,
     paddingVertical: 5,
     marginBottom: 15,

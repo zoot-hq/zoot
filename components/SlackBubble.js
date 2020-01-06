@@ -12,24 +12,26 @@ export default class Bubble extends React.Component {
 
   constructor(props) {
     super(props);
-    this.onPress = this.onPress.bind(this);
+    this.onLongPress = this.onLongPress.bind(this);
     this.state = {
+      flags: this.props.currentMessage.flags || null,
       likes: this.props.currentMessage.likes || null,
       loves: this.props.currentMessage.loves || null,
       lightbulbs: this.props.currentMessage.lightbulbs || null
-    } 
+    }
   }
 
-  onPress() {
+  onLongPress() {
     const messageUsername = this.props.currentMessage.user.name
     const currentUsername = Fire.shared.username()
     const room = this.props.currentMessage.room
-    
+
     if (this.props.currentMessage.text && (messageUsername != currentUsername) && this.props.currentMessage.react){
       const options = [
         this.state.likes.users[currentUsername] ? 'Unlike' : 'Like',
         this.state.loves.users[currentUsername] ? 'Unlove' : 'Love',
         this.state.lightbulbs.users[currentUsername] ? 'Unlightbulb' : 'Lightbulb',
+        this.state.flags.users[currentUsername] ? 'Unflag' : 'Flag',
         'Cancel'
       ];
       const cancelButtonIndex = options.length - 1;
@@ -43,12 +45,15 @@ export default class Bubble extends React.Component {
             // Clipboard.setString(this.props.currentMessage.text);
             this.react('likes')
             break;
-          case 1: 
+          case 1:
             this.react('loves')
             break;
-          case 2: 
+          case 2:
             this.react('lightbulbs')
             break;
+          case 3:
+              this.react('flags')
+              break;
         }
       });
     }
@@ -104,7 +109,7 @@ export default class Bubble extends React.Component {
     const username = this.props.currentMessage.user.name;
     if (username) {
       return (
-        <TouchableOpacity onPress={this.startPM}>
+        <TouchableOpacity onLongPress={this.startPM}>
           <Text style={[styles.standardFont, styles.headerItem, styles.username, this.props.usernameStyle]}>
             {username}
           </Text>
@@ -179,9 +184,10 @@ export default class Bubble extends React.Component {
   renderReactions() {
     return(
       <View style={{display: 'flex', flexDirection: 'row'}}>
-        <TouchableOpacity style={{marginRight: 20}} onPress={() => this.react('likes')}><Foundation name='like' color='grey' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
-        <TouchableOpacity style={{marginRight: 20}} onPress={() => this.react('loves')}><Foundation name='heart' color='grey' size={20}><Text> {this.state.loves.count || null}</Text></Foundation></TouchableOpacity>
-        <TouchableOpacity style={{marginRight: 20}} onPress={() => this.react('lightbulbs')}><Foundation name='lightbulb' color='grey' size={20}><Text> {this.state.lightbulbs.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('likes')}><Foundation name='like' color='grey' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('loves')}><Foundation name='heart' color='grey' size={20}><Text> {this.state.loves.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('lightbulbs')}><Foundation name='lightbulb' color='grey' size={20}><Text> {this.state.lightbulbs.count || null}</Text></Foundation></TouchableOpacity>
+          <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('flags')}><Foundation name='flag' color='red' size={20}><Text> {this.state.flags.count || null}</Text></Foundation></TouchableOpacity>
       </View>
     )
   }
@@ -198,7 +204,7 @@ export default class Bubble extends React.Component {
     return (
       <View style={[styles.container, this.props.containerStyle]}>
         <TouchableOpacity
-          onPress={this.onPress}
+          onLongPress={this.onLongPress}
           accessibilityTraits="text"
           {...this.props.touchableProps}
         >
@@ -292,7 +298,7 @@ Bubble.contextTypes = {
 
 Bubble.defaultProps = {
   touchableProps: {},
-  onPress: null,
+  onLongPress: null,
   renderMessageImage: null,
   renderMessageText: null,
   renderCustomView: null,
@@ -313,7 +319,7 @@ Bubble.defaultProps = {
 
 Bubble.propTypes = {
   touchableProps: PropTypes.object,
-  onPress: PropTypes.func,
+  onLongPress: PropTypes.func,
   renderMessageImage: PropTypes.func,
   renderMessageText: PropTypes.func,
   renderCustomView: PropTypes.func,

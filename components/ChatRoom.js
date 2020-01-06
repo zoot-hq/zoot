@@ -107,6 +107,7 @@ export default class ChatRoom extends React.Component {
       <View style={styles.container}>
         <View style={{flex: 1, marginBottom: 40}}>
           <Text style={styles.title}># {this.state.room}</Text>
+          <Text style = {styles.tips}>Welcome to #{this.state.room}. React to posts by longpressing icons beneath messages. Press the flag icon to flag abusive messages, and press the block icon to block abusive users. Swipe right to return to the home screen.</Text>
             <GiftedChat
               messages={this.state.messages}
               listViewProps={{
@@ -139,13 +140,24 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   title: {
-    top: 30,
+    top: 10,
     fontSize: 30,
     fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 5,
     marginTop: 20,
     fontFamily: "CormorantGaramond-Light",
+  },
+  tips: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    textAlign: 'left',
+    marginBottom: 10,
+    marginTop: 5,
+    fontFamily: "Futura-Light",
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 10,
   },
   chatFooter: {
     borderTopColor: 'black',
@@ -154,4 +166,3 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   }
 });
-
