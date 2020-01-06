@@ -18,7 +18,7 @@ class Fire {
     }
 
     parse = snapshot => {
-        const { timestamp, text, user, likes, loves, lightbulbs, flags, room, base64, react } = snapshot.val();
+        const { timestamp, text, user, likes, loves, lightbulbs, flags, room, base64, react, hidden } = snapshot.val();
         const { key: _id } = snapshot;
         const message = {
             _id,
@@ -32,7 +32,8 @@ class Fire {
             room,
             timestamp,
             base64,
-            react
+            react,
+            hidden
         };
         return message;
     };
@@ -70,7 +71,8 @@ class Fire {
             flags: {
               count: 0
             },
-            base64: image.base64
+            base64: image.base64,
+            react: true
         }
 
         // push image to database
@@ -100,7 +102,12 @@ class Fire {
                 },
                 lightbulbs: {
                     count: 0
-                }
+                },
+                flags: {
+                    count: 0
+                },
+                hidden: false,
+                react: true
             };
 
             // push message to database
@@ -271,13 +278,18 @@ class Fire {
     // a message by 1
     react(message, reactionType, updatedCount) {
         const { room, _id } = message
-        const ref = firebase.database().ref('chatrooms').child(room).child(_id).child(reactionType)
+        const ref = firebase.database().ref('chatrooms').child(room).child(_id)
 
         // set number of likes/loves
-        ref.set({count : updatedCount})
+        ref.child(reactionType).set({count : updatedCount})
 
         //set users object
-        ref.child('users').set(message[reactionType].users)
+        ref.child(reactionType).child('users').set(message[reactionType].users)
+
+        if (reactionType === 'flags' && updatedCount) {
+            ref.child('hidden').set(true)
+            ref.child('react').set(false)
+        }
     }
 }
 
