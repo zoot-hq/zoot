@@ -146,7 +146,6 @@ class Fire {
     // close the connection to the Backend
     off() {
         firebase.database().ref('chatrooms').off();
-        firebase.database().ref('chatroomnames').off();
         firebase.database().ref('chatroomPMs').off();
     }
 
@@ -207,8 +206,12 @@ class Fire {
         const currentUser = this.username()
         const { name } = snapshot.val()
         const names = name.split('-')
-        if (names[0] === currentUser || names[1] === currentUser) {
-            return name
+        if (names[0] === currentUser){
+            return names[1]
+        }
+
+        else if (names[1] === currentUser) {
+            return names[0]
         }
     }
 
