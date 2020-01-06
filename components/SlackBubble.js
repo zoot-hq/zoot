@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes, Platform, Image } from 'react-native';
 import { MessageText, MessageImage, Time, utils } from 'react-native-gifted-chat';
-import { Foundation } from '@expo/vector-icons';
+import { Foundation, MaterialIcons } from '@expo/vector-icons';
+import { Alert } from 'expo'
 
 import Fire from '../Fire';
 
@@ -14,24 +15,22 @@ export default class Bubble extends React.Component {
     super(props);
     this.onLongPress = this.onLongPress.bind(this);
     this.state = {
-      flags: this.props.currentMessage.flags || null,
       likes: this.props.currentMessage.likes || null,
       loves: this.props.currentMessage.loves || null,
       lightbulbs: this.props.currentMessage.lightbulbs || null
-    }
+    } 
   }
 
   onLongPress() {
     const messageUsername = this.props.currentMessage.user.name
     const currentUsername = Fire.shared.username()
     const room = this.props.currentMessage.room
-
+    
     if (this.props.currentMessage.text && (messageUsername != currentUsername) && this.props.currentMessage.react){
       const options = [
         this.state.likes.users[currentUsername] ? 'Unlike' : 'Like',
         this.state.loves.users[currentUsername] ? 'Unlove' : 'Love',
         this.state.lightbulbs.users[currentUsername] ? 'Unlightbulb' : 'Lightbulb',
-        this.state.flags.users[currentUsername] ? 'Unflag' : 'Flag',
         'Cancel'
       ];
       const cancelButtonIndex = options.length - 1;
@@ -45,15 +44,12 @@ export default class Bubble extends React.Component {
             // Clipboard.setString(this.props.currentMessage.text);
             this.react('likes')
             break;
-          case 1:
+          case 1: 
             this.react('loves')
             break;
-          case 2:
+          case 2: 
             this.react('lightbulbs')
             break;
-          case 3:
-              this.react('flags')
-              break;
         }
       });
     }
@@ -182,14 +178,41 @@ export default class Bubble extends React.Component {
   }
 
   renderReactions() {
-    return(
+    return (
       <View style={{display: 'flex', flexDirection: 'row'}}>
         <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('likes')}><Foundation name='like' color='grey' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
         <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('loves')}><Foundation name='heart' color='grey' size={20}><Text> {this.state.loves.count || null}</Text></Foundation></TouchableOpacity>
         <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('lightbulbs')}><Foundation name='lightbulb' color='grey' size={20}><Text> {this.state.lightbulbs.count || null}</Text></Foundation></TouchableOpacity>
-          <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('flags')}><Foundation name='flag' color='red' size={20}><Text> {this.state.flags.count || null}</Text></Foundation></TouchableOpacity>
       </View>
     )
+  }
+
+  renderBlock() {
+    return (
+      <TouchableOpacity onPress={() => this.blockPopup}>
+        <MaterialIcons name='block' size={20}></MaterialIcons>
+      </TouchableOpacity>
+    )
+  }
+
+  blockPopup = () => {
+    const user = this.props.currentMessage.user.name
+    Alert.alert(
+      'Block User',
+      `Are you sure you would like to block ${user}`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        { text: 'Yes', onPress: () => this.blockUser },
+      ],
+      { cancelable: false }
+    );
+  }
+
+  blockUser = () => {
+    Fire.shared.blockUser(this.props.currentMessage.user.name)
   }
 
   render() {
@@ -197,6 +220,7 @@ export default class Bubble extends React.Component {
       <View style={styles.headerView}>
         {this.renderUsername()}
         {this.renderTime()}
+        {this.renderBlock()}
         {/* {this.renderTicks()} */}
       </View>
     );
