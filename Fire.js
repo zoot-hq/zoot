@@ -1,4 +1,4 @@
-import firebase from 'firebase'; 
+import firebase from 'firebase';
 import firebaseInfo from './secrets'
 
 class Fire {
@@ -11,7 +11,7 @@ class Fire {
 
     uid() {
         return (firebase.auth().currentUser || {}).uid;
-    }  
+    }
 
     username() {
         return (firebase.auth().currentUser || {}).displayName;
@@ -28,21 +28,22 @@ class Fire {
             likes,
             loves,
             lightbulbs,
+            flags,
             room,
             timestamp,
             base64,
             react,
             hidden
         };
-        console.log('blockedusers', blockedUsers)
+        // console.log('blockedusers', blockedUsers)
         return message;
     };
 
-    on = (room, callback) => 
+    on = (room, callback) =>
         firebase.database().ref('chatrooms').child(room).limitToLast(10)
         .on('child_added', snapshot => callback(this.parse(snapshot)))
 
-    getBlockedUsers = () => 
+    getBlockedUsers = () =>
     firebase.database().ref('users').child(this.username())
         .child('blockedUsers').once('value', function(snapshot) {
             return snapshot.val()
@@ -51,7 +52,7 @@ class Fire {
     loadEarlier = (room, lastMessage, callback) => firebase.database().ref('chatrooms').child(room)
         .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
         .once('child_added', snapshot => callback(this.parse(snapshot)))
-    
+
     get timestamp() {
         return firebase.database.ServerValue.TIMESTAMP;
     }
@@ -174,17 +175,17 @@ class Fire {
 
             await firebase.auth().createUserWithEmailAndPassword(email, password)
             await firebase.auth().signInWithEmailAndPassword(email, password)
-            
+
             // add in custom fields
             const refToUser = firebase.database().ref('users').child(username)
             refToUser.set({ birthday, city, children, monthsPostPartum, email })
             refToUser.child('blockedUsers').set({X: true})
-            
+
             // add displayname
             const user = firebase.auth().currentUser;
             await user.updateProfile({
                 displayName: username
-            })  
+            })
 
         } catch (error) {
             return error
@@ -200,7 +201,7 @@ class Fire {
     }
 
     // returns true if username exists, false otherwise
-    userExists = async (username, status) => 
+    userExists = async (username, status) =>
         await firebase.database().ref('users').child(username).once("value", snapshot => {
             if(snapshot.exists()) {
                 status.exists = true
@@ -247,7 +248,7 @@ class Fire {
                         },
                         react: false
                     }
-        
+
                     // add room to chatrooms
                     firebase.database().ref('chatrooms').child(room).push(initMessage);
                 }
@@ -275,7 +276,7 @@ class Fire {
         })
     }
 
-    // this function updates the database in increasing the reaction type of 
+    // this function updates the database in increasing the reaction type of
     // a message by 1
     react(message, reactionType, updatedCount) {
         const { room, _id } = message
@@ -293,7 +294,7 @@ class Fire {
         }
     }
 
-    // takes in the user to be blocked by current user 
+    // takes in the user to be blocked by current user
     blockUser = (userToBlock) => {
         const currentUser = this.username()
 
