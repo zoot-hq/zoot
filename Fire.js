@@ -247,21 +247,34 @@ class Fire {
 
                 else {
 
-                    // add room to chatroomPM lists
-                    firebase.database().ref('chatroomPMs').child(room).set({ name : room })
+                    // check if user is blocked
+                    firebase.database().ref('blockedUserRelationships').child(room).once('value', snapshot => {
+                        const exists = (snapshot.val() !== null)
 
-                    const initMessage = {
-                        room,
-                        text: `Welcome to # ${room} - this is the beginning of your private message chat`,
-                        timestamp: Date.now(),
-                        user: {
-                            name: `#${room}`
-                        },
-                        react: false
-                    }
+                        // if user is blocked, return false
+                        if (exists) {
+                            return false
+                        }
 
-                    // add room to chatrooms
-                    firebase.database().ref('chatrooms').child(room).push(initMessage);
+                        // else continue to create the chatroom
+                        else {
+                            // add room to chatroomPM lists
+                            firebase.database().ref('chatroomPMs').child(room).set({ name : room })
+
+                            const initMessage = {
+                                room,
+                                text: `Welcome to # ${room} - this is the beginning of your private message chat`,
+                                timestamp: Date.now(),
+                                user: {
+                                    name: `#${room}`
+                                },
+                                react: false
+                            }
+
+                            // add room to chatrooms
+                            firebase.database().ref('chatrooms').child(room).push(initMessage);
+                        }
+                    })
                 }
 
             }
@@ -293,6 +306,8 @@ class Fire {
         const comboName = userToBlock < currentUser ? userToBlock + '-' + currentUser : currentUser + '-' + userToBlock
 
         firebase.database().ref('blockedUserRelationships').child(comboName).set(true)
+        firebase.database().ref('chatroomPMs').child(comboname).set(false)
+        firebase.database().ref('chatrooms').child(comboname).set(false)
     }
 }
 
