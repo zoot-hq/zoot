@@ -292,12 +292,12 @@ class Fire {
         console.log('blocking', userToBlock, currentUser)
 
         // block one way
-        const refToBlocker = firebase.database().ref('users').child(currentUser).child('blockedUsers')
-        refToBlocker.set({[userToBlock] : true})
+        const refToBlocker = firebase.database().ref('users').child(currentUser)
+        refToBlocker.child('blockedUsers').child(userToBlock).set(true)
 
         // block the other way
-        const refToBlocked = firebase.database().ref('users').child(userToBlock).child('blockedUsers')
-        refToBlocked.set({[currentUser] : true}) 
+        const refToBlocked = firebase.database().ref('users').child(userToBlock)
+        refToBlocked.child('blockedUsers').child(currentUser).set(true)
     }
 }
 
