@@ -212,14 +212,7 @@ class Fire {
     parsePMs = snapshot => {
         const currentUser = this.username()
         const { name } = snapshot.val()
-        const names = name.split('-')
-        if (names[0] === currentUser){
-            return names[1]
-        }
-
-        else if (names[1] === currentUser) {
-            return names[0]
-        }
+        return name
     }
 
     parseRooms = snapshot => {
