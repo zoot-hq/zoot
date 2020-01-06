@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import firebase from 'firebase'; 
 import firebaseInfo from './secrets'
 
 class Fire {
@@ -11,14 +11,14 @@ class Fire {
 
     uid() {
         return (firebase.auth().currentUser || {}).uid;
-    }
+    }  
 
     username() {
         return (firebase.auth().currentUser || {}).displayName;
     }
 
     parse = snapshot => {
-        const { timestamp, text, user, likes, loves, lightbulbs, flags, room, base64, react } = snapshot.val();
+        const { timestamp, text, user, likes, loves, lightbulbs, room, base64, react, blockedUsers, flags } = snapshot.val();
         const { key: _id } = snapshot;
         const message = {
             _id,
@@ -28,23 +28,30 @@ class Fire {
             likes,
             loves,
             lightbulbs,
-            flags,
             room,
             timestamp,
             base64,
-            react
+            react,
+            flags
         };
+        console.log('blockedusers', blockedUsers)
         return message;
     };
 
-    on = (room, callback) =>
+    on = (room, callback) => 
         firebase.database().ref('chatrooms').child(room).limitToLast(10)
         .on('child_added', snapshot => callback(this.parse(snapshot)))
+
+    getBlockedUsers = () => 
+    firebase.database().ref('users').child(this.username())
+        .child('blockedUsers').once('value', function(snapshot) {
+            return snapshot.val()
+    });
 
     loadEarlier = (room, lastMessage, callback) => firebase.database().ref('chatrooms').child(room)
         .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
         .once('child_added', snapshot => callback(this.parse(snapshot)))
-
+    
     get timestamp() {
         return firebase.database.ServerValue.TIMESTAMP;
     }
@@ -68,8 +75,9 @@ class Fire {
                 count: 0
             },
             flags: {
-              count: 0
+                count: 0
             },
+            react: true,
             base64: image.base64
         }
 
@@ -100,7 +108,8 @@ class Fire {
                 },
                 lightbulbs: {
                     count: 0
-                }
+                },
+                react: true
             };
 
             // push message to database
@@ -155,21 +164,23 @@ class Fire {
 
             // check to see if username already exists
             const status = await this.userExists(username, {exists: false})
-            if (status.val()) {
+            if (status.val() || username === 'X') {
                 throw new Error('username already taken.')
             }
 
             await firebase.auth().createUserWithEmailAndPassword(email, password)
             await firebase.auth().signInWithEmailAndPassword(email, password)
-
+            
             // add in custom fields
-            firebase.database().ref('users').child(username).set({ birthday, city, children, monthsPostPartum, email })
-
+            const refToUser = firebase.database().ref('users').child(username)
+            refToUser.set({ birthday, city, children, monthsPostPartum, email })
+            refToUser.child('blockedUsers').set({X: true})
+            
             // add displayname
             const user = firebase.auth().currentUser;
             await user.updateProfile({
                 displayName: username
-            })
+            })  
 
         } catch (error) {
             return error
@@ -185,7 +196,7 @@ class Fire {
     }
 
     // returns true if username exists, false otherwise
-    userExists = async (username, status) =>
+    userExists = async (username, status) => 
         await firebase.database().ref('users').child(username).once("value", snapshot => {
             if(snapshot.exists()) {
                 status.exists = true
@@ -239,7 +250,7 @@ class Fire {
                         },
                         react: false
                     }
-
+        
                     // add room to chatrooms
                     firebase.database().ref('chatrooms').child(room).push(initMessage);
                 }
@@ -267,7 +278,7 @@ class Fire {
         })
     }
 
-    // this function updates the database in increasing the reaction type of
+    // this function updates the database in increasing the reaction type of 
     // a message by 1
     react(message, reactionType, updatedCount) {
         const { room, _id } = message
@@ -278,6 +289,21 @@ class Fire {
 
         //set users object
         ref.child('users').set(message[reactionType].users)
+    }
+
+    // takes in the user to be blocked by current user 
+    blockUser = (userToBlock) => {
+        const currentUser = this.username()
+
+        console.log('blocking', userToBlock, currentUser)
+
+        // block one way
+        const refToBlocker = firebase.database().ref('users').child(currentUser)
+        refToBlocker.child('blockedUsers').child(userToBlock).set(true)
+
+        // block the other way
+        const refToBlocked = firebase.database().ref('users').child(userToBlock)
+        refToBlocked.child('blockedUsers').child(currentUser).set(true)
     }
 }
 
