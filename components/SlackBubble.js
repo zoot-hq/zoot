@@ -17,6 +17,7 @@ export default class Bubble extends React.Component {
       likes: this.props.currentMessage.likes || null,
       loves: this.props.currentMessage.loves || null,
       lightbulbs: this.props.currentMessage.lightbulbs || null,
+      flags: this.props.currentMessage.flags || null,
       react: this.props.currentMessage.react,
       hidden: this.props.currentMessage.hidden
     }
@@ -163,6 +164,7 @@ export default class Bubble extends React.Component {
 
     const currUser = Fire.shared.username()
 
+
     // don't allow users to react on their own posts
     if (this.isSameUser()) return
 
@@ -219,7 +221,7 @@ export default class Bubble extends React.Component {
         <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('likes')}><Foundation name='like' color='grey' size={20}><Text> {this.state.likes.count || null}</Text></Foundation></TouchableOpacity>
         <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('loves')}><Foundation name='heart' color='grey' size={20}><Text> {this.state.loves.count || null}</Text></Foundation></TouchableOpacity>
         <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.react('lightbulbs')}><Foundation name='lightbulb' color='grey' size={20}><Text> {this.state.lightbulbs.count || null}</Text></Foundation></TouchableOpacity>
-        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.flag()}><Foundation name='flag' color='red' size={20}><Text> {this.state.flags.count || null}</Text></Foundation></TouchableOpacity>
+        <TouchableOpacity style={{marginRight: 20}} onLongPress={() => this.flag()}><Foundation name='flag' color='grey' size={20}><Text> {this.state.flags.count || null}</Text></Foundation></TouchableOpacity>
       </View>
     )
   }
@@ -244,7 +246,7 @@ export default class Bubble extends React.Component {
       `Are you sure you would like to block ${user}? This user will no longer be able to contact you. This action cannot be undone. `,
       [
         { text: 'No', onPress: () => false},
-        { text: 'Yes', onPress: () => this.blockUser() },
+        { text: 'Yes', onPress: () => this.blockedPopup() },
       ],
       { cancelable: false }
     );
@@ -252,11 +254,12 @@ export default class Bubble extends React.Component {
 
 
   blockedPopup = () => {
-    const user = this.props.currentMessage.user.name
+    const blockedUser = this.props.currentMessage.user.name
     Alert.alert(
-      `You are blocked from communcation with {$user}.`,
+      'User blocked',
+      `${blockedUser} has been successfully blocked.`,
       [
-    {text: 'OK', onPress: () => console.log('OK Pressed')},
+        {text: 'OK', onPress: () => this.blockUser()}
       ],
       { cancelable: false }
     );
@@ -270,6 +273,7 @@ export default class Bubble extends React.Component {
     if (this.isSameUser()) {
       const comboBlockName = otherUsername < currentUsername ? otherUsername + '-' + currentUsername : currentUsername + '-' + otherUsername
       await Fire.shared.createRoom(comboBlockName, true)
+      await this.blockedPopup()
       // this.props.listViewProps.navigation.pop()
       // this.props.listViewProps.navigation.replace('ChatRoom', {comboName})
     }

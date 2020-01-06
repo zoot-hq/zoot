@@ -28,6 +28,7 @@ class Fire {
             likes,
             loves,
             lightbulbs,
+            flags,
             room,
             timestamp,
             base64,
