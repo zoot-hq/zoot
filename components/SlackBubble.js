@@ -72,7 +72,7 @@ export default class Bubble extends React.Component {
     if (this.state.hidden && this.isSameUser()) {
       return (
         <TouchableOpacity onLongPress={() => this.unhideMessage()}>
-          <Text>This message has been flagged by a user - longpress here to view anyway</Text>
+          <Text>This message has been flagged by a user as abusive. Longpress here to view messages that may contain objectionable content at your own volition and risk. </Text>
         </TouchableOpacity>
       )
     }
@@ -204,7 +204,7 @@ export default class Bubble extends React.Component {
     if (this.isSameUser()) return
     Alert.alert(
       'Flag Message',
-      `You are about to flag this message as objectionable. Are you sure you would like to proceed?`,
+      `You are about to flag this message as abusive or objectionable. Are you sure you would like to proceed?`,
       [
         { text: 'No', onPress: () => false},
         { text: 'Yes', onPress: () => this.react('flags') },
@@ -226,7 +226,7 @@ export default class Bubble extends React.Component {
 
   renderBlock() {
     const messageUsername = this.props.currentMessage.user.name
-    const currUser = Fire.shared.username()    
+    const currUser = Fire.shared.username()
     if (this.props.currentMessage.react && messageUsername != currUser) {
       return (
         <TouchableOpacity onPress={this.blockPopup}>
@@ -241,7 +241,7 @@ export default class Bubble extends React.Component {
     const user = this.props.currentMessage.user.name
     Alert.alert(
       'Block User',
-      `Are you sure you would like to block ${user}?`,
+      `Are you sure you would like to block ${user}? This user will no longer be able to contact you. This action cannot be undone. `,
       [
         { text: 'No', onPress: () => false},
         { text: 'Yes', onPress: () => this.blockUser() },
@@ -250,8 +250,29 @@ export default class Bubble extends React.Component {
     );
   }
 
-  blockUser = () => {
-    Fire.shared.blockUser(this.props.currentMessage.user.name)
+
+  blockedPopup = () => {
+    const user = this.props.currentMessage.user.name
+    Alert.alert(
+      `You are blocked from communcation with {$user}.`,
+      [
+    {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ],
+      { cancelable: false }
+    );
+  }
+
+  // blockUser = () => {
+  //   Fire.shared.blockUser(this.props.currentMessage.user.name)
+  // }
+
+  blockUser = async () => {
+    if (this.isSameUser()) {
+      const comboBlockName = otherUsername < currentUsername ? otherUsername + '-' + currentUsername : currentUsername + '-' + otherUsername
+      await Fire.shared.createRoom(comboBlockName, true)
+      // this.props.listViewProps.navigation.pop()
+      // this.props.listViewProps.navigation.replace('ChatRoom', {comboName})
+    }
   }
 
   render() {
