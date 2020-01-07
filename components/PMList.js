@@ -19,7 +19,12 @@ export default class PMList extends React.Component {
         chatrooms: [...this.state.chatrooms, room],
         grabbed: true
       })
-  }));
+    }));
+  }
+
+
+  componentWillUnmount() {
+    Fire.shared.off()
   }
 
   getRoomName(name) {
