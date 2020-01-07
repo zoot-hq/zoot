@@ -62,7 +62,7 @@ export default class PMList extends React.Component {
                       key={chatroom} 
                       style={styles.buttonContainer}
                       onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
-                        >
+                      >
                     <Text style={styles.buttonText}># {this.getRoomName(chatroom)}</Text>
                    </TouchableOpacity>
                     : null)))
