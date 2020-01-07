@@ -222,7 +222,7 @@ class Fire {
     };
 
     createRoom = async (room, PM) => {
-        firebase.database().ref('chatrooms').child(room).once('value', snapshot => {
+        return firebase.database().ref('chatrooms').child(room).once('value', snapshot => {
             const exists = (snapshot.val() !== null)
 
             if (!exists) {
@@ -249,7 +249,7 @@ class Fire {
                 else {
 
                     // check if user is blocked
-                    firebase.database().ref('blockedUserRelationships').child(room).once('value', snapshot => {
+                    return firebase.database().ref('blockedUserRelationships').child(room).once('value', snapshot => {
                         const exists = (snapshot.val() !== null)
 
                         // if user is blocked, return true
@@ -274,6 +274,7 @@ class Fire {
 
                             // add room to chatrooms
                             firebase.database().ref('chatrooms').child(room).push(initMessage);
+
                         }
                     })
                 }
