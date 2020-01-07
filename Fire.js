@@ -221,8 +221,8 @@ class Fire {
         return name;
     };
 
-    createRoom = async (room, PM) => {
-        return firebase.database().ref('chatrooms').child(room).once('value', snapshot => {
+    createRoom = async (room, PM, callback) => 
+        firebase.database().ref('chatrooms').child(room).once('value', snapshot => {
             const exists = (snapshot.val() !== null)
 
             if (!exists) {
@@ -252,13 +252,16 @@ class Fire {
                     return firebase.database().ref('blockedUserRelationships').child(room).once('value', snapshot => {
                         const exists = (snapshot.val() !== null)
 
-                        // if user is blocked, return true
+                        // if user is blocked, return so
                         if (exists) {
-                            return true
+                            callback('user blocked') 
                         }
 
                         // else continue to create the chatroom
                         else {
+
+                            callback('user not blocked')
+
                             // add room to chatroomPM lists
                             firebase.database().ref('chatroomPMs').child(room).set({ name : room })
 
@@ -274,14 +277,12 @@ class Fire {
 
                             // add room to chatrooms
                             firebase.database().ref('chatrooms').child(room).push(initMessage);
-
                         }
                     })
                 }
 
             }
         })
-    }
 
     // this function updates the database in increasing the reaction type of
     // a message by 1
