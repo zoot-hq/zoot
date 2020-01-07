@@ -35,19 +35,12 @@ class Fire {
             react,
             hidden
         };
-        // console.log('blockedusers', blockedUsers)
         return message;
     };
 
     on = (room, callback) =>
         firebase.database().ref('chatrooms').child(room).limitToLast(10)
         .on('child_added', snapshot => callback(this.parse(snapshot)))
-
-    getBlockedUsers = () =>
-    firebase.database().ref('users').child(this.username())
-        .child('blockedUsers').once('value', function(snapshot) {
-            return snapshot.val()
-    });
 
     loadEarlier = (room, lastMessage, callback) => firebase.database().ref('chatrooms').child(room)
         .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
@@ -179,7 +172,6 @@ class Fire {
             // add in custom fields
             const refToUser = firebase.database().ref('users').child(username)
             refToUser.set({ birthday, city, children, monthsPostPartum, email })
-            refToUser.child('blockedUsers').set({X: true})
 
             // add displayname
             const user = firebase.auth().currentUser;
@@ -229,9 +221,10 @@ class Fire {
         return name;
     };
 
-    createRoom = async (room, PM) => {
+    createRoom = async (room, PM, callback) => 
         firebase.database().ref('chatrooms').child(room).once('value', snapshot => {
             const exists = (snapshot.val() !== null)
+
             if (!exists) {
 
                 if (!PM) {
@@ -255,26 +248,41 @@ class Fire {
 
                 else {
 
-                    // add room to chatroomPM lists
-                    firebase.database().ref('chatroomPMs').child(room).set({ name : room })
+                    // check if user is blocked
+                    return firebase.database().ref('blockedUserRelationships').child(room).once('value', snapshot => {
+                        const exists = (snapshot.val() !== null)
 
-                    const initMessage = {
-                        room,
-                        text: `Welcome to # ${room} - this is the beginning of your private message chat`,
-                        timestamp: Date.now(),
-                        user: {
-                            name: `#${room}`
-                        },
-                        react: false
-                    }
+                        // if user is blocked, return so
+                        if (exists) {
+                            callback('user blocked') 
+                        }
 
-                    // add room to chatrooms
-                    firebase.database().ref('chatrooms').child(room).push(initMessage);
+                        // else continue to create the chatroom
+                        else {
+
+                            callback('user not blocked')
+
+                            // add room to chatroomPM lists
+                            firebase.database().ref('chatroomPMs').child(room).set({ name : room })
+
+                            const initMessage = {
+                                room,
+                                text: `Welcome to # ${room} - this is the beginning of your private message chat`,
+                                timestamp: Date.now(),
+                                user: {
+                                    name: `#${room}`
+                                },
+                                react: false
+                            }
+
+                            // add room to chatrooms
+                            firebase.database().ref('chatrooms').child(room).push(initMessage);
+                        }
+                    })
                 }
 
             }
         })
-    }
 
     // this function updates the database in increasing the reaction type of
     // a message by 1
@@ -298,15 +306,11 @@ class Fire {
     blockUser = (userToBlock) => {
         const currentUser = this.username()
 
-        console.log('blocking', userToBlock, currentUser)
+        const comboname = userToBlock < currentUser ? userToBlock + '-' + currentUser : currentUser + '-' + userToBlock
 
-        // block one way
-        const refToBlocker = firebase.database().ref('users').child(currentUser)
-        refToBlocker.child('blockedUsers').child(userToBlock).set(true)
-
-        // block the other way
-        const refToBlocked = firebase.database().ref('users').child(userToBlock)
-        refToBlocked.child('blockedUsers').child(currentUser).set(true)
+        firebase.database().ref('blockedUserRelationships').child(comboname).set(true)
+        firebase.database().ref('chatroomPMs').child(comboname).set({})
+        firebase.database().ref('chatrooms').child(comboname).set({})
     }
 }
 

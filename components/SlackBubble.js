@@ -74,7 +74,7 @@ export default class Bubble extends React.Component {
     if (this.state.hidden && !this.isSameUser()) {
       return (
         <TouchableOpacity onLongPress={() => this.unhideMessage()}>
-          <Text>This message has been flagged by a user as abusive. Longpress here to view this message which may contain objectionable content at your own volition and risk. </Text>
+          <Text style={styles.slackMessageText}>This message has been flagged by a user as abusive. Longpress here to view this message which may contain objectionable content at your own volition and risk. </Text>
         </TouchableOpacity>
       )
     }
@@ -194,12 +194,25 @@ export default class Bubble extends React.Component {
     return otherUsername === currentUsername
   }
 
-  startPM = async () => {
-    if (this.isSameUser()) {
+  startPM = () => {
+    const otherUsername = this.props.currentMessage.user.name
+    const currentUsername = Fire.shared.username()
+
+    if (!this.isSameUser()) {
       const comboName = otherUsername < currentUsername ? otherUsername + '-' + currentUsername : currentUsername + '-' + otherUsername
-      await Fire.shared.createRoom(comboName, true)
-      // this.props.listViewProps.navigation.pop()
-      this.props.listViewProps.navigation.replace('ChatRoom', {comboName})
+      Fire.shared.createRoom(comboName, true, (status => {
+        if (status === 'user blocked') {
+          console.log('user blocked')
+          Alert.alert(
+            'Error',
+            `${this.props.currentMessage.user.name} is not available for private messaging.`
+          )
+        }
+        else {
+          console.log('not blocked')
+          this.props.listViewProps.navigation.replace('ChatRoom', {chatroom : comboName})
+        }
+      }))
     }
   }
 
@@ -259,7 +272,7 @@ export default class Bubble extends React.Component {
   renderBlock() {
     const messageUsername = this.props.currentMessage.user.name
     const currUser = Fire.shared.username()
-    if (this.props.currentMessage.react && messageUsername != currUser) {
+    if (this.state.react && messageUsername != currUser) {
       return (
         <TouchableOpacity onPress={this.blockPopup}>
           <MaterialIcons name='block' size={15}></MaterialIcons>
@@ -269,56 +282,34 @@ export default class Bubble extends React.Component {
   }
 
   blockPopup = () => {
-    console.log('in here')
     const user = this.props.currentMessage.user.name
     Alert.alert(
       'Block User',
       `Are you sure you would like to block ${user}? This user will no longer be able to contact you. This action cannot be undone. `,
       [
         { text: 'No', onPress: () => false},
-        { text: 'Yes', onPress: () => this.blockedPopup() },
+        { text: 'Yes', onPress: () => this.blockUser() },
       ],
       { cancelable: false }
     );
   }
 
 
-  blockedPopup = () => {
+  successBlock = () => {
     const blockedUser = this.props.currentMessage.user.name
     Alert.alert(
       'User blocked',
       `${blockedUser} has been successfully blocked.`,
       [
-        {text: 'OK', onPress: () => this.blockUser()}
+        {text: 'OK', onPress: () => true }
       ],
       { cancelable: false }
     );
   }
 
-  blockedPM = () => {
-    const blockedUserToPM = this.props.currentMessage.user.name
-    Alert.alert(
-      'User blocked',
-      `Messaging between you and ${blockedUser} is blocked.`,
-      [
-        {text: 'OK', onPress: () => console.log('OK Pressed')}
-      ],
-      { cancelable: false }
-    );
-  }
-
-  // blockUser = () => {
-  //   Fire.shared.blockUser(this.props.currentMessage.user.name)
-  // }
-
-  blockUser = async () => {
-    if (this.isSameUser()) {
-      const comboBlockName = otherUsername < currentUsername ? otherUsername + '-' + currentUsername : currentUsername + '-' + otherUsername
-      await Fire.shared.createRoom(comboBlockName, true)
-      await this.blockedPopup()
-      // this.props.listViewProps.navigation.pop()
-      // this.props.listViewProps.navigation.replace('ChatRoom', {comboName})
-    }
+  blockUser = () => {
+    Fire.shared.blockUser(this.props.currentMessage.user.name)
+    this.successBlock()
   }
 
   render() {
