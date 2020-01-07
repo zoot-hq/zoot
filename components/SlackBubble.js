@@ -194,23 +194,25 @@ export default class Bubble extends React.Component {
     return otherUsername === currentUsername
   }
 
-  startPM = async () => {
+  startPM = () => {
     const otherUsername = this.props.currentMessage.user.name
     const currentUsername = Fire.shared.username()
 
     if (!this.isSameUser()) {
       const comboName = otherUsername < currentUsername ? otherUsername + '-' + currentUsername : currentUsername + '-' + otherUsername
-      const isBlocked = await Fire.shared.createRoom(comboName, true)
-      console.log('is blocked', isBlocked == null)
-      if (isBlocked != null) {
-        Alert.alert(
-          'Error',
-          `${this.props.currentMessage.user.name} is not available for private messaging.`
-        )
-      }
-      else {
-        this.props.listViewProps.navigation.replace('ChatRoom', {chatroom : comboName})
-      }
+      Fire.shared.createRoom(comboName, true, (status => {
+        if (status === 'user blocked') {
+          console.log('user blocked')
+          Alert.alert(
+            'Error',
+            `${this.props.currentMessage.user.name} is not available for private messaging.`
+          )
+        }
+        else {
+          console.log('not blocked')
+          this.props.listViewProps.navigation.replace('ChatRoom', {chatroom : comboName})
+        }
+      }))
     }
   }
 
