@@ -204,12 +204,14 @@ export default class Bubble extends React.Component {
   }
 
   contactAdmin = async() => {
-    const message = this.props.currentMessage
+    const message = this.props.currentMessage;
+    const messageName = this.props.currentMessage._id;
     const options = {
       recipients: ['aprshq@gmail.com'],
       subject: 'Objectionable Content',
-      body: `The following messgage was marked as objectionable: 
-      message info: ${message}
+      body: `The following message was marked as objectionable:
+
+      ${message.user.name} in #${message.room}: ${message.text} [Message ID: ${messageName}]
       --- reported by: ${Fire.shared.username()}`
     }
     try {
@@ -288,6 +290,18 @@ export default class Bubble extends React.Component {
       `${blockedUser} has been successfully blocked.`,
       [
         {text: 'OK', onPress: () => this.blockUser()}
+      ],
+      { cancelable: false }
+    );
+  }
+
+  blockedPM = () => {
+    const blockedUserToPM = this.props.currentMessage.user.name
+    Alert.alert(
+      'User blocked',
+      `Messaging between you and ${blockedUser} is blocked.`,
+      [
+        {text: 'OK', onPress: () => console.log('OK Pressed')}
       ],
       { cancelable: false }
     );
