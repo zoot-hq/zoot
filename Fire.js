@@ -307,8 +307,8 @@ class Fire {
         const comboname = userToBlock < currentUser ? userToBlock + '-' + currentUser : currentUser + '-' + userToBlock
 
         firebase.database().ref('blockedUserRelationships').child(comboname).set(true)
-        firebase.database().ref('chatroomPMs').child(comboname).set(false)
-        firebase.database().ref('chatrooms').child(comboname).set(false)
+        firebase.database().ref('chatroomPMs').child(comboname).set({})
+        firebase.database().ref('chatrooms').child(comboname).set({})
     }
 }
 

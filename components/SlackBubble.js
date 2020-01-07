@@ -201,6 +201,7 @@ export default class Bubble extends React.Component {
     if (!this.isSameUser()) {
       const comboName = otherUsername < currentUsername ? otherUsername + '-' + currentUsername : currentUsername + '-' + otherUsername
       const isBlocked = await Fire.shared.createRoom(comboName, true)
+      console.log('is blocked', isBlocked)
       if (!isBlocked) {
         console.log('not blocked')
         this.props.listViewProps.navigation.replace('ChatRoom', {chatroom : comboName})
