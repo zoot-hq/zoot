@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, AsyncStorage } from 'react-native';
 import Fire from '../Fire';
 
 export default class SignupScreen extends React.Component {
@@ -167,8 +167,13 @@ export default class SignupScreen extends React.Component {
                   this.setState({ error: status.message})
                 }
 
-                // if everything is good, navigate into the app
+                // if everything is good
                 else {
+
+                  // set user info into storage
+                  await AsyncStorage.setItem('apresLoginEmail', this.state.email)
+
+                  // naivgate into app
                   this.props.navigation.navigate('WelcomePage')
                 }
               }}
