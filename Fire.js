@@ -88,6 +88,7 @@ class Fire {
     // send the message to the Backend
     send = (messages, room) => {
         for (let i = 0; i < messages.length; i++) {
+
             const { text, user } = messages[i];
             const message = {
                 text,
@@ -96,15 +97,19 @@ class Fire {
                 timestamp: this.timestamp,
                 likes: {
                     count: 0,
+                    users: {X : true}
                 },
                 loves: {
                     count: 0,
+                    users: {X : true}
                 },
                 lightbulbs: {
-                    count: 0
+                    count: 0,
+                    users: {X : true}
                 },
                 flags: {
-                    count: 0
+                    count: 0,
+                    users: {X : true}
                 },
                 hidden: false,
                 react: true
