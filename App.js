@@ -6,7 +6,8 @@ import Home from './components/Home';
 import Signup from './components/Signup';
 import Login from './components/Login';
 import WelcomePage from './components/WelcomePage';
-import PMList from './components/PMList'
+import PMList from './components/PMList';
+import SeamlessLogin from './components/SeamlessLogin'
 
 import { createStackNavigator } from 'react-navigation';
 
@@ -28,6 +29,7 @@ const navigator = createStackNavigator({
   ChatRoom,
   Signup,
   Login,
+  SeamlessLogin,
   WelcomePage,
   PMList
 },

@@ -1,25 +1,32 @@
 import * as React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, AsyncStorage } from 'react-native';
 import * as Font from 'expo-font';
 export default class HomeScreen extends React.Component {
   constructor(){
     super()
     this.state = {
-      fontLoaded : false
+      readyToLoad : false
     }
+    this.componentWillMount = this.componentWillMount.bind(this)
   }
-  async componentDidMount() {
+
+  async componentWillMount() {
+    // get fonts
     await Font.loadAsync({
       'CormorantGaramond-Light': require('../assets/fonts/CormorantGaramond-Light.ttf'),
       'Futura-Light': require('../assets/fonts/FuturaLight.ttf')
     });
 
-    this.setState({
-      fontLoaded : true
+    // navigate to seamless login if neccessary
+    const apresLoginEmail = await AsyncStorage.getItem('apresLoginEmail')
+    if (apresLoginEmail) this.props.navigation.replace('SeamlessLogin', {email: apresLoginEmail})
+
+    else this.setState({
+      readyToLoad : true
     })
   }
   render() {
-    if (!this.state.fontLoaded) {
+    if (!this.state.readyToLoad) {
       return null
     }
     return (

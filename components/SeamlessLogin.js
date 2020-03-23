@@ -6,7 +6,6 @@ export default class LoginScreen extends React.Component {
   constructor() {
     super();
     this.state = {
-      email: '',
       password: '',
       error: false
     };
@@ -19,42 +18,17 @@ export default class LoginScreen extends React.Component {
         <View style={styles.container}>
           <Text style={styles.title}>après</Text>
           <View style={styles.field}>
-            <Text style={styles.text}>email</Text>
-            <TextInput
-            returnKeyType="next"
-            onSubmitEditing={() => this.passwordInput.focus()}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            style={styles.input}
-            onChangeText={email => this.setState({ email })}
-          />
-          </View>
-          <View style={styles.field}>
             <Text style={styles.text}>password</Text>
             <TextInput
-            returnKeyType="done"
+            returnKeyType='done'
             secureTextEntry
             style={styles.input}
             onChangeText={password => this.setState({ password })}
-            blurOnSubmit={false}
-            ref={input => (this.passwordInput = input)}
-          />
-          </View>
-          {!!this.state.error && (
-            <Text style={styles.error}> invalid login credentials </Text>
-          )}
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={ async() => {
-              const status = await Fire.shared.login(this.state.email, this.state.password)
+            onSubmitEditing={async() => {
+              const status = await Fire.shared.login(this.props.navigation.state.params.email, this.state.password)
 
               // if login successful
               if (!status) {
-
-                // set user info into storage
-                await AsyncStorage.setItem('apresLoginEmail', this.state.email)
-
                 // navigate into app
                 this.props.navigation.navigate('ChatList')
               }
@@ -62,16 +36,11 @@ export default class LoginScreen extends React.Component {
                 this.setState({ error : true })
               }
             }}
-          >
-            <Text style={styles.buttonText}>log back in!</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.eula}>
-                <Text style={styles.eulaText}>By proceeding with logging in and clicking 'Log back in!', you agree to our terms as listed in our</Text>
-                <Text style={styles.link}
-            onPress={() => Linking.openURL('http://gist.githubusercontent.com/lisjak/5196333df14d1f708563804a885a1b66/raw/8ed9e754f8cbddd156472f02487ef8bcf4ef52ff/apres-eula')}>
-        End-User License Agreement (EULA) of Après.
-        </Text>
+            />
+          </View>
+          {!!this.state.error && (
+            <Text style={styles.error}> invalid password </Text>
+          )}
         </View>
       </KeyboardAvoidingView>
     );
@@ -83,33 +52,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white',
     flex: 1,
-  },
-  eula: {
-    display: 'flex',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-    textAlign: 'center',
-    flex: 0,
-    paddingBottom: 50,
-  },
-  eulaText: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    marginRight: 50,
-    marginLeft: 50,
-    letterSpacing: 1,
-    fontFamily: "Futura-Light",
-  },
-  link: {
-    color: 'blue',
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    marginRight: 50,
-    marginLeft: 50,
-    letterSpacing: 1,
-    fontFamily: "Futura-Light"
   },
   title: {
     top: 0,
