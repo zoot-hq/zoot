@@ -38,13 +38,19 @@ class Fire {
         return message;
     };
 
-    on = (room, callback) =>
-        firebase.database().ref('chatrooms').child(room).limitToLast(10)
-        .on('child_added', snapshot => callback(this.parse(snapshot)))
+    on = (room, pm, callback) =>
+        pm ? firebase.database().ref('PMrooms').child(room).limitToLast(10)
+            .on('child_added', snapshot => callback(this.parse(snapshot)))
+            : firebase.database().ref('chatrooms').child(room).limitToLast(10)
+            .on('child_added', snapshot => callback(this.parse(snapshot)))
 
-    loadEarlier = (room, lastMessage, callback) => firebase.database().ref('chatrooms').child(room)
-        .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
-        .once('child_added', snapshot => callback(this.parse(snapshot)))
+    loadEarlier = (room, lastMessage, pm, callback) => 
+        pm? firebase.database().ref('PMrooms').child(room)
+            .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
+            .once('child_added', snapshot => callback(this.parse(snapshot)))
+            : firebase.database().ref('chatrooms').child(room)
+            .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
+            .once('child_added', snapshot => callback(this.parse(snapshot)))
 
     get timestamp() {
         return firebase.database.ServerValue.TIMESTAMP;
@@ -86,7 +92,7 @@ class Fire {
     }
 
     // send the message to the Backend
-    send = (messages, room) => {
+    send = (messages, room, pm) => {
         for (let i = 0; i < messages.length; i++) {
 
             const { text, user } = messages[i];
@@ -116,7 +122,8 @@ class Fire {
             };
 
             // push message to database
-            const refToMessage = firebase.database().ref('chatrooms').child(room).push(message)
+            const refToMessage = pm ? firebase.database().ref('PMrooms').child(room).push(message)
+                                     : firebase.database().ref('chatrooms').child(room).push(message)
 
             // push users object to database
             refToMessage.child('likes').child('users').set({X: true})
@@ -126,7 +133,7 @@ class Fire {
         }
     };
 
-    enterRoom(room) {
+    enterRoom(room, pm) {
         const user = this.username()
         const text = `${user} has joined the chat!`
         const message = {
@@ -137,10 +144,11 @@ class Fire {
             react: false
         };
 
-        firebase.database().ref('chatrooms').child(room).push(message)
+        pm ? firebase.database().ref('PMrooms').child(room).push(message)
+            : firebase.database().ref('chatrooms').child(room).push(message)    
     }
 
-    leaveRoom(room) {
+    leaveRoom(room, pm) {
         const user = this.username()
         const text = `${user} has left the chat`
         const message = {
@@ -151,7 +159,8 @@ class Fire {
             react: false
         };
 
-        firebase.database().ref('chatrooms').child(room).push(message)
+        pm ? firebase.database().ref('PMrooms').child(room).push(message)
+            : firebase.database().ref('chatrooms').child(room).push(message)
     }
 
 

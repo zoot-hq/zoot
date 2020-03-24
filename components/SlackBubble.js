@@ -210,7 +210,7 @@ export default class Bubble extends React.Component {
         }
         else {
           console.log('not blocked')
-          this.props.listViewProps.navigation.replace('ChatRoom', {chatroom : comboName})
+          this.props.listViewProps.navigation.replace('ChatRoom', {chatroom : comboName, PM : true})
         }
       }))
     }

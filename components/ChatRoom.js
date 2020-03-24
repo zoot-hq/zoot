@@ -13,6 +13,7 @@ export default class ChatRoom extends React.Component {
     super(props)
       this.state = {
       room: this.props.navigation.state.params.chatroom,
+      pm: this.props.navigation.state.params.PM,
       messages: [],
       user: {
         name: Fire.shared.username(),
@@ -26,19 +27,19 @@ export default class ChatRoom extends React.Component {
   componentDidMount = () => {
 
     //get messages for chatroom
-    Fire.shared.on(this.state.room, (message => {
+    Fire.shared.on(this.state.room, this.state.pm, (message => {
       this.setState(previousState => ({
         messages: GiftedChat.append(previousState.messages, message),
       }))
     }));
 
     setTimeout(() => {
-      Fire.shared.enterRoom(this.state.room)
+      Fire.shared.enterRoom(this.state.room, this.state.pm)
     }, 1500);
   }
 
   componentWillUnmount = () => {
-    Fire.shared.leaveRoom(this.state.room)
+    Fire.shared.leaveRoom(this.state.room, this.state.pm)
     Fire.shared.off();
   }
 
@@ -59,7 +60,7 @@ export default class ChatRoom extends React.Component {
     const newMessages = []
 
     for (let i = 0 ; i < 10; i ++) {
-      await Fire.shared.loadEarlier(this.state.room, this.state.messages[this.state.messages.length-1], (message => {
+      await Fire.shared.loadEarlier(this.state.room, this.state.messages[this.state.messages.length-1], this.state.pm, (message => {
         newMessages.push(message)
       }))
 
@@ -120,7 +121,7 @@ export default class ChatRoom extends React.Component {
                 },
                 navigation: this.props.navigation
               }}
-              onSend={(messages) => Fire.shared.send(messages, this.state.room)}
+              onSend={(messages) => Fire.shared.send(messages, this.state.room, this.state.pm)}
               user={this.state.user}
               renderMessage={this.renderMessage}
               renderAvatar={null}
