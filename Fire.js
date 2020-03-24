@@ -38,13 +38,19 @@ class Fire {
         return message;
     };
 
-    on = (room, callback) =>
-        firebase.database().ref('chatrooms').child(room).limitToLast(10)
-        .on('child_added', snapshot => callback(this.parse(snapshot)))
+    on = (room, pm, callback) =>
+        pm ? firebase.database().ref('PMrooms').child(room).limitToLast(10)
+            .on('child_added', snapshot => callback(this.parse(snapshot)))
+            : firebase.database().ref('chatrooms').child(room).limitToLast(10)
+            .on('child_added', snapshot => callback(this.parse(snapshot)))
 
-    loadEarlier = (room, lastMessage, callback) => firebase.database().ref('chatrooms').child(room)
-        .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
-        .once('child_added', snapshot => callback(this.parse(snapshot)))
+    loadEarlier = (room, lastMessage, pm, callback) => 
+        pm? firebase.database().ref('PMrooms').child(room)
+            .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
+            .once('child_added', snapshot => callback(this.parse(snapshot)))
+            : firebase.database().ref('chatrooms').child(room)
+            .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
+            .once('child_added', snapshot => callback(this.parse(snapshot)))
 
     get timestamp() {
         return firebase.database.ServerValue.TIMESTAMP;
@@ -86,7 +92,7 @@ class Fire {
     }
 
     // send the message to the Backend
-    send = (messages, room) => {
+    send = (messages, room, pm) => {
         for (let i = 0; i < messages.length; i++) {
 
             const { text, user } = messages[i];
@@ -116,7 +122,8 @@ class Fire {
             };
 
             // push message to database
-            const refToMessage = firebase.database().ref('chatrooms').child(room).push(message)
+            const refToMessage = pm ? firebase.database().ref('PMrooms').child(room).push(message)
+                                     : firebase.database().ref('chatrooms').child(room).push(message)
 
             // push users object to database
             refToMessage.child('likes').child('users').set({X: true})
@@ -126,7 +133,7 @@ class Fire {
         }
     };
 
-    enterRoom(room) {
+    enterRoom(room, pm) {
         const user = this.username()
         const text = `${user} has joined the chat!`
         const message = {
@@ -137,10 +144,11 @@ class Fire {
             react: false
         };
 
-        firebase.database().ref('chatrooms').child(room).push(message)
+        pm ? firebase.database().ref('PMrooms').child(room).push(message)
+            : firebase.database().ref('chatrooms').child(room).push(message)    
     }
 
-    leaveRoom(room) {
+    leaveRoom(room, pm) {
         const user = this.username()
         const text = `${user} has left the chat`
         const message = {
@@ -151,14 +159,16 @@ class Fire {
             react: false
         };
 
-        firebase.database().ref('chatrooms').child(room).push(message)
+        pm ? firebase.database().ref('PMrooms').child(room).push(message)
+            : firebase.database().ref('chatrooms').child(room).push(message)
     }
 
 
     // close the connection to the Backend
     off() {
         firebase.database().ref('chatrooms').off();
-        firebase.database().ref('chatroomPMs').off();
+        firebase.database().ref('PMrooms').off();
+        firebase.database().ref('PMnames').off();
     }
 
 
@@ -211,7 +221,7 @@ class Fire {
         .on('child_added', snapshot => callback(this.parseRooms(snapshot)));
 
     getPMRooms = (callback) => {
-        return firebase.database().ref('chatroomPMs')
+        return firebase.database().ref('PMnames')
         .on('child_added', snapshot => callback(this.parsePMs(snapshot)));
     }
 
@@ -229,67 +239,68 @@ class Fire {
         return name;
     };
 
-    createRoom = async (room, PM, callback) => 
+    createChatRoom = async room => 
         firebase.database().ref('chatrooms').child(room).once('value', snapshot => {
             const exists = (snapshot.val() !== null)
 
             if (!exists) {
+                // add room to chatroom list
+                firebase.database().ref('chatroomnames').child(room).set({ name : room })
 
-                if (!PM) {
+                const initMessage = {
+                    room,
+                    text: `Welcome to # ${room} - send a message to get the conversation started`,
+                    timestamp: Date.now(),
+                    user: {
+                        name: `#${room}`
+                    },
+                    react: false
+                }
 
-                    // add room to chatroom list
-                    firebase.database().ref('chatroomnames').child(room).set({ name : room })
+                // add room to chatrooms
+                firebase.database().ref('chatrooms').child(room).push(initMessage);
+            }
+        })
 
-                    const initMessage = {
-                        room,
-                        text: `Welcome to # ${room} - send a message to get the conversation started`,
-                        timestamp: Date.now(),
-                        user: {
-                            name: `#${room}`
-                        },
-                        react: false
+    createPMRoom = async (room, callback) => 
+        firebase.database().ref('PMrooms').child(room).once('value', snapshot => {
+            const exists = (snapshot.val() !== null)
+
+            if (!exists) {
+
+                // check if user is blocked
+                return firebase.database().ref('blockedUserRelationships').child(room).once('value', snapshot => {
+                    const exists = (snapshot.val() !== null)
+
+                    // if user is blocked, return so
+                    if (exists) {
+                        callback('user blocked') 
                     }
 
-                    // add room to chatrooms
-                    firebase.database().ref('chatrooms').child(room).push(initMessage);
-                }
+                    // else continue to create the chatroom
+                    else {
 
-                else {
+                        // add room to chatroomPM lists
+                        firebase.database().ref('PMnames').child(room).set({ name : room })
 
-                    // check if user is blocked
-                    return firebase.database().ref('blockedUserRelationships').child(room).once('value', snapshot => {
-                        const exists = (snapshot.val() !== null)
-
-                        // if user is blocked, return so
-                        if (exists) {
-                            callback('user blocked') 
+                        const initMessage = {
+                            room,
+                            text: `Welcome to # ${room} - this is the beginning of your private message chat`,
+                            timestamp: Date.now(),
+                            user: {
+                                name: `#${room}`
+                            },
+                            react: false
                         }
 
-                        // else continue to create the chatroom
-                        else {
+                        // add room to chatrooms
+                        firebase.database().ref('PMrooms').child(room).push(initMessage);
 
-                            callback('user not blocked')
-
-                            // add room to chatroomPM lists
-                            firebase.database().ref('chatroomPMs').child(room).set({ name : room })
-
-                            const initMessage = {
-                                room,
-                                text: `Welcome to # ${room} - this is the beginning of your private message chat`,
-                                timestamp: Date.now(),
-                                user: {
-                                    name: `#${room}`
-                                },
-                                react: false
-                            }
-
-                            // add room to chatrooms
-                            firebase.database().ref('chatrooms').child(room).push(initMessage);
-                        }
-                    })
-                }
-
+                        callback('user not blocked')
+                    }
+                })
             }
+            else callback('all good')
         })
 
     // this function updates the database in increasing the reaction type of
@@ -317,8 +328,8 @@ class Fire {
         const comboname = userToBlock < currentUser ? userToBlock + '-' + currentUser : currentUser + '-' + userToBlock
 
         firebase.database().ref('blockedUserRelationships').child(comboname).set(true)
-        firebase.database().ref('chatroomPMs').child(comboname).set({})
-        firebase.database().ref('chatrooms').child(comboname).set({})
+        firebase.database().ref('PMnames').child(comboname).set({})
+        firebase.database().ref('PMrooms').child(comboname).set({})
     }
 }
 

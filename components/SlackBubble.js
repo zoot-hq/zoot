@@ -200,7 +200,7 @@ export default class Bubble extends React.Component {
 
     if (!this.isSameUser()) {
       const comboName = otherUsername < currentUsername ? otherUsername + '-' + currentUsername : currentUsername + '-' + otherUsername
-      Fire.shared.createRoom(comboName, true, (status => {
+      Fire.shared.createPMRoom(comboName, (status => {
         if (status === 'user blocked') {
           console.log('user blocked')
           Alert.alert(
@@ -210,7 +210,7 @@ export default class Bubble extends React.Component {
         }
         else {
           console.log('not blocked')
-          this.props.listViewProps.navigation.replace('ChatRoom', {chatroom : comboName})
+          this.props.listViewProps.navigation.replace('ChatRoom', {chatroom : comboName, PM : true})
         }
       }))
     }

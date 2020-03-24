@@ -77,7 +77,7 @@ export default class ChatList extends React.Component {
                                             key={this.state.query}
                                             style={styles.buttonContainer}
                                             onPress={() => {
-                                                Fire.shared.createRoom(this.state.query)
+                                                Fire.shared.createChatRoom(this.state.query)
                                                 this.props.navigation.navigate('ChatRoom', { chatroom: this.state.query })
                                             }
                                             }
