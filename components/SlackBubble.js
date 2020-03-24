@@ -200,7 +200,7 @@ export default class Bubble extends React.Component {
 
     if (!this.isSameUser()) {
       const comboName = otherUsername < currentUsername ? otherUsername + '-' + currentUsername : currentUsername + '-' + otherUsername
-      Fire.shared.createRoom(comboName, true, (status => {
+      Fire.shared.createPMRoom(comboName, (status => {
         if (status === 'user blocked') {
           console.log('user blocked')
           Alert.alert(
