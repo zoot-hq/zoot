@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, AsyncStorage } from 'react-native';
 import * as Font from 'expo-font';
+import Fire from '../Fire';
+
 export default class HomeScreen extends React.Component {
   constructor(){
     super()
@@ -17,13 +19,19 @@ export default class HomeScreen extends React.Component {
       'Futura-Light': require('../assets/fonts/FuturaLight.ttf')
     });
 
-    // navigate to seamless login if neccessary
+    // attempt to login user in
     const apresLoginEmail = await AsyncStorage.getItem('apresLoginEmail')
-    if (apresLoginEmail) this.props.navigation.replace('SeamlessLogin', {email: apresLoginEmail})
+    const apresLoginPassword = await AsyncStorage.getItem('apresLoginPassword')
+    const status = await Fire.shared.login(apresLoginEmail, apresLoginPassword)
 
-    else this.setState({
-      readyToLoad : true
-    })
+    // if successful login, navigate in
+    if (status) {
+      this.props.navigation.navigate('ChatList')
+    }
+
+    // else navigate to regular login
+    else this.setState({readyToLoad : true})
+
   }
   render() {
     if (!this.state.readyToLoad) {

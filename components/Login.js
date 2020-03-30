@@ -54,6 +54,7 @@ export default class LoginScreen extends React.Component {
 
                 // set user info into storage
                 await AsyncStorage.setItem('apresLoginEmail', this.state.email)
+                await AsyncStorage.setItem('apresLoginPassword', this.state.password)
 
                 // navigate into app
                 this.props.navigation.navigate('ChatList')

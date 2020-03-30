@@ -172,6 +172,7 @@ export default class SignupScreen extends React.Component {
 
                   // set user info into storage
                   await AsyncStorage.setItem('apresLoginEmail', this.state.email)
+                  await AsyncStorage.setItem('apressLoginPassword', this.state.password)
 
                   // naivgate into app
                   this.props.navigation.navigate('WelcomePage')
