@@ -82,7 +82,8 @@ export default class ChatList extends React.Component {
                       style={styles.buttonContainer}
                       onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom: chatroom.name })}
                     >
-                      <Text style={styles.buttonText}># {chatroom.name} ({chatroom.numOnline} online)</Text>
+                      <Text style={styles.buttonText}># {chatroom.name}</Text>
+                      <Text style={styles.numOnline}>{chatroom.numOnline} online</Text>
                     </TouchableOpacity>))
                   :
                   // else allow user to create a new chatroom
@@ -212,7 +213,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     borderStyle: 'solid',
     borderWidth: 1,
-    paddingVertical: 5,
+    padding: 5,
     marginTop: 5,
     marginLeft: 5,
   },
@@ -225,5 +226,9 @@ const styles = StyleSheet.create({
   searchbar: {
     color: 'black',
     marginBottom: 20,
+  },
+  numOnline: {
+    fontSize: 20,
+    fontFamily: "Futura-Light"
   }
 });
