@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, AppState } from 'react-native'
+import { View, Text, StyleSheet, AppState} from 'react-native'
 import { GiftedChat } from 'react-native-gifted-chat'
 import { MaterialIndicator } from 'react-native-indicators';
 import SlackMessage from './SlackMessage'
@@ -39,6 +39,13 @@ export default class ChatRoom extends React.Component {
 
     // set event listener for a user exit
     AppState.addEventListener('change', this.handleAppStateChange)
+
+    // set error handler to ensure leave room event on app crash
+    const defaultErrorHandler = ErrorUtils.getGlobalHandler()
+    ErrorUtils.setGlobalHandler((e, isFatal) => {
+      Fire.shared.leaveRoom(this.state.room, this.state.pm)
+      defaultErrorHandler(e, isFatal)
+    })
   }
 
   handleAppStateChange = () => {
@@ -135,7 +142,7 @@ export default class ChatRoom extends React.Component {
                 },
                 navigation: this.props.navigation
               }}
-              onSend={(messages) => Fire.shared.send(messages, this.state.room, this.state.pm)}
+              onSend={(messages) => Fire.shared.seend(messages, this.state.room, this.state.pm)}
               user={this.state.user}
               renderMessage={this.renderMessage}
               renderAvatar={null}
