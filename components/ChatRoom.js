@@ -142,7 +142,7 @@ export default class ChatRoom extends React.Component {
                 },
                 navigation: this.props.navigation
               }}
-              onSend={(messages) => Fire.shared.seend(messages, this.state.room, this.state.pm)}
+              onSend={(messages) => Fire.shared.send(messages, this.state.room, this.state.pm)}
               user={this.state.user}
               renderMessage={this.renderMessage}
               renderAvatar={null}
