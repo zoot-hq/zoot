@@ -134,6 +134,8 @@ class Fire {
     };
 
     enterRoom(room, pm) {
+
+        // prepare initial message
         const user = this.username()
         const text = `${user} has joined the chat!`
         const message = {
@@ -144,11 +146,19 @@ class Fire {
             react: false
         };
 
+        // enter message into room
         pm ? firebase.database().ref('PMrooms').child(room).push(message)
-            : firebase.database().ref('chatrooms').child(room).push(message)    
+            : firebase.database().ref('chatrooms').child(room).push(message)   
+            
+        // update number of participants
+        firebase.database().ref('chatroomnames').child(room).child('numOnline').once('value').then(snapshot => {
+            firebase.database().ref('chatroomnames').child(room).child('numOnline').set(snapshot.val() + 1)
+        })
     }
 
     leaveRoom(room, pm) {
+
+        // prepare initial message
         const user = this.username()
         const text = `${user} has left the chat`
         const message = {
@@ -159,8 +169,14 @@ class Fire {
             react: false
         };
 
+        // enter message into room
         pm ? firebase.database().ref('PMrooms').child(room).push(message)
             : firebase.database().ref('chatrooms').child(room).push(message)
+
+        // update number of participants
+        firebase.database().ref('chatroomnames').child(room).child('numOnline').once('value').then(snapshot => {
+            firebase.database().ref('chatroomnames').child(room).child('numOnline').set(snapshot.val() - 1)
+        })
     }
 
 
@@ -235,8 +251,8 @@ class Fire {
     }
 
     parseRooms = snapshot => {
-        const { name } = snapshot.val();
-        return name;
+        const { name, numOnline } = snapshot.val()
+        return {name, numOnline}
     };
 
     createChatRoom = async room => 
@@ -246,6 +262,9 @@ class Fire {
             if (!exists) {
                 // add room to chatroom list
                 firebase.database().ref('chatroomnames').child(room).set({ name : room })
+
+                // add number of participants
+                firebase.database().ref('chatroomnames').child(room).child('numOnline').set(0)
 
                 const initMessage = {
                     room,
@@ -257,8 +276,8 @@ class Fire {
                     react: false
                 }
 
-                // add room to chatrooms
-                firebase.database().ref('chatrooms').child(room).push(initMessage);
+                // add room to chatrooms, with initial message
+                firebase.database().ref('chatrooms').child(room).push(initMessage)
             }
         })
 
@@ -330,6 +349,11 @@ class Fire {
         firebase.database().ref('blockedUserRelationships').child(comboname).set(true)
         firebase.database().ref('PMnames').child(comboname).set({})
         firebase.database().ref('PMrooms').child(comboname).set({})
+    }
+
+    // this function sets up a connection with the database to send back updates on changes in online partcipants 
+    getUpdatedNumOnline = (callback) => {
+        firebase.database().ref('chatroomnames').on('child_changed', snapshot => callback(snapshot.val()))
     }
 }
 
