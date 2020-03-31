@@ -235,6 +235,10 @@ class Fire {
         firebase.database().ref('chatroomnames')
         .on('child_added', snapshot => callback(this.parseRooms(snapshot)));
 
+    removeChatRooms = (callback) =>
+        firebase.database().ref('chatroomnames')
+        .on('child_removed', snapshot => callback(this.parseRooms(snapshot)));
+        
     getPMRooms = (callback) => {
         return firebase.database().ref('PMnames')
         .on('child_added', snapshot => callback(this.parsePMs(snapshot)));

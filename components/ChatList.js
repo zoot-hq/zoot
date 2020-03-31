@@ -17,11 +17,19 @@ export default class ChatList extends React.Component {
 
   componentWillMount() {
 
-    // grab chatrooms == every room has a name and numOnline attribute
-    Fire.shared.getChatRoomNames((room => {
+    // grab chatrooms = every room has a name and numOnline attribute
+    Fire.shared.getChatRoomNames((newRoom => {
+      const queriedChatrooms = this.state.queriedChatrooms
+
+      // add room to querried rooms if query matches
+      if (newRoom.name.toLowerCase().includes(this.state.query.toLowerCase())) {
+        queriedChatrooms.push(newRoom)
+      }
+
+      // update state
       this.setState({
-        chatrooms: [...this.state.chatrooms, room],
-        queriedChatrooms: [...this.state.queriedChatrooms, room]
+        chatrooms: [...this.state.chatrooms, newRoom].sort((a, b) => (a.name > b.name) ? 1 : -1),
+        queriedChatrooms: queriedChatrooms.sort((a, b) => (a.name > b.name) ? 1 : -1),
       })
     }))
 
