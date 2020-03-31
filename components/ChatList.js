@@ -61,7 +61,7 @@ export default class ChatList extends React.Component {
             placeholder="Search for public chatrooms"
             onChangeText={query => {
               const queriedChatrooms = this.state.chatrooms.filter(chatroom => {
-                return chatroom.toLowerCase().includes(query.toLowerCase())
+                return chatroom.name.toLowerCase().includes(query.toLowerCase())
               })
               this.setState({ queriedChatrooms, query });
               if (!query.length) {
@@ -82,7 +82,7 @@ export default class ChatList extends React.Component {
                       style={styles.buttonContainer}
                       onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom: chatroom.name })}
                     >
-                      <Text style={styles.buttonText}># {chatroom.name} ({chatroom.numOnline}) online</Text>
+                      <Text style={styles.buttonText}># {chatroom.name} ({chatroom.numOnline} online)</Text>
                     </TouchableOpacity>))
                   :
                   // else allow user to create a new chatroom
@@ -119,7 +119,7 @@ export default class ChatList extends React.Component {
             placeholder="Search for partnered organizations"
             onChangeText={query => {
               const queriedChatrooms = this.state.chatrooms.filter(chatroom => {
-                return chatroom.toLowerCase().includes(query.toLowerCase())
+                return chatroom.name.toLowerCase().includes(query.toLowerCase())
               })
               this.setState({ queriedChatrooms, query });
               if (!query.length) {

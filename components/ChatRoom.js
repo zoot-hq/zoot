@@ -1,8 +1,7 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, AppState } from 'react-native'
 import { GiftedChat } from 'react-native-gifted-chat'
 import { MaterialIndicator } from 'react-native-indicators';
-import { MaterialIcons } from '@expo/vector-icons';
 import SlackMessage from './SlackMessage'
 import Fire from '../Fire';
 import * as Permissions from 'expo-permissions';
@@ -33,14 +32,29 @@ export default class ChatRoom extends React.Component {
       }))
     }));
 
+    // set timeout for enter message
     setTimeout(() => {
       Fire.shared.enterRoom(this.state.room, this.state.pm)
-    }, 1500);
+    }, 1500)
+
+    // set event listener for a user exit
+    AppState.addEventListener('change', this.handleAppStateChange)
+  }
+
+  handleAppStateChange = () => {
+    if (AppState.currentState.match(/inactive/)) {
+      Fire.shared.leaveRoom(this.state.room, this.state.pm)
+    }
+
+    else if (AppState.currentState.match(/active/)) {
+      Fire.shared.enterRoom(this.state.room, this.state.pm)
+    }
   }
 
   componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange)
     Fire.shared.leaveRoom(this.state.room, this.state.pm)
-    Fire.shared.off();
+    Fire.shared.off()
   }
 
   renderMessage(props) {
