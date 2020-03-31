@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Linking, AsyncStorage } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Linking, AsyncStorage, Alert } from 'react-native';
+import Modal from 'react-native-modal';
 import Fire from '../Fire';
 
 export default class LoginScreen extends React.Component {
@@ -8,8 +9,29 @@ export default class LoginScreen extends React.Component {
     this.state = {
       email: '',
       password: '',
-      error: false
-    };
+      error: false,
+      showResetPasswordForm: false,
+      resetPasswordError: false,
+    }
+  }
+
+  resetPassword = async () => {
+    try {
+
+      // try to send password reset email
+      await Fire.shared.sendPasswordResetEmail(this.state.email)
+      
+      // send alert if successful
+      Alert.alert(
+        'Password Reset',
+        `An email has been sent to ${this.state.email} with further instructions on how to reset your password.`,
+        [
+          {text: 'Ok, great!', onPress: () => this.setState({ showResetPasswordForm : false })}
+        ]
+      )
+    } catch (error) {
+      this.setState({ resetPasswordError : true})    
+    }
   }
 
   render() {
@@ -42,7 +64,9 @@ export default class LoginScreen extends React.Component {
           />
           </View>
           {!!this.state.error && (
-            <Text style={styles.error}> invalid login credentials </Text>
+            <TouchableOpacity onPress = {() => this.setState({ showResetPasswordForm : true })}>
+              <Text style={styles.error}> invalid login credentials - click here to reset your password </Text>
+            </TouchableOpacity>
           )}
           <TouchableOpacity
             style={styles.buttonContainer}
@@ -68,11 +92,38 @@ export default class LoginScreen extends React.Component {
           </TouchableOpacity>
         </View>
         <View style={styles.eula}>
-                <Text style={styles.eulaText}>By proceeding with logging in and clicking 'Log back in!', you agree to our terms as listed in our</Text>
-                <Text style={styles.link}
-            onPress={() => Linking.openURL('http://gist.githubusercontent.com/lisjak/5196333df14d1f708563804a885a1b66/raw/8ed9e754f8cbddd156472f02487ef8bcf4ef52ff/apres-eula')}>
-        End-User License Agreement (EULA) of Après.
-        </Text>
+            <Text style={styles.eulaText}>By proceeding with logging in and clicking 'Log back in!', you agree to our terms as listed in our</Text>
+            <Text style={styles.link}
+              onPress={() => Linking.openURL('http://gist.githubusercontent.com/lisjak/5196333df14d1f708563804a885a1b66/raw/8ed9e754f8cbddd156472f02487ef8bcf4ef52ff/apres-eula')}>
+              End-User License Agreement (EULA) of Après.
+          </Text>
+        </View>
+
+        {/* password reset form - visible only when showResetPasswordForm on state is set to true */}
+        <View>
+          <Modal isVisible={this.state.showResetPasswordForm}>
+            <View style={styles.modal}>
+              <View style={styles.field}>
+                <Text style={styles.text}>email</Text>
+                <TextInput
+                returnKeyType="done"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                style={styles.input}
+                onChangeText={email => this.setState({ email })}
+                />
+              </View>
+              {!!this.state.resetPasswordError && (
+                <TouchableOpacity>
+                  <Text style={styles.error}> email not found </Text>
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity style={styles.buttonContainer} onPress={this.resetPassword}>
+                <Text style={styles.buttonText}>reset password</Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
         </View>
       </KeyboardAvoidingView>
     );
@@ -159,8 +210,15 @@ const styles = StyleSheet.create({
     fontFamily: "Futura-Light",
     marginRight: 50,
     marginLeft: 50,
+    marginTop: 10
   },
   text: {
     fontFamily: "Futura-Light"
+  },
+  modal : { 
+    backgroundColor: 'white', 
+    paddingVertical: 50, 
+    borderRadius: 10,
+    paddingHorizontal: 10
   }
 });

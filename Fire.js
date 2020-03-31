@@ -358,6 +358,10 @@ class Fire {
     getUpdatedNumOnline = (callback) => {
         firebase.database().ref('chatroomnames').on('child_changed', snapshot => callback(snapshot.val()))
     }
+
+    sendPasswordResetEmail = (email) => {
+        return firebase.auth().sendPasswordResetEmail(email)
+    }
 }
 
 Fire.shared = new Fire();
