@@ -11,18 +11,38 @@ export default class ChatList extends React.Component {
     this.state = ({
       chatrooms: [],
       queriedChatrooms: [],
-      query: ''
+      query: '',
     })
   }
 
   componentWillMount() {
-    //grab chatrooms
+
+    // grab chatrooms == every room has a name and numOnline attribute
     Fire.shared.getChatRoomNames((room => {
       this.setState({
         chatrooms: [...this.state.chatrooms, room],
         queriedChatrooms: [...this.state.queriedChatrooms, room]
       })
-    }));
+    }))
+
+    // update numOnline as it changes in database
+    Fire.shared.getUpdatedNumOnline((updatedRoom => {
+
+      this.setState({
+        chatrooms: this.state.chatrooms.map(chatroom => {
+          if (chatroom.name === updatedRoom.name) {
+             return updatedRoom
+          }
+          return chatroom
+        }),
+        queriedChatrooms: this.state.queriedChatrooms.map(chatroom => {
+          if (chatroom.name === updatedRoom.name) {
+             return updatedRoom
+          }
+          return chatroom
+        })
+      })
+    }))
   }
 
   render() {
@@ -41,7 +61,7 @@ export default class ChatList extends React.Component {
             placeholder="Search for public chatrooms"
             onChangeText={query => {
               const queriedChatrooms = this.state.chatrooms.filter(chatroom => {
-                return chatroom.includes(query.toLowerCase())
+                return chatroom.name.includes(query.toLowerCase())
               })
               this.setState({ queriedChatrooms, query });
               if (!query.length) {
@@ -58,11 +78,11 @@ export default class ChatList extends React.Component {
                 {(this.state.queriedChatrooms.length) ?
                   this.state.queriedChatrooms.map(chatroom => (
                     <TouchableOpacity
-                      key={chatroom}
+                      key={chatroom.name}
                       style={styles.buttonContainer}
-                      onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
+                      onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom: chatroom.name })}
                     >
-                      <Text style={styles.buttonText}># {chatroom}</Text>
+                      <Text style={styles.buttonText}># {chatroom.name} ({chatroom.numOnline}) online</Text>
                     </TouchableOpacity>))
                   :
                   // else allow user to create a new chatroom
@@ -99,7 +119,7 @@ export default class ChatList extends React.Component {
             placeholder="Search for partnered organizations"
             onChangeText={query => {
               const queriedChatrooms = this.state.chatrooms.filter(chatroom => {
-                return chatroom.includes(query.toLowerCase())
+                return chatroom.name.includes(query.toLowerCase())
               })
               this.setState({ queriedChatrooms, query });
               if (!query.length) {
@@ -117,11 +137,11 @@ export default class ChatList extends React.Component {
                 {(this.state.queriedChatrooms.length) ?
                   this.state.queriedChatrooms.map(chatroom => (
                     <TouchableOpacity
-                      key={chatroom}
+                      key={chatroom.name}
                       style={styles.buttonContainer}
-                      onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom })}
+                      onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom: chatroom.name })}
                     >
-                      <Text style={styles.buttonText}># {chatroom}</Text>
+                      <Text style={styles.buttonText}># {chatroom.name}</Text>
                     </TouchableOpacity>))
                   :
                   // no results -- DO NOT create new partnered chats from UI

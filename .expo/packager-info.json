@@ -1,9 +1,9 @@
 {
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 12288,
+  "packagerPid": 14369,
   "expoServerNgrokUrl": "https://qs-zj4.malkam.zoot.exp.direct",
   "packagerNgrokUrl": "https://packager.qs-zj4.malkam.zoot.exp.direct",
-  "ngrokPid": 12299,
+  "ngrokPid": 14380,
   "devToolsPort": 19002
 }

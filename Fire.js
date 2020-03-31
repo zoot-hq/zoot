@@ -251,8 +251,8 @@ class Fire {
     }
 
     parseRooms = snapshot => {
-        const { name } = snapshot.val();
-        return name;
+        const { name, numOnline } = snapshot.val()
+        return {name, numOnline}
     };
 
     createChatRoom = async room => 
@@ -349,6 +349,11 @@ class Fire {
         firebase.database().ref('blockedUserRelationships').child(comboname).set(true)
         firebase.database().ref('PMnames').child(comboname).set({})
         firebase.database().ref('PMrooms').child(comboname).set({})
+    }
+
+    // this function sets up a connection with the database to send back updates on changes in online partcipants 
+    getUpdatedNumOnline = (callback) => {
+        firebase.database().ref('chatroomnames').on('child_changed', snapshot => callback(snapshot.val()))
     }
 }
 
