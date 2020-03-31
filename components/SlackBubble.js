@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Text, Clipboard, StyleSheet, TouchableOpacity, View, ViewPropTypes, Platform, Image, Alert } from 'react-native';
-import { MessageText, MessageImage, Time, utils } from 'react-native-gifted-chat';
+import { Text, StyleSheet, TouchableOpacity, View, ViewPropTypes, Platform, Image, Alert } from 'react-native';
+import { MessageText, Time, utils } from 'react-native-gifted-chat';
 import { Foundation, MaterialIcons } from '@expo/vector-icons';
 import * as MailComposer from 'expo-mail-composer';
 
@@ -209,7 +209,11 @@ export default class Bubble extends React.Component {
           )
         }
         else {
-          console.log('not blocked')
+
+          // leave chatroom
+          Fire.shared.leaveRoom(this.props.currentMessage.room, true)
+
+          // nvaigate to pm
           this.props.listViewProps.navigation.replace('ChatRoom', {chatroom : comboName, PM : true})
         }
       }))

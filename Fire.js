@@ -149,9 +149,9 @@ class Fire {
         // enter message into room
         pm ? firebase.database().ref('PMrooms').child(room).push(message)
             : firebase.database().ref('chatrooms').child(room).push(message)   
-            
-        // update number of participants
-        firebase.database().ref('chatroomnames').child(room).child('numOnline').once('value').then(snapshot => {
+
+        // update number of participants if not PM
+        if (!pm) firebase.database().ref('chatroomnames').child(room).child('numOnline').once('value').then(snapshot => {
             firebase.database().ref('chatroomnames').child(room).child('numOnline').set(snapshot.val() + 1)
         })
     }
@@ -173,12 +173,11 @@ class Fire {
         pm ? firebase.database().ref('PMrooms').child(room).push(message)
             : firebase.database().ref('chatrooms').child(room).push(message)
 
-        // update number of participants
-        firebase.database().ref('chatroomnames').child(room).child('numOnline').once('value').then(snapshot => {
+        // update number of participants if not PM
+        if (!pm) firebase.database().ref('chatroomnames').child(room).child('numOnline').once('value').then(snapshot => {
             firebase.database().ref('chatroomnames').child(room).child('numOnline').set(snapshot.val() - 1)
         })
     }
-
 
     // close the connection to the Backend
     off() {
