@@ -133,7 +133,7 @@ class Fire {
         }
     };
 
-    enterRoom(room, pm) {
+    enterRoom(room, pm, live) {
 
         // prepare initial message
         const user = this.username()
@@ -146,8 +146,8 @@ class Fire {
             react: false
         };
 
-        // enter message into room
-        pm ? firebase.database().ref('PMrooms').child(room).push(message)
+        // enter message into room only if live
+        if (live) pm ? firebase.database().ref('PMrooms').child(room).push(message)
             : firebase.database().ref('chatrooms').child(room).push(message)   
 
         // update number of participants if not PM
@@ -156,7 +156,7 @@ class Fire {
         })
     }
 
-    leaveRoom(room, pm) {
+    leaveRoom(room, pm, live) {
 
         // prepare initial message
         const user = this.username()
@@ -169,8 +169,8 @@ class Fire {
             react: false
         };
 
-        // enter message into room
-        pm ? firebase.database().ref('PMrooms').child(room).push(message)
+        // enter message into room only if live
+        if (live) pm ? firebase.database().ref('PMrooms').child(room).push(message)
             : firebase.database().ref('chatrooms').child(room).push(message)
 
         // update number of participants if not PM

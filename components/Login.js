@@ -122,6 +122,9 @@ export default class LoginScreen extends React.Component {
               <TouchableOpacity style={styles.buttonContainer} onPress={this.resetPassword}>
                 <Text style={styles.buttonText}>reset password</Text>
               </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.setState({ showResetPasswordForm : false })}>
+                <Text style={styles.cancel}>cancel</Text>
+              </TouchableOpacity>
             </View>
           </Modal>
         </View>
@@ -202,6 +205,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 30,
     fontFamily: "CormorantGaramond-Light"
+  },
+  cancel: {
+    fontFamily: "CormorantGaramond-Light",
+    textAlign: 'center',
+    fontSize: 25,
   },
   error: {
     color: "red",
