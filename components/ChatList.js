@@ -66,7 +66,7 @@ export default class ChatList extends React.Component {
         <View style={styles.searchView}>
           < Searchbar
             theme={{ colors: { primary: 'black' } }}
-            placeholder="Search for public message boards"
+            placeholder="Search our message boards"
             onChangeText={query => {
               const queriedChatrooms = this.state.chatrooms.filter(chatroom => {
                 return chatroom.name.toLowerCase().includes(query.toLowerCase())
