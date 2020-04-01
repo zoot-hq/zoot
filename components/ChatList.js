@@ -81,7 +81,7 @@ export default class ChatList extends React.Component {
           {/* chatroom list */}
           <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding" >
             <SafeAreaView >
-              <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+              <ScrollView contentContainerStyle={{ flexGrow: 1}}>
                 {/* if a query made, queried chatrooms displayed*/}
                 {(this.state.queriedChatrooms.length) ?
                   this.state.queriedChatrooms.map(chatroom => (
@@ -122,52 +122,6 @@ export default class ChatList extends React.Component {
           </KeyboardAvoidingView>
         </View>
 
-        <View style={styles.searchView}>
-          <Searchbar
-            theme={{ colors: { primary: 'black' } }}
-            placeholder="Search for partnered organizations"
-            onChangeText={query => {
-              const queriedChatrooms = this.state.chatrooms.filter(chatroom => {
-                return chatroom.name.toLowerCase().includes(query.toLowerCase())
-              })
-              this.setState({ queriedChatrooms, query });
-              if (!query.length) {
-                this.setState({ queriedChatrooms: this.state.chatrooms })
-              }
-            }}
-          />
-
-          {/*TO DO: REPLACE PUBLIC CHATS WITH LINKS TO ORGANIZATION CHAT ROOM LISTS */}
-          {/*TO DO: POPUP TO REQUEST TO JOIN ORG IF NOT ALREADY A MEMBER*/}
-          <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding" >
-            <SafeAreaView >
-              <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                {/* if a query made, queried chatrooms displayed*/}
-                {(this.state.queriedChatrooms.length) ?
-                  this.state.queriedChatrooms.map(chatroom => (
-                    <TouchableOpacity
-                      key={chatroom.name}
-                      style={styles.buttonContainer}
-                      onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom: chatroom.name })}
-                    >
-                      <Text style={styles.buttonText}># {chatroom.name}</Text>
-                    </TouchableOpacity>))
-                  :
-                  // no results -- DO NOT create new partnered chats from UI
-                  (this.state.chatrooms.length ?
-                    <View>
-                      <Text>No results.</Text>
-                    </View>
-                    :
-
-                    // return loading while grabbing data from database
-                    <MaterialIndicator color='black' />)
-
-                }
-              </ScrollView>
-            </SafeAreaView>
-          </KeyboardAvoidingView>
-        </View>
 
         <TouchableOpacity style={{ alignSelf: 'flex-end', marginTop: 10 }} onPress={() => this.props.navigation.navigate('PMList')}>
           <Ionicons name='ios-chatbubbles' size={30} color='grey'></Ionicons>
@@ -180,8 +134,6 @@ export default class ChatList extends React.Component {
 
 const styles = StyleSheet.create({
   chatroomlist: {
-    minHeight: 100,
-    maxHeight: 195,
     marginBottom: 30
   },
   container: {

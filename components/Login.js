@@ -122,6 +122,9 @@ export default class LoginScreen extends React.Component {
               <TouchableOpacity style={styles.buttonContainer} onPress={this.resetPassword}>
                 <Text style={styles.buttonText}>reset password</Text>
               </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.setState({ showResetPasswordForm : false })}>
+                <Text>cancel</Text>
+              </TouchableOpacity>
             </View>
           </Modal>
         </View>
