@@ -235,6 +235,10 @@ class Fire {
         firebase.database().ref('chatroomnames')
         .on('child_added', snapshot => callback(this.parseRooms(snapshot)));
 
+    removeChatRooms = (callback) =>
+        firebase.database().ref('chatroomnames')
+        .on('child_removed', snapshot => callback(this.parseRooms(snapshot)));
+        
     getPMRooms = (callback) => {
         return firebase.database().ref('PMnames')
         .on('child_added', snapshot => callback(this.parsePMs(snapshot)));
@@ -353,6 +357,10 @@ class Fire {
     // this function sets up a connection with the database to send back updates on changes in online partcipants 
     getUpdatedNumOnline = (callback) => {
         firebase.database().ref('chatroomnames').on('child_changed', snapshot => callback(snapshot.val()))
+    }
+
+    sendPasswordResetEmail = (email) => {
+        return firebase.auth().sendPasswordResetEmail(email)
     }
 }
 
