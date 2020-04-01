@@ -123,7 +123,7 @@ export default class LoginScreen extends React.Component {
                 <Text style={styles.buttonText}>reset password</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => this.setState({ showResetPasswordForm : false })}>
-                <Text>cancel</Text>
+                <Text style={styles.cancel}>cancel</Text>
               </TouchableOpacity>
             </View>
           </Modal>
@@ -205,6 +205,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 30,
     fontFamily: "CormorantGaramond-Light"
+  },
+  cancel: {
+    fontFamily: "CormorantGaramond-Light",
+    textAlign: 'center',
+    fontSize: 25,
   },
   error: {
     color: "red",
