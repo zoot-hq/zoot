@@ -90,7 +90,7 @@ export default class ChatList extends React.Component {
                       style={styles.buttonContainer}
                       onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom: chatroom.name })}
                     >
-                      <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                      <View style={styles.singleChatView}>
                         <Text style={styles.buttonText}># {chatroom.name}</Text>
                         <Ionicons name='md-people' size={25} color='grey'> {chatroom.numOnline}</Ionicons>
                       </View>
@@ -192,5 +192,10 @@ const styles = StyleSheet.create({
   numOnline: {
     fontSize: 20,
     fontFamily: "Futura-Light"
+  },
+  singleChatView: {
+    display: 'flex', 
+    flexDirection: 'row', 
+    justifyContent: 'space-between'
   }
 });
