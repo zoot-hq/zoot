@@ -93,7 +93,7 @@ export default class ChatList extends React.Component {
                       <View style={styles.singleChatView}>
                         <Text style={styles.buttonText}># {chatroom.name}</Text>
                         <Ionicons name='md-people' size={25} color='grey'> {chatroom.numOnline}</Ionicons>
-                      </View>
+                      </View> 
                     </TouchableOpacity>))
                   :
                   // else allow user to create a new chatroom
