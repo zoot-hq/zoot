@@ -184,10 +184,11 @@ export default class SignupScreen extends React.Component {
           </View>
 
           <View style={styles.eula}>
-            <Text style={styles.eulaText}>By proceeding with signing in and clicking 'Sign me up!', you agree to our terms as listed in our </Text>
-            <Text style={styles.link}
-                onPress={() => Linking.openURL('http://gist.githubusercontent.com/lisjak/5196333df14d1f708563804a885a1b66/raw/8ed9e754f8cbddd156472f02487ef8bcf4ef52ff/apres-eula')}>
-                End-User License Agreement (EULA) of Après.
+            <Text style={styles.eulaText}>By proceeding with signing in and clicking 'Sign me up!', you agree to our terms as listed in our
+              <Text style={styles.link}
+                  onPress={() => Linking.openURL('http://gist.githubusercontent.com/lisjak/5196333df14d1f708563804a885a1b66/raw/8ed9e754f8cbddd156472f02487ef8bcf4ef52ff/apres-eula')}>
+                  {' '}End-User License Agreement (EULA) of Après.
+              </Text>
             </Text>
           </View>
           
@@ -207,7 +208,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     backgroundColor: 'white',
-    textAlign: 'center',
+    textAlign: 'juifyst',
     paddingBottom: 10,
     marginTop: 30,
     flexWrap: 'wrap'
@@ -232,6 +233,7 @@ const styles = StyleSheet.create({
     marginLeft: 50,
     letterSpacing: 1,
     fontFamily: "Futura-Light",
+    textAlign: 'center'
   },
   title: {
     top: 0,
