@@ -92,7 +92,7 @@ export default class LoginScreen extends React.Component {
           </TouchableOpacity>
         </View>
         <View style={styles.eula}>
-            <Text style={styles.eulaText}>By proceeding with logging in and clicking 'Log back in!', you agree to our terms as listed in our</Text>
+            <Text style={styles.eulaText}>By proceeding with logging in and clicking 'Log back in!', you agree to our terms as listed in our </Text>
             <Text style={styles.link}
               onPress={() => Linking.openURL('http://gist.githubusercontent.com/lisjak/5196333df14d1f708563804a885a1b66/raw/8ed9e754f8cbddd156472f02487ef8bcf4ef52ff/apres-eula')}>
               End-User License Agreement (EULA) of Après.
@@ -155,6 +155,7 @@ const styles = StyleSheet.create({
     marginLeft: 50,
     letterSpacing: 1,
     fontFamily: "Futura-Light",
+    textAlign: 'center',
   },
   link: {
     color: 'blue',
@@ -213,12 +214,13 @@ const styles = StyleSheet.create({
   },
   error: {
     color: "red",
-    fontSize: 10,
+    fontSize: 15,
     marginBottom: 0,
     fontFamily: "Futura-Light",
     marginRight: 50,
     marginLeft: 50,
-    marginTop: 10
+    marginTop: 10,
+    textAlign: 'center',
   },
   text: {
     fontFamily: "Futura-Light"

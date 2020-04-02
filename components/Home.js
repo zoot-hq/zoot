@@ -25,7 +25,7 @@ export default class HomeScreen extends React.Component {
     const status = await Fire.shared.login(apresLoginEmail, apresLoginPassword)
 
     // if successful login, navigate in
-    if (!status) {
+    if (status) {
       this.props.navigation.navigate('ChatList')
     }
 
