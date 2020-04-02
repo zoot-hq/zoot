@@ -27,7 +27,7 @@ export default class SignupScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <KeyboardAvoidingView behavior='padding' style={{flex:1}}>
+        <KeyboardAvoidingView behavior='padding' style={{ flex: 1 }}>
           <View style={styles.container}>
             <Text style={styles.title}>après</Text>
             <View style={styles.field}>
@@ -44,7 +44,7 @@ export default class SignupScreen extends React.Component {
                 blurOnSubmit={false}
               />
             </View>
-            {(this.state.error==='username is required.' || this.state.error==='username already taken.')&& (
+            {(this.state.error === 'username is required.' || this.state.error === 'username already taken.') && (
               <Text style={styles.error}>{this.state.error}</Text>
             )}
             <View style={styles.field}>
@@ -63,10 +63,10 @@ export default class SignupScreen extends React.Component {
                 blurOnSubmit={false}
               />
             </View>
-            {(this.state.error==='The email address is badly formatted.' ||
-              this.state.error==='The email address is already in use by another account.')&& (
-              <Text style={styles.error}>{this.state.error}</Text>
-            )}
+            {(this.state.error === 'The email address is badly formatted.' ||
+              this.state.error === 'The email address is already in use by another account.') && (
+                <Text style={styles.error}>{this.state.error}</Text>
+              )}
             <View style={styles.field}>
               <Text style={styles.text}>password</Text>
               <TextInput
@@ -79,10 +79,10 @@ export default class SignupScreen extends React.Component {
                 blurOnSubmit={false}
               />
             </View>
-            {(this.state.error==='The password must be 6 characters long or more.' ||
-              this.state.error==='Password should be at least 6 characters') && (
-              <Text style={styles.error}>{this.state.error}</Text>
-            )}
+            {(this.state.error === 'The password must be 6 characters long or more.' ||
+              this.state.error === 'Password should be at least 6 characters') && (
+                <Text style={styles.error}>{this.state.error}</Text>
+              )}
             <View style={styles.field}>
               <Text style={styles.text}>birthday (ddmmyyyy)</Text>
               <TextInput
@@ -145,26 +145,26 @@ export default class SignupScreen extends React.Component {
 
                 // ensure a username is chosen
                 if (!this.state.username.length) {
-                  this.setState({ error: 'username is required.'})
+                  this.setState({ error: 'username is required.' })
                   return
                 }
 
                 // sign up a user
                 const status = await Fire.shared.signup
-                (
-                  this.state.email,
-                  this.state.password,
-                  this.state.username,
-                  this.state.birthday,
-                  this.state.city,
-                  this.state.children,
-                  this.state.monthsPostPartum
-                )
+                  (
+                    this.state.email,
+                    this.state.password,
+                    this.state.username,
+                    this.state.birthday,
+                    this.state.city,
+                    this.state.children,
+                    this.state.monthsPostPartum
+                  )
 
                 // if error occured, put it on state
                 if (status) {
                   console.log('error message: ', status)
-                  this.setState({ error: status.message})
+                  this.setState({ error: status.message })
                 }
 
                 // if everything is good
@@ -186,12 +186,12 @@ export default class SignupScreen extends React.Component {
           <View style={styles.eula}>
             <Text style={styles.eulaText}>By proceeding with signing in and clicking 'Sign me up!', you agree to our terms as listed in our
               <Text style={styles.link}
-                  onPress={() => Linking.openURL('http://gist.githubusercontent.com/lisjak/5196333df14d1f708563804a885a1b66/raw/8ed9e754f8cbddd156472f02487ef8bcf4ef52ff/apres-eula')}>
-                  {' '}End-User License Agreement (EULA) of Après.
+                onPress={() => Linking.openURL('http://gist.githubusercontent.com/lisjak/5196333df14d1f708563804a885a1b66/raw/8ed9e754f8cbddd156472f02487ef8bcf4ef52ff/apres-eula')}>
+                {' '}End-User License Agreement (EULA) of Après.
               </Text>
             </Text>
           </View>
-          
+
         </KeyboardAvoidingView>
       </View>
     );
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     backgroundColor: 'white',
-    textAlign: 'juifyst',
+    textAlign: 'justify',
     paddingBottom: 10,
     marginTop: 30,
     flexWrap: 'wrap'
