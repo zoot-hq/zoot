@@ -10,9 +10,9 @@
     "dependencies": {
         "@expo/vector-icons": "^10.0.6",
         "expo": "^34.0.0",
-        "expo-image-picker": "^8.0.1",
-        "expo-mail-composer": "^8.0.0",
-        "expo-permissions": "^8.0.0",
+        "expo-image-picker": "~6.0.0",
+        "expo-mail-composer": "~6.0.0",
+        "expo-permissions": "~6.0.0",
         "firebase": "4.8.1",
         "react": "16.8.3",
         "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
@@ -25,8 +25,8 @@
         "react-navigation": "2.3.1"
     },
     "devDependencies": {
-        "babel-preset-expo": "~8.0.0",
-        "@babel/core": "^7.0.0"
+        "@babel/core": "^7.0.0",
+        "babel-preset-expo": "~8.0.0"
     },
     "private": true
 }
