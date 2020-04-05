@@ -4,6 +4,9 @@ import { Searchbar } from 'react-native-paper';
 import Fire from '../Fire';
 import { MaterialIndicator } from 'react-native-indicators';
 import { Ionicons } from '@expo/vector-icons';
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
+import Constants from 'expo-constants';
 
 export default class ChatList extends React.Component {
   constructor() {
@@ -51,6 +54,40 @@ export default class ChatList extends React.Component {
         })
       })
     }))
+
+    // get permissions for notifications
+    this.registerForPushNotificationsAsync()
+
+    // set what the app does when a user clicks on notification
+    this._notificationSubscription = Notifications.addListener((notification) => {
+
+      const {pm, room} = notification.data
+
+      // if notification is due to pm
+      if (pm) {
+
+        // navigate to the message
+        this.props.navigation.navigate('ChatRoom', { chatroom: room, PM : true})
+      }
+    });
+
+  }
+
+  registerForPushNotificationsAsync = async () => {
+    if (!Constants.isDevice)  return
+    try {
+      // ask for permissions - (only asks once)
+      await Permissions.askAsync(Permissions.NOTIFICATIONS)
+
+      // get push notifications token
+      token = await Notifications.getExpoPushTokenAsync()
+
+      // push token to firebase
+      Fire.shared.sendNotificationToken(token)
+
+    } catch(error) {
+      console.error(error)
+    }
   }
 
   render() {

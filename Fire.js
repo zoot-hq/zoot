@@ -130,8 +130,46 @@ class Fire {
             refToMessage.child('loves').child('users').set({X: true})
             refToMessage.child('lightbulbs').child('users').set({X: true})
             refToMessage.child('flags').child('users').set({X: true})
+            
+            // if PM, send push notification
+            if (pm) {
+                // get other users name
+                const names = room.split('-')
+                const otherUsername = names[0] === this.username() ? names[1] : names[0]
+
+                try {
+                    // get token for other user
+                    firebase.database().ref('users').child(otherUsername).child('notifToken').once('value').then(async snapshot => {
+                        const token = snapshot.val()
+                        const pushNotification = {
+                            to: token,
+                            sound: 'default',
+                            title: `New private message from ${this.username()}`,
+                            body: `${text}`,
+                            _displayInForeground: true,
+                            data: { from: this.username(),
+                                    pm: true,
+                                    room
+                                },
+                        }
+
+                        // send notification
+                        const response = await fetch('https://exp.host/--/api/v2/push/send', {
+                            method: 'POST',
+                            headers: {
+                            Accept: 'application/json',
+                            'Accept-encoding': 'gzip, deflate',
+                            'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(pushNotification),
+                        })
+                        })
+                } catch (error) {
+                    console.error(error)
+                }
+            }
         }
-    };
+    }
 
     enterRoom(room, pm, live) {
 
@@ -361,6 +399,10 @@ class Fire {
 
     sendPasswordResetEmail = (email) => {
         return firebase.auth().sendPasswordResetEmail(email)
+    }
+
+    sendNotificationToken = (token) => {
+        firebase.database().ref('users').child(this.username()).child('notifToken').set(token)
     }
 }
 

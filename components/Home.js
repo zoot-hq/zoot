@@ -2,6 +2,8 @@ import * as React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, AsyncStorage } from 'react-native';
 import * as Font from 'expo-font';
 import Fire from '../Fire';
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
 
 export default class HomeScreen extends React.Component {
   constructor(){
@@ -13,6 +15,7 @@ export default class HomeScreen extends React.Component {
   }
 
   async componentWillMount() {
+    
     // get fonts
     await Font.loadAsync({
       'CormorantGaramond-Light': require('../assets/fonts/CormorantGaramond-Light.ttf'),
