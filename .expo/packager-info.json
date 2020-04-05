@@ -1,9 +1,9 @@
 {
   "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 10557,
-  "expoServerNgrokUrl": "https://th-2pu.malkam.zoot.exp.direct",
-  "packagerNgrokUrl": "https://packager.th-2pu.malkam.zoot.exp.direct",
-  "ngrokPid": 10574,
+  "packagerPort": 19005,
+  "packagerPid": 79931,
+  "expoServerNgrokUrl": "https://2h-rp4.malkam.zoot.exp.direct",
+  "packagerNgrokUrl": "https://packager.2h-rp4.malkam.zoot.exp.direct",
+  "ngrokPid": 79939,
   "devToolsPort": 19002
 }
