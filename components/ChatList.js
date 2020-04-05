@@ -56,6 +56,20 @@ export default class ChatList extends React.Component {
 
     // get permissions for notifications
     this.registerForPushNotificationsAsync()
+
+    // set what the app does when a user clicks on notification
+    this._notificationSubscription = Notifications.addListener((notification) => {
+
+      const {pm, room} = notification.data
+
+      // if notification is due to pm
+      if (pm) {
+
+        // navigate to the message
+        this.props.navigation.navigate('ChatRoom', { chatroom: room, PM : true})
+      }
+    });
+
   }
 
   registerForPushNotificationsAsync = async () => {

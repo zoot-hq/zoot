@@ -137,7 +137,6 @@ class Fire {
                 const names = room.split('-')
                 const otherUsername = names[0] === this.username() ? names[1] : names[0]
 
-                console.log('sending')
                 try {
                     // get token for other user
                     firebase.database().ref('users').child(otherUsername).child('notifToken').once('value').then(async snapshot => {
@@ -148,6 +147,10 @@ class Fire {
                             title: `New private message from ${this.username()}`,
                             body: `${text}`,
                             _displayInForeground: true,
+                            data: { from: this.username(),
+                                    pm: true,
+                                    room
+                                },
                         }
 
                         // send notification
