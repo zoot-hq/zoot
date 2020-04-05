@@ -6,6 +6,7 @@ import { MaterialIndicator } from 'react-native-indicators';
 import { Ionicons } from '@expo/vector-icons';
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
+import Constants from 'expo-constants';
 
 export default class ChatList extends React.Component {
   constructor() {
@@ -73,7 +74,7 @@ export default class ChatList extends React.Component {
   }
 
   registerForPushNotificationsAsync = async () => {
-
+    if (!Constants.isDevice)  return
     try {
       // ask for permissions - (only asks once)
       await Permissions.askAsync(Permissions.NOTIFICATIONS)
