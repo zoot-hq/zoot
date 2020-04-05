@@ -362,6 +362,10 @@ class Fire {
     sendPasswordResetEmail = (email) => {
         return firebase.auth().sendPasswordResetEmail(email)
     }
+
+    sendNotificationToken = (token) => {
+        firebase.database().ref('users').child(this.username()).child('notifToken').set(token)
+    }
 }
 
 Fire.shared = new Fire();
