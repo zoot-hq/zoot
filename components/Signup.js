@@ -30,7 +30,6 @@ export default class SignupScreen extends React.Component {
     }
 
     async handleSubmit() {
-        // first, show up the signup popup
         this.setState({ showCommunityPopup: false })
         // set user info into storage
         await AsyncStorage.setItem('apresLoginEmail', this.state.email)
@@ -198,6 +197,9 @@ export default class SignupScreen extends React.Component {
                                 }
                                 // if everything is good
                                 else {
+                                    console.log(
+                                        'else block in sign me up button'
+                                    )
                                     this.setState({ showCommunityPopup: true })
                                 }
                             }}
@@ -226,10 +228,52 @@ export default class SignupScreen extends React.Component {
                     <View>
                         <Modal isVisible={this.state.showCommunityPopup}>
                             <View style={styles.modal}>
-                                <Text>This is the signup popup</Text>
-                                <TouchableOpacity onPress={this.handleSubmit}>
-                                    <Text style={styles.cancel}>Accept</Text>
-                                </TouchableOpacity>
+                                <View>
+                                    <Text style={styles.guidelinesTitle}>
+                                        Community Guidelines
+                                    </Text>
+                                </View>
+                                <View>
+                                    <Text style={styles.guidelinesText}>
+                                        1. Après is intended to be a place of
+                                        acceptance, empathy and compassion Above
+                                        all else, try to be kind.
+                                    </Text>
+                                    <Text style={styles.guidelinesText}>
+                                        2. Think before you type.{' '}
+                                    </Text>
+                                    <Text style={styles.guidelinesText}>
+                                        3. If you see something unacceptable,
+                                        please flag the comment for review.{' '}
+                                    </Text>
+                                    <Text style={styles.guidelinesText}>
+                                        4. If you experience a user who
+                                        repeatedly behaves in an unacceptable
+                                        manner, please flag the user for review.{' '}
+                                    </Text>
+                                    <Text style={styles.guidelinesText}>
+                                        5. If you are struggling in a way that
+                                        feels overwhelming, please see our
+                                        resources for access to professional
+                                        mental healthcare providers, and get
+                                        help.{' '}
+                                    </Text>
+                                    <Text style={styles.guidelinesText}>
+                                        6. We are open and love your feedback.
+                                        Please send us your suggestions on how
+                                        to improve your experience.
+                                    </Text>
+                                </View>
+                                <View>
+                                    <TouchableOpacity
+                                        onPress={this.handleSubmit}
+                                        style={styles.buttonContainer}
+                                    >
+                                        <Text style={styles.accept}>
+                                            Accept
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </Modal>
                     </View>
@@ -330,5 +374,21 @@ const styles = StyleSheet.create({
         paddingVertical: 50,
         borderRadius: 10,
         paddingHorizontal: 10,
+    },
+    guidelinesText: {
+        fontFamily: 'Futura-Light',
+        marginBottom: 10,
+    },
+    guidelinesTitle: {
+        fontFamily: 'Futura-Light',
+        marginBottom: 10,
+        fontSize: 18,
+        textAlign: 'center',
+        fontWeight: 'bold',
+    },
+    accept: {
+        fontFamily: 'CormorantGaramond-Light',
+        textAlign: 'center',
+        fontSize: 25,
     },
 })
