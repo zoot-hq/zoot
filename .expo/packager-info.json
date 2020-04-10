@@ -1,9 +1,9 @@
 {
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 59707,
+  "packagerPid": 47632,
   "expoServerNgrokUrl": "https://9i-pgp.lisjak.zoot.exp.direct",
   "packagerNgrokUrl": "https://packager.9i-pgp.lisjak.zoot.exp.direct",
-  "ngrokPid": 59720,
-  "devToolsPort": 19002
+  "ngrokPid": 47644,
+  "devToolsPort": 19003
 }

@@ -5,6 +5,10 @@ import Fire from '../Fire';
 import { MaterialIndicator } from 'react-native-indicators';
 import { Ionicons } from '@expo/vector-icons';
 
+import Navbar from './Navbar'
+
+// var Navbar = require('./Navbar')
+
 export default class ChatList extends React.Component {
   constructor() {
     super()
@@ -39,13 +43,13 @@ export default class ChatList extends React.Component {
       this.setState({
         chatrooms: this.state.chatrooms.map(chatroom => {
           if (chatroom.name === updatedRoom.name) {
-             return updatedRoom
+            return updatedRoom
           }
           return chatroom
         }),
         queriedChatrooms: this.state.queriedChatrooms.map(chatroom => {
           if (chatroom.name === updatedRoom.name) {
-             return updatedRoom
+            return updatedRoom
           }
           return chatroom
         })
@@ -57,6 +61,8 @@ export default class ChatList extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
+
+          {Navbar}
 
           {/* titles */}
           <Text style={styles.title}>après</Text>
@@ -81,7 +87,7 @@ export default class ChatList extends React.Component {
           {/* chatroom list */}
           <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding" >
             <SafeAreaView >
-              <ScrollView contentContainerStyle={{ flexGrow: 1}}>
+              <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 {/* if a query made, queried chatrooms displayed*/}
                 {(this.state.queriedChatrooms.length) ?
                   this.state.queriedChatrooms.map(chatroom => (
@@ -122,13 +128,19 @@ export default class ChatList extends React.Component {
               </ScrollView>
             </SafeAreaView>
           </KeyboardAvoidingView>
+
         </View>
 
 
-        <TouchableOpacity style={{ alignSelf: 'flex-end', marginTop: 10 }} onPress={() => this.props.navigation.navigate('PMList')}>
+        {/* <TouchableOpacity style={{ alignSelf: 'flex-end', marginTop: 10 }} onPress={() => this.props.navigation.navigate('PMList')}>
           <Ionicons name='ios-chatbubbles' size={30} color='grey'></Ionicons>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+
+
+
       </View>
+
+
 
     );
   }
@@ -194,8 +206,8 @@ const styles = StyleSheet.create({
     fontFamily: "Futura-Light"
   },
   singleChatView: {
-    display: 'flex', 
-    flexDirection: 'row', 
+    display: 'flex',
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
   }

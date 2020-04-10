@@ -14,11 +14,22 @@ import { createStackNavigator } from 'react-navigation';
 console.disableYellowBox = true;
 console.ignoredYellowBox = ['Warning: Each', 'Warning: Failed'];
 
+
+// FOR TESTING + CONSOLE PURPOSES
+// Date in ms
+let msDate = Date(Date.now());
+
+// Converting the number of millisecond in date string 
+let stringDate = msDate.toString()
+
+// Printing the current date                     
+console.log(`=========================== JS RELOAD at ${stringDate} ===============================`)
+
 const navigator = createStackNavigator({
   Home,
 
   // remove swipe back gesture from chatlist
-  ChatList : {
+  ChatList: {
     name: 'ChatList',
     screen: ChatList,
     navigationOptions: {
@@ -31,11 +42,11 @@ const navigator = createStackNavigator({
   WelcomePage,
   PMList
 },
-{
-  headerMode: 'none',
-  navigationOptions: {
+  {
+    headerMode: 'none',
+    navigationOptions: {
       headerVisible: false,
-  }
-});
+    }
+  });
 
 export default navigator
