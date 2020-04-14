@@ -47,8 +47,6 @@ export default class SignupScreen extends React.Component {
     }
 
     async handleSubmit() {
-        console.log('handlesubmit called')
-        // this.setState({ showCommunityPopup: false })
         // set user info into storage
         await AsyncStorage.setItem('apresLoginEmail', this.state.email)
         await AsyncStorage.setItem('apressLoginPassword', this.state.password)
@@ -238,59 +236,6 @@ export default class SignupScreen extends React.Component {
                         >
                             End-User License Agreement (EULA) of Après.
                         </Text>
-                    </View>
-                    {/* View to control signup popup */}
-                    <View>
-                        <Modal isVisible={this.state.showCommunityPopup}>
-                            <View style={styles.modal}>
-                                <View>
-                                    <Text style={styles.guidelinesTitle}>
-                                        Community Guidelines
-                                    </Text>
-                                </View>
-                                <View styles={{ backgroundColor: 'orange' }}>
-                                    <Text style={styles.guidelinesText}>
-                                        1. Après is intended to be a place of
-                                        acceptance, empathy and compassion Above
-                                        all else, try to be kind.
-                                    </Text>
-                                    <Text style={styles.guidelinesText}>
-                                        2. Think before you type.{' '}
-                                    </Text>
-                                    <Text style={styles.guidelinesText}>
-                                        3. If you see something unacceptable,
-                                        please flag the comment for review.{' '}
-                                    </Text>
-                                    <Text style={styles.guidelinesText}>
-                                        4. If you experience a user who
-                                        repeatedly behaves in an unacceptable
-                                        manner, please flag the user for review.{' '}
-                                    </Text>
-                                    <Text style={styles.guidelinesText}>
-                                        5. If you are struggling in a way that
-                                        feels overwhelming, please see our
-                                        resources for access to professional
-                                        mental healthcare providers, and get
-                                        help.{' '}
-                                    </Text>
-                                    <Text style={styles.guidelinesText}>
-                                        6. We are open and love your feedback.
-                                        Please send us your suggestions on how
-                                        to improve your experience.
-                                    </Text>
-                                </View>
-                                <View style={[styles.okButtonView]}>
-                                    <TouchableOpacity
-                                        onPress={this.handleSubmit}
-                                        style={[styles.okButtonOpacity]}
-                                    >
-                                        <Text style={styles.okButtonText}>
-                                            OK
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </Modal>
                     </View>
                 </KeyboardAvoidingView>
             </View>
