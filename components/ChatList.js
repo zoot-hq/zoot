@@ -4,6 +4,9 @@ import { Searchbar } from 'react-native-paper';
 import Fire from '../Fire';
 import { MaterialIndicator } from 'react-native-indicators';
 import { Ionicons } from '@expo/vector-icons';
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
+import Constants from 'expo-constants';
 
 export default class ChatList extends React.Component {
   constructor() {
@@ -51,6 +54,40 @@ export default class ChatList extends React.Component {
         })
       })
     }))
+
+    // get permissions for notifications
+    this.registerForPushNotificationsAsync()
+
+    // set what the app does when a user clicks on notification
+    this._notificationSubscription = Notifications.addListener((notification) => {
+
+      const {pm, room} = notification.data
+
+      // if notification is due to pm
+      if (pm) {
+
+        // navigate to the message
+        this.props.navigation.navigate('ChatRoom', { chatroom: room, PM : true})
+      }
+    });
+
+  }
+
+  registerForPushNotificationsAsync = async () => {
+    if (!Constants.isDevice)  return
+    try {
+      // ask for permissions - (only asks once)
+      await Permissions.askAsync(Permissions.NOTIFICATIONS)
+
+      // get push notifications token
+      token = await Notifications.getExpoPushTokenAsync()
+
+      // push token to firebase
+      Fire.shared.sendNotificationToken(token)
+
+    } catch(error) {
+      console.error(error)
+    }
   }
 
   render() {
@@ -90,8 +127,10 @@ export default class ChatList extends React.Component {
                       style={styles.buttonContainer}
                       onPress={() => this.props.navigation.navigate('ChatRoom', { chatroom: chatroom.name })}
                     >
-                      <Text style={styles.buttonText}># {chatroom.name}</Text>
-                      <Text style={styles.numOnline}>{chatroom.numOnline} online</Text>
+                      <View style={styles.singleChatView}>
+                        <Text style={styles.buttonText}># {chatroom.name}</Text>
+                        <Ionicons name='md-people' size={25} color='grey'> {chatroom.numOnline}</Ionicons>
+                      </View>
                     </TouchableOpacity>))
                   :
                   // else allow user to create a new chatroom
@@ -190,5 +229,11 @@ const styles = StyleSheet.create({
   numOnline: {
     fontSize: 20,
     fontFamily: "Futura-Light"
+  },
+  singleChatView: {
+    display: 'flex', 
+    flexDirection: 'row', 
+    justifyContent: 'space-between',
+    alignItems: 'center'
   }
 });

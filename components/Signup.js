@@ -220,7 +220,6 @@ export default class SignupScreen extends React.Component {
                             <Text style={styles.buttonText}>sign me up!</Text>
                         </TouchableOpacity>
                     </View>
-
                     <View style={styles.eula}>
                         <Text style={styles.eulaText}>
                             By proceeding with signing in and clicking 'Sign me
@@ -236,6 +235,7 @@ export default class SignupScreen extends React.Component {
                         >
                             End-User License Agreement (EULA) of Après.
                         </Text>
+
                     </View>
                 </KeyboardAvoidingView>
             </View>
@@ -253,9 +253,10 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         backgroundColor: 'white',
-        textAlign: 'center',
+        textAlign: 'justify',
         paddingBottom: 10,
         marginTop: 30,
+        flexWrap: 'wrap'
     },
     eulaText: {
         display: 'flex',
@@ -264,8 +265,9 @@ const styles = StyleSheet.create({
         marginRight: 50,
         marginLeft: 50,
         letterSpacing: 1,
-        fontFamily: 'Futura-Light',
+        fontFamily: "Futura-Light",
         marginTop: 10,
+        textAlign: 'center'
     },
     link: {
         color: 'blue',
@@ -275,7 +277,8 @@ const styles = StyleSheet.create({
         marginRight: 50,
         marginLeft: 50,
         letterSpacing: 1,
-        fontFamily: 'Futura-Light',
+        fontFamily: "Futura-Light",
+        textAlign: 'center'
     },
     title: {
         top: 0,
