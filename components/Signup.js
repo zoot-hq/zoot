@@ -7,6 +7,7 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView,
     AsyncStorage,
+    Alert,
 } from 'react-native'
 import Fire from '../Fire'
 import Modal from 'react-native-modal'
@@ -27,10 +28,25 @@ export default class SignupScreen extends React.Component {
             showCommunityPopup: false,
         }
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.communityPopup = this.communityPopup.bind(this)
+    }
+
+    communityPopup = () => {
+        Alert.alert(
+            'Community Guidelines',
+            `1. Après is intended to be a place of
+            acceptance, empathy and compassion Above
+            all else, try to be kind.
+            2. Think before you type.
+            3. If you see something unacceptable, please flag the comment for review.
+            4. If you experience a user who repeatedly behaves in an unacceptable manner, please flag the user for review.
+            5. If you are struggling in a way that feels overwhelming, please see our resources for access to professional mental healthcare providers, and get help.
+            6. We are open and love your feedback. Please send us your suggestions on how to improve your experience.`,
+            [{ text: 'OK', onPress: () => this.handleSubmit() }]
+        )
     }
 
     async handleSubmit() {
-        this.setState({ showCommunityPopup: false })
         // set user info into storage
         await AsyncStorage.setItem('apresLoginEmail', this.state.email)
         await AsyncStorage.setItem('apressLoginPassword', this.state.password)
@@ -197,78 +213,29 @@ export default class SignupScreen extends React.Component {
                                 }
                                 // if everything is good
                                 else {
-                                    console.log(
-                                        'else block in sign me up button'
-                                    )
-                                    this.setState({ showCommunityPopup: true })
+                                    this.communityPopup()
                                 }
                             }}
                         >
                             <Text style={styles.buttonText}>sign me up!</Text>
                         </TouchableOpacity>
                     </View>
-
                     <View style={styles.eula}>
-                        <Text style={styles.eulaText}>By proceeding with signing in and clicking 'Sign me up!', you agree to our terms as listed in our
-                             <Text style={styles.link}
-                             onPress={() => Linking.openURL('http://gist.githubusercontent.com/lisjak/5196333df14d1f708563804a885a1b66/raw/8ed9e754f8cbddd156472f02487ef8bcf4ef52ff/apres-eula')}>
-                            {' '}End-User License Agreement (EULA) of Après.
-                            </Text>
-                       </Text>
-                   </View>
+                        <Text style={styles.eulaText}>
+                            By proceeding with signing in and clicking 'Sign me
+                            up!', you agree to our terms as listed in our
+                        </Text>
+                        <Text
+                            style={styles.link}
+                            onPress={() =>
+                                Linking.openURL(
+                                    'http://gist.githubusercontent.com/lisjak/5196333df14d1f708563804a885a1b66/raw/8ed9e754f8cbddd156472f02487ef8bcf4ef52ff/apres-eula'
+                                )
+                            }
+                        >
+                            End-User License Agreement (EULA) of Après.
+                        </Text>
 
-                    {/* View to control signup popup */}
-                    <View>
-                        <Modal isVisible={this.state.showCommunityPopup}>
-                            <View style={styles.modal}>
-                                <View>
-                                    <Text style={styles.guidelinesTitle}>
-                                        Community Guidelines
-                                    </Text>
-                                </View>
-                                <View>
-                                    <Text style={styles.guidelinesText}>
-                                        1. Après is intended to be a place of
-                                        acceptance, empathy and compassion Above
-                                        all else, try to be kind.
-                                    </Text>
-                                    <Text style={styles.guidelinesText}>
-                                        2. Think before you type.{' '}
-                                    </Text>
-                                    <Text style={styles.guidelinesText}>
-                                        3. If you see something unacceptable,
-                                        please flag the comment for review.{' '}
-                                    </Text>
-                                    <Text style={styles.guidelinesText}>
-                                        4. If you experience a user who
-                                        repeatedly behaves in an unacceptable
-                                        manner, please flag the user for review.{' '}
-                                    </Text>
-                                    <Text style={styles.guidelinesText}>
-                                        5. If you are struggling in a way that
-                                        feels overwhelming, please see our
-                                        resources for access to professional
-                                        mental healthcare providers, and get
-                                        help.{' '}
-                                    </Text>
-                                    <Text style={styles.guidelinesText}>
-                                        6. We are open and love your feedback.
-                                        Please send us your suggestions on how
-                                        to improve your experience.
-                                    </Text>
-                                </View>
-                                <View>
-                                    <TouchableOpacity
-                                        onPress={this.handleSubmit}
-                                        style={styles.buttonContainer}
-                                    >
-                                        <Text style={styles.accept}>
-                                            Accept
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </Modal>
                     </View>
                 </KeyboardAvoidingView>
             </View>
@@ -366,14 +333,18 @@ const styles = StyleSheet.create({
         fontFamily: 'Futura-Light',
     },
     modal: {
-        backgroundColor: 'white',
         paddingVertical: 50,
         borderRadius: 10,
         paddingHorizontal: 10,
+        backgroundColor: 'white',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
     },
     guidelinesText: {
         fontFamily: 'Futura-Light',
         marginBottom: 10,
+        fontSize: 12,
     },
     guidelinesTitle: {
         fontFamily: 'Futura-Light',
@@ -382,9 +353,26 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: 'bold',
     },
-    accept: {
-        fontFamily: 'CormorantGaramond-Light',
+    okButtonView: {
+        // display: 'flex',
+        // alignSelf: 'flex-end',
+        backgroundColor: 'pink',
+        display: 'flex',
+        alignSelf: 'flex-end',
+        position: 'relative',
+    },
+    okButtonOpacity: {
+        paddingBottom: 10,
+        paddingTop: 10,
+        borderTopColor: 'grey',
+        borderTopWidth: 3,
+        position: 'absolute',
+        // backgroundColor: 'green',
+    },
+    okButtonText: {
+        fontFamily: 'Futura-Light',
         textAlign: 'center',
-        fontSize: 25,
+        fontSize: 24,
+        color: 'blue',
     },
 })
