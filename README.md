@@ -20,7 +20,7 @@ Après utilizes the following frameworks, libraries and databases as a part of i
 ## Repo Contributors
 * [Lisa N. Jak](https://github.com/lisjak)
 * [Malka Moskowicz](https://github.com/malkamoskowicz)
-* [Emma Vaiserfirov](https://github.com/featherweightdev)
+* [Emma Vaiserfirov](https://github.com/featherweightdev) 
 
 ## Local Start
 1. `npm install`
