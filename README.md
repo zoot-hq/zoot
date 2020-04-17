@@ -21,6 +21,7 @@ Launching in  2020.
 ## Repo Contributors
 * [Lisa N. Jak](https://github.com/lisjak)
 * [Malka Moskowicz](https://github.com/malkamoskowicz)
+* [Emma Vaiserfirov](https://github.com/featherweightdev) 
 
 ## Start
 1. `npm install`
