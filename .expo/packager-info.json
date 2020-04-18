@@ -2,8 +2,8 @@
   "expoServerPort": null,
   "packagerPort": null,
   "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerNgrokUrl": "https://iz-npf.anonymous.zoot.exp.direct",
+  "packagerNgrokUrl": "https://packager.iz-npf.anonymous.zoot.exp.direct",
+  "ngrokPid": 57825,
   "devToolsPort": 19002
 }
