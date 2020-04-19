@@ -13,18 +13,18 @@ import Fire from '../Fire'
 import RNPickerSelect from 'react-native-picker-select'
 
 const roleList = [
-    'New Mother',
-    'Surrogate',
-    'Gestational Carrier',
-    'Adoptive Parent',
-    'Hopeful Parent',
-    'Parent',
-    'Egg/Embryo Donor',
-    'New Parent',
-    'Parent Recovering from Loss',
+    'A New Mother',
+    'A Surrogate',
+    'A Gestational Carrier',
+    'An Adoptive Parent',
+    'A Hopeful Parent',
+    'A Parent',
+    'An Egg/Embryo Donor',
+    'A New Parent',
+    'A Parent Recovering from Loss',
     'Other',
     'Prefer Not to Disclose',
-]
+].map(role => ({ label: role, value: role }))
 
 export default class SignupScreen extends React.Component {
     constructor() {
@@ -38,8 +38,7 @@ export default class SignupScreen extends React.Component {
             children: '0',
             monthsPostPartum: '0',
             error: null,
-            availableRoles: roleList,
-            selectedRole: 'Choose role',
+            selectedRole: '',
         }
         this.handleSubmit = this.handleSubmit.bind(this)
         this.communityPopup = this.communityPopup.bind(this)
@@ -200,43 +199,16 @@ export default class SignupScreen extends React.Component {
                 ref={input => (this.monthsPostPartum = input)}
               />
             </View> */}
-                        <View
-                            style={[
-                                {
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    // marginRight: 50,
-                                    // marginLeft: 50,
-                                },
-                                // styles.field,
-                            ]}
-                        >
-                            <View
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignContent: 'center',
-                                    width: 180,
-                                }}
-                            >
+                        <View style={styles.roleIdOuterWrap}>
+                            <View style={styles.roleIdInnerWrap}>
                                 <Text
                                     style={[
-                                        { marginTop: 10, alignSelf: 'center' },
+                                        { marginTop: 12, alignSelf: 'center' },
                                         styles.text,
                                     ]}
                                 >
                                     What best describes you?
                                     {'\n'}
-                                </Text>
-                                <Text
-                                    style={[
-                                        { alignSelf: 'center' },
-                                        styles.text,
-                                    ]}
-                                >
-                                    I am...{' '}
                                 </Text>
                                 <View>
                                     <RNPickerSelect
@@ -246,26 +218,7 @@ export default class SignupScreen extends React.Component {
                                                 selectedRole: value,
                                             })
                                         }}
-                                        items={[
-                                            {
-                                                label: 'New Mother',
-                                                value: 'new mother',
-                                            },
-                                            {
-                                                label: 'Surrogate',
-                                                value: 'surrogate',
-                                            },
-                                            {
-                                                label: 'Gestational Carrier',
-                                                value: 'gestational carrier',
-                                            },
-                                            {
-                                                label:
-                                                    'Parent Recovering from Loss',
-                                                value:
-                                                    'parent recovering from loss',
-                                            },
-                                        ]}
+                                        items={roleList}
                                         placeholder={{
                                             label: 'Please select...',
                                             value: null,
@@ -273,6 +226,11 @@ export default class SignupScreen extends React.Component {
                                     />
                                 </View>
                             </View>
+                            {this.state.error === 'please select a role.' && (
+                                <Text style={styles.error}>
+                                    {this.state.error}
+                                </Text>
+                            )}
                         </View>
                         <TouchableOpacity
                             style={styles.buttonContainer}
@@ -284,6 +242,12 @@ export default class SignupScreen extends React.Component {
                                     })
                                     return
                                 }
+                                if (!this.state.selectedRole.length) {
+                                    this.setState({
+                                        error: 'please select a role.',
+                                    })
+                                    return
+                                }
                                 // sign up a user
                                 const status = await Fire.shared.signup(
                                     this.state.email,
@@ -292,7 +256,8 @@ export default class SignupScreen extends React.Component {
                                     this.state.birthday,
                                     this.state.city,
                                     this.state.children,
-                                    this.state.monthsPostPartum
+                                    this.state.monthsPostPartum,
+                                    this.state.selectedRole
                                 )
                                 // if error occured, put it on state
                                 if (status) {
@@ -459,10 +424,23 @@ const styles = StyleSheet.create({
         fontSize: 24,
         color: 'blue',
     },
+    roleIdOuterWrap: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    roleIdInnerWrap: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignContent: 'center',
+        width: 180,
+    },
 })
 
 const pickerSelectStyles = StyleSheet.create({
     inputIOS: {
+        alignSelf: 'center',
         fontSize: 16,
         paddingTop: 13,
         paddingHorizontal: 10,
@@ -472,7 +450,5 @@ const pickerSelectStyles = StyleSheet.create({
         borderRadius: 4,
         backgroundColor: 'white',
         color: 'black',
-        margin: 5,
-        // width: '50%',
     },
 })
