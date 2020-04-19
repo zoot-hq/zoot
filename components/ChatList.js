@@ -136,7 +136,7 @@ export default class ChatList extends React.Component {
     const currNyTime = this.changeTimezone(currTime, "America/New_York")
 
     // if time is inside set time for live chat
-    if(!(currNyTime.getDay() === 2 && (currNyTime.getHours() === 21 || (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30)))) {
+    if((currNyTime.getDay() === 2 && (currNyTime.getHours() === 21 || (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30)))) {
       
       const timeToAcceptableFirebaseString = `live-${currNyTime.getMonth()}-${currNyTime.getDate()}-${currNyTime.getFullYear()}`
 
