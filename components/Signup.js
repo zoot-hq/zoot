@@ -10,7 +10,6 @@ import {
     Alert,
 } from 'react-native'
 import Fire from '../Fire'
-import Modal from 'react-native-modal'
 
 export default class SignupScreen extends React.Component {
     constructor() {
@@ -208,7 +207,6 @@ export default class SignupScreen extends React.Component {
                                 )
                                 // if error occured, put it on state
                                 if (status) {
-                                    console.log('error message: ', status)
                                     this.setState({ error: status.message })
                                 }
                                 // if everything is good
