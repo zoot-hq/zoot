@@ -38,10 +38,14 @@ class Fire {
         return message;
     };
 
-    on = (room, pm, callback) =>
+    on = (room, pm, live, callback) =>
         pm ? firebase.database().ref('PMrooms').child(room).limitToLast(10)
             .on('child_added', snapshot => callback(this.parse(snapshot)))
-            : firebase.database().ref('chatrooms').child(room).limitToLast(10)
+            : 
+        live ? firebase.database().ref('livechatrooms').child(room).limitToLast(10)
+            .on('child_added', snapshot => callback(this.parse(snapshot)))
+            : 
+            firebase.database().ref('chatrooms').child(room).limitToLast(10)
             .on('child_added', snapshot => callback(this.parse(snapshot)))
 
     loadEarlier = (room, lastMessage, pm, callback) => 
@@ -92,7 +96,7 @@ class Fire {
     }
 
     // send the message to the Backend
-    send = (messages, room, pm) => {
+    send = (messages, room, pm, live) => {
         for (let i = 0; i < messages.length; i++) {
 
             const { text, user } = messages[i];
@@ -123,6 +127,8 @@ class Fire {
 
             // push message to database
             const refToMessage = pm ? firebase.database().ref('PMrooms').child(room).push(message)
+                                     : 
+                                live ? firebase.database().ref('livechatrooms').child(room).push(message)
                                      : firebase.database().ref('chatrooms').child(room).push(message)
 
             // push users object to database
@@ -130,8 +136,46 @@ class Fire {
             refToMessage.child('loves').child('users').set({X: true})
             refToMessage.child('lightbulbs').child('users').set({X: true})
             refToMessage.child('flags').child('users').set({X: true})
+            
+            // if PM, send push notification
+            if (pm) {
+                // get other users name
+                const names = room.split('-')
+                const otherUsername = names[0] === this.username() ? names[1] : names[0]
+
+                try {
+                    // get token for other user
+                    firebase.database().ref('users').child(otherUsername).child('notifToken').once('value').then(async snapshot => {
+                        const token = snapshot.val()
+                        const pushNotification = {
+                            to: token,
+                            sound: 'default',
+                            title: `New private message from ${this.username()}`,
+                            body: `${text}`,
+                            _displayInForeground: true,
+                            data: { from: this.username(),
+                                    pm: true,
+                                    room
+                                },
+                        }
+
+                        // send notification
+                        const response = await fetch('https://exp.host/--/api/v2/push/send', {
+                            method: 'POST',
+                            headers: {
+                            Accept: 'application/json',
+                            'Accept-encoding': 'gzip, deflate',
+                            'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(pushNotification),
+                        })
+                        })
+                } catch (error) {
+                    console.error(error)
+                }
+            }
         }
-    };
+    }
 
     enterRoom(room, pm, live) {
 
@@ -148,11 +192,11 @@ class Fire {
 
         // enter message into room only if live
         if (live) pm ? firebase.database().ref('PMrooms').child(room).push(message)
-            : firebase.database().ref('chatrooms').child(room).push(message)   
+            : firebase.database().ref('livechatrooms').child(room).push(message)   
 
         // update number of participants if not PM
-        if (!pm) firebase.database().ref('chatroomnames').child(room).child('numOnline').once('value').then(snapshot => {
-            firebase.database().ref('chatroomnames').child(room).child('numOnline').set(snapshot.val() + 1)
+        if (!pm) firebase.database().ref('livechatnames').child(room).child('numOnline').once('value').then(snapshot => {
+            firebase.database().ref('livechatnames').child(room).child('numOnline').set(snapshot.val() + 1)
         })
     }
 
@@ -171,11 +215,11 @@ class Fire {
 
         // enter message into room only if live
         if (live) pm ? firebase.database().ref('PMrooms').child(room).push(message)
-            : firebase.database().ref('chatrooms').child(room).push(message)
+            : firebase.database().ref('livechatrooms').child(room).push(message)   
 
         // update number of participants if not PM
-        if (!pm) firebase.database().ref('chatroomnames').child(room).child('numOnline').once('value').then(snapshot => {
-            firebase.database().ref('chatroomnames').child(room).child('numOnline').set(snapshot.val() - 1)
+        if (!pm) firebase.database().ref('livechatnames').child(room).child('numOnline').once('value').then(snapshot => {
+            firebase.database().ref('livechatnames').child(room).child('numOnline').set(snapshot.val() - 1)
         })
     }
 
@@ -324,6 +368,37 @@ class Fire {
             }
             else callback('all good')
         })
+    
+    
+    createLiveRoomIfDoesNotExist = async (room, callback) => 
+        firebase.database().ref('livechatnames').child(room).once('value', snapshot => {
+            const exists = (snapshot.val() !== null)
+
+            if (!exists) {
+
+                // add room to chatroomPM lists
+                firebase.database().ref('livechatnames').child(room).set({ name : room })
+
+                // add number of participants
+                firebase.database().ref('livechatnames').child(room).child('numOnline').set(0)
+
+                const initMessage = {
+                    room,
+                    text: `Welcome to # ${room} - this is the beginning of your private message chat`,
+                    timestamp: Date.now(),
+                    user: {
+                        name: `#${room}`
+                    },
+                    react: false
+                }
+
+                // add room to chatrooms
+                firebase.database().ref('livechatrooms').child(room).push(initMessage)
+
+                callback()
+            }
+            else callback()
+        })
 
     // this function updates the database in increasing the reaction type of
     // a message by 1
@@ -361,6 +436,10 @@ class Fire {
 
     sendPasswordResetEmail = (email) => {
         return firebase.auth().sendPasswordResetEmail(email)
+    }
+
+    sendNotificationToken = (token) => {
+        firebase.database().ref('users').child(this.username()).child('notifToken').set(token)
     }
 }
 
