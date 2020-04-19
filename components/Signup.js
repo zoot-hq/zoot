@@ -207,7 +207,6 @@ export default class SignupScreen extends React.Component {
                                 )
                                 // if error occured, put it on state
                                 if (status) {
-                                    console.log('error message: ', status)
                                     this.setState({ error: status.message })
                                 }
                                 // if everything is good
