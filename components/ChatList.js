@@ -125,7 +125,7 @@ export default class ChatList extends React.Component {
         4. If you experience a user who repeatedly behaves in an unacceptable manner, please flag the user for review.
         5. If you are struggling in a way that feels overwhelming, please see our resources for access to professional mental healthcare providers, and get help.
         6. We are open and love your feedback. Please send us your suggestions on how to improve your experience.`,
-        [{ text: 'OK', onPress: () => this.props.navigation.replace('ChatRoom', {chatroom : timeToAcceptableFirebaseString, live : true})}]
+        [{ text: 'OK', onPress: () => this.props.navigation.navigate('ChatRoom', {chatroom : timeToAcceptableFirebaseString, live : true})}]
     )
 }
 
@@ -136,7 +136,7 @@ export default class ChatList extends React.Component {
     const currNyTime = this.changeTimezone(currTime, "America/New_York")
 
     // if time is inside set time for live chat
-    if((currNyTime.getDay() === 2 && (currNyTime.getHours() === 21 || (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30)))) {
+    if(!(currNyTime.getDay() === 2 && (currNyTime.getHours() === 21 || (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30)))) {
       
       const timeToAcceptableFirebaseString = `live-${currNyTime.getMonth()}-${currNyTime.getDate()}-${currNyTime.getFullYear()}`
 
@@ -306,3 +306,4 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 });
+
