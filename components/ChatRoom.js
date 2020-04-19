@@ -50,7 +50,7 @@ export default class ChatRoom extends React.Component {
 
     // set timer for chat end
     if (this.state.live) {
-      setInterval(() => {
+      this.intervalID = setInterval(() => {
 
         // get nyc time
         const currTime = new Date()
@@ -78,18 +78,19 @@ export default class ChatRoom extends React.Component {
 
   handleAppStateChange = () => {
     if (AppState.currentState.match(/inactive/)) {
-      Fire.shared.leaveRoom(this.state.room, this.state.pm)
+      Fire.shared.leaveRoom(this.state.room, this.state.pm, this.state.live)
     }
 
     else if (AppState.currentState.match(/active/)) {
-      Fire.shared.enterRoom(this.state.room, this.state.pm)
+      Fire.shared.enterRoom(this.state.room, this.state.pm, this.state.live)
     }
   }
 
   componentWillUnmount = () => {
     AppState.removeEventListener('change', this.handleAppStateChange)
-    Fire.shared.leaveRoom(this.state.room, this.state.pm)
+    Fire.shared.leaveRoom(this.state.room, this.state.pm, this.state.live)
     Fire.shared.off()
+    clearInterval(this.intervalID)
   }
 
   renderMessage(props) {
@@ -109,7 +110,7 @@ export default class ChatRoom extends React.Component {
     const newMessages = []
 
     for (let i = 0 ; i < 10; i ++) {
-      await Fire.shared.loadEarlier(this.state.room, this.state.messages[this.state.messages.length-1], this.state.pm, (message => {
+      await Fire.shared.loadEarlier(this.state.room, this.state.messages[this.state.messages.length-1], this.state.pm, this.state.live, (message => {
         newMessages.push(message)
       }))
 
