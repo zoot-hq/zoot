@@ -10,7 +10,21 @@ import {
     Alert,
 } from 'react-native'
 import Fire from '../Fire'
-import Modal from 'react-native-modal'
+import RNPickerSelect from 'react-native-picker-select'
+
+const roleList = [
+    'New Mother',
+    'Surrogate',
+    'Gestational Carrier',
+    'Adoptive Parent',
+    'Hopeful Parent',
+    'Parent',
+    'Egg/Embryo Donor',
+    'New Parent',
+    'Parent Recovering from Loss',
+    'Other',
+    'Prefer Not to Disclose',
+]
 
 export default class SignupScreen extends React.Component {
     constructor() {
@@ -24,8 +38,8 @@ export default class SignupScreen extends React.Component {
             children: '0',
             monthsPostPartum: '0',
             error: null,
-            // visibility state for community guidelines popup
-            showCommunityPopup: false,
+            availableRoles: roleList,
+            selectedRole: 'Choose role',
         }
         this.handleSubmit = this.handleSubmit.bind(this)
         this.communityPopup = this.communityPopup.bind(this)
@@ -186,6 +200,80 @@ export default class SignupScreen extends React.Component {
                 ref={input => (this.monthsPostPartum = input)}
               />
             </View> */}
+                        <View
+                            style={[
+                                {
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    // marginRight: 50,
+                                    // marginLeft: 50,
+                                },
+                                // styles.field,
+                            ]}
+                        >
+                            <View
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignContent: 'center',
+                                    width: 180,
+                                }}
+                            >
+                                <Text
+                                    style={[
+                                        { marginTop: 10, alignSelf: 'center' },
+                                        styles.text,
+                                    ]}
+                                >
+                                    What best describes you?
+                                    {'\n'}
+                                </Text>
+                                <Text
+                                    style={[
+                                        { alignSelf: 'center' },
+                                        styles.text,
+                                    ]}
+                                >
+                                    I am...{' '}
+                                </Text>
+                                <View>
+                                    <RNPickerSelect
+                                        style={{ ...pickerSelectStyles }}
+                                        onValueChange={value => {
+                                            this.setState({
+                                                selectedRole: value,
+                                            })
+                                        }}
+                                        items={[
+                                            {
+                                                label: 'New Mother',
+                                                value: 'new mother',
+                                            },
+                                            {
+                                                label: 'Surrogate',
+                                                value: 'surrogate',
+                                            },
+                                            {
+                                                label: 'Gestational Carrier',
+                                                value: 'gestational carrier',
+                                            },
+                                            {
+                                                label:
+                                                    'Parent Recovering from Loss',
+                                                value:
+                                                    'parent recovering from loss',
+                                            },
+                                        ]}
+                                        placeholder={{
+                                            label: 'Please select...',
+                                            value: null,
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                        </View>
                         <TouchableOpacity
                             style={styles.buttonContainer}
                             onPress={async () => {
@@ -235,7 +323,6 @@ export default class SignupScreen extends React.Component {
                         >
                             End-User License Agreement (EULA) of Après.
                         </Text>
-
                     </View>
                 </KeyboardAvoidingView>
             </View>
@@ -256,7 +343,7 @@ const styles = StyleSheet.create({
         textAlign: 'justify',
         paddingBottom: 10,
         marginTop: 30,
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
     },
     eulaText: {
         display: 'flex',
@@ -265,9 +352,9 @@ const styles = StyleSheet.create({
         marginRight: 50,
         marginLeft: 50,
         letterSpacing: 1,
-        fontFamily: "Futura-Light",
+        fontFamily: 'Futura-Light',
         marginTop: 10,
-        textAlign: 'center'
+        textAlign: 'center',
     },
     link: {
         color: 'blue',
@@ -277,8 +364,8 @@ const styles = StyleSheet.create({
         marginRight: 50,
         marginLeft: 50,
         letterSpacing: 1,
-        fontFamily: "Futura-Light",
-        textAlign: 'center'
+        fontFamily: 'Futura-Light',
+        textAlign: 'center',
     },
     title: {
         top: 0,
@@ -354,8 +441,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     okButtonView: {
-        // display: 'flex',
-        // alignSelf: 'flex-end',
         backgroundColor: 'pink',
         display: 'flex',
         alignSelf: 'flex-end',
@@ -367,12 +452,27 @@ const styles = StyleSheet.create({
         borderTopColor: 'grey',
         borderTopWidth: 3,
         position: 'absolute',
-        // backgroundColor: 'green',
     },
     okButtonText: {
         fontFamily: 'Futura-Light',
         textAlign: 'center',
         fontSize: 24,
         color: 'blue',
+    },
+})
+
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        fontSize: 16,
+        paddingTop: 13,
+        paddingHorizontal: 10,
+        paddingBottom: 12,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 4,
+        backgroundColor: 'white',
+        color: 'black',
+        margin: 5,
+        // width: '50%',
     },
 })
