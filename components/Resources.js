@@ -4,10 +4,10 @@ import {
   StyleSheet,
   View,
   ScrollView,
-  FlatList,
   Linking,
   TouchableOpacity,
 } from "react-native";
+import Select from "react-native-picker-select";
 
 export default class Resources extends Component {
   constructor(props) {
@@ -16,11 +16,7 @@ export default class Resources extends Component {
       maternal: {},
       wellness: {},
       child: {},
-      renderDropDown: false,
     };
-  }
-  componentDidMount() {
-    this.setState({ renderDropDown: true });
   }
   setLocation(category, evt) {
     let stateObj = {};
@@ -30,7 +26,33 @@ export default class Resources extends Component {
     };
     this.setState(stateObj);
   }
+  autoScroll(category) {
+    // if statement prevents an error if the user clicks 'Go to' in the drop down
+    if (category) {
+      this.scrollRef.scrollTo({
+        x: this.state[category].x,
+        y: this.state[category].y,
+        animated: true,
+      });
+    }
+  }
   render() {
+    const pickerStyle = {
+      inputIOS: {
+        color: "gray",
+        marginTop: 10,
+        paddingTop: 10,
+        paddingHorizontal: 10,
+        paddingBottom: 10,
+        alignSelf: "center",
+        borderWidth: 1,
+      },
+      inputAndroid: {
+        color: "gray",
+        borderWidth: 1,
+      },
+      placeholderColor: "black",
+    };
     return (
       <View style={styles.container}>
         <Text style={styles.title}>après</Text>
@@ -39,20 +61,18 @@ export default class Resources extends Component {
           that you can find professional mental healthcare providers and get
           help.
         </Text>
-        {this.state.renderDropDown && (
-          <TouchableOpacity
-            onPress={() =>
-              this.scrollRef.scrollTo({
-                x: this.state.child.x,
-                y: this.state.child.y,
-                animated: true,
-              })
-            }
-          >
-            <Text>Go to Infant & Child</Text>
-          </TouchableOpacity>
-        )}
+        <Select
+          style={pickerStyle}
+          onValueChange={(value) => this.autoScroll(value)}
+          placeholder={{ label: "Select...", value: null }}
+          items={[
+            { label: "Maternal Mental Health", value: "maternal" },
+            { label: "Wellness", value: "wellness" },
+            { label: "Infant & Child Development", value: "child" },
+          ]}
+        ></Select>
         <ScrollView
+          style={styles.scroll}
           ref={(ref) => {
             this.scrollRef = ref;
           }}
@@ -159,11 +179,8 @@ export default class Resources extends Component {
           >
             <Text style={styles.subtitle}>The Child Mind Institute</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => Linking.openURL("https://www.commonsensemedia.org/")}
-          >
-            <Text style={styles.subtitle}>Common Sense Media</Text>
-          </TouchableOpacity>
+          {/* this empty View provides enough space below the resources that each category can scroll to the top when chosen */}
+          <View style={styles.extraSpace}></View>
         </ScrollView>
       </View>
     );
@@ -176,6 +193,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "white",
     flex: 1,
+  },
+  scroll: {
+    marginTop: 10,
   },
   title: {
     fontSize: 100,
@@ -203,7 +223,7 @@ const styles = StyleSheet.create({
     fontFamily: "Futura-Light",
     marginTop: 40,
   },
-  picker: {
-    margin: 5,
+  extraSpace: {
+    height: 500,
   },
 });
