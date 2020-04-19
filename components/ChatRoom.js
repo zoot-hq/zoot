@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, AppState} from 'react-native'
+import { View, Text, StyleSheet, AppState, Alert} from 'react-native'
 import { GiftedChat } from 'react-native-gifted-chat'
 import { MaterialIndicator } from 'react-native-indicators';
 import SlackMessage from './SlackMessage'
@@ -13,6 +13,7 @@ export default class ChatRoom extends React.Component {
       this.state = {
       room: this.props.navigation.state.params.chatroom,
       pm: this.props.navigation.state.params.PM,
+      live: this.props.navigation.state.params.live,
       messages: [],
       user: {
         name: Fire.shared.username(),
@@ -26,7 +27,7 @@ export default class ChatRoom extends React.Component {
   componentDidMount = () => {
 
     //get messages for chatroom
-    Fire.shared.on(this.state.room, this.state.pm, (message => {
+    Fire.shared.on(this.state.room, this.state.pm, this.state.live, (message => {
       this.setState(previousState => ({
         messages: GiftedChat.append(previousState.messages, message),
       }))
@@ -34,7 +35,7 @@ export default class ChatRoom extends React.Component {
 
     // set timeout for enter message
     setTimeout(() => {
-      Fire.shared.enterRoom(this.state.room, this.state.pm)
+      Fire.shared.enterRoom(this.state.room, this.state.pm, this.state.live)
     }, 1500)
 
     // set event listener for a user exit
@@ -43,9 +44,36 @@ export default class ChatRoom extends React.Component {
     // set error handler to ensure leave room event on app crash
     const defaultErrorHandler = ErrorUtils.getGlobalHandler()
     ErrorUtils.setGlobalHandler((e, isFatal) => {
-      Fire.shared.leaveRoom(this.state.room, this.state.pm)
+      Fire.shared.leaveRoom(this.state.room, this.state.pm, this.state.live)
       defaultErrorHandler(e, isFatal)
     })
+
+    // set timer for chat end
+    if (this.state.live) {
+      setInterval(() => {
+
+        // get nyc time
+        const currTime = new Date()
+        const currNyTime = this.changeTimezone(currTime, "America/New_York")
+
+        // if time is outside set time for live chat
+        if(!(currNyTime.getDay() === 2 && (currNyTime.getHours() === 21 || (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30)))) 
+          Alert.alert(
+            'This live chat has ended',
+            'We welcome you to join us again next week!',
+            [{ text: 'See you next time!', onPress: () => this.props.navigation.replace('ChatList')}]
+        )
+        }, 30000)
+    }
+  }
+
+  changeTimezone = (date, ianatz) => {
+
+    const invdate = new Date(date.toLocaleString('en-US', {
+      timeZone: ianatz
+    }))
+    const diff = date.getTime() - invdate.getTime()
+    return new Date(date.getTime() + diff)
   }
 
   handleAppStateChange = () => {
@@ -142,7 +170,7 @@ export default class ChatRoom extends React.Component {
                 },
                 navigation: this.props.navigation
               }}
-              onSend={(messages) => Fire.shared.send(messages, this.state.room, this.state.pm)}
+              onSend={(messages) => Fire.shared.send(messages, this.state.room, this.state.pm, this.state.live)}
               user={this.state.user}
               renderMessage={this.renderMessage}
               renderAvatar={null}

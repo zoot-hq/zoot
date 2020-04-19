@@ -13,6 +13,7 @@ export default class HomeScreen extends React.Component {
   }
 
   async componentWillMount() {
+    
     // get fonts
     await Font.loadAsync({
       'CormorantGaramond-Light': require('../assets/fonts/CormorantGaramond-Light.ttf'),

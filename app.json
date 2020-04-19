@@ -1,21 +1,27 @@
 {
-    "expo": {
-        "name": "après2",
-        "slug": "apres2",
-        "privacy": "public",
-        "sdkVersion": "34.0.0",
-        "platforms": ["ios", "android", "web"],
-        "version": "3.0.0",
-        "orientation": "portrait",
-        "updates": {
-            "fallbackToCacheTimeout": 0
-        },
-        "assetBundlePatterns": ["**/*"],
-        "icon": "./assets/AppIcon.png",
-        "ios": {
-            "bundleIdentifier": "com.apres.app",
-            "icon": "./assets/AppIcon.png",
-            "supportsTablet": true
-        }
+  "expo": {
+    "name": "après",
+    "slug": "apres",
+    "privacy": "public",
+    "sdkVersion": "34.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "3.0.0",
+    "orientation": "portrait",
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "icon": "./assets/AppIcon.png",
+    "ios": {
+      "bundleIdentifier": "com.apres.app",
+      "icon": "./assets/AppIcon.png",
+      "supportsTablet": true
     }
+  }
 }
