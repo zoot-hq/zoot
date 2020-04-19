@@ -35,7 +35,6 @@ class Fire {
             react,
             hidden
         };
-        console.log('message', message)
         return message;
     };
 
@@ -49,11 +48,17 @@ class Fire {
             firebase.database().ref('chatrooms').child(room).limitToLast(10)
             .on('child_added', snapshot => callback(this.parse(snapshot)))
 
-    loadEarlier = (room, lastMessage, pm, callback) => 
-        pm? firebase.database().ref('PMrooms').child(room)
+    loadEarlier = (room, lastMessage, pm, live, callback) => 
+        pm ? firebase.database().ref('PMrooms').child(room)
             .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
             .once('child_added', snapshot => callback(this.parse(snapshot)))
-            : firebase.database().ref('chatrooms').child(room)
+            : 
+        live ?  
+            firebase.database().ref('livechatrooms').child(room)
+            .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
+            .once('child_added', snapshot => callback(this.parse(snapshot)))
+            : 
+            firebase.database().ref('chatrooms').child(room)
             .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
             .once('child_added', snapshot => callback(this.parse(snapshot)))
 
@@ -172,7 +177,6 @@ class Fire {
                         })
                         })
                 } catch (error) {
-                    console.error(error)
                 }
             }
         }

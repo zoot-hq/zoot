@@ -110,7 +110,7 @@ export default class ChatRoom extends React.Component {
     const newMessages = []
 
     for (let i = 0 ; i < 10; i ++) {
-      await Fire.shared.loadEarlier(this.state.room, this.state.messages[this.state.messages.length-1], this.state.pm, (message => {
+      await Fire.shared.loadEarlier(this.state.room, this.state.messages[this.state.messages.length-1], this.state.pm, this.state.live, (message => {
         newMessages.push(message)
       }))
 
