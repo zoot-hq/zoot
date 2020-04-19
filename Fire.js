@@ -49,43 +49,29 @@ class Fire {
         return message
     }
 
-    on = (room, pm, callback) =>
-        pm
-            ? firebase
-                  .database()
-                  .ref('PMrooms')
-                  .child(room)
-                  .limitToLast(10)
-                  .on('child_added', snapshot => callback(this.parse(snapshot)))
-            : firebase
-                  .database()
-                  .ref('chatrooms')
-                  .child(room)
-                  .limitToLast(10)
-                  .on('child_added', snapshot => callback(this.parse(snapshot)))
+    on = (room, pm, live, callback) =>
+        pm ? firebase.database().ref('PMrooms').child(room).limitToLast(10)
+            .on('child_added', snapshot => callback(this.parse(snapshot)))
+            : 
+        live ? firebase.database().ref('livechatrooms').child(room).limitToLast(10)
+            .on('child_added', snapshot => callback(this.parse(snapshot)))
+            : 
+            firebase.database().ref('chatrooms').child(room).limitToLast(10)
+            .on('child_added', snapshot => callback(this.parse(snapshot)))
 
-    loadEarlier = (room, lastMessage, pm, callback) =>
-        pm
-            ? firebase
-                  .database()
-                  .ref('PMrooms')
-                  .child(room)
-                  .orderByChild('timestamp')
-                  .endAt(lastMessage.timestamp - 1)
-                  .limitToLast(1)
-                  .once('child_added', snapshot =>
-                      callback(this.parse(snapshot))
-                  )
-            : firebase
-                  .database()
-                  .ref('chatrooms')
-                  .child(room)
-                  .orderByChild('timestamp')
-                  .endAt(lastMessage.timestamp - 1)
-                  .limitToLast(1)
-                  .once('child_added', snapshot =>
-                      callback(this.parse(snapshot))
-                  )
+    loadEarlier = (room, lastMessage, pm, live, callback) => 
+        pm ? firebase.database().ref('PMrooms').child(room)
+            .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
+            .once('child_added', snapshot => callback(this.parse(snapshot)))
+            : 
+        live ?  
+            firebase.database().ref('livechatrooms').child(room)
+            .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
+            .once('child_added', snapshot => callback(this.parse(snapshot)))
+            : 
+            firebase.database().ref('chatrooms').child(room)
+            .orderByChild('timestamp').endAt(lastMessage.timestamp - 1).limitToLast(1)
+            .once('child_added', snapshot => callback(this.parse(snapshot)))
 
     get timestamp() {
         return firebase.database.ServerValue.TIMESTAMP
@@ -143,7 +129,7 @@ class Fire {
     }
 
     // send the message to the Backend
-    send = (messages, room, pm) => {
+    send = (messages, room, pm, live) => {
         for (let i = 0; i < messages.length; i++) {
             const { text, user } = messages[i]
             const message = {
@@ -172,18 +158,11 @@ class Fire {
             }
 
             // push message to database
-            const refToMessage = pm
-                ? firebase
-                      .database()
-                      .ref('PMrooms')
-                      .child(room)
-                      .push(message)
-                : firebase
-                      .database()
-                      .ref('chatrooms')
-                      .child(room)
-                      .push(message)
-
+            const refToMessage = pm ? firebase.database().ref('PMrooms').child(room).push(message)
+                                     : 
+                                live ? firebase.database().ref('livechatrooms').child(room).push(message)
+                                     : firebase.database().ref('chatrooms').child(room).push(message)
+            
             // push users object to database
             refToMessage
                 .child('likes')
@@ -243,7 +222,6 @@ class Fire {
                             )
                         })
                 } catch (error) {
-                    console.error(error)
                 }
             }
         }
@@ -262,35 +240,15 @@ class Fire {
         }
 
         // enter message into room only if live
-        if (live)
-            pm
-                ? firebase
-                      .database()
-                      .ref('PMrooms')
-                      .child(room)
-                      .push(message)
-                : firebase
-                      .database()
-                      .ref('chatrooms')
-                      .child(room)
-                      .push(message)
+
+        if (live || pm) pm ? firebase.database().ref('PMrooms').child(room).push(message)
+            : firebase.database().ref('livechatrooms').child(room).push(message)   
 
         // update number of participants if not PM
-        if (!pm)
-            firebase
-                .database()
-                .ref('chatroomnames')
-                .child(room)
-                .child('numOnline')
-                .once('value')
-                .then(snapshot => {
-                    firebase
-                        .database()
-                        .ref('chatroomnames')
-                        .child(room)
-                        .child('numOnline')
-                        .set(snapshot.val() + 1)
-                })
+        const ref = live ? 'livechatnames' : 'chatroomnames'
+        if (!pm) firebase.database().ref(ref).child(room).child('numOnline').once('value').then(snapshot => {
+            firebase.database().ref(ref).child(room).child('numOnline').set(snapshot.val() + 1)
+        })
     }
 
     leaveRoom(room, pm, live) {
@@ -306,35 +264,14 @@ class Fire {
         }
 
         // enter message into room only if live
-        if (live)
-            pm
-                ? firebase
-                      .database()
-                      .ref('PMrooms')
-                      .child(room)
-                      .push(message)
-                : firebase
-                      .database()
-                      .ref('chatrooms')
-                      .child(room)
-                      .push(message)
+        if (live || pm) pm ? firebase.database().ref('PMrooms').child(room).push(message)
+            : firebase.database().ref('livechatrooms').child(room).push(message)   
 
         // update number of participants if not PM
-        if (!pm)
-            firebase
-                .database()
-                .ref('chatroomnames')
-                .child(room)
-                .child('numOnline')
-                .once('value')
-                .then(snapshot => {
-                    firebase
-                        .database()
-                        .ref('chatroomnames')
-                        .child(room)
-                        .child('numOnline')
-                        .set(snapshot.val() - 1)
-                })
+        const ref = live ? 'livechatnames' : 'chatroomnames'   
+        if (!pm) firebase.database().ref(ref).child(room).child('numOnline').once('value').then(snapshot => {
+            firebase.database().ref(ref).child(room).child('numOnline').set(snapshot.val() - 1)
+        })
     }
 
     // close the connection to the Backend
@@ -551,6 +488,37 @@ class Fire {
                         })
                 } else callback('all good')
             })
+    
+    
+    createLiveRoomIfDoesNotExist = async (room, callback) => 
+        firebase.database().ref('livechatnames').child(room).once('value', snapshot => {
+            const exists = (snapshot.val() !== null)
+
+            if (!exists) {
+
+                // add room to chatroomPM lists
+                firebase.database().ref('livechatnames').child(room).set({ name : room })
+
+                // add number of participants
+                firebase.database().ref('livechatnames').child(room).child('numOnline').set(0)
+
+                const initMessage = {
+                    room,
+                    text: `Welcome to # ${room} - this is the beginning of your private message chat`,
+                    timestamp: Date.now(),
+                    user: {
+                        name: `#${room}`
+                    },
+                    react: false
+                }
+
+                // add room to chatrooms
+                firebase.database().ref('livechatrooms').child(room).push(initMessage)
+
+                callback()
+            }
+            else callback()
+        })
 
     // this function updates the database in increasing the reaction type of
     // a message by 1
