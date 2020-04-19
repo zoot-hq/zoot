@@ -195,8 +195,9 @@ class Fire {
             : firebase.database().ref('livechatrooms').child(room).push(message)   
 
         // update number of participants if not PM
-        if (!pm) firebase.database().ref('chatroomnames').child(room).child('numOnline').once('value').then(snapshot => {
-            firebase.database().ref('chatroomnames').child(room).child('numOnline').set(snapshot.val() + 1)
+        const ref = live ? 'livechatnames' : 'chatroomnames'
+        if (!pm) firebase.database().ref(ref).child(room).child('numOnline').once('value').then(snapshot => {
+            firebase.database().ref(ref).child(room).child('numOnline').set(snapshot.val() + 1)
         })
     }
 
@@ -218,8 +219,9 @@ class Fire {
             : firebase.database().ref('livechatrooms').child(room).push(message)   
 
         // update number of participants if not PM
-        if (!pm) firebase.database().ref('chatroomnames').child(room).child('numOnline').once('value').then(snapshot => {
-            firebase.database().ref('chatroomnames').child(room).child('numOnline').set(snapshot.val() - 1)
+        const ref = live ? 'livechatnames' : 'chatroomnames'
+        if (!pm) firebase.database().ref(ref).child(room).child('numOnline').once('value').then(snapshot => {
+            firebase.database().ref(ref).child(room).child('numOnline').set(snapshot.val() - 1)
         })
     }
 
