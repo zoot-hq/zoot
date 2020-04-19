@@ -82,7 +82,23 @@ export default class ChatList extends React.Component {
           });
         }
       }
-    );
+    })
+
+    this.getLiveChatAvailability()
+    setInterval(() => {
+      this.getLiveChatAvailability()
+    }, 600000)
+  }
+
+  getLiveChatAvailability = () => {
+
+      // get nyc time
+      const currTime = new Date()
+      const currNyTime = this.changeTimezone(currTime, "America/New_York")
+
+      // if time is inside set time for live chat, set state to true
+      if((currNyTime.getDay() === 3 && (currNyTime.getHours() === 21 || (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30)))) 
+        this.setState({ liveChatAvailable : true})
   }
 
   registerForPushNotificationsAsync = async () => {
@@ -95,9 +111,59 @@ export default class ChatList extends React.Component {
       token = await Notifications.getExpoPushTokenAsync();
 
       // push token to firebase
-      Fire.shared.sendNotificationToken(token);
-    } catch (error) {
-      console.error(error);
+      Fire.shared.sendNotificationToken(token)
+
+    } catch(error) {
+    }
+  }
+
+  changeTimezone = (date, ianatz) => {
+
+    const invdate = new Date(date.toLocaleString('en-US', {
+      timeZone: ianatz
+    }))
+    const diff = date.getTime() - invdate.getTime()
+    return new Date(date.getTime() + diff)
+  }
+
+  communityPopup = (timeToAcceptableFirebaseString) => {
+    Alert.alert(
+        'Before you enter, here is a reminder of our Community Guidelines',
+        `1. Après is intended to be a place of
+        acceptance, empathy and compassion Above
+        all else, try to be kind.
+        2. Think before you type.
+        3. If you see something unacceptable, please flag the comment for review.
+        4. If you experience a user who repeatedly behaves in an unacceptable manner, please flag the user for review.
+        5. If you are struggling in a way that feels overwhelming, please see our resources for access to professional mental healthcare providers, and get help.
+        6. We are open and love your feedback. Please send us your suggestions on how to improve your experience.`,
+        [{ text: 'OK', onPress: () => this.props.navigation.navigate('ChatRoom', {chatroom : timeToAcceptableFirebaseString, live : true})}]
+    )
+}
+
+  liveChat = () => {
+
+    // get nyc time
+    const currTime = new Date()
+    const currNyTime = this.changeTimezone(currTime, "America/New_York")
+
+    // if time is inside set time for live chat
+    if(!(currNyTime.getDay() === 2 && (currNyTime.getHours() === 21 || (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30)))) {
+      
+      const timeToAcceptableFirebaseString = `live-${currNyTime.getMonth()}-${currNyTime.getDate()}-${currNyTime.getFullYear()}`
+
+      Fire.shared.createLiveRoomIfDoesNotExist(timeToAcceptableFirebaseString, (() => {
+
+          this.communityPopup(timeToAcceptableFirebaseString)
+      }))
+    }
+
+    else {
+      Alert.alert(
+        'Live Chat Unavailable',
+        'Sorry we missed you! Live chat is available every Wednesday from 9PM EST until 10:30PM EST. No invitation necessary!',
+        [{ text: 'See you next time!'}]
+    )
     }
   };
 
@@ -148,48 +214,46 @@ export default class ChatList extends React.Component {
                     >
                       <View style={styles.singleChatView}>
                         <Text style={styles.buttonText}># {chatroom.name}</Text>
-                        <Ionicons name="md-people" size={25} color="grey">
-                          {" "}
-                          {chatroom.numOnline}
-                        </Ionicons>
-                      </View>
-                    </TouchableOpacity>
-                  ))
-                ) : // else allow user to create a new chatroom
-                this.state.chatrooms.length ? (
-                  <View>
-                    <Text>
-                      No results. Would you like to create this chatroom?
-                    </Text>
-                    <TouchableOpacity
-                      key={this.state.query}
-                      style={styles.buttonContainer}
-                      onPress={() => {
-                        Fire.shared.createChatRoom(this.state.query);
-                        this.props.navigation.navigate("ChatRoom", {
-                          chatroom: this.state.query,
-                        });
-                      }}
-                    >
-                      <Text style={styles.buttonText}>
-                        + {this.state.query}{" "}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                ) : (
-                  // return loading while grabbing data from database
-                  <MaterialIndicator color="black" />
-                )}
+                        <Ionicons name='md-people' size={25} color='grey'> {chatroom.numOnline}</Ionicons>
+                      </View> 
+                    </TouchableOpacity>))
+                  :
+                  // else allow user to create a new chatroom
+                  (this.state.chatrooms.length ?
+                    <View>
+                      <Text>No results. Would you like to create this chatroom?</Text>
+                      <TouchableOpacity
+                        key={this.state.query}
+                        style={styles.buttonContainer}
+                        onPress={() => {
+                          Fire.shared.createChatRoom(this.state.query)
+                          this.props.navigation.navigate('ChatRoom', { chatroom: this.state.query })
+                        }
+                        }
+                      >
+                        <Text style={styles.buttonText}>+ {this.state.query} </Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    :
+
+                    // return loading while grabbing data from database
+                    <MaterialIndicator color='black' />)
+
+                }
               </ScrollView>
             </SafeAreaView>
           </KeyboardAvoidingView>
         </View>
-        <TouchableOpacity
-          style={{ alignSelf: "flex-end", marginTop: 10 }}
-          onPress={() => this.props.navigation.navigate("PMList")}
-        >
-          <Ionicons name="ios-chatbubbles" size={30} color="grey"></Ionicons>
-        </TouchableOpacity>
+
+        <View style={{ display: 'flex', alignItems: 'space-between', marginTop: 10, flexDirection: 'row', alignSelf: 'flex-end' }}>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('PMList')}>
+            <Ionicons name='ios-chatbubbles' size={30} color='grey'></Ionicons>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.liveChat}>
+            <MaterialIcons name='speaker-phone' size={30} color={this.state.liveChatAvailable ? 'green' : 'grey'}></MaterialIcons>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -255,9 +319,10 @@ const styles = StyleSheet.create({
     fontFamily: "Futura-Light",
   },
   singleChatView: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
+    display: 'flex', 
+    flexDirection: 'row', 
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  }
 });
+
