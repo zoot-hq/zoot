@@ -210,12 +210,7 @@ export default class Bubble extends React.Component {
         }
         else {
 
-          const live = this.props.currentMessage.room.slice(0, 4) === 'live' ? true : false
-
-          // leave chatroom
-          Fire.shared.leaveRoom(this.props.currentMessage.room, true, live)
-
-          // nvaigate to pm
+          // navigate to pm
           this.props.listViewProps.navigation.replace('ChatRoom', {chatroom : comboName, PM : true})
         }
       }))
