@@ -19,6 +19,8 @@ export default class UserPage extends Component {
       passwordModal: false,
       newUsername: '',
       newEmail: '',
+      newPassword: '',
+      passwordUpdated: false,
       error: false
     };
     this.user = firebase.auth().currentUser;
@@ -36,7 +38,7 @@ export default class UserPage extends Component {
         .then(() => this.setState({newUsername: '', userNameModal: false}))
         .catch((error) => this.setState({error: error}));
     } else {
-      this.setState({error: true});
+      this.setState({error: 'Please enter a new username.'});
     }
   }
   updateEmail() {
@@ -47,7 +49,23 @@ export default class UserPage extends Component {
         .then(() => this.setState({newEmail: '', emailModal: false}))
         .catch((error) => this.setState({error: error}));
     } else {
-      this.setState({error: true});
+      this.setState({error: 'Please enter a new email address.'});
+    }
+  }
+  updatePassword() {
+    if (this.state.newPassword) {
+      this.setState({error: false});
+      this.user
+        .updatePassword(this.state.newPassword)
+        .then(() =>
+          this.setState({
+            newPassword: '',
+            passwordUpdated: true
+          })
+        )
+        .catch((error) => this.setState({error: error}));
+    } else {
+      this.setState({error: 'Please enter a new password.'});
     }
   }
   render() {
@@ -68,9 +86,7 @@ export default class UserPage extends Component {
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>Update username</Text>
             {this.state.error ? (
-              <Text style={styles.modalText}>
-                There was an error updating your username. Please try again.
-              </Text>
+              <Text style={styles.modalText}>{this.state.error.message}</Text>
             ) : (
               <Text style={styles.modalText}>
                 Type your new desired username below.
@@ -97,7 +113,7 @@ export default class UserPage extends Component {
                   borderLeftWidth: 1,
                   borderLeftColor: 'gray'
                 }}
-                onPress={() => this.updateUsername('displayName')}
+                onPress={() => this.updateUsername()}
               >
                 <Text style={styles.modalButtonSave}>Save</Text>
               </TouchableOpacity>
@@ -114,9 +130,7 @@ export default class UserPage extends Component {
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>Update email</Text>
             {this.state.error ? (
-              <Text style={styles.modalText}>
-                There was an error updating your email. Please try again.
-              </Text>
+              <Text style={styles.modalText}>{this.state.error.message}</Text>
             ) : (
               <Text style={styles.modalText}>
                 Type your new desired email address below.
@@ -143,7 +157,7 @@ export default class UserPage extends Component {
                   borderLeftWidth: 1,
                   borderLeftColor: 'gray'
                 }}
-                onPress={() => this.updateEmail('email')}
+                onPress={() => this.updateEmail()}
               >
                 <Text style={styles.modalButtonSave}>Save</Text>
               </TouchableOpacity>
@@ -152,10 +166,75 @@ export default class UserPage extends Component {
         </Modal>
         <Text></Text>
         {/* user password section */}
-        <Text style={styles.userInfo}>password: ****</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => this.renderModal('passwordModal')}>
           <Text style={styles.userInfo}>Update password?</Text>
         </TouchableOpacity>
+        <Modal isVisible={this.state.passwordModal}>
+          <View style={styles.modal}>
+            {this.state.passwordUpdated ? (
+              <View>
+                <Text style={styles.modalTitle}>
+                  Your password has been updated!
+                </Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    this.setState({
+                      passwordUpdated: false,
+                      passwordModal: false
+                    })
+                  }
+                >
+                  <Text style={styles.modalButtonSave}>Ok!</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View>
+                <Text style={styles.modalTitle}>Update password</Text>
+                {this.state.error ? (
+                  <Text style={styles.modalText}>
+                    {this.state.error.message}
+                  </Text>
+                ) : (
+                  <Text style={styles.modalText}>
+                    Type your new desired password below.
+                  </Text>
+                )}
+                <TextInput
+                  placeholder="New password"
+                  placeholderTextColor="#bfbfbf"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  secureTextEntry
+                  style={styles.input}
+                  onChangeText={(newPassword) => this.setState({newPassword})}
+                />
+                <View style={styles.modalButtonsContainer}>
+                  <TouchableOpacity
+                    style={{width: 150}}
+                    onPress={() =>
+                      this.setState({
+                        passwordModal: false,
+                        passwordUpdated: false
+                      })
+                    }
+                  >
+                    <Text style={styles.modalButtonCancel}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      width: 150,
+                      borderLeftWidth: 1,
+                      borderLeftColor: 'gray'
+                    }}
+                    onPress={() => this.updatePassword()}
+                  >
+                    <Text style={styles.modalButtonSave}>Save</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+          </View>
+        </Modal>
         <Text></Text>
         <Text style={styles.userInfo}>Currently, I'm </Text>
         <Text style={styles.userInfo}>
