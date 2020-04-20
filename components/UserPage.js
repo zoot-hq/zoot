@@ -18,6 +18,7 @@ export default class UserPage extends Component {
       emailModal: false,
       passwordModal: false,
       newUsername: '',
+      newEmail: '',
       error: false
     };
     this.user = firebase.auth().currentUser;
@@ -29,13 +30,22 @@ export default class UserPage extends Component {
   }
   updateUsername() {
     if (this.state.newUsername) {
+      this.setState({error: false});
       this.user
-        .updateProfile({
-          displayName: this.state.newUsername
-        })
-        .then(() => this.setState({newUsername: ''}))
-        .catch((error) => this.setState({error: error}))
-        .then(this.setState({error: false, userNameModal: false}));
+        .updateProfile({displayName: this.state.newUsername})
+        .then(() => this.setState({newUsername: '', userNameModal: false}))
+        .catch((error) => this.setState({error: error}));
+    } else {
+      this.setState({error: true});
+    }
+  }
+  updateEmail() {
+    if (this.state.newEmail) {
+      this.setState({error: false});
+      this.user
+        .updateEmail(this.state.newEmail)
+        .then(() => this.setState({newEmail: '', emailModal: false}))
+        .catch((error) => this.setState({error: error}));
     } else {
       this.setState({error: true});
     }
@@ -48,6 +58,7 @@ export default class UserPage extends Component {
           Hey, {Fire.shared.username()}! This is your very own user page! Update
           your information here.
         </Text>
+        {/* username section */}
         <Text style={styles.username}>{Fire.shared.username()}</Text>
         <Text style={styles.userInfo}>username: {Fire.shared.username()}</Text>
         <TouchableOpacity onPress={() => this.renderModal('userNameModal')}>
@@ -86,7 +97,7 @@ export default class UserPage extends Component {
                   borderLeftWidth: 1,
                   borderLeftColor: 'gray'
                 }}
-                onPress={() => this.updateUsername()}
+                onPress={() => this.updateUsername('displayName')}
               >
                 <Text style={styles.modalButtonSave}>Save</Text>
               </TouchableOpacity>
@@ -94,11 +105,53 @@ export default class UserPage extends Component {
           </View>
         </Modal>
         <Text></Text>
+        {/* user email section */}
         <Text style={styles.userInfo}>email: {Fire.shared.email()}</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => this.setState({emailModal: true})}>
           <Text style={styles.userInfo}>Update email?</Text>
         </TouchableOpacity>
+        <Modal isVisible={this.state.emailModal}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>Update email</Text>
+            {this.state.error ? (
+              <Text style={styles.modalText}>
+                There was an error updating your email. Please try again.
+              </Text>
+            ) : (
+              <Text style={styles.modalText}>
+                Type your new desired email address below.
+              </Text>
+            )}
+            <TextInput
+              placeholder="New email"
+              placeholderTextColor="#bfbfbf"
+              autoCapitalize="none"
+              autoCorrect={false}
+              style={styles.input}
+              onChangeText={(newEmail) => this.setState({newEmail})}
+            />
+            <View style={styles.modalButtonsContainer}>
+              <TouchableOpacity
+                style={{width: 150}}
+                onPress={() => this.setState({emailModal: false})}
+              >
+                <Text style={styles.modalButtonCancel}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  width: 150,
+                  borderLeftWidth: 1,
+                  borderLeftColor: 'gray'
+                }}
+                onPress={() => this.updateEmail('email')}
+              >
+                <Text style={styles.modalButtonSave}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
         <Text></Text>
+        {/* user password section */}
         <Text style={styles.userInfo}>password: ****</Text>
         <TouchableOpacity>
           <Text style={styles.userInfo}>Update password?</Text>
