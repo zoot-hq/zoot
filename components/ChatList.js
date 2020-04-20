@@ -15,6 +15,7 @@ import {Ionicons} from '@expo/vector-icons';
 import {Notifications} from 'expo';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
+import {MaterialIcons} from '@expo/vector-icons';
 
 export default class ChatList extends React.Component {
   constructor() {
