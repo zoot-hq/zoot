@@ -32,6 +32,9 @@
     },
     "private": true,
     "prettier": {
-        "singleQuote": true
+        "singleQuote": true,
+        "trailingComma": "none",
+        "bracketSpacing": false,
+        "semi":true
     }
 }

@@ -1,11 +1,23 @@
-import React, { Component } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import React, {Component} from 'react';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import Modal from 'react-native-modal';
 import Fire from '../Fire';
 import firebase from 'firebase';
 
 export default class UserPage extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      userNameModal: false,
+      emailModal: false,
+      passwordModal: false
+    };
+    const user = firebase.auth().currentUser;
+  }
+  renderModal(type) {
+    const stateObj = {};
+    stateObj[type] = true;
+    this.setState(stateObj);
   }
   render() {
     return (
@@ -17,9 +29,12 @@ export default class UserPage extends Component {
         </Text>
         <Text style={styles.username}>{Fire.shared.username()}</Text>
         <Text style={styles.userInfo}>username: {Fire.shared.username()}</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => this.renderModal('userNameModal')}>
           <Text style={styles.userInfo}>Update username?</Text>
         </TouchableOpacity>
+        <Modal isVisible={this.state.userNameModal}>
+          <Text>Update username</Text>
+        </Modal>
         <Text></Text>
         <Text style={styles.userInfo}>email: {Fire.shared.email()}</Text>
         <TouchableOpacity>
@@ -35,6 +50,7 @@ export default class UserPage extends Component {
         <Text style={styles.userInfo}>
           Select from below to update your role.
         </Text>
+        {/* role selection dropdown menu goes here */}
         <TouchableOpacity style={styles.userPageButton}>
           <Text style={styles.buttonText}>contact us</Text>
         </TouchableOpacity>
@@ -54,7 +70,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     backgroundColor: 'white',
-    flex: 1,
+    flex: 1
   },
   title: {
     fontSize: 100,
@@ -62,7 +78,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 50,
     marginBottom: 15,
-    fontFamily: 'CormorantGaramond-Light',
+    fontFamily: 'CormorantGaramond-Light'
   },
   subtitle: {
     fontSize: 18,
@@ -72,7 +88,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Futura-Light',
     marginTop: 10,
     marginLeft: 50,
-    marginRight: 50,
+    marginRight: 50
   },
   username: {
     fontSize: 30,
@@ -80,7 +96,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 8,
     fontFamily: 'Futura-Light',
-    marginTop: 10,
+    marginTop: 10
   },
   userInfo: {
     fontSize: 17,
@@ -89,7 +105,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Futura-Light',
     marginTop: 2,
     marginLeft: 30,
-    marginRight: 30,
+    marginRight: 30
   },
   userPageButton: {
     alignSelf: 'center',
@@ -99,11 +115,11 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     width: 200,
     borderWidth: 1,
-    borderColor: 'black',
+    borderColor: 'black'
   },
   buttonText: {
     fontFamily: 'Futura-Light',
     fontSize: 25,
-    textAlign: 'center',
-  },
+    textAlign: 'center'
+  }
 });

@@ -32,9 +32,9 @@ class Fire {
       room,
       base64,
       react,
-      hidden,
+      hidden
     } = snapshot.val();
-    const { key: _id } = snapshot;
+    const {key: _id} = snapshot;
     const message = {
       _id,
       createdAt: new Date(timestamp),
@@ -48,7 +48,7 @@ class Fire {
       timestamp,
       base64,
       react,
-      hidden,
+      hidden
     };
     return message;
   };
@@ -112,24 +112,24 @@ class Fire {
       text: null,
       user: {
         _id: this.uid(),
-        name: this.username(),
+        name: this.username()
       },
       room,
       timestamp: this.timestamp,
       likes: {
-        count: 0,
+        count: 0
       },
       loves: {
-        count: 0,
+        count: 0
       },
       lightbulbs: {
-        count: 0,
+        count: 0
       },
       flags: {
-        count: 0,
+        count: 0
       },
       base64: image.base64,
-      react: true,
+      react: true
     };
 
     // push image to database
@@ -140,16 +140,16 @@ class Fire {
       .push(message);
 
     // push users object to database
-    refToMessage.child('likes').child('users').set({ X: true });
-    refToMessage.child('loves').child('users').set({ X: true });
-    refToMessage.child('lightbulbs').child('users').set({ X: true });
-    refToMessage.child('flags').child('users').set({ X: true });
+    refToMessage.child('likes').child('users').set({X: true});
+    refToMessage.child('loves').child('users').set({X: true});
+    refToMessage.child('lightbulbs').child('users').set({X: true});
+    refToMessage.child('flags').child('users').set({X: true});
   };
 
   // send the message to the Backend
   send = (messages, room, pm, live) => {
     for (let i = 0; i < messages.length; i++) {
-      const { text, user } = messages[i];
+      const {text, user} = messages[i];
       const message = {
         text,
         user,
@@ -157,22 +157,22 @@ class Fire {
         timestamp: this.timestamp,
         likes: {
           count: 0,
-          users: { X: true },
+          users: {X: true}
         },
         loves: {
           count: 0,
-          users: { X: true },
+          users: {X: true}
         },
         lightbulbs: {
           count: 0,
-          users: { X: true },
+          users: {X: true}
         },
         flags: {
           count: 0,
-          users: { X: true },
+          users: {X: true}
         },
         hidden: false,
-        react: true,
+        react: true
       };
 
       // push message to database
@@ -183,10 +183,10 @@ class Fire {
         : firebase.database().ref('chatrooms').child(room).push(message);
 
       // push users object to database
-      refToMessage.child('likes').child('users').set({ X: true });
-      refToMessage.child('loves').child('users').set({ X: true });
-      refToMessage.child('lightbulbs').child('users').set({ X: true });
-      refToMessage.child('flags').child('users').set({ X: true });
+      refToMessage.child('likes').child('users').set({X: true});
+      refToMessage.child('loves').child('users').set({X: true});
+      refToMessage.child('lightbulbs').child('users').set({X: true});
+      refToMessage.child('flags').child('users').set({X: true});
 
       // if PM, send push notification
       if (pm) {
@@ -211,7 +211,7 @@ class Fire {
                 title: `New private message from ${this.username()}`,
                 body: `${text}`,
                 _displayInForeground: true,
-                data: { from: this.username(), pm: true, room },
+                data: {from: this.username(), pm: true, room}
               };
 
               // send notification
@@ -222,9 +222,9 @@ class Fire {
                   headers: {
                     Accept: 'application/json',
                     'Accept-encoding': 'gzip, deflate',
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                   },
-                  body: JSON.stringify(pushNotification),
+                  body: JSON.stringify(pushNotification)
                 }
               );
             });
@@ -242,7 +242,7 @@ class Fire {
       user,
       room,
       timestamp: this.timestamp,
-      react: false,
+      react: false
     };
 
     // enter message into room only if live
@@ -279,7 +279,7 @@ class Fire {
       user,
       room,
       timestamp: this.timestamp,
-      react: false,
+      react: false
     };
 
     // enter message into room only if live
@@ -325,7 +325,7 @@ class Fire {
   ) => {
     try {
       // check to see if username already exists
-      const status = await this.userExists(username, { exists: false });
+      const status = await this.userExists(username, {exists: false});
       if (status.val() || username === 'X') {
         throw new Error('username already taken.');
       }
@@ -335,12 +335,12 @@ class Fire {
 
       // add in custom fields
       const refToUser = firebase.database().ref('users').child(username);
-      refToUser.set({ birthday, city, children, monthsPostPartum, email });
+      refToUser.set({birthday, city, children, monthsPostPartum, email});
 
       // add displayname
       const user = firebase.auth().currentUser;
       await user.updateProfile({
-        displayName: username,
+        displayName: username
       });
     } catch (error) {
       return error;
@@ -389,7 +389,7 @@ class Fire {
 
   parsePMs = (snapshot) => {
     const currentUser = this.username();
-    const { name } = snapshot.val();
+    const {name} = snapshot.val();
     const names = name.split('-');
     if (names[0] === currentUser || names[1] === currentUser) {
       return name;
@@ -397,8 +397,8 @@ class Fire {
   };
 
   parseRooms = (snapshot) => {
-    const { name, numOnline } = snapshot.val();
-    return { name, numOnline };
+    const {name, numOnline} = snapshot.val();
+    return {name, numOnline};
   };
 
   createChatRoom = async (room) =>
@@ -415,7 +415,7 @@ class Fire {
             .database()
             .ref('chatroomnames')
             .child(room)
-            .set({ name: room });
+            .set({name: room});
 
           // add number of participants
           firebase
@@ -430,9 +430,9 @@ class Fire {
             text: `Welcome to # ${room} - send a message to get the conversation started`,
             timestamp: Date.now(),
             user: {
-              name: `#${room}`,
+              name: `#${room}`
             },
-            react: false,
+            react: false
           };
 
           // add room to chatrooms, with initial message
@@ -469,16 +469,16 @@ class Fire {
                   .database()
                   .ref('PMnames')
                   .child(room)
-                  .set({ name: room });
+                  .set({name: room});
 
                 const initMessage = {
                   room,
                   text: `Welcome to # ${room} - this is the beginning of your private message chat`,
                   timestamp: Date.now(),
                   user: {
-                    name: `#${room}`,
+                    name: `#${room}`
                   },
-                  react: false,
+                  react: false
                 };
 
                 // add room to chatrooms
@@ -508,7 +508,7 @@ class Fire {
             .database()
             .ref('livechatnames')
             .child(room)
-            .set({ name: room });
+            .set({name: room});
 
           // add number of participants
           firebase
@@ -523,9 +523,9 @@ class Fire {
             text: `Welcome to # ${room} - this is the beginning of your private message chat`,
             timestamp: Date.now(),
             user: {
-              name: `#${room}`,
+              name: `#${room}`
             },
-            react: false,
+            react: false
           };
 
           // add room to chatrooms
@@ -542,11 +542,11 @@ class Fire {
   // this function updates the database in increasing the reaction type of
   // a message by 1
   react(message, reactionType, updatedCount) {
-    const { room, _id } = message;
+    const {room, _id} = message;
     const ref = firebase.database().ref('chatrooms').child(room).child(_id);
 
     // set number of likes/loves
-    ref.child(reactionType).set({ count: updatedCount });
+    ref.child(reactionType).set({count: updatedCount});
 
     //set users object
     ref.child(reactionType).child('users').set(message[reactionType].users);
