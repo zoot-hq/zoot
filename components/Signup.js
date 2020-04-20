@@ -10,6 +10,22 @@ import {
     Alert,
 } from 'react-native'
 import Fire from '../Fire'
+import RNPickerSelect from 'react-native-picker-select'
+
+const roleList = [
+    'A New Mother',
+    'A Surrogate',
+    'A Gestational Carrier',
+    'An Adoptive Parent',
+    'A Hopeful Parent',
+    'A Parent',
+    'An Egg/Embryo Donor',
+    'A New Parent',
+    'A Parent Recovering from Loss',
+    'Other',
+    'Prefer Not to Disclose',
+].map(role => ({ label: role, value: role }))
+
 
 export default class SignupScreen extends React.Component {
     constructor() {
@@ -23,8 +39,7 @@ export default class SignupScreen extends React.Component {
             children: '0',
             monthsPostPartum: '0',
             error: null,
-            // visibility state for community guidelines popup
-            showCommunityPopup: false,
+            selectedRole: '',
         }
         this.handleSubmit = this.handleSubmit.bind(this)
         this.communityPopup = this.communityPopup.bind(this)
@@ -185,6 +200,39 @@ export default class SignupScreen extends React.Component {
                 ref={input => (this.monthsPostPartum = input)}
               />
             </View> */}
+                        <View style={styles.roleIdOuterWrap}>
+                            <View style={styles.roleIdInnerWrap}>
+                                <Text
+                                    style={[
+                                        { marginTop: 12, alignSelf: 'center' },
+                                        styles.text,
+                                    ]}
+                                >
+                                    What best describes you?
+                                    {'\n'}
+                                </Text>
+                                <View>
+                                    <RNPickerSelect
+                                        style={{ ...pickerSelectStyles }}
+                                        onValueChange={value => {
+                                            this.setState({
+                                                selectedRole: value,
+                                            })
+                                        }}
+                                        items={roleList}
+                                        placeholder={{
+                                            label: 'Please select...',
+                                            value: null,
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                            {this.state.error === 'please select a role.' && (
+                                <Text style={styles.error}>
+                                    {this.state.error}
+                                </Text>
+                            )}
+                        </View>
                         <TouchableOpacity
                             style={styles.buttonContainer}
                             onPress={async () => {
@@ -192,6 +240,12 @@ export default class SignupScreen extends React.Component {
                                 if (!this.state.username.length) {
                                     this.setState({
                                         error: 'username is required.',
+                                    })
+                                    return
+                                }
+                                if (!this.state.selectedRole.length) {
+                                    this.setState({
+                                        error: 'please select a role.',
                                     })
                                     return
                                 }
@@ -203,7 +257,8 @@ export default class SignupScreen extends React.Component {
                                     this.state.birthday,
                                     this.state.city,
                                     this.state.children,
-                                    this.state.monthsPostPartum
+                                    this.state.monthsPostPartum,
+                                    this.state.selectedRole
                                 )
                                 // if error occured, put it on state
                                 if (status) {
@@ -233,7 +288,6 @@ export default class SignupScreen extends React.Component {
                         >
                             End-User License Agreement (EULA) of Après.
                         </Text>
-
                     </View>
                 </KeyboardAvoidingView>
             </View>
@@ -254,7 +308,7 @@ const styles = StyleSheet.create({
         textAlign: 'justify',
         paddingBottom: 10,
         marginTop: 30,
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
     },
     eulaText: {
         display: 'flex',
@@ -263,9 +317,9 @@ const styles = StyleSheet.create({
         marginRight: 50,
         marginLeft: 50,
         letterSpacing: 1,
-        fontFamily: "Futura-Light",
+        fontFamily: 'Futura-Light',
         marginTop: 10,
-        textAlign: 'center'
+        textAlign: 'center',
     },
     link: {
         color: 'blue',
@@ -275,8 +329,8 @@ const styles = StyleSheet.create({
         marginRight: 50,
         marginLeft: 50,
         letterSpacing: 1,
-        fontFamily: "Futura-Light",
-        textAlign: 'center'
+        fontFamily: 'Futura-Light',
+        textAlign: 'center',
     },
     title: {
         top: 0,
@@ -352,8 +406,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     okButtonView: {
-        // display: 'flex',
-        // alignSelf: 'flex-end',
         backgroundColor: 'pink',
         display: 'flex',
         alignSelf: 'flex-end',
@@ -365,12 +417,38 @@ const styles = StyleSheet.create({
         borderTopColor: 'grey',
         borderTopWidth: 3,
         position: 'absolute',
-        // backgroundColor: 'green',
     },
     okButtonText: {
         fontFamily: 'Futura-Light',
         textAlign: 'center',
         fontSize: 24,
         color: 'blue',
+    },
+    roleIdOuterWrap: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    roleIdInnerWrap: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignContent: 'center',
+        width: 180,
+    },
+})
+
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        alignSelf: 'center',
+        fontSize: 16,
+        paddingTop: 13,
+        paddingHorizontal: 10,
+        paddingBottom: 12,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 4,
+        backgroundColor: 'white',
+        color: 'black',
     },
 })
