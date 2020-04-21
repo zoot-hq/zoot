@@ -9,6 +9,8 @@ import {
 import Modal from 'react-native-modal';
 import Fire from '../Fire';
 import firebase from 'firebase';
+import RNPickerSelect from 'react-native-picker-select';
+import Home from './Home';
 
 export default class UserPage extends Component {
   constructor(props) {
@@ -21,9 +23,23 @@ export default class UserPage extends Component {
       newEmail: '',
       newPassword: '',
       passwordUpdated: false,
+      deleteModal: false,
       error: false
     };
     this.user = firebase.auth().currentUser;
+    this.roleList = [
+      'A New Mother',
+      'A Surrogate',
+      'A Gestational Carrier',
+      'An Adoptive Parent',
+      'A Hopeful Parent',
+      'A Parent',
+      'An Egg/Embryo Donor',
+      'A New Parent',
+      'A Parent Recovering from Loss',
+      'Other',
+      'Prefer Not to Disclose'
+    ].map((role) => ({label: role, value: role}));
   }
   renderModal(type) {
     const stateObj = {};
@@ -68,8 +84,17 @@ export default class UserPage extends Component {
       this.setState({error: 'Please enter a new password.'});
     }
   }
+  deleteUser() {
+    this.user
+      .delete()
+      .then(() => this.setState({deleteModal: false}))
+      .catch(function (error) {
+        console.log(error);
+      });
+    this.user = null;
+  }
   render() {
-    return (
+    return this.user ? (
       <View style={styles.container}>
         <Text style={styles.title}>après</Text>
         <Text style={styles.subtitle}>
@@ -236,21 +261,70 @@ export default class UserPage extends Component {
           </View>
         </Modal>
         <Text></Text>
+        {/* user's role section */}
         <Text style={styles.userInfo}>Currently, I'm </Text>
         <Text style={styles.userInfo}>
           Select from below to update your role.
         </Text>
-        {/* role selection dropdown menu goes here */}
+        <RNPickerSelect
+          style={{...pickerSelectStyles}}
+          onValueChange={(value) => {
+            this.setState({
+              selectedRole: value
+            });
+          }}
+          items={this.roleList}
+          placeholder={{
+            label: 'Please select...',
+            value: null
+          }}
+        />
         <TouchableOpacity style={styles.userPageButton}>
           <Text style={styles.buttonText}>contact us</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.userPageButton}>
           <Text style={styles.buttonText}>log out</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.userPageButton}>
+        <TouchableOpacity
+          onPress={() => this.setState({deleteModal: true})}
+          style={styles.userPageButton}
+        >
           <Text style={styles.buttonText}>delete</Text>
         </TouchableOpacity>
+        <Modal isVisible={this.state.deleteModal}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>Delete Account?</Text>
+            {this.state.error ? (
+              <Text style={styles.modalText}>{this.state.error.message}</Text>
+            ) : (
+              <Text style={styles.modalText}>
+                By pressing "Delete", your account will be permanently deleted.
+                This action cannot be undone.
+              </Text>
+            )}
+            <View style={styles.deleteModalButtonsContainer}>
+              <TouchableOpacity
+                style={{width: 150}}
+                onPress={() => this.setState({deleteModal: false})}
+              >
+                <Text style={styles.modalButtonCancel}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  width: 150,
+                  borderLeftWidth: 1,
+                  borderLeftColor: 'gray'
+                }}
+                onPress={() => this.deleteUser()}
+              >
+                <Text style={styles.modalButtonSave}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
+    ) : (
+      <Home />
     );
   }
 }
@@ -359,6 +433,13 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: 'gray'
   },
+  deleteModalButtonsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: 'gray',
+    marginTop: 15
+  },
   modalButtonCancel: {
     color: '#0073e6',
     fontSize: 20,
@@ -371,5 +452,20 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlign: 'center',
     marginVertical: 10
+  }
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    alignSelf: 'center',
+    fontSize: 16,
+    paddingTop: 13,
+    paddingHorizontal: 10,
+    paddingBottom: 12,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    backgroundColor: 'white',
+    color: 'black'
   }
 });
