@@ -4,18 +4,21 @@ import {
   View,
   Text,
   TouchableOpacity,
-  TextInput
+  TextInput,
+  AsyncStorage,
+  KeyboardAvoidingView
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Fire from '../Fire';
-import firebase from 'firebase';
+import * as firebase from 'firebase';
 import RNPickerSelect from 'react-native-picker-select';
-import Home from './Home';
+import * as MailComposer from 'expo-mail-composer';
 
 export default class UserPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      user: firebase.auth().currentUser,
       userNameModal: false,
       emailModal: false,
       passwordModal: false,
@@ -24,9 +27,13 @@ export default class UserPage extends Component {
       newPassword: '',
       passwordUpdated: false,
       deleteModal: false,
+      contactFormModal: false,
+      subject: '',
+      message: '',
       error: false
     };
-    this.user = firebase.auth().currentUser;
+    this.logout = this.logout.bind(this);
+    // this.user = firebase.auth().currentUser;
     this.roleList = [
       'A New Mother',
       'A Surrogate',
@@ -49,29 +56,29 @@ export default class UserPage extends Component {
   updateUsername() {
     if (this.state.newUsername) {
       this.setState({error: false});
-      this.user
+      this.state.user
         .updateProfile({displayName: this.state.newUsername})
         .then(() => this.setState({newUsername: '', userNameModal: false}))
         .catch((error) => this.setState({error: error}));
     } else {
-      this.setState({error: 'Please enter a new username.'});
+      this.setState({error: {message: 'Please enter a new username.'}});
     }
   }
   updateEmail() {
     if (this.state.newEmail) {
       this.setState({error: false});
-      this.user
+      this.state.user
         .updateEmail(this.state.newEmail)
         .then(() => this.setState({newEmail: '', emailModal: false}))
         .catch((error) => this.setState({error: error}));
     } else {
-      this.setState({error: 'Please enter a new email address.'});
+      this.setState({error: {message: 'Please enter a new email address.'}});
     }
   }
   updatePassword() {
     if (this.state.newPassword) {
       this.setState({error: false});
-      this.user
+      this.state.user
         .updatePassword(this.state.newPassword)
         .then(() =>
           this.setState({
@@ -81,250 +88,353 @@ export default class UserPage extends Component {
         )
         .catch((error) => this.setState({error: error}));
     } else {
-      this.setState({error: 'Please enter a new password.'});
+      this.setState({error: {message: 'Please enter a new password.'}});
     }
   }
   deleteUser() {
-    this.user
+    this.state.user
       .delete()
-      .then(() => this.setState({deleteModal: false}))
+      .then(() => this.setState({deleteModal: false, user: null}))
       .catch(function (error) {
-        console.log(error);
+        this.setState({error: error});
       });
-    this.user = null;
+    this.goHome();
+  }
+  async logout() {
+    firebase
+      .auth()
+      .signOut()
+      .then(
+        this.setState({user: null}),
+        await AsyncStorage.removeItem('apresLoginEmail'),
+        await AsyncStorage.removeItem('apresLoginPassword').catch((error) =>
+          this.setState({error: error})
+        )
+      );
+    this.goHome();
+  }
+  goHome() {
+    this.props.props.navigation.navigate('Home');
+  }
+  async contactAdmin() {
+    const options = {
+      recipients: ['aprshq@gmail.com'],
+      subject: this.state.subject,
+      body: `
+      User ${this.state.user.displayName}, aka ${this.state.user.email}, says: ${this.state.message}`
+    };
+    try {
+      await MailComposer.composeAsync(options);
+      this.setState({contactFormModal: false});
+    } catch (error) {
+      if (error.message === 'Mail services are not available.') {
+        this.setState({
+          error: {
+            message:
+              'We were unable to open up your mail app. Please contact our admins directly at aprshq@gmail.com. '
+          }
+        });
+      }
+    }
   }
   render() {
-    return this.user ? (
-      <View style={styles.container}>
-        <Text style={styles.title}>après</Text>
-        <Text style={styles.subtitle}>
-          Hey, {Fire.shared.username()}! This is your very own user page! Update
-          your information here.
-        </Text>
-        {/* username section */}
-        <Text style={styles.username}>{Fire.shared.username()}</Text>
-        <Text style={styles.userInfo}>username: {Fire.shared.username()}</Text>
-        <TouchableOpacity onPress={() => this.renderModal('userNameModal')}>
-          <Text style={styles.userInfo}>Update username?</Text>
-        </TouchableOpacity>
-        <Modal isVisible={this.state.userNameModal}>
-          <View style={styles.modal}>
-            <Text style={styles.modalTitle}>Update username</Text>
-            {this.state.error ? (
-              <Text style={styles.modalText}>{this.state.error.message}</Text>
-            ) : (
-              <Text style={styles.modalText}>
-                Type your new desired username below.
-              </Text>
-            )}
-            <TextInput
-              placeholder="New username"
-              placeholderTextColor="#bfbfbf"
-              autoCapitalize="none"
-              autoCorrect={false}
-              style={styles.input}
-              onChangeText={(newUsername) => this.setState({newUsername})}
-            />
-            <View style={styles.modalButtonsContainer}>
-              <TouchableOpacity
-                style={{width: 150}}
-                onPress={() => this.setState({userNameModal: false})}
-              >
-                <Text style={styles.modalButtonCancel}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  width: 150,
-                  borderLeftWidth: 1,
-                  borderLeftColor: 'gray'
-                }}
-                onPress={() => this.updateUsername()}
-              >
-                <Text style={styles.modalButtonSave}>Save</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-        <Text></Text>
-        {/* user email section */}
-        <Text style={styles.userInfo}>email: {Fire.shared.email()}</Text>
-        <TouchableOpacity onPress={() => this.setState({emailModal: true})}>
-          <Text style={styles.userInfo}>Update email?</Text>
-        </TouchableOpacity>
-        <Modal isVisible={this.state.emailModal}>
-          <View style={styles.modal}>
-            <Text style={styles.modalTitle}>Update email</Text>
-            {this.state.error ? (
-              <Text style={styles.modalText}>{this.state.error.message}</Text>
-            ) : (
-              <Text style={styles.modalText}>
-                Type your new desired email address below.
-              </Text>
-            )}
-            <TextInput
-              placeholder="New email"
-              placeholderTextColor="#bfbfbf"
-              autoCapitalize="none"
-              autoCorrect={false}
-              style={styles.input}
-              onChangeText={(newEmail) => this.setState({newEmail})}
-            />
-            <View style={styles.modalButtonsContainer}>
-              <TouchableOpacity
-                style={{width: 150}}
-                onPress={() => this.setState({emailModal: false})}
-              >
-                <Text style={styles.modalButtonCancel}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  width: 150,
-                  borderLeftWidth: 1,
-                  borderLeftColor: 'gray'
-                }}
-                onPress={() => this.updateEmail()}
-              >
-                <Text style={styles.modalButtonSave}>Save</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-        <Text></Text>
-        {/* user password section */}
-        <TouchableOpacity onPress={() => this.renderModal('passwordModal')}>
-          <Text style={styles.userInfo}>Update password?</Text>
-        </TouchableOpacity>
-        <Modal isVisible={this.state.passwordModal}>
-          <View style={styles.modal}>
-            {this.state.passwordUpdated ? (
-              <View>
-                <Text style={styles.modalTitle}>
-                  Your password has been updated!
+    return (
+      <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
+        <View style={styles.container}>
+          <Text style={styles.title}>après</Text>
+          <Text style={styles.subtitle}>
+            Hey, {Fire.shared.username()}! This is your very own user page!
+            Update your information here.
+          </Text>
+          {/* username section */}
+          <Text style={styles.username}>{Fire.shared.username()}</Text>
+          <Text style={styles.userInfo}>
+            username: {Fire.shared.username()}
+          </Text>
+          <TouchableOpacity onPress={() => this.renderModal('userNameModal')}>
+            <Text style={styles.userInfo}>Update username?</Text>
+          </TouchableOpacity>
+          <Modal isVisible={this.state.userNameModal}>
+            <View style={styles.modal}>
+              <Text style={styles.modalTitle}>Update username</Text>
+              {this.state.error ? (
+                <Text style={styles.modalText}>{this.state.error.message}</Text>
+              ) : (
+                <Text style={styles.modalText}>
+                  Type your new desired username below.
                 </Text>
+              )}
+              <TextInput
+                returnKeyType="done"
+                placeholder="New username"
+                placeholderTextColor="#bfbfbf"
+                autoCapitalize="none"
+                autoCorrect={false}
+                style={styles.input}
+                onChangeText={(newUsername) => this.setState({newUsername})}
+              />
+              <View style={styles.modalButtonsContainer}>
                 <TouchableOpacity
-                  onPress={() =>
-                    this.setState({
-                      passwordUpdated: false,
-                      passwordModal: false
-                    })
-                  }
+                  style={{width: 150}}
+                  onPress={() => this.setState({userNameModal: false})}
                 >
-                  <Text style={styles.modalButtonSave}>Ok!</Text>
+                  <Text style={styles.modalButtonCancel}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    width: 150,
+                    borderLeftWidth: 1,
+                    borderLeftColor: 'gray'
+                  }}
+                  onPress={() => this.updateUsername()}
+                >
+                  <Text style={styles.modalButtonSave}>Save</Text>
                 </TouchableOpacity>
               </View>
-            ) : (
-              <View>
-                <Text style={styles.modalTitle}>Update password</Text>
-                {this.state.error ? (
-                  <Text style={styles.modalText}>
-                    {this.state.error.message}
+            </View>
+          </Modal>
+          <Text></Text>
+          {/* user email section */}
+          <Text style={styles.userInfo}>email: {Fire.shared.email()}</Text>
+          <TouchableOpacity onPress={() => this.setState({emailModal: true})}>
+            <Text style={styles.userInfo}>Update email?</Text>
+          </TouchableOpacity>
+          <Modal isVisible={this.state.emailModal}>
+            <View style={styles.modal}>
+              <Text style={styles.modalTitle}>Update email</Text>
+              {this.state.error ? (
+                <Text style={styles.modalText}>{this.state.error.message}</Text>
+              ) : (
+                <Text style={styles.modalText}>
+                  Type your new desired email address below.
+                </Text>
+              )}
+              <TextInput
+                returnKeyType="done"
+                placeholder="New email"
+                placeholderTextColor="#bfbfbf"
+                autoCapitalize="none"
+                autoCorrect={false}
+                style={styles.input}
+                onChangeText={(newEmail) => this.setState({newEmail})}
+              />
+              <View style={styles.modalButtonsContainer}>
+                <TouchableOpacity
+                  style={{width: 150}}
+                  onPress={() => this.setState({emailModal: false})}
+                >
+                  <Text style={styles.modalButtonCancel}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    width: 150,
+                    borderLeftWidth: 1,
+                    borderLeftColor: 'gray'
+                  }}
+                  onPress={() => this.updateEmail()}
+                >
+                  <Text style={styles.modalButtonSave}>Save</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+          <Text></Text>
+          {/* user password section */}
+          <TouchableOpacity onPress={() => this.renderModal('passwordModal')}>
+            <Text style={styles.userInfo}>Update password?</Text>
+          </TouchableOpacity>
+          <Modal isVisible={this.state.passwordModal}>
+            <View style={styles.modal}>
+              {this.state.passwordUpdated ? (
+                <View>
+                  <Text style={styles.modalTitle}>
+                    Your password has been updated!
                   </Text>
-                ) : (
-                  <Text style={styles.modalText}>
-                    Type your new desired password below.
-                  </Text>
-                )}
-                <TextInput
-                  placeholder="New password"
-                  placeholderTextColor="#bfbfbf"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  secureTextEntry
-                  style={styles.input}
-                  onChangeText={(newPassword) => this.setState({newPassword})}
-                />
-                <View style={styles.modalButtonsContainer}>
                   <TouchableOpacity
-                    style={{width: 150}}
                     onPress={() =>
                       this.setState({
-                        passwordModal: false,
-                        passwordUpdated: false
+                        passwordUpdated: false,
+                        passwordModal: false
                       })
                     }
                   >
-                    <Text style={styles.modalButtonCancel}>Cancel</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{
-                      width: 150,
-                      borderLeftWidth: 1,
-                      borderLeftColor: 'gray'
-                    }}
-                    onPress={() => this.updatePassword()}
-                  >
-                    <Text style={styles.modalButtonSave}>Save</Text>
+                    <Text style={styles.modalButtonSave}>Ok!</Text>
                   </TouchableOpacity>
                 </View>
-              </View>
-            )}
-          </View>
-        </Modal>
-        <Text></Text>
-        {/* user's role section */}
-        <Text style={styles.userInfo}>Currently, I'm </Text>
-        <Text style={styles.userInfo}>
-          Select from below to update your role.
-        </Text>
-        <RNPickerSelect
-          style={{...pickerSelectStyles}}
-          onValueChange={(value) => {
-            this.setState({
-              selectedRole: value
-            });
-          }}
-          items={this.roleList}
-          placeholder={{
-            label: 'Please select...',
-            value: null
-          }}
-        />
-        <TouchableOpacity style={styles.userPageButton}>
-          <Text style={styles.buttonText}>contact us</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.userPageButton}>
-          <Text style={styles.buttonText}>log out</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => this.setState({deleteModal: true})}
-          style={styles.userPageButton}
-        >
-          <Text style={styles.buttonText}>delete</Text>
-        </TouchableOpacity>
-        <Modal isVisible={this.state.deleteModal}>
-          <View style={styles.modal}>
-            <Text style={styles.modalTitle}>Delete Account?</Text>
-            {this.state.error ? (
-              <Text style={styles.modalText}>{this.state.error.message}</Text>
-            ) : (
-              <Text style={styles.modalText}>
-                By pressing "Delete", your account will be permanently deleted.
-                This action cannot be undone.
-              </Text>
-            )}
-            <View style={styles.deleteModalButtonsContainer}>
-              <TouchableOpacity
-                style={{width: 150}}
-                onPress={() => this.setState({deleteModal: false})}
-              >
-                <Text style={styles.modalButtonCancel}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  width: 150,
-                  borderLeftWidth: 1,
-                  borderLeftColor: 'gray'
-                }}
-                onPress={() => this.deleteUser()}
-              >
-                <Text style={styles.modalButtonSave}>Delete</Text>
-              </TouchableOpacity>
+              ) : (
+                <View>
+                  <Text style={styles.modalTitle}>Update password</Text>
+                  {this.state.error ? (
+                    <Text style={styles.modalText}>
+                      {this.state.error.message}
+                    </Text>
+                  ) : (
+                    <Text style={styles.modalText}>
+                      Type your new desired password below.
+                    </Text>
+                  )}
+                  <TextInput
+                    returnKeyType="done"
+                    placeholder="New password"
+                    placeholderTextColor="#bfbfbf"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    secureTextEntry
+                    style={styles.input}
+                    onChangeText={(newPassword) => this.setState({newPassword})}
+                  />
+                  <View style={styles.modalButtonsContainer}>
+                    <TouchableOpacity
+                      style={{width: 150}}
+                      onPress={() =>
+                        this.setState({
+                          passwordModal: false,
+                          passwordUpdated: false
+                        })
+                      }
+                    >
+                      <Text style={styles.modalButtonCancel}>Cancel</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{
+                        width: 150,
+                        borderLeftWidth: 1,
+                        borderLeftColor: 'gray'
+                      }}
+                      onPress={() => this.updatePassword()}
+                    >
+                      <Text style={styles.modalButtonSave}>Save</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
             </View>
-          </View>
-        </Modal>
-      </View>
-    ) : (
-      <Home />
+          </Modal>
+          <Text></Text>
+          {/* user's role section */}
+          <Text style={styles.userInfo}>Currently, I'm </Text>
+          <Text style={styles.userInfo}>
+            Select from below to update your role.
+          </Text>
+          <RNPickerSelect
+            style={{...pickerSelectStyles}}
+            onValueChange={(value) => {
+              this.setState({
+                selectedRole: value
+              });
+            }}
+            items={this.roleList}
+            placeholder={{
+              label: 'Please select...',
+              value: null
+            }}
+          />
+          {/* contact us functionality */}
+          <TouchableOpacity
+            onPress={() => this.setState({contactFormModal: true})}
+            style={styles.userPageButton}
+          >
+            <Text style={styles.buttonText}>contact us</Text>
+          </TouchableOpacity>
+          <Modal isVisible={this.state.contactFormModal}>
+            <View style={styles.modal}>
+              <Text style={styles.modalTitle}>Contact Us</Text>
+              {this.state.error ? (
+                <Text style={styles.modalText}>{this.state.error.message}</Text>
+              ) : (
+                <Text style={styles.modalText}>
+                  If there is an issue you'd like us to address, send us a
+                  message by filling out this form.
+                </Text>
+              )}
+              <TextInput
+                placeholder="Subject"
+                placeholderTextColor="#bfbfbf"
+                autoCapitalize="none"
+                autoCorrect={false}
+                style={[styles.input, {marginVertical: 5}]}
+                onChangeText={(subject) => this.setState({subject})}
+              />
+              <TextInput
+                returnKeyType="send"
+                placeholder="Message"
+                placeholderTextColor="#bfbfbf"
+                autoCapitalize="none"
+                multiline={true}
+                numberOfLines={5}
+                autoCorrect={false}
+                style={[
+                  styles.input,
+                  {
+                    height: 300
+                  }
+                ]}
+                onChangeText={(message) => this.setState({message})}
+              />
+              <View style={styles.modalButtonsContainer}>
+                <TouchableOpacity
+                  style={{width: 150}}
+                  onPress={() => this.setState({contactFormModal: false})}
+                >
+                  <Text style={styles.modalButtonCancel}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    width: 150,
+                    borderLeftWidth: 1,
+                    borderLeftColor: 'gray'
+                  }}
+                  onPress={() => this.contactAdmin()}
+                >
+                  <Text style={styles.modalButtonSave}>Send</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+          {/* logout functionality */}
+          <TouchableOpacity onPress={this.logout} style={styles.userPageButton}>
+            <Text style={styles.buttonText}>log out</Text>
+          </TouchableOpacity>
+          {/* delete account functionality */}
+          <TouchableOpacity
+            onPress={() => this.setState({deleteModal: true})}
+            style={styles.userPageButton}
+          >
+            <Text style={styles.buttonText}>delete</Text>
+          </TouchableOpacity>
+          <Modal isVisible={this.state.deleteModal}>
+            <View style={styles.modal}>
+              <Text style={styles.modalTitle}>Delete Account?</Text>
+              {this.state.error ? (
+                <Text style={styles.modalText}>{this.state.error.message}</Text>
+              ) : (
+                <Text style={styles.modalText}>
+                  By pressing "Delete", your account will be permanently
+                  deleted. This action cannot be undone.
+                </Text>
+              )}
+              <View style={styles.deleteModalButtonsContainer}>
+                <TouchableOpacity
+                  style={{width: 150}}
+                  onPress={() => this.setState({deleteModal: false})}
+                >
+                  <Text style={styles.modalButtonCancel}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    width: 150,
+                    borderLeftWidth: 1,
+                    borderLeftColor: 'gray'
+                  }}
+                  onPress={() => this.deleteUser()}
+                >
+                  <Text style={styles.modalButtonSave}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+        </View>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -425,7 +535,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
-    borderBottomLeftRadius: 5
+    borderBottomLeftRadius: 5,
+    minHeight: 30
   },
   modalButtonsContainer: {
     display: 'flex',

@@ -35,6 +35,6 @@
         "singleQuote": true,
         "trailingComma": "none",
         "bracketSpacing": false,
-        "semi":true
+        "semi": true
     }
 }
