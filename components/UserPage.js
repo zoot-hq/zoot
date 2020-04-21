@@ -114,7 +114,7 @@ export default class UserPage extends Component {
     this.goHome();
   }
   goHome() {
-    this.props.props.navigation.navigate('Home');
+    this.props.navigation.navigate('Home');
   }
   async contactAdmin() {
     const options = {
