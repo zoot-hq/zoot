@@ -1,20 +1,9 @@
 {
-<<<<<<< HEAD
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 47632,
-  "expoServerNgrokUrl": "https://9i-pgp.lisjak.zoot.exp.direct",
-  "packagerNgrokUrl": "https://packager.9i-pgp.lisjak.zoot.exp.direct",
-  "ngrokPid": 47644,
-  "devToolsPort": 19003
-}
-=======
   "expoServerPort": null,
   "packagerPort": null,
   "packagerPid": null,
-  "expoServerNgrokUrl": "https://iz-npf.anonymous.zoot.exp.direct",
-  "packagerNgrokUrl": "https://packager.iz-npf.anonymous.zoot.exp.direct",
-  "ngrokPid": 67527,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "devToolsPort": 19002
 }
->>>>>>> 368679bc27404ba4f468b4f3eb3adb493d69b363

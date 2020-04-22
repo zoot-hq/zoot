@@ -1,5 +1,15 @@
 import React from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Linking, AsyncStorage, Alert } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Linking,
+  AsyncStorage,
+  Alert
+} from 'react-native';
 import Modal from 'react-native-modal';
 import Fire from '../Fire';
 
@@ -11,80 +21,90 @@ export default class LoginScreen extends React.Component {
       password: '',
       error: false,
       showResetPasswordForm: false,
-      resetPasswordError: false,
-    }
+      resetPasswordError: false
+    };
   }
 
   resetPassword = async () => {
     try {
-
       // try to send password reset email
-      await Fire.shared.sendPasswordResetEmail(this.state.email)
-      
+      await Fire.shared.sendPasswordResetEmail(this.state.email);
+
       // send alert if successful
       Alert.alert(
         'Password Reset',
         `An email has been sent to ${this.state.email} with further instructions on how to reset your password.`,
         [
-          {text: 'Ok, great!', onPress: () => this.setState({ showResetPasswordForm : false })}
+          {
+            text: 'Ok, great!',
+            onPress: () => this.setState({showResetPasswordForm: false})
+          }
         ]
-      )
+      );
     } catch (error) {
-      this.setState({ resetPasswordError : true})    
+      this.setState({resetPasswordError: true});
     }
-  }
+  };
 
   render() {
-
     return (
-      <KeyboardAvoidingView behavior='padding' style={{flex:1}}>
+      <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
         <View style={styles.container}>
           <Text style={styles.title}>après</Text>
           <View style={styles.field}>
             <Text style={styles.text}>email</Text>
             <TextInput
-            returnKeyType="next"
-            onSubmitEditing={() => this.passwordInput.focus()}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            style={styles.input}
-            onChangeText={email => this.setState({ email })}
-          />
+              returnKeyType="next"
+              onSubmitEditing={() => this.passwordInput.focus()}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              style={styles.input}
+              onChangeText={(email) => this.setState({email})}
+            />
           </View>
           <View style={styles.field}>
             <Text style={styles.text}>password</Text>
             <TextInput
-            returnKeyType="done"
-            secureTextEntry
-            style={styles.input}
-            onChangeText={password => this.setState({ password })}
-            blurOnSubmit={false}
-            ref={input => (this.passwordInput = input)}
-          />
+              returnKeyType="done"
+              secureTextEntry
+              style={styles.input}
+              onChangeText={(password) => this.setState({password})}
+              blurOnSubmit={false}
+              ref={(input) => (this.passwordInput = input)}
+            />
           </View>
           {!!this.state.error && (
-            <TouchableOpacity onPress = {() => this.setState({ showResetPasswordForm : true })}>
-              <Text style={styles.error}> invalid login credentials - click here to reset your password </Text>
+            <TouchableOpacity
+              onPress={() => this.setState({showResetPasswordForm: true})}
+            >
+              <Text style={styles.error}>
+                {' '}
+                invalid login credentials - click here to reset your password{' '}
+              </Text>
             </TouchableOpacity>
           )}
           <TouchableOpacity
             style={styles.buttonContainer}
-            onPress={ async() => {
-              const status = await Fire.shared.login(this.state.email, this.state.password)
+            onPress={async () => {
+              const status = await Fire.shared.login(
+                this.state.email,
+                this.state.password
+              );
 
               // if login successful
               if (!status) {
-
                 // set user info into storage
-                await AsyncStorage.setItem('apresLoginEmail', this.state.email)
-                await AsyncStorage.setItem('apresLoginPassword', this.state.password)
+                await AsyncStorage.setItem('apresLoginEmail', this.state.email);
+                await AsyncStorage.setItem(
+                  'apresLoginPassword',
+                  this.state.password
+                );
 
                 // navigate into app
-                this.props.navigation.navigate('ChatList')
-              }
-              else {
-                this.setState({ error : true })
+                this.props.navigation.navigate('ChatList');
+              } else {
+                this.setState({error: true});
               }
             }}
           >
@@ -92,11 +112,20 @@ export default class LoginScreen extends React.Component {
           </TouchableOpacity>
         </View>
         <View style={styles.eula}>
-            <Text style={styles.eulaText}>By proceeding with logging in and clicking 'Log back in!', you agree to our terms as listed in our
-              <Text style={styles.link}
-                onPress={() => Linking.openURL('http://gist.githubusercontent.com/lisjak/5196333df14d1f708563804a885a1b66/raw/8ed9e754f8cbddd156472f02487ef8bcf4ef52ff/apres-eula')}>
-                {' '}End-User License Agreement (EULA) of Après.
-              </Text>
+          <Text style={styles.eulaText}>
+            By proceeding with logging in and clicking 'Log back in!', you agree
+            to our terms as listed in our
+            <Text
+              style={styles.link}
+              onPress={() =>
+                Linking.openURL(
+                  'http://gist.githubusercontent.com/lisjak/5196333df14d1f708563804a885a1b66/raw/8ed9e754f8cbddd156472f02487ef8bcf4ef52ff/apres-eula'
+                )
+              }
+            >
+              {' '}
+              End-User License Agreement (EULA) of Après.
+            </Text>
           </Text>
         </View>
 
@@ -107,12 +136,12 @@ export default class LoginScreen extends React.Component {
               <View style={styles.field}>
                 <Text style={styles.text}>email</Text>
                 <TextInput
-                returnKeyType="done"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-                style={styles.input}
-                onChangeText={email => this.setState({ email })}
+                  returnKeyType="done"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={styles.input}
+                  onChangeText={(email) => this.setState({email})}
                 />
               </View>
               {!!this.state.resetPasswordError && (
@@ -120,10 +149,15 @@ export default class LoginScreen extends React.Component {
                   <Text style={styles.error}> email not found </Text>
                 </TouchableOpacity>
               )}
-              <TouchableOpacity style={styles.buttonContainer} onPress={this.resetPassword}>
+              <TouchableOpacity
+                style={styles.buttonContainer}
+                onPress={this.resetPassword}
+              >
                 <Text style={styles.buttonText}>reset password</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.setState({ showResetPasswordForm : false })}>
+              <TouchableOpacity
+                onPress={() => this.setState({showResetPasswordForm: false})}
+              >
                 <Text style={styles.cancel}>cancel</Text>
               </TouchableOpacity>
             </View>
@@ -138,7 +172,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     backgroundColor: 'white',
-    flex: 1,
+    flex: 1
   },
   eula: {
     display: 'flex',
@@ -155,8 +189,8 @@ const styles = StyleSheet.create({
     marginRight: 50,
     marginLeft: 50,
     letterSpacing: 1,
-    fontFamily: "Futura-Light",
-    textAlign: 'center',
+    fontFamily: 'Futura-Light',
+    textAlign: 'center'
   },
   link: {
     color: 'blue',
@@ -166,8 +200,8 @@ const styles = StyleSheet.create({
     marginRight: 50,
     marginLeft: 50,
     letterSpacing: 1,
-    fontFamily: "Futura-Light",
-    textAlign: 'center',
+    fontFamily: 'Futura-Light',
+    textAlign: 'center'
   },
   title: {
     top: 0,
@@ -176,14 +210,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 30,
     marginTop: 80,
-    fontFamily: "CormorantGaramond-Light"
+    fontFamily: 'CormorantGaramond-Light'
   },
   field: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-end',
     marginRight: 50,
-    marginLeft: 50,
+    marginLeft: 50
   },
   input: {
     borderBottomWidth: 1,
@@ -191,7 +225,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     textAlignVertical: 'bottom',
     marginLeft: 2,
-    fontFamily: "Futura-Light"
+    fontFamily: 'Futura-Light'
   },
   buttonContainer: {
     borderStyle: 'solid',
@@ -200,36 +234,36 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     marginTop: 30,
     marginRight: 50,
-    marginLeft: 50,
+    marginLeft: 50
   },
   buttonText: {
     textAlign: 'center',
     color: 'black',
     fontWeight: '600',
     fontSize: 30,
-    fontFamily: "CormorantGaramond-Light"
+    fontFamily: 'CormorantGaramond-Light'
   },
   cancel: {
-    fontFamily: "CormorantGaramond-Light",
+    fontFamily: 'CormorantGaramond-Light',
     textAlign: 'center',
-    fontSize: 25,
+    fontSize: 25
   },
   error: {
-    color: "red",
+    color: 'red',
     fontSize: 15,
     marginBottom: 0,
-    fontFamily: "Futura-Light",
+    fontFamily: 'Futura-Light',
     marginRight: 50,
     marginLeft: 50,
     marginTop: 10,
-    textAlign: 'center',
+    textAlign: 'center'
   },
   text: {
-    fontFamily: "Futura-Light"
+    fontFamily: 'Futura-Light'
   },
-  modal : { 
-    backgroundColor: 'white', 
-    paddingVertical: 50, 
+  modal: {
+    backgroundColor: 'white',
+    paddingVertical: 50,
     borderRadius: 10,
     paddingHorizontal: 10
   }

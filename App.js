@@ -7,6 +7,7 @@ import Signup from './components/Signup';
 import Login from './components/Login';
 import WelcomePage from './components/WelcomePage';
 import PMList from './components/PMList';
+import UserPage from './components/UserPage';
 
 import { createStackNavigator } from 'react-navigation';
 
@@ -33,7 +34,7 @@ const navigator = createStackNavigator({
     name: 'ChatList',
     screen: ChatList,
     navigationOptions: {
-      gesturesEnabled: false,
+      headerVisible: false
     }
   },
   ChatRoom,
@@ -49,4 +50,4 @@ const navigator = createStackNavigator({
     }
   });
 
-export default navigator
+export default navigator;

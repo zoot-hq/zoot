@@ -12,18 +12,11 @@
         "expo": "^34.0.0",
         "expo-image-picker": "^8.0.1",
         "expo-mail-composer": "^8.0.0",
-<<<<<<< HEAD
-        "expo-permissions": "^8.0.0",
-        "firebase": "4.8.1",
-        "react": "16.8.3",
-        "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
-=======
         "expo-permissions": "~6.0.0",
         "firebase": "4.8.1",
         "react": "16.8.3",
         "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
         "react-native-chooser": "^1.7.0",
->>>>>>> 368679bc27404ba4f468b4f3eb3adb493d69b363
         "react-native-firebase": "^5.6.0",
         "react-native-gifted-chat": "0.3.0",
         "react-native-indicators": "^0.17.0",
@@ -34,13 +27,14 @@
         "react-navigation": "2.3.1"
     },
     "devDependencies": {
-<<<<<<< HEAD
-        "babel-preset-expo": "~8.0.0",
-        "@babel/core": "^7.0.0"
-=======
         "@babel/core": "^7.0.0",
         "babel-preset-expo": "~8.0.0"
->>>>>>> 368679bc27404ba4f468b4f3eb3adb493d69b363
     },
-    "private": true
+    "private": true,
+    "prettier": {
+        "singleQuote": true,
+        "trailingComma": "none",
+        "bracketSpacing": false,
+        "semi": true
+    }
 }
