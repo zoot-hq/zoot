@@ -1,11 +1,9 @@
 {
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 81747,
-  "expoServerNgrokUrl": "https://tc-i74.malkam.zoot.exp.direct",
-  "packagerNgrokUrl": "https://packager.tc-i74.malkam.zoot.exp.direct",
-  "ngrokPid": 81759,
-  "devToolsPort": 19002,
-  "webpackServerPort": null
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
+  "devToolsPort": 19002
 }
-

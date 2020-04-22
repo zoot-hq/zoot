@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
     StyleSheet,
     Text,
@@ -45,10 +45,10 @@ export default class SignupScreen extends React.Component {
         this.communityPopup = this.communityPopup.bind(this)
     }
 
-    communityPopup = () => {
-        Alert.alert(
-            'Community Guidelines',
-            `1. Après is intended to be a place of
+  communityPopup = () => {
+    Alert.alert(
+      'Community Guidelines',
+      `1. Après is intended to be a place of
             acceptance, empathy and compassion Above
             all else, try to be kind.
             2. Think before you type.
@@ -56,123 +56,116 @@ export default class SignupScreen extends React.Component {
             4. If you experience a user who repeatedly behaves in an unacceptable manner, please flag the user for review.
             5. If you are struggling in a way that feels overwhelming, please see our resources for access to professional mental healthcare providers, and get help.
             6. We are open and love your feedback. Please send us your suggestions on how to improve your experience.`,
-            [{ text: 'OK', onPress: () => this.handleSubmit() }]
-        )
-    }
+      [{text: 'OK', onPress: () => this.handleSubmit()}]
+    );
+  };
 
-    async handleSubmit() {
-        // set user info into storage
-        await AsyncStorage.setItem('apresLoginEmail', this.state.email)
-        await AsyncStorage.setItem('apressLoginPassword', this.state.password)
+  async handleSubmit() {
+    // set user info into storage
+    await AsyncStorage.setItem('apresLoginEmail', this.state.email);
+    await AsyncStorage.setItem('apressLoginPassword', this.state.password);
 
-        // naivgate into app
-        this.props.navigation.navigate('WelcomePage')
-    }
+    // naivgate into app
+    this.props.navigation.navigate('WelcomePage');
+  }
 
-    render() {
-        // config for swipe gesture
-        const config = {
-            velocityThreshold: 0.3,
-            directionalOffsetThreshold: 80,
-        }
-        return (
-            <View style={styles.container}>
-                <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
-                    <View style={styles.container}>
-                        <Text style={styles.title}>après</Text>
-                        <View style={styles.field}>
-                            <Text style={styles.text}>username</Text>
-                            <TextInput
-                                type="username"
-                                returnKeyType="next"
-                                onSubmitEditing={() => this.password.focus()}
-                                autoCapitalize="none"
-                                autoCorrect={false}
-                                style={styles.input}
-                                onChangeText={username =>
-                                    this.setState({ username })
-                                }
-                                ref={input => (this.username = input)}
-                                blurOnSubmit={false}
-                            />
-                        </View>
-                        {(this.state.error === 'username is required.' ||
-                            this.state.error === 'username already taken.') && (
-                            <Text style={styles.error}>{this.state.error}</Text>
-                        )}
-                        <View style={styles.field}>
-                            <Text style={styles.text}>email</Text>
-                            <TextInput
-                                type="email"
-                                returnKeyType="next"
-                                onSubmitEditing={() => this.username.focus()}
-                                keyboardType="email-address"
-                                autoCapitalize="none"
-                                autoCorrect={false}
-                                style={styles.input}
-                                onChangeText={email => this.setState({ email })}
-                                ref={input => (this.email = input)}
-                                keyboardType="email-address"
-                                blurOnSubmit={false}
-                            />
-                        </View>
-                        {(this.state.error ===
-                            'The email address is badly formatted.' ||
-                            this.state.error ===
-                                'The email address is already in use by another account.') && (
-                            <Text style={styles.error}>{this.state.error}</Text>
-                        )}
-                        <View style={styles.field}>
-                            <Text style={styles.text}>password</Text>
-                            <TextInput
-                                returnKeyType="next"
-                                secureTextEntry
-                                onSubmitEditing={() => this.birthday.focus()}
-                                style={styles.input}
-                                onChangeText={password =>
-                                    this.setState({ password })
-                                }
-                                ref={input => (this.password = input)}
-                                blurOnSubmit={false}
-                            />
-                        </View>
-                        {(this.state.error ===
-                            'The password must be 6 characters long or more.' ||
-                            this.state.error ===
-                                'Password should be at least 6 characters') && (
-                            <Text style={styles.error}>{this.state.error}</Text>
-                        )}
-                        <View style={styles.field}>
-                            <Text style={styles.text}>birthday (ddmmyyyy)</Text>
-                            <TextInput
-                                type="birthday"
-                                returnKeyType="next"
-                                onSubmitEditing={() => this.city.focus()}
-                                autoCorrect={false}
-                                style={styles.input}
-                                onChangeText={birthday =>
-                                    this.setState({ birthday })
-                                }
-                                ref={input => (this.birthday = input)}
-                                keyboardType="number-pad"
-                                blurOnSubmit={false}
-                            />
-                        </View>
-                        <View style={styles.field}>
-                            <Text style={styles.text}>city</Text>
-                            <TextInput
-                                type="city"
-                                returnKeyType="next"
-                                // onSubmitEditing={() => this.children.focus()}
-                                autoCapitalize="none"
-                                autoCorrect={false}
-                                style={styles.input}
-                                onChangeText={city => this.setState({ city })}
-                                ref={input => (this.city = input)}
-                                blurOnSubmit={false}
-                            />
-                        </View>
-                        {/* <View style={styles.field}>
+  render() {
+    // config for swipe gesture
+    const config = {
+      velocityThreshold: 0.3,
+      directionalOffsetThreshold: 80
+    };
+    return (
+      <View style={styles.container}>
+        <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
+          <View style={styles.container}>
+            <Text style={styles.title}>après</Text>
+            <View style={styles.field}>
+              <Text style={styles.text}>username</Text>
+              <TextInput
+                type="username"
+                returnKeyType="next"
+                onSubmitEditing={() => this.password.focus()}
+                autoCapitalize="none"
+                autoCorrect={false}
+                style={styles.input}
+                onChangeText={(username) => this.setState({username})}
+                ref={(input) => (this.username = input)}
+                blurOnSubmit={false}
+              />
+            </View>
+            {(this.state.error === 'username is required.' ||
+              this.state.error === 'username already taken.') && (
+              <Text style={styles.error}>{this.state.error}</Text>
+            )}
+            <View style={styles.field}>
+              <Text style={styles.text}>email</Text>
+              <TextInput
+                type="email"
+                returnKeyType="next"
+                onSubmitEditing={() => this.username.focus()}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                style={styles.input}
+                onChangeText={(email) => this.setState({email})}
+                ref={(input) => (this.email = input)}
+                keyboardType="email-address"
+                blurOnSubmit={false}
+              />
+            </View>
+            {(this.state.error === 'The email address is badly formatted.' ||
+              this.state.error ===
+                'The email address is already in use by another account.') && (
+              <Text style={styles.error}>{this.state.error}</Text>
+            )}
+            <View style={styles.field}>
+              <Text style={styles.text}>password</Text>
+              <TextInput
+                returnKeyType="next"
+                secureTextEntry
+                onSubmitEditing={() => this.birthday.focus()}
+                style={styles.input}
+                onChangeText={(password) => this.setState({password})}
+                ref={(input) => (this.password = input)}
+                blurOnSubmit={false}
+              />
+            </View>
+            {(this.state.error ===
+              'The password must be 6 characters long or more.' ||
+              this.state.error ===
+                'Password should be at least 6 characters') && (
+              <Text style={styles.error}>{this.state.error}</Text>
+            )}
+            <View style={styles.field}>
+              <Text style={styles.text}>birthday (ddmmyyyy)</Text>
+              <TextInput
+                type="birthday"
+                returnKeyType="next"
+                onSubmitEditing={() => this.city.focus()}
+                autoCorrect={false}
+                style={styles.input}
+                onChangeText={(birthday) => this.setState({birthday})}
+                ref={(input) => (this.birthday = input)}
+                keyboardType="number-pad"
+                blurOnSubmit={false}
+              />
+            </View>
+            <View style={styles.field}>
+              <Text style={styles.text}>city</Text>
+              <TextInput
+                type="city"
+                returnKeyType="next"
+                // onSubmitEditing={() => this.children.focus()}
+                autoCapitalize="none"
+                autoCorrect={false}
+                style={styles.input}
+                onChangeText={(city) => this.setState({city})}
+                ref={(input) => (this.city = input)}
+                blurOnSubmit={false}
+              />
+            </View>
+            {/* <View style={styles.field}>
               <Text style={styles.text}>children (number)</Text>
               <TextInput
                 type="children"
@@ -188,7 +181,7 @@ export default class SignupScreen extends React.Component {
                 blurOnSubmit={false}
               />
             </View> */}
-                        {/* <View style={styles.field}>
+            {/* <View style={styles.field}>
               <Text style={styles.text}>months post partum</Text>
               <TextInput
                 type="monthsPostPartum"
