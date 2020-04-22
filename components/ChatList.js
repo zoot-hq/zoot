@@ -23,7 +23,7 @@ export default class ChatList extends React.Component {
 
   componentWillMount() {
     // grab chatrooms = every room has a name and numOnline attribute
-    Fire.shared.getChatRoomNames((newRoom) => {
+    Fire.shared.getChatRoomNames(newRoom => {
       const queriedChatrooms = this.state.queriedChatrooms;
 
       // add room to querried rooms if query matches
@@ -43,15 +43,15 @@ export default class ChatList extends React.Component {
     });
 
     // update numOnline as it changes in database
-    Fire.shared.getUpdatedNumOnline((updatedRoom) => {
+    Fire.shared.getUpdatedNumOnline(updatedRoom => {
       this.setState({
-        chatrooms: this.state.chatrooms.map((chatroom) => {
+        chatrooms: this.state.chatrooms.map(chatroom => {
           if (chatroom.name === updatedRoom.name) {
             return updatedRoom;
           }
           return chatroom;
         }),
-        queriedChatrooms: this.state.queriedChatrooms.map((chatroom) => {
+        queriedChatrooms: this.state.queriedChatrooms.map(chatroom => {
           if (chatroom.name === updatedRoom.name) {
             return updatedRoom;
           }
@@ -64,22 +64,20 @@ export default class ChatList extends React.Component {
     this.registerForPushNotificationsAsync();
 
     // set what the app does when a user clicks on notification
-    this._notificationSubscription = Notifications.addListener(
-      (notification) => {
-        const { pm, room } = notification.data;
+    this._notificationSubscription = Notifications.addListener(notification => {
+      const { pm, room } = notification.data;
 
-        // if notification is due to pm
-        if (pm) {
-          // navigate to the message
-          this.props.navigation.navigate('ChatRoom', {
-            chatroom: room,
-            PM: true
-          });
-        }
+      // if notification is due to pm
+      if (pm) {
+        // navigate to the message
+        this.props.navigation.navigate('ChatRoom', {
+          chatroom: room,
+          PM: true
+        });
       }
-    );
+    });
 
-    this.getLiveChatAvailability()
+    this.getLiveChatAvailability();
     setInterval(() => {
       this.getLiveChatAvailability();
     }, 600000);
@@ -123,17 +121,17 @@ export default class ChatList extends React.Component {
     return new Date(date.getTime() + diff);
   };
 
-  communityPopup = (timeToAcceptableFirebaseString) => {
+  communityPopup = timeToAcceptableFirebaseString => {
     Alert.alert(
       'Before you enter, here is a reminder of our Community Guidelines',
       `1. Après is intended to be a place of
-          acceptance, empathy and compassion Above
-          all else, try to be kind.
-          2. Think before you type.
-          3. If you see something unacceptable, please flag the comment for review.
-          4. If you experience a user who repeatedly behaves in an unacceptable manner, please flag the user for review.
-          5. If you are struggling in a way that feels overwhelming, please see our resources for access to professional mental healthcare providers, and get help.
-          6. We are open and love your feedback. Please send us your suggestions on how to improve your experience.`,
+        acceptance, empathy and compassion Above
+        all else, try to be kind.
+        2. Think before you type.
+        3. If you see something unacceptable, please flag the comment for review.
+        4. If you experience a user who repeatedly behaves in an unacceptable manner, please flag the user for review.
+        5. If you are struggling in a way that feels overwhelming, please see our resources for access to professional mental healthcare providers, and get help.
+        6. We are open and love your feedback. Please send us your suggestions on how to improve your experience.`,
       [
         {
           text: 'OK',
@@ -167,7 +165,7 @@ export default class ChatList extends React.Component {
         () => {
           this.communityPopup(timeToAcceptableFirebaseString);
         }
-      )
+      );
     } else {
       Alert.alert(
         'Live Chat Unavailable',
@@ -175,7 +173,7 @@ export default class ChatList extends React.Component {
         [{ text: 'See you next time!' }]
       );
     }
-  }
+  };
 
   render() {
     return (
@@ -187,20 +185,24 @@ export default class ChatList extends React.Component {
             Welcome.{'\n'}What type support are you here for?
           </Text>
         </View>
-
+        {/* navigation to user profile for development purposes
+        < */}
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('UserPage')}
+        >
+          <Text>Navigate to user profile</Text>
+        </TouchableOpacity>
         {/* search bar - queries all chatrooms to the users query */}
         <View style={styles.searchView}>
           <Searchbar
             theme={{ colors: { primary: 'black' } }}
             placeholder="Search our message boards"
-            onChangeText={(query) => {
-              const queriedChatrooms = this.state.chatrooms.filter(
-                (chatroom) => {
-                  return chatroom.name
-                    .toLowerCase()
-                    .includes(query.toLowerCase());
-                }
-              );
+            onChangeText={query => {
+              const queriedChatrooms = this.state.chatrooms.filter(chatroom => {
+                return chatroom.name
+                  .toLowerCase()
+                  .includes(query.toLowerCase());
+              });
               this.setState({ queriedChatrooms, query });
               if (!query.length) {
                 this.setState({ queriedChatrooms: this.state.chatrooms });
@@ -213,7 +215,7 @@ export default class ChatList extends React.Component {
               <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 {/* if a query made, queried chatrooms displayed*/}
                 {this.state.queriedChatrooms.length ? (
-                  this.state.queriedChatrooms.map((chatroom) => (
+                  this.state.queriedChatrooms.map(chatroom => (
                     <TouchableOpacity
                       key={chatroom.name}
                       style={styles.buttonContainer}

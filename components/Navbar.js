@@ -44,31 +44,25 @@ export default class Navbar extends React.Component {
     render() {
 
         console.log('are we in navbar')
+
+
+        const { navigate } = this.props.navigation;
+
+
+
+
+
         return (
 
 
-            <Navigator
-                renderScene={(route, navigator) =>
-    // ...
-  }
-                navigationBar={
-                    <Navigator.NavigationBar
-                        routeMapper={{
-                            LeftButton: (route, navigator, index, navState) => { return (<Text>Cancel</Text>); },
-                            RightButton: (route, navigator, index, navState) => { return (<Text>Done</Text>); },
-                            Title: (route, navigator, index, navState) => { return (<Text>Awesome Nav Bar</Text>); },
-                        }}
-                        style={{ backgroundColor: 'gray' }}
-                    />
-                }
-            />
 
 
 
             <View style={styles.test}>
 
 
-                <TouchableOpacity onPress={this.navigation.}>
+                <TouchableOpacity onPress={this.navigation("ChatList"
+                )}>
                     <AntDesign name='home' size={30} color='black' />
                 </TouchableOpacity>
 
@@ -82,9 +76,9 @@ export default class Navbar extends React.Component {
                     <AntDesign name='contacts' size={30} color='black' />
                 </TouchableOpacity>
 
-                {/* <TouchableOpacity onPress={this.liveChat}>
+                <TouchableOpacity onPress={this.liveChat}>
                     <Ionicons name='md-megaphone' size={30} color={this.state.liveChatAvailable ? 'green' : 'black'} />
-                </TouchableOpacity> */}
+                </TouchableOpacity>
 
                 <TouchableOpacity onPress={this.PartnerChatList}>
                     <AntDesign name='book' size={30} color='black' />
