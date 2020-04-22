@@ -8,8 +8,10 @@ import Login from './components/Login';
 import WelcomePage from './components/WelcomePage';
 import PMList from './components/PMList';
 import UserPage from './components/UserPage';
+import Resources from './components/Resources';
 
 import { createStackNavigator } from 'react-navigation';
+
 
 // disabled yellow comments/alerts
 console.disableYellowBox = true;
@@ -41,7 +43,9 @@ const navigator = createStackNavigator({
   Signup,
   Login,
   WelcomePage,
-  PMList
+  PMList,
+  UserPage,
+  Resources
 },
   {
     headerMode: 'none',

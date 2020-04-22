@@ -1,45 +1,96 @@
 import * as React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView } from 'react-native';
-
 import { MaterialIndicator } from 'react-native-indicators';
-import {
+import { AntDesign, Ionicons, SimpleLineIcons, Feather, MaterialIcons } from '@expo/vector-icons';
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
+import Constants from 'expo-constants';
+import Fire from '../Fire';
 
-    AntDesign,
-    Ionicons,
-    SimpleLineIcons,
-    Feather,
-    MaterialIcons
-} from '@expo/vector-icons';
+import { Navigator } from 'react-native';
+
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createStackNavigator } from '@react-navigation/stack';
+
+// const Stack = createStackNavigator();
+
+// function MyStack() {
+//     return (
+//         <NavigationContainer>
+//             <Stack.Navigator>
+//                 <Stack.Screen
+//                     name="Home"
+//                     component={ChatList}
+//                 />
+//                 <Stack.Screen name="UserPage" component={UserPage} />
+//             </Stack.Navigator>
+//         </NavigationContainer>
+//     );
+// }
 
 
-class Navbar extends React.Component {
+export default class Navbar extends React.Component {
+
+    constructor() {
+        super();
+        this.state = {
+            navbar: true,
+        };
+    }
+
+
+
+
     render() {
+
         console.log('are we in navbar')
         return (
+
+
+            <Navigator
+                renderScene={(route, navigator) =>
+    // ...
+  }
+                navigationBar={
+                    <Navigator.NavigationBar
+                        routeMapper={{
+                            LeftButton: (route, navigator, index, navState) => { return (<Text>Cancel</Text>); },
+                            RightButton: (route, navigator, index, navState) => { return (<Text>Done</Text>); },
+                            Title: (route, navigator, index, navState) => { return (<Text>Awesome Nav Bar</Text>); },
+                        }}
+                        style={{ backgroundColor: 'gray' }}
+                    />
+                }
+            />
+
+
+
             <View style={styles.test}>
 
 
-                <TouchableOpacity onPress={() => => navigation.navigate('ChatList')}>
+                <TouchableOpacity onPress={this.navigation.}>
                     <AntDesign name='home' size={30} color='black' />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('PMList')}>
+                <TouchableOpacity onPress={this.UserPage}>
                     <Feather name='user' size={30} color='black' />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('PMList')}>
+                <TouchableOpacity
+                    onPress={() => this.props.navigation.navigate('PMList')}
+                >
                     <AntDesign name='contacts' size={30} color='black' />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('PMList')}>
-                    <Ionicons name='md-megaphone' size={30} color='black' />
-                </TouchableOpacity>
+                {/* <TouchableOpacity onPress={this.liveChat}>
+                    <Ionicons name='md-megaphone' size={30} color={this.state.liveChatAvailable ? 'green' : 'black'} />
+                </TouchableOpacity> */}
 
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('PMList')}>
+                <TouchableOpacity onPress={this.PartnerChatList}>
                     <AntDesign name='book' size={30} color='black' />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('PMList')}>
+                <TouchableOpacity onPress={this.Resources}>
                     <MaterialIcons name='account-balance' size={30} color='black' />
                 </TouchableOpacity>
 
@@ -52,6 +103,7 @@ class Navbar extends React.Component {
 const styles = StyleSheet.create({
     test: {
         color: 'black',
+        backgroundColor: 'pink',
         fontSize: 12,
         borderColor: 'red',
         borderStyle: 'solid',
@@ -64,5 +116,3 @@ const styles = StyleSheet.create({
         paddingRight: 40,
     },
 });
-
-export default Navbar;
