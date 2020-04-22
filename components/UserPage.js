@@ -54,8 +54,9 @@ export default class UserPage extends Component {
     this.setState({selectedRole: role});
   }
   async getUserInfo() {
+    const name = this.state.user.displayName;
     let selectedRole = '';
-    let ref = firebase.database().ref(`users/newnewuser`);
+    let ref = firebase.database().ref(`users/${name}`);
     let query = await ref.once('value').then(function (snapshot) {
       return snapshot;
     });
@@ -118,17 +119,25 @@ export default class UserPage extends Component {
     this.goHome();
   }
   async logout() {
-    firebase
+    await this.beforeLeaving();
+    await firebase
       .auth()
       .signOut()
       .then(
-        this.setState({user: null}),
         await AsyncStorage.removeItem('apresLoginEmail'),
         await AsyncStorage.removeItem('apresLoginPassword').catch((error) =>
           this.setState({error: error})
         )
       );
     this.goHome();
+  }
+  async beforeLeaving() {
+    await firebase
+      .database()
+      .ref('users/' + this.state.user.displayName)
+      .update({
+        selectedRole: this.state.selectedRole
+      });
   }
   goHome() {
     this.props.navigation.navigate('Home');
