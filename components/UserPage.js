@@ -30,7 +30,8 @@ export default class UserPage extends Component {
       contactFormModal: false,
       subject: '',
       message: '',
-      error: false
+      error: false,
+      selectedRole: ''
     };
     this.logout = this.logout.bind(this);
     // this.user = firebase.auth().currentUser;
@@ -47,6 +48,19 @@ export default class UserPage extends Component {
       'Other',
       'Prefer Not to Disclose'
     ].map((role) => ({label: role, value: role}));
+  }
+  async componentDidMount() {
+    let role = await this.getUserInfo();
+    this.setState({selectedRole: role});
+  }
+  async getUserInfo() {
+    let selectedRole = '';
+    let ref = firebase.database().ref(`users/newnewuser`);
+    let query = await ref.once('value').then(function (snapshot) {
+      return snapshot;
+    });
+    selectedRole = await query.child('selectedRole').val();
+    return selectedRole;
   }
   renderModal(type) {
     const stateObj = {};
@@ -91,11 +105,14 @@ export default class UserPage extends Component {
       this.setState({error: {message: 'Please enter a new password.'}});
     }
   }
-  deleteUser() {
+  async deleteUser() {
     this.state.user
       .delete()
-      .then(() => this.setState({deleteModal: false, user: null}))
-      .catch(function (error) {
+      .then(() => this.setState({deleteModal: false, user: null}));
+    await AsyncStorage.removeItem('apresLoginEmail'),
+      await AsyncStorage.removeItem('apresLoginPassword').catch(function (
+        error
+      ) {
         this.setState({error: error});
       });
     this.goHome();
@@ -143,13 +160,13 @@ export default class UserPage extends Component {
         <View style={styles.container}>
           <Text style={styles.title}>après</Text>
           <Text style={styles.subtitle}>
-            Hey, {Fire.shared.username()}! This is your very own user page!
+            Hey, {this.state.user.displayName}! This is your very own user page!
             Update your information here.
           </Text>
           {/* username section */}
-          <Text style={styles.username}>{Fire.shared.username()}</Text>
+          <Text style={styles.username}>{this.state.user.displayName}</Text>
           <Text style={styles.userInfo}>
-            username: {Fire.shared.username()}
+            username: {this.state.user.displayName}
           </Text>
           <TouchableOpacity onPress={() => this.renderModal('userNameModal')}>
             <Text style={styles.userInfo}>Update username?</Text>
@@ -312,7 +329,9 @@ export default class UserPage extends Component {
           </Modal>
           <Text></Text>
           {/* user's role section */}
-          <Text style={styles.userInfo}>Currently, I'm </Text>
+          <Text style={styles.userInfo}>
+            Currently, I'm {this.state.selectedRole}
+          </Text>
           <Text style={styles.userInfo}>
             Select from below to update your role.
           </Text>
