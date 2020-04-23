@@ -19,11 +19,12 @@ export default class UserPage extends Component {
     super(props);
     this.state = {
       user: firebase.auth().currentUser,
-      userNameModal: false,
+      // originalName: firebase.auth().currentUser.displayName,
+      // userNameModal: false,
       emailModal: false,
       passwordModal: false,
-      newUsername: '',
-      newEmail: '',
+      // newUsername: firebase.auth().currentUser.displayName,
+      newEmail: firebase.auth().currentUser.email,
       newPassword: '',
       passwordUpdated: false,
       deleteModal: false,
@@ -68,26 +69,36 @@ export default class UserPage extends Component {
     stateObj[type] = true;
     this.setState(stateObj);
   }
-  updateUsername() {
-    if (this.state.newUsername) {
-      this.setState({error: false});
-      this.state.user
-        .updateProfile({displayName: this.state.newUsername})
-        .then(() => this.setState({newUsername: '', userNameModal: false}))
-        .catch((error) => this.setState({error: error}));
-    } else {
-      this.setState({error: {message: 'Please enter a new username.'}});
-    }
-  }
+  // async updateUsername() {
+  //   if (this.state.newUsername) {
+  //     let ref = firebase.database().ref(`users/${this.state.newUsername}`);
+  //     let query = await ref.once('value').then(function (snapshot) {
+  //       return snapshot;
+  //     });
+  //     let foundUser = await query.child('email').val();
+  //     if (!foundUser) {
+  //       this.state.user
+  //         .updateProfile({displayName: this.state.newUsername})
+  //         .then(() => this.setState({userNameModal: false}))
+  //         .catch((error) => this.setState({error: error.message}));
+  //     } else {
+  //       this.setState({
+  //         error: 'That name is already in use by another member.'
+  //       });
+  //     }
+  //   } else {
+  //     this.setState({error: 'Please enter a new username.'});
+  //   }
+  // }
   updateEmail() {
     if (this.state.newEmail) {
       this.setState({error: false});
       this.state.user
         .updateEmail(this.state.newEmail)
-        .then(() => this.setState({newEmail: '', emailModal: false}))
-        .catch((error) => this.setState({error: error}));
+        .then(() => this.setState({emailModal: false}))
+        .catch((error) => this.setState({error: error.message}));
     } else {
-      this.setState({error: {message: 'Please enter a new email address.'}});
+      this.setState({error: 'Please enter a new email address.'});
     }
   }
   updatePassword() {
@@ -101,42 +112,45 @@ export default class UserPage extends Component {
             passwordUpdated: true
           })
         )
-        .catch((error) => this.setState({error: error}));
+        .catch((error) => this.setState({error: error.message}));
     } else {
-      this.setState({error: {message: 'Please enter a new password.'}});
+      this.setState({error: 'Please enter a new password.'});
     }
   }
   async deleteUser() {
-    this.state.user
-      .delete()
-      .then(() => this.setState({deleteModal: false, user: null}));
+    this.state.user.delete().then(() => this.setState({deleteModal: false}));
+    await firebase
+      .database()
+      .ref('users/' + this.state.user.displayName)
+      .remove();
     await AsyncStorage.removeItem('apresLoginEmail'),
       await AsyncStorage.removeItem('apresLoginPassword').catch(function (
         error
       ) {
-        this.setState({error: error});
+        this.setState({error: error.message});
       });
     this.goHome();
   }
   async logout() {
-    await this.beforeLeaving();
+    await this.updateDB();
     await firebase
       .auth()
       .signOut()
       .then(
         await AsyncStorage.removeItem('apresLoginEmail'),
         await AsyncStorage.removeItem('apresLoginPassword').catch((error) =>
-          this.setState({error: error})
+          this.setState({error: error.message})
         )
       );
     this.goHome();
   }
-  async beforeLeaving() {
+  async updateDB() {
     await firebase
       .database()
       .ref('users/' + this.state.user.displayName)
       .update({
-        selectedRole: this.state.selectedRole
+        selectedRole: this.state.selectedRole,
+        email: this.state.newEmail
       });
   }
   goHome() {
@@ -153,12 +167,10 @@ export default class UserPage extends Component {
       await MailComposer.composeAsync(options);
       this.setState({contactFormModal: false});
     } catch (error) {
-      if (error.message === 'Mail services are not available.') {
+      if (error === 'Mail services are not available.') {
         this.setState({
-          error: {
-            message:
-              'We were unable to open up your mail app. Please contact our admins directly at aprshq@gmail.com. '
-          }
+          error:
+            'We were unable to open up your mail app. Please contact our admins directly at aprshq@gmail.com. '
         });
       }
     }
@@ -177,14 +189,14 @@ export default class UserPage extends Component {
           <Text style={styles.userInfo}>
             username: {this.state.user.displayName}
           </Text>
-          <TouchableOpacity onPress={() => this.renderModal('userNameModal')}>
+          {/* <TouchableOpacity onPress={() => this.renderModal('userNameModal')}>
             <Text style={styles.userInfo}>Update username?</Text>
           </TouchableOpacity>
           <Modal isVisible={this.state.userNameModal}>
             <View style={styles.modal}>
               <Text style={styles.modalTitle}>Update username</Text>
               {this.state.error ? (
-                <Text style={styles.modalText}>{this.state.error.message}</Text>
+                <Text style={styles.modalText}>{this.state.error}</Text>
               ) : (
                 <Text style={styles.modalText}>
                   Type your new desired username below.
@@ -202,7 +214,9 @@ export default class UserPage extends Component {
               <View style={styles.modalButtonsContainer}>
                 <TouchableOpacity
                   style={{width: 150}}
-                  onPress={() => this.setState({userNameModal: false})}
+                  onPress={() =>
+                    this.setState({userNameModal: false, error: false})
+                  }
                 >
                   <Text style={styles.modalButtonCancel}>Cancel</Text>
                 </TouchableOpacity>
@@ -218,7 +232,7 @@ export default class UserPage extends Component {
                 </TouchableOpacity>
               </View>
             </View>
-          </Modal>
+          </Modal> */}
           <Text></Text>
           {/* user email section */}
           <Text style={styles.userInfo}>email: {Fire.shared.email()}</Text>
@@ -229,7 +243,7 @@ export default class UserPage extends Component {
             <View style={styles.modal}>
               <Text style={styles.modalTitle}>Update email</Text>
               {this.state.error ? (
-                <Text style={styles.modalText}>{this.state.error.message}</Text>
+                <Text style={styles.modalText}>{this.state.error}</Text>
               ) : (
                 <Text style={styles.modalText}>
                   Type your new desired email address below.
@@ -247,7 +261,9 @@ export default class UserPage extends Component {
               <View style={styles.modalButtonsContainer}>
                 <TouchableOpacity
                   style={{width: 150}}
-                  onPress={() => this.setState({emailModal: false})}
+                  onPress={() =>
+                    this.setState({emailModal: false, error: false})
+                  }
                 >
                   <Text style={styles.modalButtonCancel}>Cancel</Text>
                 </TouchableOpacity>
@@ -291,9 +307,7 @@ export default class UserPage extends Component {
                 <View>
                   <Text style={styles.modalTitle}>Update password</Text>
                   {this.state.error ? (
-                    <Text style={styles.modalText}>
-                      {this.state.error.message}
-                    </Text>
+                    <Text style={styles.modalText}>{this.state.error}</Text>
                   ) : (
                     <Text style={styles.modalText}>
                       Type your new desired password below.
@@ -315,7 +329,8 @@ export default class UserPage extends Component {
                       onPress={() =>
                         this.setState({
                           passwordModal: false,
-                          passwordUpdated: false
+                          passwordUpdated: false,
+                          error: false
                         })
                       }
                     >
@@ -368,7 +383,7 @@ export default class UserPage extends Component {
             <View style={styles.modal}>
               <Text style={styles.modalTitle}>Contact Us</Text>
               {this.state.error ? (
-                <Text style={styles.modalText}>{this.state.error.message}</Text>
+                <Text style={styles.modalText}>{this.state.error}</Text>
               ) : (
                 <Text style={styles.modalText}>
                   If there is an issue you'd like us to address, send us a
@@ -402,7 +417,9 @@ export default class UserPage extends Component {
               <View style={styles.modalButtonsContainer}>
                 <TouchableOpacity
                   style={{width: 150}}
-                  onPress={() => this.setState({contactFormModal: false})}
+                  onPress={() =>
+                    this.setState({contactFormModal: false, error: false})
+                  }
                 >
                   <Text style={styles.modalButtonCancel}>Cancel</Text>
                 </TouchableOpacity>
@@ -434,7 +451,7 @@ export default class UserPage extends Component {
             <View style={styles.modal}>
               <Text style={styles.modalTitle}>Delete Account?</Text>
               {this.state.error ? (
-                <Text style={styles.modalText}>{this.state.error.message}</Text>
+                <Text style={styles.modalText}>{this.state.error}</Text>
               ) : (
                 <Text style={styles.modalText}>
                   By pressing "Delete", your account will be permanently
@@ -444,7 +461,9 @@ export default class UserPage extends Component {
               <View style={styles.deleteModalButtonsContainer}>
                 <TouchableOpacity
                   style={{width: 150}}
-                  onPress={() => this.setState({deleteModal: false})}
+                  onPress={() =>
+                    this.setState({deleteModal: false, error: false})
+                  }
                 >
                   <Text style={styles.modalButtonCancel}>Cancel</Text>
                 </TouchableOpacity>
