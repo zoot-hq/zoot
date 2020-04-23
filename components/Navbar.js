@@ -48,8 +48,6 @@ export default class Navbar extends React.Component {
 
 
 
-
-
         return (
 
 
@@ -60,32 +58,39 @@ export default class Navbar extends React.Component {
 
 
                 <TouchableOpacity
+                    onPress={() => this.props.navigation.navigate('ChatList')}
                 >
                     <AntDesign name='home' size={30} color='black' />
                 </TouchableOpacity>
 
-                <TouchableOpacity >
-                    <Feather name='user' size={30} color='black' />
-                </TouchableOpacity>
-
                 <TouchableOpacity
+                    onPress={() => this.props.navigation.navigate('UserPage')}
                 >
-                    <AntDesign name='contacts' size={30} color='black' />
+                    <AntDesign name="user" size={30} color="black"></AntDesign>
                 </TouchableOpacity>
 
                 <TouchableOpacity
+                    onPress={() => this.props.navigation.navigate('PMList')}
+                >
+                    <AntDesign name='message1' size={30} color='black' />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    onPress={() => this.props.navigation.navigate('PMList')}
                 >
                     <Ionicons name='md-megaphone' size={30} color='black' />
                 </TouchableOpacity>
 
                 <TouchableOpacity
+                    onPress={() => this.props.navigation.navigate('PartnerChatList')}
                 >
-                    <AntDesign name='book' size={30} color='black' />
+                    <MaterialIcons name='account-balance' size={30} color='black' />
                 </TouchableOpacity>
 
                 <TouchableOpacity
+                    onPress={() => this.props.navigation.navigate('Resources')}
                 >
-                    <MaterialIcons name='account-balance' size={30} color='black' />
+                    <AntDesign name='book' size={30} color='black' />
                 </TouchableOpacity>
 
             </View>
