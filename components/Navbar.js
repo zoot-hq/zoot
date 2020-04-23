@@ -50,8 +50,6 @@ class Navbar extends React.Component {
   }
 
   render() {
-    console.log('are we in navbar');
-
     return (
       <View>
         <View style={styles.navbar}>
