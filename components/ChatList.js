@@ -1,21 +1,15 @@
 import * as React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
-  KeyboardAvoidingView
-} from 'react-native';
-import {Searchbar} from 'react-native-paper';
+import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView, Alert } from 'react-native';
+import { Searchbar } from 'react-native-paper';
 import Fire from '../Fire';
-import {MaterialIndicator} from 'react-native-indicators';
-import {Ionicons} from '@expo/vector-icons';
-import {Notifications} from 'expo';
+import { MaterialIndicator } from 'react-native-indicators';
+import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
-import {MaterialIcons} from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+
+
+import Navbar from './Navbar';
 
 export default class ChatList extends React.Component {
   constructor() {
@@ -71,7 +65,7 @@ export default class ChatList extends React.Component {
 
     // set what the app does when a user clicks on notification
     this._notificationSubscription = Notifications.addListener(notification => {
-      const {pm, room} = notification.data;
+      const { pm, room } = notification.data;
 
       // if notification is due to pm
       if (pm) {
@@ -100,7 +94,7 @@ export default class ChatList extends React.Component {
       (currNyTime.getHours() === 21 ||
         (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30))
     )
-      this.setState({liveChatAvailable: true});
+      this.setState({ liveChatAvailable: true });
   };
 
   registerForPushNotificationsAsync = async () => {
@@ -114,7 +108,7 @@ export default class ChatList extends React.Component {
 
       // push token to firebase
       Fire.shared.sendNotificationToken(token);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   changeTimezone = (date, ianatz) => {
@@ -176,7 +170,7 @@ export default class ChatList extends React.Component {
       Alert.alert(
         'Live Chat Unavailable',
         'Sorry we missed you! Live chat is available every Wednesday from 9PM EST until 10:30PM EST. No invitation necessary!',
-        [{text: 'See you next time!'}]
+        [{ text: 'See you next time!' }]
       );
     }
   };
@@ -191,17 +185,55 @@ export default class ChatList extends React.Component {
             Welcome.{'\n'}What type support are you here for?
           </Text>
         </View>
+
+
+
         {/* navigation to user profile for development purposes
         < */}
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('UserPage')}
-        >
-          <Text>Navigate to user profile</Text>
-        </TouchableOpacity>
+        <View style={styles.testingView}>
+          <Text style={styles.subtitle} > For testing purposes only:</Text>
+
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('UserPage')}>
+            <Text style={styles.subtitle}>User Page</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('Resources')}>
+            <Text style={styles.subtitle}>Resources</Text>
+          </TouchableOpacity>
+
+
+          <View
+            style={{
+              display: 'flex',
+              alignItems: 'space-between',
+              marginTop: 10,
+              flexDirection: 'row',
+              alignSelf: 'center'
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('PMList')}
+            >
+              <Ionicons name="ios-chatbubbles" size={30} color="grey"></Ionicons>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.liveChat}>
+              <MaterialIcons
+                name="speaker-phone"
+                size={30}
+                color={this.state.liveChatAvailable ? 'green' : 'grey'}
+              ></MaterialIcons>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+
+
         {/* search bar - queries all chatrooms to the users query */}
         <View style={styles.searchView}>
           <Searchbar
-            theme={{colors: {primary: 'black'}}}
+            theme={{ colors: { primary: 'black' } }}
             placeholder="Search our message boards"
             onChangeText={query => {
               const queriedChatrooms = this.state.chatrooms.filter(chatroom => {
@@ -209,16 +241,16 @@ export default class ChatList extends React.Component {
                   .toLowerCase()
                   .includes(query.toLowerCase());
               });
-              this.setState({queriedChatrooms, query});
+              this.setState({ queriedChatrooms, query });
               if (!query.length) {
-                this.setState({queriedChatrooms: this.state.chatrooms});
+                this.setState({ queriedChatrooms: this.state.chatrooms });
               }
             }}
           />
           {/* chatroom list */}
           <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding">
             <SafeAreaView>
-              <ScrollView contentContainerStyle={{flexGrow: 1}}>
+              <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 {/* if a query made, queried chatrooms displayed*/}
                 {this.state.queriedChatrooms.length ? (
                   this.state.queriedChatrooms.map(chatroom => (
@@ -241,65 +273,47 @@ export default class ChatList extends React.Component {
                     </TouchableOpacity>
                   ))
                 ) : // else allow user to create a new chatroom
-                this.state.chatrooms.length ? (
-                  <View>
-                    <Text>
-                      No results. Would you like to create this chatroom?
+                  this.state.chatrooms.length ? (
+                    <View>
+                      <Text>
+                        No results. Would you like to create this chatroom?
                     </Text>
-                    <TouchableOpacity
-                      key={this.state.query}
-                      style={styles.buttonContainer}
-                      onPress={() => {
-                        Fire.shared.createChatRoom(this.state.query);
-                        this.props.navigation.navigate('ChatRoom', {
-                          chatroom: this.state.query
-                        });
-                      }}
-                    >
-                      <Text style={styles.buttonText}>
-                        + {this.state.query}{' '}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                ) : (
-                  // return loading while grabbing data from database
-                  <MaterialIndicator color="black" />
-                )}
+                      <TouchableOpacity
+                        key={this.state.query}
+                        style={styles.buttonContainer}
+                        onPress={() => {
+                          Fire.shared.createChatRoom(this.state.query);
+                          this.props.navigation.navigate('ChatRoom', {
+                            chatroom: this.state.query
+                          });
+                        }}
+                      >
+                        <Text style={styles.buttonText}>
+                          + {this.state.query}{' '}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                      // return loading while grabbing data from database
+                      <MaterialIndicator color="black" />
+                    )}
               </ScrollView>
             </SafeAreaView>
           </KeyboardAvoidingView>
         </View>
 
-        <View
-          style={{
-            display: 'flex',
-            alignItems: 'space-between',
-            marginTop: 10,
-            flexDirection: 'row',
-            alignSelf: 'flex-end'
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('PMList')}
-          >
-            <Ionicons name="ios-chatbubbles" size={30} color="grey"></Ionicons>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.liveChat}>
-            <MaterialIcons
-              name="speaker-phone"
-              size={30}
-              color={this.state.liveChatAvailable ? 'green' : 'grey'}
-            ></MaterialIcons>
-          </TouchableOpacity>
-        </View>
-      </View>
+
+        <Navbar />
+      </View >
+
     );
   }
 }
 
 const styles = StyleSheet.create({
   chatroomlist: {
-    marginBottom: 30
+    marginBottom: 30,
+    height: 300
   },
   container: {
     display: 'flex',
@@ -308,7 +322,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   searchView: {
-    marginTop: 50,
+    marginTop: 0,
     marginRight: 20,
     marginLeft: 20,
     flex: 2
@@ -361,5 +375,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
+  },
+  testingView: {
+    borderColor: 'red',
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    margin: 10,
   }
 });
