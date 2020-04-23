@@ -190,7 +190,7 @@ export default class ChatList extends React.Component {
 
         {/* navigation to user profile for development purposes
         < */}
-        <View style={styles.testingView}>
+        {/* <View style={styles.testingView}>
           <Text style={styles.subtitle} > For testing purposes only:</Text>
 
           <TouchableOpacity
@@ -228,7 +228,7 @@ export default class ChatList extends React.Component {
           </View>
         </View>
 
-
+ */}
 
         {/* search bar - queries all chatrooms to the users query */}
         <View style={styles.searchView}>
