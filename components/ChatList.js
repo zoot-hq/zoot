@@ -185,13 +185,51 @@ export default class ChatList extends React.Component {
             Welcome.{'\n'}What type support are you here for?
           </Text>
         </View>
+
+
+
         {/* navigation to user profile for development purposes
         < */}
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('UserPage')}
-        >
-          <Text>Navigate to user profile</Text>
-        </TouchableOpacity>
+        <View style={styles.testingView}>
+          <Text style={styles.subtitle} > For testing purposes only:</Text>
+
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('UserPage')}>
+            <Text style={styles.subtitle}>User Page</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('Resources')}>
+            <Text style={styles.subtitle}>Resources</Text>
+          </TouchableOpacity>
+
+
+          <View
+            style={{
+              display: 'flex',
+              alignItems: 'space-between',
+              marginTop: 10,
+              flexDirection: 'row',
+              alignSelf: 'center'
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('PMList')}
+            >
+              <Ionicons name="ios-chatbubbles" size={30} color="grey"></Ionicons>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.liveChat}>
+              <MaterialIcons
+                name="speaker-phone"
+                size={30}
+                color={this.state.liveChatAvailable ? 'green' : 'grey'}
+              ></MaterialIcons>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+
+
         {/* search bar - queries all chatrooms to the users query */}
         <View style={styles.searchView}>
           <Searchbar
@@ -264,31 +302,9 @@ export default class ChatList extends React.Component {
           </KeyboardAvoidingView>
         </View>
 
-        {/* <View
-          style={{
-            display: 'flex',
-            alignItems: 'space-between',
-            marginTop: 10,
-            flexDirection: 'row',
-            alignSelf: 'flex-end'
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('PMList')}
-          >
-            <Ionicons name="ios-chatbubbles" size={30} color="grey"></Ionicons>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.liveChat}>
-            <MaterialIcons
-              name="speaker-phone"
-              size={30}
-              color={this.state.liveChatAvailable ? 'green' : 'grey'}
-            ></MaterialIcons>
-          </TouchableOpacity>
-        </View> */}
 
         <Navbar />
-      </View>
+      </View >
 
     );
   }
@@ -359,5 +375,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
+  },
+  testingView: {
+    borderColor: 'red',
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    margin: 10,
   }
 });

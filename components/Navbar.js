@@ -46,8 +46,6 @@ export default class Navbar extends React.Component {
         console.log('are we in navbar')
 
 
-        const { navigate } = this.props.navigation;
-
 
 
 
@@ -61,30 +59,32 @@ export default class Navbar extends React.Component {
             <View style={styles.test}>
 
 
-                <TouchableOpacity onPress={this.navigation("ChatList"
-                )}>
+                <TouchableOpacity
+                >
                     <AntDesign name='home' size={30} color='black' />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={this.UserPage}>
+                <TouchableOpacity >
                     <Feather name='user' size={30} color='black' />
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate('PMList')}
                 >
                     <AntDesign name='contacts' size={30} color='black' />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={this.liveChat}>
-                    <Ionicons name='md-megaphone' size={30} color={this.state.liveChatAvailable ? 'green' : 'black'} />
+                <TouchableOpacity
+                >
+                    <Ionicons name='md-megaphone' size={30} color='black' />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={this.PartnerChatList}>
+                <TouchableOpacity
+                >
                     <AntDesign name='book' size={30} color='black' />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={this.Resources}>
+                <TouchableOpacity
+                >
                     <MaterialIcons name='account-balance' size={30} color='black' />
                 </TouchableOpacity>
 
@@ -97,9 +97,9 @@ export default class Navbar extends React.Component {
 const styles = StyleSheet.create({
     test: {
         color: 'black',
-        backgroundColor: 'pink',
+        backgroundColor: 'white',
         fontSize: 12,
-        borderColor: 'red',
+        borderColor: 'transparent',
         borderStyle: 'solid',
         borderWidth: 1,
         padding: 20,
