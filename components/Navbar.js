@@ -1,65 +1,93 @@
 import * as React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView } from 'react-native';
-import { Searchbar } from 'react-native-paper';
-import Fire from '../Fire';
 import { MaterialIndicator } from 'react-native-indicators';
-import { Ionicons } from '@expo/vector-icons';
-import { createBottomTabNavigator } from 'react-navigation';
+import { AntDesign, Ionicons, SimpleLineIcons, Feather, MaterialIcons } from '@expo/vector-icons';
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
+import Constants from 'expo-constants';
+import Fire from '../Fire';
 
+import { Navigator } from 'react-native';
 
-const Navbar = createBottomTabNavigator(
-    {
-        Home: {
-            screen: HomeScreen,
-            navigationOptions: {
-                tabBarIcon: ({ tintColor }) => (
-                    <Icon name="home" size={25} color={tintColor} />
-                )
-            }
-        },
-        Explore: {
-            screen: ExploreScreen,
-            navigationOptions: {
-                tabBarIcon: ({ tintColor }) => (
-                    <Icon name="comments" size={25} color={tintColor} />
-                )
-            }
-        },
-        Notifications: {
-            screen: NotificationsScreen,
-            navigationOptions: {
-                tabBarIcon: ({ tintColor }) => (
-                    <Icon name="search" size={25} color={tintColor} />
-                )
-            }
-        },
-        Profile: {
-            screen: ProfileScreen,
-            navigationOptions: {
-                tabBarIcon: ({ tintColor }) => (
-                    <Icon name="user" size={25} color={tintColor} />
-                )
-            }
-        },
-    },
-    {
-        initialRouteName: 'Home',
-        tabBarOptions: {
-            activeTintColor: '#eb6e3d'
-        }
-    }
-);
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createStackNavigator } from '@react-navigation/stack';
+
+// const Stack = createStackNavigator();
+
+// function MyStack() {
+//     return (
+//         <NavigationContainer>
+//             <Stack.Navigator>
+//                 <Stack.Screen
+//                     name="Home"
+//                     component={ChatList}
+//                 />
+//                 <Stack.Screen name="UserPage" component={UserPage} />
+//             </Stack.Navigator>
+//         </NavigationContainer>
+//     );
+// }
+
 
 export default class Navbar extends React.Component {
+
     constructor() {
-        super()
+        super();
+        this.state = {
+            navbar: true,
+        };
     }
+
+
 
 
     render() {
+
+        console.log('are we in navbar')
+
+
+
+
+
+
         return (
-            <View style={styles.container}>
-                {Navbar}
+
+
+
+
+
+            <View style={styles.test}>
+
+
+                <TouchableOpacity
+                >
+                    <AntDesign name='home' size={30} color='black' />
+                </TouchableOpacity>
+
+                <TouchableOpacity >
+                    <Feather name='user' size={30} color='black' />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                >
+                    <AntDesign name='contacts' size={30} color='black' />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                >
+                    <Ionicons name='md-megaphone' size={30} color='black' />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                >
+                    <AntDesign name='book' size={30} color='black' />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                >
+                    <MaterialIcons name='account-balance' size={30} color='black' />
+                </TouchableOpacity>
+
             </View>
         )
     }
@@ -67,8 +95,18 @@ export default class Navbar extends React.Component {
 
 
 const styles = StyleSheet.create({
-
-    navbar: {
-        height: 10,
-    }
-})
+    test: {
+        color: 'black',
+        backgroundColor: 'white',
+        fontSize: 12,
+        borderColor: 'transparent',
+        borderStyle: 'solid',
+        borderWidth: 1,
+        padding: 20,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingLeft: 40,
+        paddingRight: 40,
+    },
+});
