@@ -88,8 +88,8 @@ export default class SignupScreen extends React.Component {
                 autoCapitalize="none"
                 autoCorrect={false}
                 style={styles.input}
-                onChangeText={(username) => this.setState({username})}
-                ref={(input) => (this.username = input)}
+                onChangeText={username => this.setState({username})}
+                ref={input => (this.username = input)}
                 blurOnSubmit={false}
               />
             </View>
@@ -107,8 +107,8 @@ export default class SignupScreen extends React.Component {
                 autoCapitalize="none"
                 autoCorrect={false}
                 style={styles.input}
-                onChangeText={(email) => this.setState({email})}
-                ref={(input) => (this.email = input)}
+                onChangeText={email => this.setState({email})}
+                ref={input => (this.email = input)}
                 keyboardType="email-address"
                 blurOnSubmit={false}
               />
@@ -125,8 +125,8 @@ export default class SignupScreen extends React.Component {
                 secureTextEntry
                 onSubmitEditing={() => this.birthday.focus()}
                 style={styles.input}
-                onChangeText={(password) => this.setState({password})}
-                ref={(input) => (this.password = input)}
+                onChangeText={password => this.setState({password})}
+                ref={input => (this.password = input)}
                 blurOnSubmit={false}
               />
             </View>
@@ -144,8 +144,8 @@ export default class SignupScreen extends React.Component {
                 onSubmitEditing={() => this.city.focus()}
                 autoCorrect={false}
                 style={styles.input}
-                onChangeText={(birthday) => this.setState({birthday})}
-                ref={(input) => (this.birthday = input)}
+                onChangeText={birthday => this.setState({birthday})}
+                ref={input => (this.birthday = input)}
                 keyboardType="number-pad"
                 blurOnSubmit={false}
               />
@@ -159,8 +159,8 @@ export default class SignupScreen extends React.Component {
                 autoCapitalize="none"
                 autoCorrect={false}
                 style={styles.input}
-                onChangeText={(city) => this.setState({city})}
-                ref={(input) => (this.city = input)}
+                onChangeText={city => this.setState({city})}
+                ref={input => (this.city = input)}
                 blurOnSubmit={false}
               />
             </View>
