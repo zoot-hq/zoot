@@ -13,10 +13,8 @@ import {MaterialIndicator} from 'react-native-indicators';
 import {Ionicons} from '@expo/vector-icons';
 import * as firebase from 'firebase';
 
-import Fire from '../Fire';
 import Navbar from './Navbar';
-
-const tempPartners = [{name: 'Friendly People'}, {name: '92Y'}];
+import ChatList from './ChatList';
 
 export class PartnerList extends Component {
   constructor() {
@@ -105,11 +103,11 @@ export class PartnerList extends Component {
                     <TouchableOpacity
                       key={partner}
                       style={styles.buttonContainer}
-                      // onPress={() =>
-                      //   this.props.navigation.navigate('ChatRoom', {
-                      //     chatroom: chatroom.name
-                      //   })
-                      // }
+                      onPress={() =>
+                        this.props.navigation.navigate('ChatList', {
+                          partner: partner
+                        })
+                      }
                     >
                       <View style={styles.singleChatView}>
                         <Text style={styles.buttonText}># {partner}</Text>
