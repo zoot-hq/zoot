@@ -105,12 +105,12 @@ export default class UserPage extends Component {
       .auth()
       .signOut()
       .then(
-        await AsyncStorage.removeItem('apresLoginEmail'),
-        await AsyncStorage.removeItem('apresLoginPassword').catch((error) =>
+        AsyncStorage.removeItem('apresLoginEmail'),
+        AsyncStorage.removeItem('apresLoginPassword').catch((error) =>
           this.setState({error: error.message})
         )
-      );
-    this.goHome();
+      )
+      .then(this.goHome());
   }
   async updateDB() {
     await firebase
