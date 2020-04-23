@@ -29,26 +29,26 @@ export class PartnerList extends Component {
   }
 
   async componentDidMount() {
-    const partners = await this.getPartnerNames();
-    console.log('partners', partners);
-    this.setState({partnerNames: partners});
+    // const partners = await this.getPartnerNames();
+    // console.log('partners', partners);
+    // this.setState({partnerNames: partners});
+    // Fire.shared.getPartnerNames(this.setPartnersToState());
+    let partners = await this.getPartnerNames();
+    this.setState({partnerNames: Object.keys(partners)});
   }
 
   async getPartnerNames() {
     let ref = firebase.database().ref(`partnerNames`);
-    console.log({ref});
-    let query = await ref
-      .once('value')
-      .then(function (snapshot) {
-        return snapshot;
-      })
-      .val();
-    console.log('query', query);
-    console.log('query keys', Object.keys(query));
+    let query = await ref.once('value').then(function (snapshot) {
+      return snapshot.val();
+    });
+    return query;
   }
+  //   console.log('query keys', Object.keys(query.val()));
+  // }
 
   render() {
-    console.log(this.state.partnerNames);
+    console.log(this.state.partnerNames, 'partner names in state');
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
@@ -107,7 +107,7 @@ export class PartnerList extends Component {
                 this.state.partnerNames.length ? (
                   this.state.partnerNames.map((partner) => (
                     <TouchableOpacity
-                      key={partner.name}
+                      key={partner}
                       style={styles.buttonContainer}
                       // onPress={() =>
                       //   this.props.navigation.navigate('ChatRoom', {
@@ -116,7 +116,7 @@ export class PartnerList extends Component {
                       // }
                     >
                       <View style={styles.singleChatView}>
-                        <Text style={styles.buttonText}># {partner.name}</Text>
+                        <Text style={styles.buttonText}># {partner}</Text>
                         <Ionicons name="md-people" size={25} color="grey">
                           {' '}
                         </Ionicons>
