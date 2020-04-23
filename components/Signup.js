@@ -24,7 +24,7 @@ const roleList = [
   'A Parent Recovering from Loss',
   'Other',
   'Prefer Not to Disclose'
-].map(role => ({label: role, value: role}));
+].map((role) => ({label: role, value: role}));
 
 export default class SignupScreen extends React.Component {
   constructor() {
@@ -203,7 +203,7 @@ export default class SignupScreen extends React.Component {
                 <View>
                   <RNPickerSelect
                     style={{...pickerSelectStyles}}
-                    onValueChange={value => {
+                    onValueChange={(value) => {
                       this.setState({
                         selectedRole: value
                       });
@@ -253,7 +253,6 @@ export default class SignupScreen extends React.Component {
                 }
                 // if everything is good
                 else {
-                  console.log('state sent', this.state);
                   this.communityPopup();
                 }
               }}
