@@ -11,21 +11,40 @@ import {
 import {Searchbar} from 'react-native-paper';
 import {MaterialIndicator} from 'react-native-indicators';
 import {Ionicons} from '@expo/vector-icons';
+import * as firebase from 'firebase';
 
 import Navbar from './Navbar';
-
-const tempPartners = [{name: 'Friendly People'}, {name: '92Y'}];
+import ChatList from './ChatList';
 
 export class PartnerList extends Component {
   constructor() {
     super();
     this.state = {
-      partnerList: tempPartners,
-      queriedPartners: []
+      partnerNames: [],
+      queriedPartners: [],
+      query: ''
     };
   }
 
+  async componentDidMount() {
+    // const partners = await this.getPartnerNames();
+    // console.log('partners', partners);
+    // this.setState({partnerNames: partners});
+    // Fire.shared.getPartnerNames(this.setPartnersToState());
+    let partners = await this.getPartnerNames();
+    this.setState({partnerNames: Object.keys(partners)});
+  }
+
+  async getPartnerNames() {
+    let ref = firebase.database().ref(`partnerNames`);
+    let query = await ref.once('value').then(function (snapshot) {
+      return snapshot.val();
+    });
+    return query;
+  }
+
   render() {
+    console.log(this.state.partnerNames, 'partner names in state');
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
@@ -43,16 +62,14 @@ export class PartnerList extends Component {
             theme={{colors: {primary: 'black'}}}
             placeholder="Search for a partnered organization"
             onChangeText={(query) => {
-              const queriedPartners = this.state.partnerList.filter(
+              const queriedPartners = this.state.partnerNames.filter(
                 (partner) => {
-                  return partner.name
-                    .toLowerCase()
-                    .includes(query.toLowerCase());
+                  return partner.toLowerCase().includes(query.toLowerCase());
                 }
               );
               this.setState({queriedPartners, query});
               if (!query.length) {
-                this.setState({queriedPartners: this.state.partnerList});
+                this.setState({queriedPartners: this.state.partnerNames});
               }
             }}
           />
@@ -62,9 +79,9 @@ export class PartnerList extends Component {
               <ScrollView contentContainerStyle={{flexGrow: 1}}>
                 {/* if a query made, queried chatrooms displayed*/}
                 {this.state.queriedPartners.length ? (
-                  this.state.queriedPartners.map((partner) => (
+                  this.state.queriedPartners.map((partner, idx) => (
                     <TouchableOpacity
-                      key={partner.name}
+                      key={idx}
                       style={styles.buttonContainer}
                       // onPress={() =>
                       //   this.props.navigation.navigate('ChatRoom', {
@@ -73,23 +90,39 @@ export class PartnerList extends Component {
                       // }
                     >
                       <View style={styles.singleChatView}>
-                        <Text style={styles.buttonText}># {partner.name}</Text>
+                        <Text style={styles.buttonText}># {partner}</Text>
                         <Ionicons name="md-people" size={25} color="grey">
                           {' '}
                         </Ionicons>
                       </View>
                     </TouchableOpacity>
                   ))
-                ) : // else display message
-                this.state.partnerList.length ? (
+                ) : // else if a search has not run but the list of partners isn't empty, display all partners
+                this.state.partnerNames.length ? (
+                  this.state.partnerNames.map((partner) => (
+                    <TouchableOpacity
+                      key={partner}
+                      style={styles.buttonContainer}
+                      onPress={() =>
+                        this.props.navigation.navigate('ChatList', {
+                          partner: partner
+                        })
+                      }
+                    >
+                      <View style={styles.singleChatView}>
+                        <Text style={styles.buttonText}># {partner}</Text>
+                        <Ionicons name="md-people" size={25} color="grey">
+                          {' '}
+                        </Ionicons>
+                      </View>
+                    </TouchableOpacity>
+                  ))
+                ) : (
                   <View>
                     <Text>
                       We are not yet partnered with this organization.
                     </Text>
                   </View>
-                ) : (
-                  // return loading while grabbing data from database
-                  <MaterialIndicator color="black" />
                 )}
               </ScrollView>
             </SafeAreaView>
