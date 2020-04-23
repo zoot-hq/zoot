@@ -14,6 +14,7 @@ import Fire from '../Fire';
 import * as firebase from 'firebase';
 import RNPickerSelect from 'react-native-picker-select';
 import * as MailComposer from 'expo-mail-composer';
+import NavBar from './Navbar';
 
 export default class UserPage extends Component {
   constructor(props) {
@@ -419,6 +420,7 @@ export default class UserPage extends Component {
             </View>
           </Modal>
         </ScrollView>
+        <NavBar />
       </View>
     );
   }
@@ -432,7 +434,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   title: {
-    fontSize: 100,
+    fontSize: 60,
     fontWeight: '700',
     textAlign: 'center',
     marginTop: 50,

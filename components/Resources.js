@@ -1,13 +1,14 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   Text,
   StyleSheet,
   View,
   ScrollView,
   Linking,
-  TouchableOpacity,
-} from "react-native";
-import Select from "react-native-picker-select";
+  TouchableOpacity
+} from 'react-native';
+// import Select from "react-native-picker-select";
+import NavBar from './Navbar';
 
 export default class Resources extends Component {
   constructor(props) {
@@ -15,14 +16,14 @@ export default class Resources extends Component {
     this.state = {
       maternal: {},
       wellness: {},
-      child: {},
+      child: {}
     };
   }
   setLocation(category, evt) {
     let stateObj = {};
     stateObj[category] = {
       x: evt.nativeEvent.layout.x,
-      y: evt.nativeEvent.layout.y,
+      y: evt.nativeEvent.layout.y
     };
     this.setState(stateObj);
   }
@@ -32,26 +33,26 @@ export default class Resources extends Component {
       this.scrollRef.scrollTo({
         x: this.state[category].x,
         y: this.state[category].y,
-        animated: true,
+        animated: true
       });
     }
   }
   render() {
     const pickerStyle = {
       inputIOS: {
-        color: "gray",
+        color: 'gray',
         marginTop: 10,
         paddingTop: 10,
         paddingHorizontal: 10,
         paddingBottom: 10,
-        alignSelf: "center",
-        borderWidth: 1,
+        alignSelf: 'center',
+        borderWidth: 1
       },
       inputAndroid: {
-        color: "gray",
-        borderWidth: 1,
+        color: 'gray',
+        borderWidth: 1
       },
-      placeholderColor: "black",
+      placeholderColor: 'black'
     };
     return (
       <View style={styles.container}>
@@ -78,20 +79,20 @@ export default class Resources extends Component {
           }}
         >
           <Text
-            onLayout={(event) => this.setLocation("maternal", event)}
+            onLayout={(event) => this.setLocation('maternal', event)}
             style={styles.categoryTitle}
           >
             Maternal Mental Health
           </Text>
           <TouchableOpacity
-            onPress={() => Linking.openURL("https://www.postpartum.net/")}
+            onPress={() => Linking.openURL('https://www.postpartum.net/')}
           >
             <Text style={styles.subtitle}>
               Postpartum Support International
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => Linking.openURL("https://womensmentalhealth.org/")}
+            onPress={() => Linking.openURL('https://womensmentalhealth.org/')}
           >
             <Text style={styles.subtitle}>
               MGH Center for Women's Mental Health
@@ -99,7 +100,7 @@ export default class Resources extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>
-              Linking.openURL("https://www.nimh.nih.gov/index.shtml")
+              Linking.openURL('https://www.nimh.nih.gov/index.shtml')
             }
           >
             <Text style={styles.subtitle}>
@@ -109,7 +110,7 @@ export default class Resources extends Component {
           <TouchableOpacity
             onPress={() =>
               Linking.openURL(
-                "https://www.samhsa.gov/find-help/national-helpline"
+                'https://www.samhsa.gov/find-help/national-helpline'
               )
             }
           >
@@ -119,14 +120,14 @@ export default class Resources extends Component {
             Crisis Text Line: Text “HELLO” to 741741
           </Text>
           <Text
-            onLayout={(event) => this.setLocation("wellness", event)}
+            onLayout={(event) => this.setLocation('wellness', event)}
             style={styles.categoryTitle}
           >
             Wellness
           </Text>
           <TouchableOpacity
             onPress={() =>
-              Linking.openURL("https://www.youtube.com/user/yogawithadriene")
+              Linking.openURL('https://www.youtube.com/user/yogawithadriene')
             }
           >
             <Text style={styles.subtitle}>Yoga with Adriene</Text>
@@ -134,7 +135,7 @@ export default class Resources extends Component {
           <TouchableOpacity
             onPress={() =>
               Linking.openURL(
-                "https://www.umassmemorialhealthcare.org/umass-memorial-center-mindfulness"
+                'https://www.umassmemorialhealthcare.org/umass-memorial-center-mindfulness'
               )
             }
           >
@@ -144,44 +145,45 @@ export default class Resources extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>
-              Linking.openURL("https://mariashriver.com/sundaypaper/")
+              Linking.openURL('https://mariashriver.com/sundaypaper/')
             }
           >
             <Text style={styles.subtitle}>Maria Shriver's Sunday Paper</Text>
           </TouchableOpacity>
           <Text
-            onLayout={(event) => this.setLocation("child", event)}
+            onLayout={(event) => this.setLocation('child', event)}
             style={styles.categoryTitle}
           >
             Infant & Child Development
           </Text>
           <TouchableOpacity
-            onPress={() => Linking.openURL("https://www.llli.org/")}
+            onPress={() => Linking.openURL('https://www.llli.org/')}
           >
             <Text style={styles.subtitle}>La Leche League</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>
               Linking.openURL(
-                "https://healthychildren.org/English/Pages/default.aspx"
+                'https://healthychildren.org/English/Pages/default.aspx'
               )
             }
           >
             <Text style={styles.subtitle}>HealthyChildren.org</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => Linking.openURL("https://www.pbs.org/parents")}
+            onPress={() => Linking.openURL('https://www.pbs.org/parents')}
           >
             <Text style={styles.subtitle}>PBS Kids for Parents</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => Linking.openURL("https://childmind.org/")}
+            onPress={() => Linking.openURL('https://childmind.org/')}
           >
             <Text style={styles.subtitle}>The Child Mind Institute</Text>
           </TouchableOpacity>
           {/* this empty View provides enough space below the resources that each category can scroll to the top when chosen */}
           <View style={styles.extraSpace}></View>
         </ScrollView>
+        <NavBar />
       </View>
     );
   }
@@ -189,41 +191,41 @@ export default class Resources extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    justifyContent: "center",
-    backgroundColor: "white",
-    flex: 1,
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    flex: 1
   },
   scroll: {
-    marginTop: 10,
+    marginTop: 10
   },
   title: {
-    fontSize: 100,
-    fontWeight: "700",
-    textAlign: "center",
+    fontSize: 60,
+    fontWeight: '700',
+    textAlign: 'center',
     marginTop: 50,
     marginBottom: 5,
-    fontFamily: "CormorantGaramond-Light",
+    fontFamily: 'CormorantGaramond-Light'
   },
   subtitle: {
     fontSize: 18,
-    fontWeight: "300",
-    textAlign: "center",
+    fontWeight: '300',
+    textAlign: 'center',
     marginBottom: 8,
-    fontFamily: "Futura-Light",
+    fontFamily: 'Futura-Light',
     marginTop: 5,
     marginLeft: 50,
-    marginRight: 50,
+    marginRight: 50
   },
   categoryTitle: {
     fontSize: 30,
-    fontWeight: "500",
-    textAlign: "center",
+    fontWeight: '500',
+    textAlign: 'center',
     marginBottom: 8,
-    fontFamily: "Futura-Light",
-    marginTop: 40,
+    fontFamily: 'Futura-Light',
+    marginTop: 40
   },
   extraSpace: {
-    height: 100,
-  },
+    height: 100
+  }
 });
