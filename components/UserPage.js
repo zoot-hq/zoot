@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   TextInput,
   AsyncStorage,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  ScrollView
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Fire from '../Fire';
@@ -19,15 +20,13 @@ export default class UserPage extends Component {
     super(props);
     this.state = {
       user: firebase.auth().currentUser,
-      // originalName: firebase.auth().currentUser.displayName,
-      // userNameModal: false,
       emailModal: false,
       passwordModal: false,
-      // newUsername: firebase.auth().currentUser.displayName,
       newEmail: firebase.auth().currentUser.email,
       newPassword: '',
       passwordUpdated: false,
       deleteModal: false,
+      deleteUser: false,
       contactFormModal: false,
       subject: '',
       message: '',
@@ -35,7 +34,6 @@ export default class UserPage extends Component {
       selectedRole: ''
     };
     this.logout = this.logout.bind(this);
-    // this.user = firebase.auth().currentUser;
     this.roleList = [
       'A New Mother',
       'A Surrogate',
@@ -69,27 +67,6 @@ export default class UserPage extends Component {
     stateObj[type] = true;
     this.setState(stateObj);
   }
-  // async updateUsername() {
-  //   if (this.state.newUsername) {
-  //     let ref = firebase.database().ref(`users/${this.state.newUsername}`);
-  //     let query = await ref.once('value').then(function (snapshot) {
-  //       return snapshot;
-  //     });
-  //     let foundUser = await query.child('email').val();
-  //     if (!foundUser) {
-  //       this.state.user
-  //         .updateProfile({displayName: this.state.newUsername})
-  //         .then(() => this.setState({userNameModal: false}))
-  //         .catch((error) => this.setState({error: error.message}));
-  //     } else {
-  //       this.setState({
-  //         error: 'That name is already in use by another member.'
-  //       });
-  //     }
-  //   } else {
-  //     this.setState({error: 'Please enter a new username.'});
-  //   }
-  // }
   updateEmail() {
     if (this.state.newEmail) {
       this.setState({error: false});
@@ -118,18 +95,8 @@ export default class UserPage extends Component {
     }
   }
   async deleteUser() {
-    this.state.user.delete().then(() => this.setState({deleteModal: false}));
-    await firebase
-      .database()
-      .ref('users/' + this.state.user.displayName)
-      .remove();
-    await AsyncStorage.removeItem('apresLoginEmail'),
-      await AsyncStorage.removeItem('apresLoginPassword').catch(function (
-        error
-      ) {
-        this.setState({error: error.message});
-      });
-    this.goHome();
+    this.setState({deleteUser: true});
+    this.logout();
   }
   async logout() {
     await this.updateDB();
@@ -156,12 +123,29 @@ export default class UserPage extends Component {
   goHome() {
     this.props.navigation.navigate('Home');
   }
+  async componentWillUnmount() {
+    console.log('deleteUser?', this.state.deleteUser);
+    if (this.state.deleteUser) {
+      await this.state.user.delete().then(
+        await firebase
+          .database()
+          .ref('users')
+          .child(this.state.user.displayName)
+          .remove()
+          .catch(function (error) {
+            console.log(error);
+          })
+      );
+      console.log('end of delete user functionality');
+    } else {
+      await this.updateDB();
+    }
+  }
   async contactAdmin() {
     const options = {
       recipients: ['aprshq@gmail.com'],
       subject: this.state.subject,
-      body: `
-      User ${this.state.user.displayName}, aka ${this.state.user.email}, says: ${this.state.message}`
+      body: this.state.message
     };
     try {
       await MailComposer.composeAsync(options);
@@ -177,7 +161,7 @@ export default class UserPage extends Component {
   }
   render() {
     return (
-      <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
+      <ScrollView>
         <View style={styles.container}>
           <Text style={styles.title}>après</Text>
           <Text style={styles.subtitle}>
@@ -189,50 +173,6 @@ export default class UserPage extends Component {
           <Text style={styles.userInfo}>
             username: {this.state.user.displayName}
           </Text>
-          {/* <TouchableOpacity onPress={() => this.renderModal('userNameModal')}>
-            <Text style={styles.userInfo}>Update username?</Text>
-          </TouchableOpacity>
-          <Modal isVisible={this.state.userNameModal}>
-            <View style={styles.modal}>
-              <Text style={styles.modalTitle}>Update username</Text>
-              {this.state.error ? (
-                <Text style={styles.modalText}>{this.state.error}</Text>
-              ) : (
-                <Text style={styles.modalText}>
-                  Type your new desired username below.
-                </Text>
-              )}
-              <TextInput
-                returnKeyType="done"
-                placeholder="New username"
-                placeholderTextColor="#bfbfbf"
-                autoCapitalize="none"
-                autoCorrect={false}
-                style={styles.input}
-                onChangeText={(newUsername) => this.setState({newUsername})}
-              />
-              <View style={styles.modalButtonsContainer}>
-                <TouchableOpacity
-                  style={{width: 150}}
-                  onPress={() =>
-                    this.setState({userNameModal: false, error: false})
-                  }
-                >
-                  <Text style={styles.modalButtonCancel}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    width: 150,
-                    borderLeftWidth: 1,
-                    borderLeftColor: 'gray'
-                  }}
-                  onPress={() => this.updateUsername()}
-                >
-                  <Text style={styles.modalButtonSave}>Save</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal> */}
           <Text></Text>
           {/* user email section */}
           <Text style={styles.userInfo}>email: {Fire.shared.email()}</Text>
@@ -380,7 +320,7 @@ export default class UserPage extends Component {
             <Text style={styles.buttonText}>contact us</Text>
           </TouchableOpacity>
           <Modal isVisible={this.state.contactFormModal}>
-            <View style={styles.modal}>
+            <KeyboardAvoidingView style={styles.modal}>
               <Text style={styles.modalTitle}>Contact Us</Text>
               {this.state.error ? (
                 <Text style={styles.modalText}>{this.state.error}</Text>
@@ -409,7 +349,7 @@ export default class UserPage extends Component {
                 style={[
                   styles.input,
                   {
-                    height: 300
+                    height: 100
                   }
                 ]}
                 onChangeText={(message) => this.setState({message})}
@@ -434,7 +374,7 @@ export default class UserPage extends Component {
                   <Text style={styles.modalButtonSave}>Send</Text>
                 </TouchableOpacity>
               </View>
-            </View>
+            </KeyboardAvoidingView>
           </Modal>
           {/* logout functionality */}
           <TouchableOpacity onPress={this.logout} style={styles.userPageButton}>
@@ -481,7 +421,7 @@ export default class UserPage extends Component {
             </View>
           </Modal>
         </View>
-      </KeyboardAvoidingView>
+      </ScrollView>
     );
   }
 }
@@ -494,7 +434,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   title: {
-    fontSize: 100,
+    fontSize: 60,
     fontWeight: '700',
     textAlign: 'center',
     marginTop: 50,
