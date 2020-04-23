@@ -44,8 +44,6 @@ export class PartnerList extends Component {
     });
     return query;
   }
-  //   console.log('query keys', Object.keys(query.val()));
-  // }
 
   render() {
     console.log(this.state.partnerNames, 'partner names in state');
@@ -68,9 +66,7 @@ export class PartnerList extends Component {
             onChangeText={(query) => {
               const queriedPartners = this.state.partnerNames.filter(
                 (partner) => {
-                  return partner.name
-                    .toLowerCase()
-                    .includes(query.toLowerCase());
+                  return partner.toLowerCase().includes(query.toLowerCase());
                 }
               );
               this.setState({queriedPartners, query});
@@ -85,9 +81,9 @@ export class PartnerList extends Component {
               <ScrollView contentContainerStyle={{flexGrow: 1}}>
                 {/* if a query made, queried chatrooms displayed*/}
                 {this.state.queriedPartners.length ? (
-                  this.state.queriedPartners.map((partner) => (
+                  this.state.queriedPartners.map((partner, idx) => (
                     <TouchableOpacity
-                      key={partner.name}
+                      key={idx}
                       style={styles.buttonContainer}
                       // onPress={() =>
                       //   this.props.navigation.navigate('ChatRoom', {
@@ -96,7 +92,7 @@ export class PartnerList extends Component {
                       // }
                     >
                       <View style={styles.singleChatView}>
-                        <Text style={styles.buttonText}># {partner.name}</Text>
+                        <Text style={styles.buttonText}># {partner}</Text>
                         <Ionicons name="md-people" size={25} color="grey">
                           {' '}
                         </Ionicons>
