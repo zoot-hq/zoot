@@ -31,16 +31,24 @@ export class PartnerList extends Component {
     // console.log('partners', partners);
     // this.setState({partnerNames: partners});
     // Fire.shared.getPartnerNames(this.setPartnersToState());
-    let partners = await this.getPartnerNames();
-    this.setState({partnerNames: Object.keys(partners)});
+    try {
+      let partners = await this.getPartnerNames();
+      this.setState({partnerNames: Object.keys(partners)});
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async getPartnerNames() {
     let ref = firebase.database().ref(`partnerNames`);
-    let query = await ref.once('value').then(function (snapshot) {
-      return snapshot.val();
-    });
-    return query;
+    try {
+      let query = await ref.once('value').then(function (snapshot) {
+        return snapshot.val();
+      });
+      return query;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   render() {

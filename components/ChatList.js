@@ -26,15 +26,19 @@ export default class ChatList extends React.Component {
       chatrooms: [],
       queriedChatrooms: [],
       query: '',
-      partner: this.props.navigation.getParam('partner') || null
+      partner: null
     };
   }
 
+  componentDidMount() {
+    this.focusListener = this.props.navigation.addListener('didFocus', () => {
+      if (this.props.navigation.getParam('partner')) {
+        this.setState({partner: this.props.navigation.getParam('partner')});
+      }
+    });
+  }
+
   componentWillMount() {
-    console.log(
-      'what params looks like, ',
-      this.props.navigation.getParam('partner')
-    );
     // grab chatrooms = every room has a name and numOnline attribute
     Fire.shared.getChatRoomNames((newRoom) => {
       const queriedChatrooms = this.state.queriedChatrooms;
