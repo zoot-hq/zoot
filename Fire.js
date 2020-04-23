@@ -20,7 +20,7 @@ class Fire {
     return (firebase.auth().currentUser || {}).email;
   }
 
-  parse = snapshot => {
+  parse = (snapshot) => {
     const {
       timestamp,
       text,
@@ -60,20 +60,20 @@ class Fire {
           .ref('PMrooms')
           .child(room)
           .limitToLast(10)
-          .on('child_added', snapshot => callback(this.parse(snapshot)))
+          .on('child_added', (snapshot) => callback(this.parse(snapshot)))
       : live
       ? firebase
           .database()
           .ref('livechatrooms')
           .child(room)
           .limitToLast(10)
-          .on('child_added', snapshot => callback(this.parse(snapshot)))
+          .on('child_added', (snapshot) => callback(this.parse(snapshot)))
       : firebase
           .database()
           .ref('chatrooms')
           .child(room)
           .limitToLast(10)
-          .on('child_added', snapshot => callback(this.parse(snapshot)));
+          .on('child_added', (snapshot) => callback(this.parse(snapshot)));
 
   loadEarlier = (room, lastMessage, pm, live, callback) =>
     pm
@@ -84,7 +84,7 @@ class Fire {
           .orderByChild('timestamp')
           .endAt(lastMessage.timestamp - 1)
           .limitToLast(1)
-          .once('child_added', snapshot => callback(this.parse(snapshot)))
+          .once('child_added', (snapshot) => callback(this.parse(snapshot)))
       : live
       ? firebase
           .database()
@@ -93,7 +93,7 @@ class Fire {
           .orderByChild('timestamp')
           .endAt(lastMessage.timestamp - 1)
           .limitToLast(1)
-          .once('child_added', snapshot => callback(this.parse(snapshot)))
+          .once('child_added', (snapshot) => callback(this.parse(snapshot)))
       : firebase
           .database()
           .ref('chatrooms')
@@ -101,7 +101,7 @@ class Fire {
           .orderByChild('timestamp')
           .endAt(lastMessage.timestamp - 1)
           .limitToLast(1)
-          .once('child_added', snapshot => callback(this.parse(snapshot)));
+          .once('child_added', (snapshot) => callback(this.parse(snapshot)));
 
   get timestamp() {
     return firebase.database.ServerValue.TIMESTAMP;
@@ -140,22 +140,10 @@ class Fire {
       .push(message);
 
     // push users object to database
-    refToMessage
-      .child('likes')
-      .child('users')
-      .set({X: true});
-    refToMessage
-      .child('loves')
-      .child('users')
-      .set({X: true});
-    refToMessage
-      .child('lightbulbs')
-      .child('users')
-      .set({X: true});
-    refToMessage
-      .child('flags')
-      .child('users')
-      .set({X: true});
+    refToMessage.child('likes').child('users').set({X: true});
+    refToMessage.child('loves').child('users').set({X: true});
+    refToMessage.child('lightbulbs').child('users').set({X: true});
+    refToMessage.child('flags').child('users').set({X: true});
   };
 
   // send the message to the Backend
@@ -189,40 +177,16 @@ class Fire {
 
       // push message to database
       const refToMessage = pm
-        ? firebase
-            .database()
-            .ref('PMrooms')
-            .child(room)
-            .push(message)
+        ? firebase.database().ref('PMrooms').child(room).push(message)
         : live
-        ? firebase
-            .database()
-            .ref('livechatrooms')
-            .child(room)
-            .push(message)
-        : firebase
-            .database()
-            .ref('chatrooms')
-            .child(room)
-            .push(message);
+        ? firebase.database().ref('livechatrooms').child(room).push(message)
+        : firebase.database().ref('chatrooms').child(room).push(message);
 
       // push users object to database
-      refToMessage
-        .child('likes')
-        .child('users')
-        .set({X: true});
-      refToMessage
-        .child('loves')
-        .child('users')
-        .set({X: true});
-      refToMessage
-        .child('lightbulbs')
-        .child('users')
-        .set({X: true});
-      refToMessage
-        .child('flags')
-        .child('users')
-        .set({X: true});
+      refToMessage.child('likes').child('users').set({X: true});
+      refToMessage.child('loves').child('users').set({X: true});
+      refToMessage.child('lightbulbs').child('users').set({X: true});
+      refToMessage.child('flags').child('users').set({X: true});
 
       // if PM, send push notification
       if (pm) {
@@ -239,7 +203,7 @@ class Fire {
             .child(otherUsername)
             .child('notifToken')
             .once('value')
-            .then(async snapshot => {
+            .then(async (snapshot) => {
               const token = snapshot.val();
               const pushNotification = {
                 to: token,
@@ -284,16 +248,8 @@ class Fire {
     // enter message into room only if live
     if (live || pm)
       pm
-        ? firebase
-            .database()
-            .ref('PMrooms')
-            .child(room)
-            .push(message)
-        : firebase
-            .database()
-            .ref('livechatrooms')
-            .child(room)
-            .push(message);
+        ? firebase.database().ref('PMrooms').child(room).push(message)
+        : firebase.database().ref('livechatrooms').child(room).push(message);
 
     // update number of participants if not PM
     const ref = live ? 'livechatnames' : 'chatroomnames';
@@ -304,7 +260,7 @@ class Fire {
         .child(room)
         .child('numOnline')
         .once('value')
-        .then(snapshot => {
+        .then((snapshot) => {
           firebase
             .database()
             .ref(ref)
@@ -329,16 +285,8 @@ class Fire {
     // enter message into room only if live
     if (live || pm)
       pm
-        ? firebase
-            .database()
-            .ref('PMrooms')
-            .child(room)
-            .push(message)
-        : firebase
-            .database()
-            .ref('livechatrooms')
-            .child(room)
-            .push(message);
+        ? firebase.database().ref('PMrooms').child(room).push(message)
+        : firebase.database().ref('livechatrooms').child(room).push(message);
 
     // update number of participants if not PM
     const ref = live ? 'livechatnames' : 'chatroomnames';
@@ -349,7 +297,7 @@ class Fire {
         .child(room)
         .child('numOnline')
         .once('value')
-        .then(snapshot => {
+        .then((snapshot) => {
           firebase
             .database()
             .ref(ref)
@@ -361,18 +309,9 @@ class Fire {
 
   // close the connection to the Backend
   off() {
-    firebase
-      .database()
-      .ref('chatrooms')
-      .off();
-    firebase
-      .database()
-      .ref('PMrooms')
-      .off();
-    firebase
-      .database()
-      .ref('PMnames')
-      .off();
+    firebase.database().ref('chatrooms').off();
+    firebase.database().ref('PMrooms').off();
+    firebase.database().ref('PMnames').off();
   }
 
   signup = async (
@@ -396,10 +335,7 @@ class Fire {
       await firebase.auth().signInWithEmailAndPassword(email, password);
 
       // add in custom fields
-      const refToUser = firebase
-        .database()
-        .ref('users')
-        .child(username);
+      const refToUser = firebase.database().ref('users').child(username);
       refToUser.set({
         birthday,
         city,
@@ -433,33 +369,41 @@ class Fire {
       .database()
       .ref('users')
       .child(username)
-      .once('value', snapshot => {
+      .once('value', (snapshot) => {
         if (snapshot.exists()) {
           status.exists = true;
         }
         return status;
       });
 
-  getChatRoomNames = callback =>
+  getChatRoomNames = (callback) =>
     firebase
       .database()
       .ref('chatroomnames')
-      .on('child_added', snapshot => callback(this.parseRooms(snapshot)));
+      .on('child_added', (snapshot) => callback(this.parseRooms(snapshot)));
 
-  removeChatRooms = callback =>
+  removeChatRooms = (callback) =>
     firebase
       .database()
       .ref('chatroomnames')
-      .on('child_removed', snapshot => callback(this.parseRooms(snapshot)));
+      .on('child_removed', (snapshot) =>
+        callback(this.parsePartners(snapshot))
+      );
 
-  getPMRooms = callback => {
+  getPMRooms = (callback) => {
     return firebase
       .database()
       .ref('PMnames')
-      .on('child_added', snapshot => callback(this.parsePMs(snapshot)));
+      .on('child_added', (snapshot) => callback(this.parsePMs(snapshot)));
   };
 
-  parsePMs = snapshot => {
+  getPartnerNames = (callback) =>
+    firebase
+      .database()
+      .ref('partnernames')
+      .on('child_added', (snapshot) => callback(this.parseRooms(snapshot)));
+
+  parsePMs = (snapshot) => {
     const currentUser = this.username();
     const {name} = snapshot.val();
     const names = name.split('-');
@@ -468,17 +412,22 @@ class Fire {
     }
   };
 
-  parseRooms = snapshot => {
+  parseRooms = (snapshot) => {
     const {name, numOnline} = snapshot.val();
     return {name, numOnline};
   };
 
-  createChatRoom = async room =>
+  parsePartners = (snapshot) => {
+    const {name} = snapshot.val();
+    return {name};
+  };
+
+  createChatRoom = async (room) =>
     firebase
       .database()
       .ref('chatrooms')
       .child(room)
-      .once('value', snapshot => {
+      .once('value', (snapshot) => {
         const exists = snapshot.val() !== null;
 
         if (!exists) {
@@ -508,11 +457,7 @@ class Fire {
           };
 
           // add room to chatrooms, with initial message
-          firebase
-            .database()
-            .ref('chatrooms')
-            .child(room)
-            .push(initMessage);
+          firebase.database().ref('chatrooms').child(room).push(initMessage);
         }
       });
 
@@ -521,7 +466,7 @@ class Fire {
       .database()
       .ref('PMrooms')
       .child(room)
-      .once('value', snapshot => {
+      .once('value', (snapshot) => {
         const exists = snapshot.val() !== null;
 
         if (!exists) {
@@ -530,7 +475,7 @@ class Fire {
             .database()
             .ref('blockedUserRelationships')
             .child(room)
-            .once('value', snapshot => {
+            .once('value', (snapshot) => {
               const exists = snapshot.val() !== null;
 
               // if user is blocked, return so
@@ -575,7 +520,7 @@ class Fire {
       .database()
       .ref('livechatnames')
       .child(room)
-      .once('value', snapshot => {
+      .once('value', (snapshot) => {
         const exists = snapshot.val() !== null;
 
         if (!exists) {
@@ -619,20 +564,13 @@ class Fire {
   // a message by 1
   react(message, reactionType, updatedCount) {
     const {room, _id} = message;
-    const ref = firebase
-      .database()
-      .ref('chatrooms')
-      .child(room)
-      .child(_id);
+    const ref = firebase.database().ref('chatrooms').child(room).child(_id);
 
     // set number of likes/loves
     ref.child(reactionType).set({count: updatedCount});
 
     //set users object
-    ref
-      .child(reactionType)
-      .child('users')
-      .set(message[reactionType].users);
+    ref.child(reactionType).child('users').set(message[reactionType].users);
 
     if (reactionType === 'flags' && updatedCount) {
       ref.child('hidden').set(true);
@@ -641,7 +579,7 @@ class Fire {
   }
 
   // takes in the user to be blocked by current user
-  blockUser = userToBlock => {
+  blockUser = (userToBlock) => {
     const currentUser = this.username();
 
     const comboname =
@@ -654,31 +592,23 @@ class Fire {
       .ref('blockedUserRelationships')
       .child(comboname)
       .set(true);
-    firebase
-      .database()
-      .ref('PMnames')
-      .child(comboname)
-      .set({});
-    firebase
-      .database()
-      .ref('PMrooms')
-      .child(comboname)
-      .set({});
+    firebase.database().ref('PMnames').child(comboname).set({});
+    firebase.database().ref('PMrooms').child(comboname).set({});
   };
 
   // this function sets up a connection with the database to send back updates on changes in online partcipants
-  getUpdatedNumOnline = callback => {
+  getUpdatedNumOnline = (callback) => {
     firebase
       .database()
       .ref('chatroomnames')
-      .on('child_changed', snapshot => callback(snapshot.val()));
+      .on('child_changed', (snapshot) => callback(snapshot.val()));
   };
 
-  sendPasswordResetEmail = email => {
+  sendPasswordResetEmail = (email) => {
     return firebase.auth().sendPasswordResetEmail(email);
   };
 
-  sendNotificationToken = token => {
+  sendNotificationToken = (token) => {
     firebase
       .database()
       .ref('users')
