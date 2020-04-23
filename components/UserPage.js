@@ -95,7 +95,7 @@ export default class UserPage extends Component {
     }
   }
   async deleteUser() {
-    this.setState({deleteUser: true});
+    this.setState({deleteUser: true, deleteModal: false});
     this.logout();
   }
   async logout() {
@@ -124,10 +124,9 @@ export default class UserPage extends Component {
     this.props.navigation.navigate('Home');
   }
   async componentWillUnmount() {
-    console.log('deleteUser?', this.state.deleteUser);
     if (this.state.deleteUser) {
       await this.state.user.delete().then(
-        await firebase
+        firebase
           .database()
           .ref('users')
           .child(this.state.user.displayName)
@@ -136,7 +135,6 @@ export default class UserPage extends Component {
             console.log(error);
           })
       );
-      console.log('end of delete user functionality');
     } else {
       await this.updateDB();
     }
@@ -161,8 +159,8 @@ export default class UserPage extends Component {
   }
   render() {
     return (
-      <ScrollView>
-        <View style={styles.container}>
+      <View style={styles.container}>
+        <ScrollView>
           <Text style={styles.title}>après</Text>
           <Text style={styles.subtitle}>
             Hey, {this.state.user.displayName}! This is your very own user page!
@@ -420,8 +418,8 @@ export default class UserPage extends Component {
               </View>
             </View>
           </Modal>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     );
   }
 }
@@ -434,7 +432,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   title: {
-    fontSize: 60,
+    fontSize: 100,
     fontWeight: '700',
     textAlign: 'center',
     marginTop: 50,
@@ -555,6 +553,7 @@ const styles = StyleSheet.create({
 
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
+    marginVertical: 10,
     alignSelf: 'center',
     fontSize: 16,
     paddingTop: 13,
