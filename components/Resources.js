@@ -56,7 +56,7 @@ export default class Resources extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>après</Text>
-        <Text style={styles.subtitle}>
+        {/* <Text style={styles.subtitle}>
           Please use our provided resources that we’ve curated just for you so
           that you can find professional mental healthcare providers and get
           help.
@@ -70,7 +70,7 @@ export default class Resources extends Component {
             { label: "Wellness", value: "wellness" },
             { label: "Infant & Child Development", value: "child" },
           ]}
-        ></Select>
+        ></Select> */}
         <ScrollView
           style={styles.scroll}
           ref={(ref) => {
@@ -224,6 +224,6 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   extraSpace: {
-    height: 500,
+    height: 100,
   },
 });

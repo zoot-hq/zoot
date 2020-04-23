@@ -9,8 +9,9 @@ import WelcomePage from './components/WelcomePage';
 import PMList from './components/PMList';
 import UserPage from './components/UserPage';
 import Resources from './components/Resources';
-
+import Navbar from './components/Navbar'
 import { createStackNavigator } from 'react-navigation';
+;
 
 
 // disabled yellow comments/alerts
@@ -45,7 +46,9 @@ const navigator = createStackNavigator({
   WelcomePage,
   PMList,
   UserPage,
-  Resources
+  Resources,
+  Navbar
+
 },
   {
     headerMode: 'none',
