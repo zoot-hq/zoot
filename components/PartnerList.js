@@ -136,7 +136,8 @@ export class PartnerList extends Component {
                       style={styles.buttonContainer}
                       onPress={() => {
                         this.resetNavigation();
-                        this.getPartnerChatlist();
+                        // EV:line 140 is also an async function
+                        // this.getPartnerChatlist();
                         this.props.navigation.navigate('ChatList', {
                           partner: partner
                           // EV: if you leave in line 144, it'll pass a promise. If you await it, it'll pass nothing at all.
@@ -145,7 +146,9 @@ export class PartnerList extends Component {
                       }}
                     >
                       <View style={styles.singleChatView}>
-                        <Text style={styles.buttonText}># {partner}</Text>
+                        <Text style={styles.buttonText}>
+                          {`\u2022 ${partner}`}
+                        </Text>
                         <Ionicons name="md-people" size={25} color="grey">
                           {' '}
                         </Ionicons>

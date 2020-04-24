@@ -45,21 +45,24 @@ export default class ChatList extends React.Component {
     // grab chatrooms = every room has a name and numOnline attribute
     Fire.shared.getChatRoomNames((newRoom) => {
       const queriedChatrooms = this.state.queriedChatrooms;
+      if (newRoom.name) {
+        if (
+          newRoom.name.toLowerCase().includes(this.state.query.toLowerCase())
+        ) {
+          queriedChatrooms.push(newRoom);
+        }
 
-      // add room to querried rooms if query matches
-      if (newRoom.name.toLowerCase().includes(this.state.query.toLowerCase())) {
-        queriedChatrooms.push(newRoom);
+        // update state
+        this.setState({
+          chatrooms: [...this.state.chatrooms, newRoom].sort((a, b) =>
+            a.name > b.name ? 1 : -1
+          ),
+          queriedChatrooms: queriedChatrooms.sort((a, b) =>
+            a.name > b.name ? 1 : -1
+          )
+        });
       }
-
-      // update state
-      this.setState({
-        chatrooms: [...this.state.chatrooms, newRoom].sort((a, b) =>
-          a.name > b.name ? 1 : -1
-        ),
-        queriedChatrooms: queriedChatrooms.sort((a, b) =>
-          a.name > b.name ? 1 : -1
-        )
-      });
+      // add room to querried rooms if query matches
     }, this.state.partner);
 
     // update numOnline as it changes in database
@@ -142,6 +145,10 @@ export default class ChatList extends React.Component {
     const diff = date.getTime() - invdate.getTime();
     return new Date(date.getTime() + diff);
   };
+
+  componentWillUnmount() {
+    console.log('unmount firing >>>>>>>');
+  }
 
   communityPopup = (timeToAcceptableFirebaseString) => {
     Alert.alert(
