@@ -12,6 +12,11 @@ import {Searchbar} from 'react-native-paper';
 import {MaterialIndicator} from 'react-native-indicators';
 import {Ionicons} from '@expo/vector-icons';
 import * as firebase from 'firebase';
+import {
+  StackActions,
+  NavigationActions,
+  withNavigation
+} from 'react-navigation';
 
 import Navbar from './Navbar';
 import ChatList from './ChatList';
@@ -22,15 +27,12 @@ export class PartnerList extends Component {
     this.state = {
       partnerNames: [],
       queriedPartners: [],
-      query: ''
+      query: '',
+      selectedPartnerChatrooms: {}
     };
   }
 
   async componentDidMount() {
-    // const partners = await this.getPartnerNames();
-    // console.log('partners', partners);
-    // this.setState({partnerNames: partners});
-    // Fire.shared.getPartnerNames(this.setPartnersToState());
     try {
       let partners = await this.getPartnerNames();
       this.setState({partnerNames: Object.keys(partners)});
@@ -50,6 +52,27 @@ export class PartnerList extends Component {
       console.error(error);
     }
   }
+
+  resetNavigation() {
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({routeName: 'ChatList'})]
+    });
+    this.props.navigation.dispatch(resetAction);
+  }
+
+  // EV: it occurred to me here to load the partner's chatrooms on the partnerlist page. This didn't work because it required calling an async function when navigating (to pull up the chatrooms of the board that was clicked). I'm not sure why, but as soon as I did that, both navigation params (partner name and the actual chatlist) disappeared.
+  // async getPartnerChatlist(partner) {
+  //   let ref = firebase.database().ref(`partnerChatroomNames/${partner}`);
+  //   try {
+  //     let query = await ref.once('value').then(function (snapshot) {
+  //       return snapshot.val();
+  //     });
+  //     this.setState({selectedPartnerChatrooms: query});
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 
   render() {
     console.log(this.state.partnerNames, 'partner names in state');
@@ -111,11 +134,15 @@ export class PartnerList extends Component {
                     <TouchableOpacity
                       key={partner}
                       style={styles.buttonContainer}
-                      onPress={() =>
+                      onPress={() => {
+                        this.resetNavigation();
+                        this.getPartnerChatlist();
                         this.props.navigation.navigate('ChatList', {
                           partner: partner
-                        })
-                      }
+                          // EV: if you leave in line 144, it'll pass a promise. If you await it, it'll pass nothing at all.
+                          // chatrooms: this.state.selectedPartnerChatrooms
+                        });
+                      }}
                     >
                       <View style={styles.singleChatView}>
                         <Text style={styles.buttonText}># {partner}</Text>
@@ -217,4 +244,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default PartnerList;
+export default withNavigation(PartnerList);

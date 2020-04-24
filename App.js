@@ -54,8 +54,7 @@ const navigator = createStackNavigator(
   {
     headerMode: 'none',
     navigationOptions: {
-      headerVisible: false,
-      unmountInactiveRoutes: true
+      headerVisible: false
     }
   }
 );

@@ -29,16 +29,19 @@ export default class ChatList extends React.Component {
       partner: null
     };
   }
-
-  componentDidMount() {
-    this.focusListener = this.props.navigation.addListener('didFocus', () => {
-      if (this.props.navigation.getParam('partner')) {
-        this.setState({partner: this.props.navigation.getParam('partner')});
-      }
-    });
-  }
-
-  componentWillMount() {
+  // EV: this was component Will Mount - had to change it to "did" because otherwise it can't update state (apparently you can't do that from an unmounted component). This was eventually what worked! It still gave me a warning, but it also worked.
+  async componentDidMount() {
+    // This updates the partner property in the state successfully
+    const {params} = this.props.navigation.state;
+    console.log({params});
+    if (params) {
+      const partner = params.partner ? params.partner : null;
+      await this.setState(
+        {partner: partner},
+        console.log('partner in state at line 40, ', this.state.partner)
+      );
+    }
+    // EV: One thing I tried to do is add the partner (from state) to the arguments of Fire.shared.getChatroomNames, then adding it to the function in fire.js (see there, line 379).
     // grab chatrooms = every room has a name and numOnline attribute
     Fire.shared.getChatRoomNames((newRoom) => {
       const queriedChatrooms = this.state.queriedChatrooms;
@@ -57,7 +60,7 @@ export default class ChatList extends React.Component {
           a.name > b.name ? 1 : -1
         )
       });
-    });
+    }, this.state.partner);
 
     // update numOnline as it changes in database
     Fire.shared.getUpdatedNumOnline((updatedRoom) => {

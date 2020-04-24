@@ -376,10 +376,18 @@ class Fire {
         return status;
       });
 
-  getChatRoomNames = (callback) =>
+  getChatRoomNames = (callback, partner) => {
+    let ref = partner ? `partnerChatroomNames/${partner}` : 'chatroomnames';
     firebase
       .database()
-      .ref('chatroomnames')
+      .ref(ref)
+      .on('child_added', (snapshot) => callback(this.parseRooms(snapshot)));
+  };
+
+  getPartnerChatRoomNames = (callback, partner) =>
+    firebase
+      .database()
+      .ref(`partnerChatroomNames/${partner}`)
       .on('child_added', (snapshot) => callback(this.parseRooms(snapshot)));
 
   removeChatRooms = (callback) =>
@@ -593,6 +601,13 @@ class Fire {
     firebase
       .database()
       .ref('chatroomnames')
+      .on('child_changed', (snapshot) => callback(snapshot.val()));
+  };
+
+  getUpdatedPartnerNumOnline = (callback) => {
+    firebase
+      .database()
+      .ref('partnerChatroomNames')
       .on('child_changed', (snapshot) => callback(snapshot.val()));
   };
 
