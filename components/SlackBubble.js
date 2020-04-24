@@ -13,6 +13,7 @@ import {
 import {MessageText, Time, utils} from 'react-native-gifted-chat';
 import {Foundation, MaterialIcons} from '@expo/vector-icons';
 import * as MailComposer from 'expo-mail-composer';
+import AllReplies from './AllReplies';
 
 import Fire from '../Fire';
 
@@ -29,7 +30,9 @@ export default class Bubble extends React.Component {
       flags: this.props.currentMessage.flags || null,
       react: this.props.currentMessage.react,
       hidden: this.props.currentMessage.hidden,
-      addFriend: this.props.currentMessage.addFriend || null
+      addFriend: this.props.currentMessage.addFriend || null,
+      replies: [],
+      indent: 0
     };
   }
 
@@ -101,22 +104,39 @@ export default class Bubble extends React.Component {
         return this.props.renderMessageText(messageTextProps);
       }
       return (
-        <MessageText
-          {...messageTextProps}
-          textStyle={{
-            left: [
-              styles.standardFont,
-              styles.slackMessageText,
-              messageTextProps.textStyle,
-              messageTextStyle
-            ]
-          }}
-        />
+        <TouchableOpacity
+          // results in a cycle
+          onPress={() => this.addReply()}
+        >
+          <MessageText
+            {...messageTextProps}
+            textStyle={{
+              left: [
+                styles.standardFont,
+                styles.slackMessageText,
+                messageTextProps.textStyle,
+                messageTextStyle
+              ]
+            }}
+          />
+        </TouchableOpacity>
       );
     }
     return null;
   };
 
+  addReply() {
+    let currentIndent = this.state.indent;
+    let newIndent = currentIndent + 10;
+    const addNewReply = this.state.replies.concat(newIndent);
+    this.setState({replies: addNewReply});
+    this.setState({indent: newIndent});
+    // the props should be specific to this message
+    // may have to create whole new component to contain AllReplies, then another component to contain SingleReply
+    // pass this message's id to AllReplies
+    // AllReplies' state has an array with each individual reply
+    // when a user clicks this message, a nested component renders in the space below, with a margin of thisMargin + 10.
+  }
   renderMessageImage = () => {
     if (this.props.currentMessage.base64) {
       return (
@@ -261,7 +281,7 @@ export default class Bubble extends React.Component {
         otherUsername < currentUsername
           ? otherUsername + '-' + currentUsername
           : currentUsername + '-' + otherUsername;
-      Fire.shared.createPMRoom(comboName, status => {
+      Fire.shared.createPMRoom(comboName, (status) => {
         if (status === 'user blocked') {
           console.log('user blocked');
           Alert.alert(
@@ -438,6 +458,13 @@ export default class Bubble extends React.Component {
             </View>
           </View>
         </TouchableOpacity>
+        {this.state.replies.length ? (
+          <AllReplies
+            {...this.props}
+            parentIndent={this.state.indent}
+            replies={this.state.replies}
+          />
+        ) : null}
       </View>
     );
   }
