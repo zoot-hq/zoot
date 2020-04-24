@@ -6,6 +6,7 @@ import * as Permissions from 'expo-permissions';
 import HomeScreen from './Home';
 import SplashContent from './SplashContent';
 import { StyleSheet, Text, View, Image } from 'react-native';
+import ChatList from './ChatList';
 
 
 export default class Splash extends React.Component {
@@ -35,7 +36,7 @@ export default class Splash extends React.Component {
         // Start counting when the page is loaded
         this.timeoutHandle = setTimeout(() => {
             // Add your logic for the transition
-            this.setState({ component: <HomeScreen /> })
+            this.setState({ component: <ChatList /> })
         }, 5000);
     }
 

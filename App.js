@@ -34,9 +34,9 @@ console.log(
 
 const navigator = createStackNavigator(
   {
+    Home,
     Splash,
     SplashContent,
-    Home,
     // remove swipe back gesture from chatlist
     ChatList: {
       name: 'ChatList',

@@ -1,5 +1,14 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView, Alert } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
+  KeyboardAvoidingView,
+  Alert
+} from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import Fire from '../Fire';
 import { MaterialIndicator } from 'react-native-indicators';
@@ -8,22 +17,26 @@ import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
-
 import Navbar from './Navbar';
 
 export default class ChatList extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       chatrooms: [],
       queriedChatrooms: [],
-      query: ''
+      query: '',
+      partner: this.props.navigation.getParam('partner') || null
     };
   }
 
   componentWillMount() {
+    console.log(
+      'what params looks like, ',
+      this.props.navigation.getParam('partner')
+    );
     // grab chatrooms = every room has a name and numOnline attribute
-    Fire.shared.getChatRoomNames(newRoom => {
+    Fire.shared.getChatRoomNames((newRoom) => {
       const queriedChatrooms = this.state.queriedChatrooms;
 
       // add room to querried rooms if query matches
@@ -43,15 +56,15 @@ export default class ChatList extends React.Component {
     });
 
     // update numOnline as it changes in database
-    Fire.shared.getUpdatedNumOnline(updatedRoom => {
+    Fire.shared.getUpdatedNumOnline((updatedRoom) => {
       this.setState({
-        chatrooms: this.state.chatrooms.map(chatroom => {
+        chatrooms: this.state.chatrooms.map((chatroom) => {
           if (chatroom.name === updatedRoom.name) {
             return updatedRoom;
           }
           return chatroom;
         }),
-        queriedChatrooms: this.state.queriedChatrooms.map(chatroom => {
+        queriedChatrooms: this.state.queriedChatrooms.map((chatroom) => {
           if (chatroom.name === updatedRoom.name) {
             return updatedRoom;
           }
@@ -64,18 +77,20 @@ export default class ChatList extends React.Component {
     this.registerForPushNotificationsAsync();
 
     // set what the app does when a user clicks on notification
-    this._notificationSubscription = Notifications.addListener(notification => {
-      const { pm, room } = notification.data;
+    this._notificationSubscription = Notifications.addListener(
+      (notification) => {
+        const { pm, room } = notification.data;
 
-      // if notification is due to pm
-      if (pm) {
-        // navigate to the message
-        this.props.navigation.navigate('ChatRoom', {
-          chatroom: room,
-          PM: true
-        });
+        // if notification is due to pm
+        if (pm) {
+          // navigate to the message
+          this.props.navigation.navigate('ChatRoom', {
+            chatroom: room,
+            PM: true
+          });
+        }
       }
-    });
+    );
 
     this.getLiveChatAvailability();
     setInterval(() => {
@@ -121,7 +136,7 @@ export default class ChatList extends React.Component {
     return new Date(date.getTime() + diff);
   };
 
-  communityPopup = timeToAcceptableFirebaseString => {
+  communityPopup = (timeToAcceptableFirebaseString) => {
     Alert.alert(
       'Before you enter, here is a reminder of our Community Guidelines',
       `1. Après is intended to be a place of
@@ -190,7 +205,7 @@ export default class ChatList extends React.Component {
           <Text style={styles.subtitle} > For testing purposes only:</Text>
 
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Splash')}>
+            onPress={() => this.props.navigation.navigate('SplashContent')}>
             <Text style={styles.subtitle}>Splash</Text>
           </TouchableOpacity>
         </View>
@@ -243,12 +258,14 @@ export default class ChatList extends React.Component {
           <Searchbar
             theme={{ colors: { primary: 'black' } }}
             placeholder="Search our message boards"
-            onChangeText={query => {
-              const queriedChatrooms = this.state.chatrooms.filter(chatroom => {
-                return chatroom.name
-                  .toLowerCase()
-                  .includes(query.toLowerCase());
-              });
+            onChangeText={(query) => {
+              const queriedChatrooms = this.state.chatrooms.filter(
+                (chatroom) => {
+                  return chatroom.name
+                    .toLowerCase()
+                    .includes(query.toLowerCase());
+                }
+              );
               this.setState({ queriedChatrooms, query });
               if (!query.length) {
                 this.setState({ queriedChatrooms: this.state.chatrooms });
@@ -261,7 +278,7 @@ export default class ChatList extends React.Component {
               <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 {/* if a query made, queried chatrooms displayed*/}
                 {this.state.queriedChatrooms.length ? (
-                  this.state.queriedChatrooms.map(chatroom => (
+                  this.state.queriedChatrooms.map((chatroom) => (
                     <TouchableOpacity
                       key={chatroom.name}
                       style={styles.buttonContainer}
@@ -310,10 +327,8 @@ export default class ChatList extends React.Component {
           </KeyboardAvoidingView>
         </View>
 
-
         <Navbar navigation={this.props.navigation} />
-      </View >
-
+      </View>
     );
   }
 }
@@ -388,6 +403,6 @@ const styles = StyleSheet.create({
     borderColor: 'red',
     borderStyle: 'dashed',
     borderWidth: 1,
-    margin: 10,
+    margin: 10
   }
 });

@@ -21,12 +21,13 @@ export default class SplashContent extends React.Component {
 
             < View style={styles.container} >
                 <View style={styles.image}>
-                    <Image source={require('../assets/Comp-1_1.gif')} style={{ height: 142, width: 230 }} resizeMode="stretch" />
+                    <Image source={require('../assets/Comp-1_1_resize.gif')} style={{ height: 142, width: 230 }} resizeMode="stretch" />
                 </View>
                 <Text style={styles.subtext}>
                     a safe space {'\n'}
                     for conscious {'\n'}
-                    conversation</Text>
+                    conversation
+                    {'\n'}{'\n'}{'\n'}{'\n'}{'\n'}(for testing purposes, swipe back to return)</Text>
             </View >
         );
     }

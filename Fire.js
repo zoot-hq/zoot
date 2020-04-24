@@ -386,9 +386,7 @@ class Fire {
     firebase
       .database()
       .ref('chatroomnames')
-      .on('child_removed', (snapshot) =>
-        callback(this.parsePartners(snapshot))
-      );
+      .on('child_removed', (snapshot) => callback(this.parseRooms(snapshot)));
 
   getPMRooms = (callback) => {
     return firebase
@@ -396,12 +394,6 @@ class Fire {
       .ref('PMnames')
       .on('child_added', (snapshot) => callback(this.parsePMs(snapshot)));
   };
-
-  getPartnerNames = (callback) =>
-    firebase
-      .database()
-      .ref('partnernames')
-      .on('child_added', (snapshot) => callback(this.parseRooms(snapshot)));
 
   parsePMs = (snapshot) => {
     const currentUser = this.username();
@@ -616,6 +608,12 @@ class Fire {
       .child('notifToken')
       .set(token);
   };
+
+  getPartnerNames = (callback) =>
+    firebase
+      .database()
+      .ref('partnerNames')
+      .on('value', (snapshot) => callback(this.parsePartners(snapshot)));
 }
 
 Fire.shared = new Fire();

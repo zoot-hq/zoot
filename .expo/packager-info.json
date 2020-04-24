@@ -1,10 +1,9 @@
 {
+  "devToolsPort": 19002,
   "expoServerPort": 19000,
-  "expoServerNgrokUrl": "https://ep-vq2.lisjak.zoot.exp.direct",
-  "packagerNgrokUrl": "https://packager.ep-vq2.lisjak.zoot.exp.direct",
-  "ngrokPid": 67636,
-  "devToolsPort": 19003,
   "packagerPort": 19001,
-  "packagerPid": 67621,
-  "webpackServerPort": null
+  "packagerPid": 69745,
+  "expoServerNgrokUrl": "https://3r-rqp.lisjak.zoot.exp.direct",
+  "packagerNgrokUrl": "https://packager.3r-rqp.lisjak.zoot.exp.direct",
+  "ngrokPid": 69760
 }
