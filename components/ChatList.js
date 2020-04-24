@@ -186,6 +186,14 @@ export default class ChatList extends React.Component {
           </Text>
         </View>
 
+        <View style={styles.testingView}>
+          <Text style={styles.subtitle} > For testing purposes only:</Text>
+
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('Splash')}>
+            <Text style={styles.subtitle}>Splash</Text>
+          </TouchableOpacity>
+        </View>
 
 
         {/* navigation to user profile for development purposes
