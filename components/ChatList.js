@@ -15,7 +15,7 @@ import { MaterialIndicator } from 'react-native-indicators';
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons, AntDesign } from '@expo/vector-icons';
 
 import Navbar from './Navbar';
 
@@ -26,34 +26,55 @@ export default class ChatList extends React.Component {
       chatrooms: [],
       queriedChatrooms: [],
       query: '',
-      partner: this.props.navigation.getParam('partner') || null
+      partner: null
     };
   }
+  // EV: this was component Will Mount - had to change it to "did" because otherwise it can't update state (apparently you can't do that from an unmounted component). This was eventually what worked! It still gave me a warning, but it also worked.
+  async componentDidMount() {
 
-  componentWillMount() {
-    console.log(
-      'what params looks like, ',
-      this.props.navigation.getParam('partner')
-    );
+    // help icon
+    this.helpAlert = () => {
+      Alert.alert(
+        'Help @ Home',
+        'Welcome to après!\n\n This is your home page.\n\n Use the navbar to navigate to your user page, your personal messages, live chat, our partnered boards, and the resources page. \n\n Search our message boards for a topic you\'re interested in. Don\'t see it already? Press the + icon to create it, and start the conversation! ',
+        [{ text: 'Got it!' }]
+      )
+    }
+
+
+    // This updates the partner property in the state successfully
+    const { params } = this.props.navigation.state;
+    console.log({ params });
+    if (params) {
+      const partner = params.partner ? params.partner : null;
+      await this.setState(
+        { partner: partner },
+        console.log('partner in state at line 40, ', this.state.partner)
+      );
+    }
+    // EV: One thing I tried to do is add the partner (from state) to the arguments of Fire.shared.getChatroomNames, then adding it to the function in fire.js (see there, line 379).
     // grab chatrooms = every room has a name and numOnline attribute
     Fire.shared.getChatRoomNames((newRoom) => {
       const queriedChatrooms = this.state.queriedChatrooms;
+      if (newRoom.name) {
+        if (
+          newRoom.name.toLowerCase().includes(this.state.query.toLowerCase())
+        ) {
+          queriedChatrooms.push(newRoom);
+        }
 
-      // add room to querried rooms if query matches
-      if (newRoom.name.toLowerCase().includes(this.state.query.toLowerCase())) {
-        queriedChatrooms.push(newRoom);
+        // update state
+        this.setState({
+          chatrooms: [...this.state.chatrooms, newRoom].sort((a, b) =>
+            a.name > b.name ? 1 : -1
+          ),
+          queriedChatrooms: queriedChatrooms.sort((a, b) =>
+            a.name > b.name ? 1 : -1
+          )
+        });
       }
-
-      // update state
-      this.setState({
-        chatrooms: [...this.state.chatrooms, newRoom].sort((a, b) =>
-          a.name > b.name ? 1 : -1
-        ),
-        queriedChatrooms: queriedChatrooms.sort((a, b) =>
-          a.name > b.name ? 1 : -1
-        )
-      });
-    });
+      // add room to querried rooms if query matches
+    }, this.state.partner);
 
     // update numOnline as it changes in database
     Fire.shared.getUpdatedNumOnline((updatedRoom) => {
@@ -136,6 +157,10 @@ export default class ChatList extends React.Component {
     return new Date(date.getTime() + diff);
   };
 
+  componentWillUnmount() {
+    console.log('unmount firing >>>>>>>');
+  }
+
   communityPopup = (timeToAcceptableFirebaseString) => {
     Alert.alert(
       'Before you enter, here is a reminder of our Community Guidelines',
@@ -194,6 +219,16 @@ export default class ChatList extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
+
+          {/* help button */}
+          <View style={styles.help}>
+            <TouchableOpacity
+              onPress={() => this.helpAlert()}
+            >
+              <AntDesign name="questioncircleo" size={20} color="black" />
+            </TouchableOpacity>
+          </View>
+
           {/* titles */}
           <Text style={styles.title}>après</Text>
           <Text style={styles.subtitle}>
@@ -334,6 +369,15 @@ export default class ChatList extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  help: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    backgroundColor: 'white',
+    marginTop: -30,
+    marginBottom: 20,
+    height: 20,
+  },
   chatroomlist: {
     marginBottom: 30,
     height: 300
@@ -357,12 +401,13 @@ const styles = StyleSheet.create({
     flex: 1
   },
   title: {
-    bottom: 15,
-    fontSize: 60,
+    bottom: 10,
+    fontSize: 120,
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 15,
-    fontFamily: 'CormorantGaramond-Light'
+    fontFamily: 'CormorantGaramond-Light',
+    marginTop: -15,
   },
   subtitle: {
     fontSize: 20,

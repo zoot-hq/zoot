@@ -283,7 +283,7 @@ export default class Bubble extends React.Component {
     const message = this.props.currentMessage;
     const messageName = this.props.currentMessage._id;
     const options = {
-      recipients: ['aprshq@gmail.com'],
+      recipients: ['info@apres.chat'],
       subject: 'Objectionable Content',
       body: `The following message was marked as objectionable:
 
