@@ -26,34 +26,44 @@ export default class ChatList extends React.Component {
       chatrooms: [],
       queriedChatrooms: [],
       query: '',
-      partner: this.props.navigation.getParam('partner') || null
+      partner: null
     };
   }
-
-  componentWillMount() {
-    console.log(
-      'what params looks like, ',
-      this.props.navigation.getParam('partner')
-    );
+  // EV: this was component Will Mount - had to change it to "did" because otherwise it can't update state (apparently you can't do that from an unmounted component). This was eventually what worked! It still gave me a warning, but it also worked.
+  async componentDidMount() {
+    // This updates the partner property in the state successfully
+    const {params} = this.props.navigation.state;
+    console.log({params});
+    if (params) {
+      const partner = params.partner ? params.partner : null;
+      await this.setState(
+        {partner: partner},
+        console.log('partner in state at line 40, ', this.state.partner)
+      );
+    }
+    // EV: One thing I tried to do is add the partner (from state) to the arguments of Fire.shared.getChatroomNames, then adding it to the function in fire.js (see there, line 379).
     // grab chatrooms = every room has a name and numOnline attribute
     Fire.shared.getChatRoomNames((newRoom) => {
       const queriedChatrooms = this.state.queriedChatrooms;
+      if (newRoom.name) {
+        if (
+          newRoom.name.toLowerCase().includes(this.state.query.toLowerCase())
+        ) {
+          queriedChatrooms.push(newRoom);
+        }
 
-      // add room to querried rooms if query matches
-      if (newRoom.name.toLowerCase().includes(this.state.query.toLowerCase())) {
-        queriedChatrooms.push(newRoom);
+        // update state
+        this.setState({
+          chatrooms: [...this.state.chatrooms, newRoom].sort((a, b) =>
+            a.name > b.name ? 1 : -1
+          ),
+          queriedChatrooms: queriedChatrooms.sort((a, b) =>
+            a.name > b.name ? 1 : -1
+          )
+        });
       }
-
-      // update state
-      this.setState({
-        chatrooms: [...this.state.chatrooms, newRoom].sort((a, b) =>
-          a.name > b.name ? 1 : -1
-        ),
-        queriedChatrooms: queriedChatrooms.sort((a, b) =>
-          a.name > b.name ? 1 : -1
-        )
-      });
-    });
+      // add room to querried rooms if query matches
+    }, this.state.partner);
 
     // update numOnline as it changes in database
     Fire.shared.getUpdatedNumOnline((updatedRoom) => {
@@ -135,6 +145,10 @@ export default class ChatList extends React.Component {
     const diff = date.getTime() - invdate.getTime();
     return new Date(date.getTime() + diff);
   };
+
+  componentWillUnmount() {
+    console.log('unmount firing >>>>>>>');
+  }
 
   communityPopup = (timeToAcceptableFirebaseString) => {
     Alert.alert(
