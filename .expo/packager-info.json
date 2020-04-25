@@ -1,9 +1,10 @@
 {
-  "devToolsPort": 19003,
-  "expoServerPort": 19004,
-  "packagerPort": 19005,
-  "packagerPid": 84458,
-  "expoServerNgrokUrl": "https://24-df3.lisjak.zoot.exp.direct",
-  "packagerNgrokUrl": "https://packager.24-df3.lisjak.zoot.exp.direct",
-  "ngrokPid": 84472
+  "expoServerPort": 19000,
+  "expoServerNgrokUrl": "https://3r-rqp.malkam.zoot.exp.direct",
+  "packagerNgrokUrl": "https://packager.3r-rqp.malkam.zoot.exp.direct",
+  "ngrokPid": 712,
+  "devToolsPort": 19002,
+  "packagerPort": 19001,
+  "packagerPid": 700,
+  "webpackServerPort": null
 }

@@ -1,28 +1,17 @@
 import * as React from 'react';
 import {
     StyleSheet,
-    Text,
     View,
     TouchableOpacity,
-    SafeAreaView,
-    ScrollView,
-    KeyboardAvoidingView,
     Alert
 } from 'react-native';
-import { MaterialIndicator } from 'react-native-indicators';
 import {
     AntDesign,
     Ionicons,
-    SimpleLineIcons,
-    Feather,
     MaterialIcons,
     MaterialCommunityIcons
 } from '@expo/vector-icons';
-import { Notifications } from 'expo';
-import * as Permissions from 'expo-permissions';
-import Constants from 'expo-constants';
 import Fire from '../Fire';
-import { Navigator } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
 // import { NavigationContainer } from '@react-navigation/native';
@@ -46,25 +35,98 @@ class Navbar extends React.Component {
     constructor() {
         super();
         this.state = {
-            navbar: true
+            navbar: true,
+            liveChatAvailable: false
         };
     }
 
-    componentWillMount() {
-        this.liveChatAlert = () => {
+    componentDidMount = () => {
+        this.getLiveChatAvailability();
+        setInterval(() => {
+            this.getLiveChatAvailability();
+        }, 600000);
+    }
+
+    communityPopup = (timeToAcceptableFirebaseString) => {
+        Alert.alert(
+            'Before you enter, here is a reminder of our Community Guidelines',
+            `1. Après is intended to be a place of
+        acceptance, empathy and compassion Above
+        all else, try to be kind.
+        2. Think before you type.
+        3. If you see something unacceptable, please flag the comment for review.
+        4. If you experience a user who repeatedly behaves in an unacceptable manner, please flag the user for review.
+        5. If you are struggling in a way that feels overwhelming, please see our resources for access to professional mental healthcare providers, and get help.
+        6. We are open and love your feedback. Please send us your suggestions on how to improve your experience.`,
+            [
+                {
+                    text: 'OK',
+                    onPress: () =>
+                        this.props.navigation.navigate('ChatRoom', {
+                            chatroom: timeToAcceptableFirebaseString,
+                            live: true
+                        })
+                }
+            ]
+        );
+    };
+
+    getLiveChatAvailability = () => {
+
+        // get nyc time
+        const currTime = new Date();
+        const currNyTime = this.changeTimezone(currTime, 'America/New_York');
+
+        // if time is inside set time for live chat, set state to true
+        if (
+            currNyTime.getDay() === 3 &&
+            (currNyTime.getHours() === 21 ||
+                (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30))
+        )
+            this.setState({ liveChatAvailable: true });
+    };
+
+    liveChat = () => {
+        // get nyc time
+        const currTime = new Date();
+        const currNyTime = this.changeTimezone(currTime, 'America/New_York');
+
+        // if time is inside set time for live chat
+        if (
+            (
+                currNyTime.getDay() === 2 &&
+                (currNyTime.getHours() === 21 ||
+                    (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30))
+            )
+        ) {
+            const timeToAcceptableFirebaseString = `live-${currNyTime.getMonth()}-${currNyTime.getDate()}-${currNyTime.getFullYear()}`;
+
+            Fire.shared.createLiveRoomIfDoesNotExist(
+                timeToAcceptableFirebaseString,
+                () => {
+                    this.communityPopup(timeToAcceptableFirebaseString);
+                }
+            );
+        } else {
             Alert.alert(
                 'Live Chat Unavailable',
                 'Sorry we missed you! Live chat is available every Wednesday from 9PM EST until 10:30PM EST. No invitation necessary!',
                 [{ text: 'See you next time!' }]
-            )
+            );
         }
-    }
+    };
 
+    changeTimezone = (date, ianatz) => {
+        const invdate = new Date(
+            date.toLocaleString('en-US', {
+                timeZone: ianatz
+            })
+        );
+        const diff = date.getTime() - invdate.getTime();
+        return new Date(date.getTime() + diff);
+    };
 
     render() {
-
-
-
         return (
             <View>
                 <View style={styles.navbar}>
@@ -87,9 +149,9 @@ class Navbar extends React.Component {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        onPress={() => this.liveChatAlert()}
+                        onPress={this.liveChat}
                     >
-                        <Ionicons name="md-megaphone" size={30} color="black" />
+                        <Ionicons name="md-megaphone" size={30} color={this.state.liveChatAvailable ? "green" : "black"} />
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -119,7 +181,7 @@ class Navbar extends React.Component {
                     <MaterialCommunityIcons
                         name="checkbox-blank-circle"
                         size={10}
-                        color="red"
+                        color="black"
                     />
                     <MaterialCommunityIcons
                         name="checkbox-blank-circle"
