@@ -181,12 +181,12 @@ class Navbar extends React.Component {
                     <MaterialCommunityIcons
                         name="checkbox-blank-circle"
                         size={10}
-                        color="cornflowerblue"
+                        color="deepskyblue"
                     />
                     <MaterialCommunityIcons
                         name="checkbox-blank-circle"
                         size={10}
-                        color={this.state.liveChatAvailable ? 'green' : 'transparent'}
+                        color={this.state.liveChatAvailable ? 'limegreen' : 'transparent'}
                     />
                     <MaterialCommunityIcons
                         name="checkbox-blank-circle"

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Fire from '../Fire';
 import { MaterialIndicator } from 'react-native-indicators';
-import { Ionicons, Feather, AntDesign } from '@expo/vector-icons';
+import { Ionicons, Feather, AntDesign, Entypo } from '@expo/vector-icons';
 
 import NavBar from './Navbar';
 
@@ -106,7 +106,7 @@ export default class PMList extends React.Component {
                           }
                         >
                           <Text style={styles.buttonText}>
-                            # {this.getRoomName(chatroom)}
+                            <Entypo name="new-message" size={30} color="black" /> {this.getRoomName(chatroom)}
                           </Text>
                         </TouchableOpacity>
                       ) : null
@@ -191,7 +191,8 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: '600',
     fontSize: 28,
-    fontFamily: 'Futura-Light'
+    fontFamily: 'Futura-Light',
+    padding: 2,
   },
   searchbar: {
     color: 'black',
