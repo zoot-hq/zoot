@@ -37,7 +37,7 @@ export default class PMList extends React.Component {
     this.helpAlert = () => {
       Alert.alert(
         'Help @ Personal Messages',
-        'Hi! When you start a private message with another user, it will appear here.\n\nTo get started, navigate back to the main page, click on a chatlist, and longpress on a user\'s name. \n\n A new chat will thenopen up between you and that user, and it will also appear on this list. \n\n Happy chatting!'
+        'Ready to chat some more? When you start a private message with another user, it will appear here.\n\nTo get started, navigate back to the home page, click on a message board, and longpress on a user\'s name. \n\n A new chat will then open up between you and that user, and it will also appear on this list. \n\n Happy chatting!',
         [{ text: 'Got it!' }]
       )
     }

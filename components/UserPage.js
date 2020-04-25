@@ -57,7 +57,7 @@ export default class UserPage extends Component {
     this.helpAlert = () => {
       Alert.alert(
         'Help @ User Page',
-        'Hey, {this.state.user.displayName}! This is your very own user page! Update your information here',
+        `Hey, ${this.state.user.displayName}! This is your very own user page! Update your information here`,
         [{ text: 'Got it!' }]
       )
     }

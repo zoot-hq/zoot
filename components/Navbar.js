@@ -181,7 +181,7 @@ class Navbar extends React.Component {
                     <MaterialCommunityIcons
                         name="checkbox-blank-circle"
                         size={10}
-                        color="black"
+                        color="cornflowerblue"
                     />
                     <MaterialCommunityIcons
                         name="checkbox-blank-circle"
