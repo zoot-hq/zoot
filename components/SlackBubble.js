@@ -105,8 +105,7 @@ export default class Bubble extends React.Component {
       }
       return (
         <TouchableOpacity
-          // results in a cycle
-          onPress={() => this.addReply()}
+          onPress={() => this.addReply(this.props.currentMessage)}
         >
           <MessageText
             {...messageTextProps}
@@ -125,12 +124,16 @@ export default class Bubble extends React.Component {
     return null;
   };
 
-  addReply() {
-    let currentIndent = this.state.indent;
-    let newIndent = currentIndent + 10;
-    const addNewReply = this.state.replies.concat(newIndent);
+  addReply(parentMessage) {
+    // let currentIndent = this.state.indent;
+    // let newIndent = currentIndent + 10;
+    const newReplyInfo = {
+      parentId: parentMessage._id,
+      parentRoom: parentMessage.room
+    };
+    const addNewReply = this.state.replies.concat(newReplyInfo);
     this.setState({replies: addNewReply});
-    this.setState({indent: newIndent});
+    // this.setState({indent: newIndent});
     // the props should be specific to this message
     // may have to create whole new component to contain AllReplies, then another component to contain SingleReply
     // pass this message's id to AllReplies

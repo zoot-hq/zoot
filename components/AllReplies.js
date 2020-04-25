@@ -1,47 +1,33 @@
 import React from 'react';
-import SingleReply from './SingleReply';
-import SlackBubble from './SlackBubble';
 import SlackMessage from './SlackMessage';
-import {View, Text} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity} from 'react-native';
 import * as firebase from 'firebase';
 import Fire from '../Fire';
-import {GiftedChat} from 'react-native-gifted-chat';
 
 export default class AllReplies extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      indent: this.props.parentIndent,
+      indent: this.props.parentIndent + 10,
       messages: [],
-      room: this.props.room,
-      pm: this.props.pm,
-      live: this.props.live
+      pm: false,
+      live: this.props.live,
+      text: 'sample text',
+      reply: true,
+      replyComplete: false
     };
   }
-  onSend(messages = []) {
-    Fire.shared.send(messages, this.state.room, this.state.pm, this.state.live);
-  }
-  renderMessage(props) {
-    const {
-      currentMessage: {text: currText}
-    } = props;
-
-    let messageTextStyle;
-    return (
-      <SlackMessage
-        {...props}
-        messageTextStyle={messageTextStyle}
-        currentMessage={{
-          user: {name: firebase.auth().currentUser.displayName},
-          flags: {count: 0},
-          hidden: false,
-          lightbulbs: {count: 0},
-          likes: {count: 0},
-          loves: {count: 0},
-          createdAt: new Date(),
-          text: 'Can I add text with the new message?'
-        }}
-      />
+  async sendReply(replyIdx) {
+    const messages = [
+      {text: this.state.text, user: firebase.auth().currentUser.displayName}
+    ];
+    await Fire.shared.send(
+      messages,
+      this.props.replies[replyIdx].parentRoom,
+      false,
+      false,
+      true,
+      this.props.replies[replyIdx].parentId
     );
   }
   render() {
@@ -51,31 +37,21 @@ export default class AllReplies extends React.Component {
           return (
             <View
               style={{
-                marginLeft: this.props.parentIndent + 10,
+                marginLeft: this.state.indent,
                 borderLeftWidth: 1
               }}
             >
-              {/* <SlackMessage
-                {...this.props}
-                currentMessage={{
-                  user: {name: firebase.auth().currentUser.displayName},
-                  flags: {count: 0},
-                  hidden: false,
-                  lightbulbs: {count: 0},
-                  likes: {count: 0},
-                  loves: {count: 0},
-                  createdAt: new Date(),
-                  text: 'Can I add text with the new message?'
-                }}
-              /> */}
-              <GiftedChat
-                messages={this.state.messages}
-                onSend={(messages) => this.onSend(messages)}
-                renderMessage={this.renderMessage}
-                user={{
-                  _id: Fire.shared.uid()
-                }}
-              />
+              {this.state.replyComplete ? (
+                <SlackMessage {...this.props} />
+              ) : (
+                <TextInput
+                  placeholder="type your reply"
+                  onChangeText={(text) => this.setState({text})}
+                />
+              )}
+              <TouchableOpacity onPress={() => this.sendReply(idx)}>
+                <Text>Submit</Text>
+              </TouchableOpacity>
             </View>
           );
         })}
