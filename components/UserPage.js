@@ -461,6 +461,7 @@ const styles = StyleSheet.create({
     marginTop: -30,
     marginBottom: 20,
     height: 20,
+    zIndex: 999,
   },
   innerView: {
     marginTop: 50,

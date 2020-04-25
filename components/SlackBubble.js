@@ -329,23 +329,23 @@ export default class Bubble extends React.Component {
             style={{ marginRight: 20 }}
             onLongPress={() => this.react('likes')}
           >
-            <Foundation name="like" color="grey" size={20}>
-              <Text> {this.state.likes.count || null}</Text>
+            <Foundation name="like" color="lightgrey" size={15}>
+              <Text style={styles.count}> {this.state.likes.count || null}</Text>
             </Foundation>
           </TouchableOpacity>
           <TouchableOpacity
             style={{ marginRight: 20 }}
             onLongPress={() => this.react('loves')}
           >
-            <Foundation name="heart" color="grey" size={20}>
-              <Text> {this.state.loves.count || null}</Text>
+            <Foundation name="heart" color="lightgrey" size={15}>
+              <Text style={styles.count}> {this.state.loves.count || null}</Text>
             </Foundation>
           </TouchableOpacity>
           {/* <TouchableOpacity
             style={{marginRight: 20}}
             onLongPress={() => this.react('addFriend')}
           >
-            <Foundation name="person_add" color="grey" size={20}>
+            <Foundation name="person_add" color="lightgrey" size={20}>
               <Text> Add friend </Text>
             </Foundation>
           </TouchableOpacity> */}
@@ -353,16 +353,16 @@ export default class Bubble extends React.Component {
             style={{ marginRight: 20 }}
             onLongPress={() => this.react('lightbulbs')}
           >
-            <Foundation name="lightbulb" color="grey" size={20}>
-              <Text> {this.state.lightbulbs.count || null}</Text>
+            <Foundation name="lightbulb" color="lightgrey" size={15}>
+              <Text style={styles.count}>  {this.state.lightbulbs.count || null}</Text>
             </Foundation>
           </TouchableOpacity>
           <TouchableOpacity
             style={{ marginRight: 20 }}
             onLongPress={() => this.flag()}
           >
-            <Foundation name="flag" color="grey" size={20}>
-              <Text> {this.state.flags.count || null}</Text>
+            <Foundation name="flag" color="lightgrey" size={15}>
+              <Text style={styles.count}>  {this.state.flags.count || null}</Text>
             </Foundation>
           </TouchableOpacity>
         </View>
@@ -375,8 +375,8 @@ export default class Bubble extends React.Component {
     if (this.state.react && messageUsername != currUser) {
       return (
         <TouchableOpacity onPress={this.blockPopup}>
-          <MaterialIcons name="block" size={15}></MaterialIcons>
-        </TouchableOpacity>
+          <MaterialIcons name="block" size={15} color={"lightgrey"}></MaterialIcons>
+        </TouchableOpacity >
       );
     }
   }
@@ -414,7 +414,7 @@ export default class Bubble extends React.Component {
       <View style={styles.headerView}>
         {this.renderUsername()}
         {this.renderTime()}
-        {this.renderBlock()}
+        {/* {this.renderBlock()} */}
         {/* {this.renderTicks()} */}
       </View>
     );
@@ -446,6 +446,11 @@ export default class Bubble extends React.Component {
 // Note: Everything is forced to be "left" positioned with this component.
 // The "right" position is only used in the default Bubble.
 const styles = StyleSheet.create({
+  count: {
+    fontSize: 12,
+    fontFamily: 'Futura-Light',
+    paddingBottom: 2,
+  },
   standardFont: {
     fontSize: 15
   },
@@ -466,7 +471,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   username: {
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+    fontWeight: '300',
     fontFamily: 'CormorantGaramond-Light'
   },
   time: {

@@ -237,11 +237,10 @@ export default class ChatList extends React.Component {
         </View>
 
         <View style={styles.testingView}>
-          <Text style={styles.subtitle} > For testing purposes only:</Text>
 
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate('SplashContent')}>
-            <Text style={styles.subtitle}>Splash</Text>
+            <Text style={styles.subtitle}>Splash Test</Text>
           </TouchableOpacity>
         </View>
 
@@ -377,6 +376,7 @@ const styles = StyleSheet.create({
     marginTop: -30,
     marginBottom: 20,
     height: 20,
+    zIndex: 999,
   },
   chatroomlist: {
     marginBottom: 30,
@@ -448,6 +448,7 @@ const styles = StyleSheet.create({
     borderColor: 'red',
     borderStyle: 'dashed',
     borderWidth: 1,
-    margin: 10
+    marginTop: 40,
+    margin: 20,
   }
 });
