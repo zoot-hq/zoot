@@ -148,7 +148,6 @@ class Fire {
 
   // send the message to the Backend
   send = (messages, room, pm, live, reply, parentId) => {
-    console.log('args from send:', messages, room, pm, live, reply, parentId);
     for (let i = 0; i < messages.length; i++) {
       const {text, user} = messages[i];
       const message = {
@@ -173,7 +172,8 @@ class Fire {
           users: {X: true}
         },
         hidden: false,
-        react: true
+        react: true,
+        replies: []
       };
 
       // push message to database
