@@ -41,14 +41,19 @@ export default class AllReplies extends React.Component {
                 borderLeftWidth: 1
               }}
             >
-              {this.state.replyComplete ? (
-                <SlackMessage {...this.props} />
+              <SlackMessage
+                {...this.props}
+                key={reply.id}
+                // currentMessage={reply}
+              />
+              {/* {this.state.replyComplete ? (
+
               ) : (
                 <TextInput
                   placeholder="type your reply"
                   onChangeText={(text) => this.setState({text})}
                 />
-              )}
+              )} */}
               <TouchableOpacity onPress={() => this.sendReply(idx)}>
                 <Text>Submit</Text>
               </TouchableOpacity>

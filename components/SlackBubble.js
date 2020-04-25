@@ -14,6 +14,7 @@ import {MessageText, Time, utils} from 'react-native-gifted-chat';
 import {Foundation, MaterialIcons} from '@expo/vector-icons';
 import * as MailComposer from 'expo-mail-composer';
 import AllReplies from './AllReplies';
+import * as firebase from 'firebase';
 
 import Fire from '../Fire';
 
@@ -123,8 +124,36 @@ export default class Bubble extends React.Component {
     }
     return null;
   };
+  async getReplies(parent) {
+    const ref = await firebase
+      .database()
+      .ref('chatrooms')
+      .child(parent.room)
+      .child(parent._id);
+    if (ref.child('replies')) {
+      let replies = await ref
+        .child('replies')
+        .once('value')
+        .then(function (snapshot) {
+          return snapshot;
+        });
+      // console.log('replies from getReplies:', Object.keys(replies));
+      let keyArr = [];
+      for (let key in replies) {
+        keyArr.push(key);
+      }
+      let repliesObj = replies.val();
+      let repliesArr = [];
+      for (let reply in repliesObj) {
+        repliesObj[reply].id = reply;
+        repliesArr.push(repliesObj[reply]);
+      }
+      return repliesArr;
+    }
+  }
 
-  addReply(parentMessage) {
+  async addReply(parentMessage) {
+    console.log('this.state.replies:', this.state.replies);
     // let currentIndent = this.state.indent;
     // let newIndent = currentIndent + 10;
     const newReplyInfo = {
@@ -133,12 +162,8 @@ export default class Bubble extends React.Component {
     };
     const addNewReply = this.state.replies.concat(newReplyInfo);
     this.setState({replies: addNewReply});
-    // this.setState({indent: newIndent});
-    // the props should be specific to this message
-    // may have to create whole new component to contain AllReplies, then another component to contain SingleReply
-    // pass this message's id to AllReplies
-    // AllReplies' state has an array with each individual reply
-    // when a user clicks this message, a nested component renders in the space below, with a margin of thisMargin + 10.
+    const replies = await this.getReplies(parentMessage);
+    this.setState({replies: replies});
   }
   renderMessageImage = () => {
     if (this.props.currentMessage.base64) {
