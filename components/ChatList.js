@@ -16,7 +16,7 @@ import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import { Ionicons, MaterialIcons, AntDesign } from '@expo/vector-icons';
-
+import {componentDidMount as loadNavbar} from './Navbar'
 import Navbar from './Navbar';
 
 export default class ChatList extends React.Component {
@@ -41,7 +41,6 @@ export default class ChatList extends React.Component {
       )
     }
 
-
     // This updates the partner property in the state successfully
     const { params } = this.props.navigation.state;
     console.log({ params });
@@ -52,6 +51,7 @@ export default class ChatList extends React.Component {
         console.log('partner in state at line 40, ', this.state.partner)
       );
     }
+
     // EV: One thing I tried to do is add the partner (from state) to the arguments of Fire.shared.getChatroomNames, then adding it to the function in fire.js (see there, line 379).
     // grab chatrooms = every room has a name and numOnline attribute
     Fire.shared.getChatRoomNames((newRoom) => {
