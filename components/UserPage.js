@@ -135,7 +135,7 @@ export default class UserPage extends Component {
       });
   }
   goHome() {
-    this.props.navigation.navigate('Home');
+    this.props.navigation.replace('Home');
   }
   async componentWillUnmount() {
     if (this.state.deleteUser) {
