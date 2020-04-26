@@ -114,11 +114,16 @@ export default class ChatList extends React.Component {
 
       // push token to firebase
       Fire.shared.sendNotificationToken(token);
+
+      // ask for cloud messaging notifications permissions
+      await messaging().requestPermission();
+
     } catch (error) {}
   };
 
-  componentWillUnmount() {
+  componentWillUnmount = () => {
     console.log('unmount firing >>>>>>>');
+    this.props.navigation.navigate('Home')
   }
 
   render() {

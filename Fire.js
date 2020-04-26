@@ -188,7 +188,7 @@ class Fire {
       refToMessage.child('lightbulbs').child('users').set({X: true});
       refToMessage.child('flags').child('users').set({X: true});
 
-      // if PM, send push notification
+      // if PM, send push notification and update unread messages
       if (pm) {
         // get other users name
         const names = room.split('-');
@@ -228,10 +228,36 @@ class Fire {
                 }
               );
             });
+
+            firebase
+              .database()
+              .ref('PMnames')
+              .child(room)
+              .child('unreadMessages')
+              .child(otherUsername)
+              .once('value')
+              .then((snapshot) => {
+                firebase
+                .database()
+                .ref('PMnames')
+                .child(room)
+                .child('unreadMessages')
+                .child(otherUsername)
+                .set(snapshot.val() + 1)
+            });
         } catch (error) {}
       }
     }
   };
+
+  clearUnreads = (room) => {
+    firebase
+      .database()
+      .ref('PMnames')
+      .child(room)
+      .child('unreadMessages')
+      .set({[this.username()] : 0})
+  }
 
   enterRoom(room, pm, live) {
     // prepare initial message
@@ -305,6 +331,9 @@ class Fire {
             .child('numOnline')
             .set(snapshot.val() - 1);
         });
+
+    // if pm, clear off all unread messages
+    if (pm) this.clearUnreads(room)
   }
 
   // close the connection to the Backend
@@ -508,6 +537,22 @@ class Fire {
                   .ref('PMrooms')
                   .child(room)
                   .push(initMessage);
+
+                // add unread messages object
+                const names = room.split('-')
+                firebase
+                  .database()
+                  .ref('PMnames')
+                  .child(room)
+                  .child('unreadMessages')
+                  .set({[names[0]] : 0})
+
+                firebase
+                  .database()
+                  .ref('PMnames')
+                  .child(room)
+                  .child('unreadMessages')
+                  .set({[names[1]] : 0})
 
                 callback('user not blocked');
               }

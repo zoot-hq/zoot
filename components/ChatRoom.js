@@ -1,11 +1,12 @@
 import React from 'react';
-import {View, Text, StyleSheet, AppState, Alert} from 'react-native';
+import {View, Text, StyleSheet, AppState, Alert, TouchableOpacity} from 'react-native';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {MaterialIndicator} from 'react-native-indicators';
 import SlackMessage from './SlackMessage';
 import Fire from '../Fire';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
+import {AntDesign} from '@expo/vector-icons'
 
 export default class ChatRoom extends React.Component {
   constructor(props) {
@@ -164,19 +165,18 @@ export default class ChatRoom extends React.Component {
     }
   };
 
-  // renderChatFooter = () => {
-  //   return (
-  //     <TouchableOpacity style={styles.chatFooter} onPress={() => this.uploadImage()}>
-  //       <MaterialIcons name='photo' color='grey' size={30}></MaterialIcons>
-  //     </TouchableOpacity>
-  //   )
-  // }
-
   render() {
     return (
       <View style={styles.container}>
         <View style={{flex: 1, marginBottom: 40}}>
-          <Text style={styles.title}># {this.state.room}</Text>
+          <View style={styles.title}>
+            <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('ChatList')}
+              >
+              <AntDesign name="back" size={30} color="black" />
+            </TouchableOpacity>
+            <Text style={styles.title}># {this.state.room}</Text>
+          </View>
           <Text style={styles.tips}>
             Welcome to #{this.state.room}. React to posts by longpressing icons
             beneath messages. Press the flag icon to flag abusive messages, and

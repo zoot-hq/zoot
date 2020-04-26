@@ -72,12 +72,13 @@ export default class PMList extends React.Component {
                           <TouchableOpacity
                             key={chatroom}
                             style={styles.buttonContainer}
-                            onPress={() =>
+                            onPress={() => {
+                              Fire.shared.clearUnreads(chatroom)
                               this.props.navigation.navigate('ChatRoom', {
                                 chatroom,
                                 PM: true
                               })
-                            }
+                            }}
                           >
                             <Text style={styles.buttonText}>
                               # {this.getRoomName(chatroom)}
