@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  StyleSheet
 } from 'react-native';
 import Fire from '../Fire';
 import {MaterialIndicator} from 'react-native-indicators';
