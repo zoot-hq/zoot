@@ -24,15 +24,14 @@ export default class PMList extends React.Component {
   componentWillMount() {
     //grab chatrooms
     Fire.shared.getPMRooms((room) => {
-      this.setState({
-        chatrooms: [...this.state.chatrooms, room],
-        grabbed: true
-      });
+      if (room) {
+        console.log(room)
+        this.setState({
+          chatrooms: [...this.state.chatrooms, room],
+          grabbed: true
+        });
+      }
     });
-  }
-
-  componentWillUnmount() {
-    Fire.shared.off();
   }
 
   getRoomName(name) {
@@ -43,6 +42,10 @@ export default class PMList extends React.Component {
     } else if (names[1] === currentUser) {
       return names[0];
     }
+  }
+
+  componentWillUnmount() {
+    Fire.shared.off();
   }
 
   render() {
@@ -66,27 +69,23 @@ export default class PMList extends React.Component {
             <KeyboardAvoidingView behavior="padding">
               <SafeAreaView>
                 <ScrollView contentContainerStyle={{flexGrow: 1}}>
-                  {this.state.chatrooms.length
-                    ? this.state.chatrooms.map((chatroom) =>
-                        !!chatroom ? (
-                          <TouchableOpacity
-                            key={chatroom}
-                            style={styles.buttonContainer}
-                            onPress={() => {
-                              Fire.shared.clearUnreads(chatroom)
-                              this.props.navigation.navigate('ChatRoom', {
-                                chatroom,
-                                PM: true
-                              })
-                            }}
-                          >
-                            <Text style={styles.buttonText}>
-                              # {this.getRoomName(chatroom)}
-                            </Text>
-                          </TouchableOpacity>
-                        ) : null
-                      )
-                    : null}
+                  {this.state.chatrooms.map((chatroom) =>
+                    <TouchableOpacity
+                      key={chatroom}
+                      style={styles.buttonContainer}
+                      onPress={() => {
+                        Fire.shared.clearUnreads(chatroom)
+                        this.props.navigation.navigate('ChatRoom', {
+                          chatroom,
+                          PM: true
+                        })
+                      }}
+                    >
+                      <Text style={styles.buttonText}>
+                        # {this.getRoomName(chatroom)}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                 </ScrollView>
               </SafeAreaView>
             </KeyboardAvoidingView>

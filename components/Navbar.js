@@ -36,15 +36,24 @@ class Navbar extends React.Component {
     super();
     this.state = {
       navbar: true,
-      liveChatAvailable: false
+      liveChatAvailable: false,
+      numUnreadMessages: 0,
     };
   }
 
   componentDidMount = () => {
     this.getLiveChatAvailability();
+    this.getNumUnreadMessages()
     setInterval(() => {
       this.getLiveChatAvailability();
+      this.getNumUnreadMessages()
     }, 600000);
+  }
+
+  getNumUnreadMessages = () => {
+    Fire.shared.getNumUnreadMessages((num) => {
+      this.setState({numUnreadMessages : +num})
+    })
   }
 
   communityPopup = (timeToAcceptableFirebaseString) => {
@@ -181,7 +190,7 @@ class Navbar extends React.Component {
           <MaterialCommunityIcons
             name="checkbox-blank-circle"
             size={10}
-            color="black"
+            color={this.state.numUnreadMessages ? 'green' : 'transparent'}
           />
           <MaterialCommunityIcons
             name="checkbox-blank-circle"

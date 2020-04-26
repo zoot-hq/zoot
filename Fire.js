@@ -649,6 +649,47 @@ class Fire {
       .on('child_changed', (snapshot) => callback(snapshot.val()));
   };
 
+  // // this function sets up a connection with the database to send back updates on changes new pm messages
+  // getUpdatedNumUnreadMessages = (callback) => {
+  //   firebase
+  //     .database()
+  //     .ref('PMnames')
+  //     .on('child_changed', (snapshot) => {
+
+  //       // check to see if the updated new messages is for the current user
+  //       const {name, unreadMessages} = snapshot.val()
+  //       const names = name.split('-')
+  //       if (names[0] === this.username() || names[1] === this.username()) {
+
+  //         // return chatroom name with bool value true for unread maeeages, false for no unread messages
+  //         callback(name, unreadMessages.this.username() > 0 ? true : false)
+  //       }
+  //     })
+  //     };
+  // };
+
+
+  // get the number of unread messages on app open
+  getNumUnreadMessages = (callback) => {
+    let numUnread = 0
+    firebase
+      .database()
+      .ref('PMnames')
+      .on('child_added', (snapshot) => {
+
+        // check to see if the updated new messages is for the current user
+        const {name, unreadMessages} = snapshot.val()
+        const names = name.split('-')
+        if (names[0] === this.username() || names[1] === this.username()) {
+          if (unreadMessages) {
+            const newNum = Object.values(unreadMessages)[0]
+            numUnread += newNum
+          }
+        }
+      })
+    callback(numUnread)
+  };
+
   getUpdatedPartnerNumOnline = (callback) => {
     firebase
       .database()
