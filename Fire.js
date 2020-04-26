@@ -684,10 +684,10 @@ class Fire {
           if (unreadMessages) {
             const newNum = Object.values(unreadMessages)[0]
             numUnread += newNum
+            callback(numUnread)
           }
         }
       })
-    callback(numUnread)
   };
 
   getUpdatedPartnerNumOnline = (callback) => {

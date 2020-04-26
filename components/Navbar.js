@@ -42,12 +42,13 @@ class Navbar extends React.Component {
   }
 
   componentDidMount = () => {
-    this.getLiveChatAvailability();
-    this.getNumUnreadMessages()
+      this.getLiveChatAvailability();
+      this.getNumUnreadMessages()
+
     setInterval(() => {
       this.getLiveChatAvailability();
       this.getNumUnreadMessages()
-    }, 600000);
+    }, 15000);
   }
 
   getNumUnreadMessages = () => {
