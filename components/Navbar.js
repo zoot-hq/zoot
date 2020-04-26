@@ -160,7 +160,7 @@ class Navbar extends React.Component {
           <TouchableOpacity
             onPress={this.liveChat}
           >
-            <Ionicons name="md-megaphone" size={30} color={this.state.liveChatAvailable ? "green" : "black"} />
+            <Ionicons name="md-megaphone" size={30} color="black" />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -190,7 +190,7 @@ class Navbar extends React.Component {
           <MaterialCommunityIcons
             name="checkbox-blank-circle"
             size={10}
-            color={this.state.numUnreadMessages ? 'green' : 'transparent'}
+            color={this.state.numUnreadMessages ? 'blue' : 'transparent'}
           />
           <MaterialCommunityIcons
             name="checkbox-blank-circle"
