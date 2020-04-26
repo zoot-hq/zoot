@@ -125,16 +125,10 @@ export default class ChatList extends React.Component {
 
       // push token to firebase
       Fire.shared.sendNotificationToken(token);
-<<<<<<< HEAD
-=======
-    } catch (error) { }
-  };
->>>>>>> origin/master
 
       // ask for cloud messaging notifications permissions
       await messaging().requestPermission();
 
-<<<<<<< HEAD
     } catch (error) {}
   };
 
@@ -143,8 +137,6 @@ export default class ChatList extends React.Component {
     this.props.navigation.navigate('Home')
   }
 
-=======
->>>>>>> origin/master
   render() {
     return (
       <View style={styles.container}>
@@ -165,8 +157,6 @@ export default class ChatList extends React.Component {
             Welcome.{'\n'}What type support are you here for?
           </Text>
         </View>
-<<<<<<< HEAD
-=======
 
         <View style={styles.testingView}>
 
@@ -176,7 +166,6 @@ export default class ChatList extends React.Component {
           </TouchableOpacity>
         </View>
 
->>>>>>> origin/master
 
         {/* navigation to user profile for development purposes
         < */}

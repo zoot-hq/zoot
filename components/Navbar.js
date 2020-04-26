@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {
-<<<<<<< HEAD
   StyleSheet,
   View,
   TouchableOpacity,
@@ -14,21 +13,6 @@ import {
 } from '@expo/vector-icons';
 import Fire from '../Fire';
 import {withNavigation} from 'react-navigation';
-=======
-    StyleSheet,
-    View,
-    TouchableOpacity,
-    Alert
-} from 'react-native';
-import {
-    AntDesign,
-    Ionicons,
-    MaterialIcons,
-    MaterialCommunityIcons
-} from '@expo/vector-icons';
-import Fire from '../Fire';
-import { withNavigation } from 'react-navigation';
->>>>>>> origin/master
 
 // import { NavigationContainer } from '@react-navigation/native';
 // import { createStackNavigator } from '@react-navigation/stack';
@@ -48,7 +32,6 @@ import { withNavigation } from 'react-navigation';
 // }
 
 class Navbar extends React.Component {
-<<<<<<< HEAD
   constructor() {
     super();
     this.state = {
@@ -77,27 +60,6 @@ class Navbar extends React.Component {
     Alert.alert(
       'Before you enter, here is a reminder of our Community Guidelines',
       `1. Après is intended to be a place of
-=======
-    constructor() {
-        super();
-        this.state = {
-            navbar: true,
-            liveChatAvailable: false
-        };
-    }
-
-    componentDidMount = () => {
-        this.getLiveChatAvailability();
-        setInterval(() => {
-            this.getLiveChatAvailability();
-        }, 600000);
-    }
-
-    communityPopup = (timeToAcceptableFirebaseString) => {
-        Alert.alert(
-            'Before you enter, here is a reminder of our Community Guidelines',
-            `1. Après is intended to be a place of
->>>>>>> origin/master
         acceptance, empathy and compassion Above
         all else, try to be kind.
         2. Think before you type.
@@ -160,15 +122,6 @@ class Navbar extends React.Component {
                 'Sorry we missed you! Live chat is available every Wednesday from 9PM EST until 10:30PM EST. No invitation necessary!',
                 [{ text: 'See you next time!' }]
             );
-        }
-<<<<<<< HEAD
-      );
-    } else {
-      Alert.alert(
-        'Live Chat Unavailable',
-        'Sorry we missed you! Live chat is available every Wednesday from 9PM EST until 10:30PM EST. No invitation necessary!',
-        [{text: 'See you next time!'}]
-      );
     }
   };
 
@@ -258,96 +211,6 @@ class Navbar extends React.Component {
       </View>
     );
   }
-=======
-    };
-
-    changeTimezone = (date, ianatz) => {
-        const invdate = new Date(
-            date.toLocaleString('en-US', {
-                timeZone: ianatz
-            })
-        );
-        const diff = date.getTime() - invdate.getTime();
-        return new Date(date.getTime() + diff);
-    };
-
-    render() {
-        return (
-            <View>
-                <View style={styles.navbar}>
-                    <TouchableOpacity
-                        onPress={() => this.props.navigation.navigate('ChatList')}
-                    >
-                        <AntDesign name="home" size={30} color="black" />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={() => this.props.navigation.navigate('UserPage')}
-                    >
-                        <AntDesign name="user" size={30} color="black"></AntDesign>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={() => this.props.navigation.navigate('PMList')}
-                    >
-                        <AntDesign name="message1" size={30} color="black" />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={this.liveChat}
-                    >
-                        <Ionicons name="md-megaphone" size={30} color={this.state.liveChatAvailable ? "green" : "black"} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={() => this.props.navigation.navigate('PartnerList')}
-                    >
-                        <MaterialIcons name="account-balance" size={30} color="black" />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={() => this.props.navigation.navigate('Resources')}
-                    >
-                        <AntDesign name="book" size={30} color="black" />
-                    </TouchableOpacity>
-                </View>
-
-                <View style={styles.notifications}>
-                    <MaterialCommunityIcons
-                        name="checkbox-blank-circle"
-                        size={10}
-                        color="transparent"
-                    />
-                    <MaterialCommunityIcons
-                        name="checkbox-blank-circle"
-                        size={10}
-                        color="transparent"
-                    />
-                    <MaterialCommunityIcons
-                        name="checkbox-blank-circle"
-                        size={10}
-                        color="deepskyblue"
-                    />
-                    <MaterialCommunityIcons
-                        name="checkbox-blank-circle"
-                        size={10}
-                        color={this.state.liveChatAvailable ? 'limegreen' : 'transparent'}
-                    />
-                    <MaterialCommunityIcons
-                        name="checkbox-blank-circle"
-                        size={10}
-                        color="transparent"
-                    />
-                    <MaterialCommunityIcons
-                        name="checkbox-blank-circle"
-                        size={10}
-                        color="transparent"
-                    />
-                </View>
-            </View>
-        );
-    }
->>>>>>> origin/master
 }
 
 const styles = StyleSheet.create({
