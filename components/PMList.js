@@ -27,10 +27,12 @@ export default class PMList extends React.Component {
   componentWillMount() {
     //grab chatrooms
     Fire.shared.getPMRooms((room) => {
-      this.setState({
-        chatrooms: [...this.state.chatrooms, room],
-        grabbed: true
-      });
+      if (room) {
+        this.setState({
+          chatrooms: [...this.state.chatrooms, room],
+          grabbed: true
+        });
+      }
     });
 
     // help icon
@@ -94,7 +96,6 @@ export default class PMList extends React.Component {
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                   {this.state.chatrooms.length
                     ? this.state.chatrooms.map((chatroom) =>
-                      !!chatroom ? (
                         <TouchableOpacity
                           key={chatroom}
                           style={styles.buttonContainer}
@@ -109,16 +110,12 @@ export default class PMList extends React.Component {
                             <Entypo name="new-message" size={30} color="black" /> {this.getRoomName(chatroom)}
                           </Text>
                         </TouchableOpacity>
-                      ) : null
-                    )
-                    : null}
+                    ) : null}
                 </ScrollView>
               </SafeAreaView>
             </KeyboardAvoidingView>
           </ScrollView>
         </View>
-        {/* </View> */}
-
         <NavBar />
       </View>
     );
