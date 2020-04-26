@@ -8,6 +8,11 @@ import {
 } from 'react-native';
 import * as Font from 'expo-font';
 import Fire from '../Fire';
+<<<<<<< HEAD
+=======
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
+>>>>>>> origin/master
 
 export default class HomeScreen extends React.Component {
   constructor() {
@@ -36,7 +41,7 @@ export default class HomeScreen extends React.Component {
     }
 
     // else navigate to regular login
-    else this.setState({readyToLoad: true});
+    else this.setState({ readyToLoad: true });
   }
   render() {
     if (!this.state.readyToLoad) {

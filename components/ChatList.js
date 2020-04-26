@@ -9,13 +9,13 @@ import {
   KeyboardAvoidingView,
   Alert
 } from 'react-native';
-import {Searchbar} from 'react-native-paper';
+import { Searchbar } from 'react-native-paper';
 import Fire from '../Fire';
-import {MaterialIndicator} from 'react-native-indicators';
-import {Notifications} from 'expo';
+import { MaterialIndicator } from 'react-native-indicators';
+import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
-import {Ionicons, MaterialIcons} from '@expo/vector-icons';
+import { Ionicons, MaterialIcons, AntDesign } from '@expo/vector-icons';
 
 import Navbar from './Navbar';
 
@@ -31,13 +31,24 @@ export default class ChatList extends React.Component {
   }
   // EV: this was component Will Mount - had to change it to "did" because otherwise it can't update state (apparently you can't do that from an unmounted component). This was eventually what worked! It still gave me a warning, but it also worked.
   async componentDidMount() {
+
+    // help icon
+    this.helpAlert = () => {
+      Alert.alert(
+        'Help @ Home',
+        'Welcome to après!\n\n This is your home page.\n\n Use the navbar to navigate to your user page, your personal messages, live chat, our partnered boards, and the resources page. \n\n Search our message boards for a topic you\'re interested in. Don\'t see it already? Press the + icon to create it, and start the conversation! ',
+        [{ text: 'Got it!' }]
+      )
+    }
+
+
     // This updates the partner property in the state successfully
-    const {params} = this.props.navigation.state;
-    console.log({params});
+    const { params } = this.props.navigation.state;
+    console.log({ params });
     if (params) {
       const partner = params.partner ? params.partner : null;
       await this.setState(
-        {partner: partner},
+        { partner: partner },
         console.log('partner in state at line 40, ', this.state.partner)
       );
     }
@@ -89,7 +100,7 @@ export default class ChatList extends React.Component {
     // set what the app does when a user clicks on notification
     this._notificationSubscription = Notifications.addListener(
       (notification) => {
-        const {pm, room} = notification.data;
+        const { pm, room } = notification.data;
 
         // if notification is due to pm
         if (pm) {
@@ -114,10 +125,16 @@ export default class ChatList extends React.Component {
 
       // push token to firebase
       Fire.shared.sendNotificationToken(token);
+<<<<<<< HEAD
+=======
+    } catch (error) { }
+  };
+>>>>>>> origin/master
 
       // ask for cloud messaging notifications permissions
       await messaging().requestPermission();
 
+<<<<<<< HEAD
     } catch (error) {}
   };
 
@@ -126,16 +143,40 @@ export default class ChatList extends React.Component {
     this.props.navigation.navigate('Home')
   }
 
+=======
+>>>>>>> origin/master
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
+
+          {/* help button */}
+          <View style={styles.help}>
+            <TouchableOpacity
+              onPress={() => this.helpAlert()}
+            >
+              <AntDesign name="questioncircleo" size={20} color="black" />
+            </TouchableOpacity>
+          </View>
+
           {/* titles */}
           <Text style={styles.title}>après</Text>
           <Text style={styles.subtitle}>
             Welcome.{'\n'}What type support are you here for?
           </Text>
         </View>
+<<<<<<< HEAD
+=======
+
+        <View style={styles.testingView}>
+
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('SplashContent')}>
+            <Text style={styles.subtitle}>Splash Test</Text>
+          </TouchableOpacity>
+        </View>
+
+>>>>>>> origin/master
 
         {/* navigation to user profile for development purposes
         < */}
@@ -182,7 +223,7 @@ export default class ChatList extends React.Component {
         {/* search bar - queries all chatrooms to the users query */}
         <View style={styles.searchView}>
           <Searchbar
-            theme={{colors: {primary: 'black'}}}
+            theme={{ colors: { primary: 'black' } }}
             placeholder="Search our message boards"
             onChangeText={(query) => {
               const queriedChatrooms = this.state.chatrooms.filter(
@@ -192,16 +233,16 @@ export default class ChatList extends React.Component {
                     .includes(query.toLowerCase());
                 }
               );
-              this.setState({queriedChatrooms, query});
+              this.setState({ queriedChatrooms, query });
               if (!query.length) {
-                this.setState({queriedChatrooms: this.state.chatrooms});
+                this.setState({ queriedChatrooms: this.state.chatrooms });
               }
             }}
           />
           {/* chatroom list */}
           <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding">
             <SafeAreaView>
-              <ScrollView contentContainerStyle={{flexGrow: 1}}>
+              <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 {/* if a query made, queried chatrooms displayed*/}
                 {this.state.queriedChatrooms.length ? (
                   this.state.queriedChatrooms.map((chatroom) => (
@@ -224,30 +265,30 @@ export default class ChatList extends React.Component {
                     </TouchableOpacity>
                   ))
                 ) : // else allow user to create a new chatroom
-                this.state.chatrooms.length ? (
-                  <View>
-                    <Text>
-                      No results. Would you like to create this chatroom?
+                  this.state.chatrooms.length ? (
+                    <View>
+                      <Text>
+                        No results. Would you like to create this chatroom?
                     </Text>
-                    <TouchableOpacity
-                      key={this.state.query}
-                      style={styles.buttonContainer}
-                      onPress={() => {
-                        Fire.shared.createChatRoom(this.state.query);
-                        this.props.navigation.navigate('ChatRoom', {
-                          chatroom: this.state.query
-                        });
-                      }}
-                    >
-                      <Text style={styles.buttonText}>
-                        + {this.state.query}{' '}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                ) : (
-                  // return loading while grabbing data from database
-                  <MaterialIndicator color="black" />
-                )}
+                      <TouchableOpacity
+                        key={this.state.query}
+                        style={styles.buttonContainer}
+                        onPress={() => {
+                          Fire.shared.createChatRoom(this.state.query);
+                          this.props.navigation.navigate('ChatRoom', {
+                            chatroom: this.state.query
+                          });
+                        }}
+                      >
+                        <Text style={styles.buttonText}>
+                          + {this.state.query}{' '}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                      // return loading while grabbing data from database
+                      <MaterialIndicator color="black" />
+                    )}
               </ScrollView>
             </SafeAreaView>
           </KeyboardAvoidingView>
@@ -260,6 +301,16 @@ export default class ChatList extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  help: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    backgroundColor: 'white',
+    marginTop: -30,
+    marginBottom: 20,
+    height: 20,
+    zIndex: 999,
+  },
   chatroomlist: {
     marginBottom: 30,
     height: 300
@@ -283,12 +334,13 @@ const styles = StyleSheet.create({
     flex: 1
   },
   title: {
-    bottom: 15,
-    fontSize: 60,
+    bottom: 10,
+    fontSize: 120,
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 15,
-    fontFamily: 'CormorantGaramond-Light'
+    fontFamily: 'CormorantGaramond-Light',
+    marginTop: -15,
   },
   subtitle: {
     fontSize: 20,
@@ -329,6 +381,7 @@ const styles = StyleSheet.create({
     borderColor: 'red',
     borderStyle: 'dashed',
     borderWidth: 1,
-    margin: 10
+    marginTop: 40,
+    margin: 20,
   }
 });

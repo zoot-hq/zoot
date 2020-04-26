@@ -1,9 +1,18 @@
 {
-  "devToolsPort": 19002,
   "expoServerPort": 19000,
+<<<<<<< HEAD
   "packagerPort": 19003,
   "packagerPid": 12322,
   "expoServerNgrokUrl": null,
   "packagerNgrokUrl": null,
   "ngrokPid": null
+=======
+  "expoServerNgrokUrl": "https://46-wgy.lisjak.zoot.exp.direct",
+  "packagerNgrokUrl": "https://packager.46-wgy.lisjak.zoot.exp.direct",
+  "ngrokPid": 88182,
+  "devToolsPort": 19002,
+  "packagerPort": 19001,
+  "packagerPid": 88166,
+  "webpackServerPort": null
+>>>>>>> origin/master
 }
