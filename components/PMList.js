@@ -24,14 +24,14 @@ export default class PMList extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentWillMount = () => {
     //grab chatrooms
     Fire.shared.getPMRooms((room) => {
       if (room) {
-        this.setState({
-          chatrooms: [...this.state.chatrooms, room],
+        this.setState(prevState => ({
+          chatrooms: [...prevState.chatrooms, room],
           grabbed: true
-        });
+        }));
       }
     });
 

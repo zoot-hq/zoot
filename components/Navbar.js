@@ -146,13 +146,13 @@ class Navbar extends React.Component {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('UserPage')}
+            onPress={() => this.props.navigation.replace('UserPage')}
           >
             <AntDesign name="user" size={30} color="black"></AntDesign>
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('PMList')}
+            onPress={() => this.props.navigation.replace('PMList')}
           >
             <AntDesign name="message1" size={30} color="black" />
           </TouchableOpacity>
@@ -164,13 +164,13 @@ class Navbar extends React.Component {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('PartnerList')}
+            onPress={() => this.props.navigation.replace('PartnerList')}
           >
             <MaterialIcons name="account-balance" size={30} color="black" />
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Resources')}
+            onPress={() => this.props.navigation.replace('Resources')}
           >
             <AntDesign name="book" size={30} color="black" />
           </TouchableOpacity>
