@@ -434,10 +434,13 @@ class Fire {
 
   parsePMs = (snapshot) => {
     const currentUser = this.username();
-    const {name} = snapshot.val();
+    const {name, unreadMessages} = snapshot.val();
     const names = name.split('-');
     if (names[0] === currentUser || names[1] === currentUser) {
-      return name;
+      if (unreadMessages) {
+        return {name, numUnread: unreadMessages[this.username()]};
+      }
+      else return {name};
     }
   };
 
@@ -682,7 +685,7 @@ class Fire {
         const names = name.split('-')
         if (names[0] === this.username() || names[1] === this.username()) {
           if (unreadMessages) {
-            const newNum = Object.values(unreadMessages)[0]
+            const newNum = unreadMessages[this.username()]
             numUnread += newNum
             callback(numUnread)
           }

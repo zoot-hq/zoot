@@ -125,6 +125,20 @@ export default class ChatList extends React.Component {
 
       // push token to firebase
       Fire.shared.sendNotificationToken(token);
+
+      const livechatnotif = {
+        title: 'live chat',
+        body: 'live chat starting now',
+      }
+
+      const schedulingOptions = {
+        time: (new Date()).getTime() + 1000,
+        repat: 'weekly'
+      }
+
+      // schedule live chat notifications
+      Notifications.scheduleLocalNotificationAsync(livechatnotif, schedulingOptions)
+
     } catch (error) { }
   };
 

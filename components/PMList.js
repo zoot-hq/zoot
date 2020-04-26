@@ -97,17 +97,17 @@ export default class PMList extends React.Component {
                   {this.state.chatrooms.length
                     ? this.state.chatrooms.map((chatroom) =>
                         <TouchableOpacity
-                          key={chatroom}
+                          key={chatroom.name}
                           style={styles.buttonContainer}
                           onPress={() =>
                             this.props.navigation.navigate('ChatRoom', {
-                              chatroom,
+                              chatroom: chatroom.name,
                               PM: true
                             })
                           }
                         >
                           <Text style={styles.buttonText}>
-                            <Entypo name="new-message" size={30} color="black" /> {this.getRoomName(chatroom)}
+                            <Entypo name="new-message" size={30} color="black" /> {this.getRoomName(chatroom.name)}
                           </Text>
                         </TouchableOpacity>
                     ) : null}
