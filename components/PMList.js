@@ -11,6 +11,7 @@ import {
 import Fire from '../Fire';
 import {MaterialIndicator} from 'react-native-indicators';
 import NavBar from './Navbar';
+import {Entypo} from '@expo/vector-icons'
 
 export default class PMList extends React.Component {
   constructor() {
@@ -67,24 +68,6 @@ export default class PMList extends React.Component {
 
             <KeyboardAvoidingView behavior="padding">
               <SafeAreaView>
-                <ScrollView contentContainerStyle={{flexGrow: 1}}>
-                  {this.state.chatrooms.map((chatroom) =>
-                    <TouchableOpacity
-                      key={chatroom}
-                      style={styles.buttonContainer}
-                      onPress={() => {
-                        Fire.shared.clearUnreads(chatroom)
-                        this.props.navigation.navigate('ChatRoom', {
-                          chatroom,
-                          PM: true
-                        })
-                      }}
-                    >
-                      <Text style={styles.buttonText}>
-                        # {this.getRoomName(chatroom)}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                   {this.state.chatrooms.length
                     ? this.state.chatrooms.map((chatroom) =>
@@ -106,7 +89,6 @@ export default class PMList extends React.Component {
                       ) : null
                     )
                     : null}
-                  </ScrollView>
                 </ScrollView>
               </SafeAreaView>
             </KeyboardAvoidingView>
