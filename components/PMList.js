@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {
-  StyleSheet,
   Text,
   View,
   TouchableOpacity,
@@ -25,7 +24,6 @@ export default class PMList extends React.Component {
     //grab chatrooms
     Fire.shared.getPMRooms((room) => {
       if (room) {
-        console.log(room)
         this.setState({
           chatrooms: [...this.state.chatrooms, room],
           grabbed: true
@@ -68,10 +66,6 @@ export default class PMList extends React.Component {
 
             <KeyboardAvoidingView behavior="padding">
               <SafeAreaView>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 8b55c4b8b93530ada8122cb8a0fe6369886b3253
                 <ScrollView contentContainerStyle={{flexGrow: 1}}>
                   {this.state.chatrooms.map((chatroom) =>
                     <TouchableOpacity
@@ -90,8 +84,6 @@ export default class PMList extends React.Component {
                       </Text>
                     </TouchableOpacity>
                   )}
-<<<<<<< HEAD
-=======
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                   {this.state.chatrooms.length
                     ? this.state.chatrooms.map((chatroom) =>
@@ -113,9 +105,7 @@ export default class PMList extends React.Component {
                       ) : null
                     )
                     : null}
->>>>>>> origin/master
-=======
->>>>>>> 8b55c4b8b93530ada8122cb8a0fe6369886b3253
+                  </ScrollView>
                 </ScrollView>
               </SafeAreaView>
             </KeyboardAvoidingView>
