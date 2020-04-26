@@ -214,36 +214,36 @@ class Navbar extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    navbar: {
-        color: 'black',
-        backgroundColor: 'white',
-        fontSize: 12,
-        borderColor: 'transparent',
-        borderStyle: 'solid',
-        borderWidth: 1,
-        padding: 20,
-        paddingBottom: 0,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingLeft: 40,
-        paddingRight: 40
-    },
-    notifications: {
-        color: 'black',
-        backgroundColor: 'white',
-        fontSize: 12,
-        borderColor: 'transparent',
-        borderStyle: 'solid',
-        borderWidth: 1,
-        padding: 20,
-        paddingTop: 0,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingLeft: 40,
-        paddingRight: 40
-    }
+  navbar: {
+    color: 'black',
+    backgroundColor: 'white',
+    fontSize: 12,
+    borderColor: 'transparent',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    padding: 20,
+    paddingBottom: 0,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: 40,
+    paddingRight: 40
+  },
+  notifications: {
+    color: 'black',
+    backgroundColor: 'white',
+    fontSize: 12,
+    borderColor: 'transparent',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    padding: 20,
+    paddingTop: 0,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: 40,
+    paddingRight: 40
+  }
 });
 
 export default withNavigation(Navbar);

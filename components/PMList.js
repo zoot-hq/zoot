@@ -6,13 +6,10 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
-  KeyboardAvoidingView,
-  Alert
+  KeyboardAvoidingView
 } from 'react-native';
 import Fire from '../Fire';
-import { MaterialIndicator } from 'react-native-indicators';
-import { Ionicons, Feather, AntDesign, Entypo } from '@expo/vector-icons';
-
+import {MaterialIndicator} from 'react-native-indicators';
 import NavBar from './Navbar';
 
 export default class PMList extends React.Component {
@@ -35,15 +32,6 @@ export default class PMList extends React.Component {
         });
       }
     });
-
-    // help icon
-    this.helpAlert = () => {
-      Alert.alert(
-        'Help @ Personal Messages',
-        'Ready to chat some more? When you start a private message with another user, it will appear here.\n\nTo get started, navigate back to the home page, click on a message board, and longpress on a user\'s name. \n\n A new chat will then open up between you and that user, and it will also appear on this list. \n\n Happy chatting!',
-        [{ text: 'Got it!' }]
-      )
-    }
   }
 
   getRoomName(name) {
@@ -66,35 +54,24 @@ export default class PMList extends React.Component {
     }
     return (
       <View style={styles.outerContainer}>
-
-        {/* <View style={styles.container}> */}
-        <View style={styles.innerView}>
-
-          {/* help icon */}
-          <View style={styles.help}>
-            <TouchableOpacity
-              onPress={() => this.helpAlert()}
-            >
-              <AntDesign name="questioncircleo" size={20} color="black" />
-            </TouchableOpacity>
-          </View>
-
-
-
-
-          {/* titles */}
-          <Text style={styles.title}>après</Text>
-
-
-          <Text style={styles.subtitle2}>
-            Personal Messages
+        <ScrollView>
+          <View style={styles.container}>
+            {/* titles */}
+            <Text style={styles.title}>après</Text>
+            <Text style={styles.subtitle}>
+              When you start a private message with another user, it will appear
+              here. To get started, navigate back to the main page, click on a
+              chatlist, and longpress on a user's name. A new chat will then
+              open up between you and that user, and it will also appear on this
+              list. Happy chatting!
             </Text>
-
-          <ScrollView>
 
             <KeyboardAvoidingView behavior="padding">
               <SafeAreaView>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 8b55c4b8b93530ada8122cb8a0fe6369886b3253
                 <ScrollView contentContainerStyle={{flexGrow: 1}}>
                   {this.state.chatrooms.map((chatroom) =>
                     <TouchableOpacity
@@ -113,6 +90,7 @@ export default class PMList extends React.Component {
                       </Text>
                     </TouchableOpacity>
                   )}
+<<<<<<< HEAD
 =======
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                   {this.state.chatrooms.length
@@ -136,13 +114,13 @@ export default class PMList extends React.Component {
                     )
                     : null}
 >>>>>>> origin/master
+=======
+>>>>>>> 8b55c4b8b93530ada8122cb8a0fe6369886b3253
                 </ScrollView>
               </SafeAreaView>
             </KeyboardAvoidingView>
-          </ScrollView>
-        </View>
-        {/* </View> */}
-
+          </View>
+        </ScrollView>
         <NavBar />
       </View>
     );
@@ -150,24 +128,8 @@ export default class PMList extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  help: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignSelf: 'flex-end',
-    backgroundColor: 'white',
-    marginTop: -30,
-    marginBottom: 20,
-    height: 20,
-    zIndex: 999,
-  },
   outerContainer: {
     backgroundColor: 'white',
-    flex: 1
-  },
-  innerView: {
-    marginTop: 50,
-    marginRight: 20,
-    marginLeft: 20,
     flex: 1
   },
   container: {
@@ -175,32 +137,22 @@ const styles = StyleSheet.create({
     marginRight: 20,
     marginLeft: 20,
     justifyContent: 'center',
-    marginTop: 50,
-    flex: 1,
+    marginTop: 50
   },
   title: {
-    bottom: 10,
-    fontSize: 120,
+    top: 15,
+    bottom: 15,
+    fontSize: 60,
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 15,
-    fontFamily: 'CormorantGaramond-Light',
-    marginTop: -15,
+    fontFamily: 'CormorantGaramond-Light'
   },
   subtitle: {
     fontSize: 20,
     fontWeight: '300',
     textAlign: 'center',
     marginBottom: 8,
-    fontFamily: 'Futura-Light',
-    marginTop: 10
-  },
-  subtitle2: {
-    fontSize: 40,
-    fontWeight: '300',
-    textAlign: 'center',
-    letterSpacing: -1,
-    marginBottom: 15,
     fontFamily: 'Futura-Light',
     marginTop: 10
   },
@@ -215,8 +167,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: '600',
     fontSize: 28,
-    fontFamily: 'Futura-Light',
-    padding: 2,
+    fontFamily: 'Futura-Light'
   },
   searchbar: {
     color: 'black',

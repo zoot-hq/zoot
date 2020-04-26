@@ -10,11 +10,8 @@ import PMList from './components/PMList';
 import UserPage from './components/UserPage';
 import Resources from './components/Resources';
 import Navbar from './components/Navbar';
-import { createStackNavigator } from 'react-navigation';
+import {createStackNavigator} from 'react-navigation';
 import PartnerList from './components/PartnerList';
-import Splash from './components/Splash';
-import SplashContent from './components/SplashContent';
-
 
 // disabled yellow comments/alerts
 console.disableYellowBox = true;
@@ -35,8 +32,7 @@ console.log(
 const navigator = createStackNavigator(
   {
     Home,
-    Splash,
-    SplashContent,
+
     // remove swipe back gesture from chatlist
     ChatList: {
       name: 'ChatList',
@@ -52,8 +48,12 @@ const navigator = createStackNavigator(
     PMList,
     UserPage,
     Resources,
+<<<<<<< HEAD
     Navbar,
     PartnerList,
+=======
+    PartnerList
+>>>>>>> 8b55c4b8b93530ada8122cb8a0fe6369886b3253
   },
   {
     headerMode: 'none',

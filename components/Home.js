@@ -9,10 +9,13 @@ import {
 import * as Font from 'expo-font';
 import Fire from '../Fire';
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 >>>>>>> origin/master
+=======
+>>>>>>> 8b55c4b8b93530ada8122cb8a0fe6369886b3253
 
 export default class HomeScreen extends React.Component {
   constructor() {
@@ -41,7 +44,7 @@ export default class HomeScreen extends React.Component {
     }
 
     // else navigate to regular login
-    else this.setState({ readyToLoad: true });
+    else this.setState({readyToLoad: true});
   }
   render() {
     if (!this.state.readyToLoad) {
