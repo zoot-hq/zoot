@@ -1,7 +1,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View, ViewPropTypes, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, ViewPropTypes, StyleSheet, Text, TouchableOpacity, Vibration } from 'react-native';
 import { Avatar, Day, utils } from 'react-native-gifted-chat';
 import Bubble from './SlackBubble';
 
@@ -36,8 +36,8 @@ export default class Message extends React.Component {
       return this.props.renderBubble(bubbleProps);
     }
     return (
-      <View styles={{marginBottom : 20}}>
-          <Bubble {...bubbleProps} />  
+      <View styles={{ marginBottom: 20 }}>
+        <Bubble {...bubbleProps} />
       </View>
     )
   }
