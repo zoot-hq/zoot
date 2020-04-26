@@ -228,9 +228,6 @@ class Fire {
                 }
               );
             });
-<<<<<<< HEAD
-        } catch (error) { }
-=======
 
             firebase
               .database()
@@ -249,7 +246,6 @@ class Fire {
                 .set(snapshot.val() + 1)
             });
         } catch (error) {}
->>>>>>> 8b55c4b8b93530ada8122cb8a0fe6369886b3253
       }
     }
   };

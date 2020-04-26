@@ -48,12 +48,8 @@ const navigator = createStackNavigator(
     PMList,
     UserPage,
     Resources,
-<<<<<<< HEAD
     Navbar,
     PartnerList,
-=======
-    PartnerList
->>>>>>> 8b55c4b8b93530ada8122cb8a0fe6369886b3253
   },
   {
     headerMode: 'none',
