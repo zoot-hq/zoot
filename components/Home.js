@@ -8,14 +8,6 @@ import {
 } from 'react-native';
 import * as Font from 'expo-font';
 import Fire from '../Fire';
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-import { Notifications } from 'expo';
-import * as Permissions from 'expo-permissions';
->>>>>>> origin/master
-=======
->>>>>>> 8b55c4b8b93530ada8122cb8a0fe6369886b3253
 
 export default class HomeScreen extends React.Component {
   constructor() {
