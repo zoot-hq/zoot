@@ -8,11 +8,14 @@ import {
   ViewPropTypes,
   Platform,
   Image,
-  Alert
+  Alert,
+  TextInput
 } from 'react-native';
 import { MessageText, Time, utils } from 'react-native-gifted-chat';
 import { Foundation, MaterialIcons } from '@expo/vector-icons';
 import * as MailComposer from 'expo-mail-composer';
+import AllReplies from './AllReplies';
+import * as firebase from 'firebase';
 
 import Fire from '../Fire';
 
@@ -29,8 +32,17 @@ export default class Bubble extends React.Component {
       flags: this.props.currentMessage.flags || null,
       react: this.props.currentMessage.react,
       hidden: this.props.currentMessage.hidden,
-      addFriend: this.props.currentMessage.addFriend || null
+      addFriend: this.props.currentMessage.addFriend || null,
+      replies: [],
+      indent: 0,
+      newReply: false,
+      replyInput: ''
     };
+  }
+
+  async componentWillMount() {
+    let replies = await this.getReplies(this.props.currentMessage);
+    await this.setState({replies: replies});
   }
 
   onLongPress() {
@@ -101,17 +113,20 @@ export default class Bubble extends React.Component {
         return this.props.renderMessageText(messageTextProps);
       }
       return (
-        <MessageText
-          {...messageTextProps}
-          textStyle={{
-            left: [
-              styles.standardFont,
-              styles.slackMessageText,
-              messageTextProps.textStyle,
-              messageTextStyle
-            ]
-          }}
-        />
+        // pressing the text opens a TextInput box to add a reply
+        <TouchableOpacity onPress={() => this.setState({newReply: true})}>
+          <MessageText
+            {...messageTextProps}
+            textStyle={{
+              left: [
+                styles.standardFont,
+                styles.slackMessageText,
+                messageTextProps.textStyle,
+                messageTextStyle
+              ]
+            }}
+          />
+        </TouchableOpacity>
       );
     }
     return null;
@@ -162,7 +177,8 @@ export default class Bubble extends React.Component {
   }
 
   renderUsername = () => {
-    const username = this.props.currentMessage.user.name;
+    const username =
+      this.props.currentMessage.user.name || this.props.currentMessage.user;
     if (username) {
       return (
         <TouchableOpacity onLongPress={this.startPM}>
@@ -261,7 +277,7 @@ export default class Bubble extends React.Component {
         otherUsername < currentUsername
           ? otherUsername + '-' + currentUsername
           : currentUsername + '-' + otherUsername;
-      Fire.shared.createPMRoom(comboName, status => {
+      Fire.shared.createPMRoom(comboName, (status) => {
         if (status === 'user blocked') {
           console.log('user blocked');
           Alert.alert(
@@ -370,7 +386,9 @@ export default class Bubble extends React.Component {
   };
 
   renderBlock() {
-    const messageUsername = this.props.currentMessage.user.name;
+    const messageUsername = this.props.currentMessage.user.name
+      ? this.props.currentMessage.user.name
+      : this.props.currentMessage.user;
     const currUser = Fire.shared.username();
     if (this.state.react && messageUsername != currUser) {
       return (
@@ -380,6 +398,78 @@ export default class Bubble extends React.Component {
       );
     }
   }
+
+  renderReplies() {
+    if (this.state.replies.length) {
+      return (
+        <AllReplies
+          {...this.props}
+          // parentIndent indents the reply +10 spaces from its parent message
+          parentIndent={this.state.indent}
+          replies={this.state.replies}
+        />
+      );
+    }
+  }
+  async getReplies(parent) {
+    const ref = await firebase
+      .database()
+      .ref('chatrooms')
+      .child(parent.room)
+      .child(parent._id);
+    let replies = await ref
+      .child('replies')
+      .once('value')
+      .then(function (snapshot) {
+        return snapshot;
+      });
+    if (replies) {
+      // put the replies in an array so we can map through them
+      let keyArr = [];
+      for (let key in replies) {
+        keyArr.push(key);
+      }
+      // deconstruct the reply from the object it's nested in
+      let repliesObj = replies.val();
+      let repliesArr = [];
+      for (let reply in repliesObj) {
+        // make the id a property on the reply object instead of its key to make the data more accessible
+        repliesObj[reply]._id = reply;
+        repliesArr.push(repliesObj[reply]);
+      }
+      return repliesArr;
+    } else {
+      return [];
+    }
+  }
+  submitReply = async () => {
+    // first send the reply to the database
+    await this.sendReply();
+    // then remove the input box from render (since we're finished with it)
+    this.setState({newReply: false});
+    // get all the replies from the database including the recently added reply
+    let replies = await this.getReplies(this.props.currentMessage);
+    // put all the retrieved replies on the state to display them
+    await this.setState({replies: replies});
+  };
+  sendReply = async () => {
+    // format message to go to Fire.shared.send()
+    const message = [
+      {
+        text: this.state.replyInput,
+        user: firebase.auth().currentUser.displayName
+      }
+    ];
+    // pm and live are false, reply is true, parentId is used to identify which message to add it to in the DB
+    await Fire.shared.send(
+      message,
+      this.props.currentMessage.room,
+      false,
+      false,
+      true,
+      this.props.currentMessage._id
+    );
+  };
 
   blockPopup = () => {
     const user = this.props.currentMessage.user.name;
@@ -435,6 +525,24 @@ export default class Bubble extends React.Component {
 
               {/* render reactions on messages with the reaction feature */}
               {this.renderReactions()}
+              {this.renderReplies()}
+              {/* this.state.newReply becomes true when a user clicks the message text/reply button */}
+              {this.state.newReply && (
+                <View>
+                  <TextInput
+                    returnKeyType="done"
+                    placeholder="Type your reply"
+                    placeholderTextColor="#bfbfbf"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    style={styles.input}
+                    onChangeText={(replyInput) => this.setState({replyInput})}
+                  />
+                  <TouchableOpacity onPress={this.submitReply}>
+                    <Text>Submit</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
           </View>
         </TouchableOpacity>
@@ -507,6 +615,28 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     marginLeft: 0,
     marginRight: 0
+  },
+  input: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'gray',
+    borderLeftWidth: 0.5,
+    borderLeftColor: 'gray',
+    borderRightWidth: 0.5,
+    borderRightColor: 'gray',
+    borderTopWidth: 0.5,
+    borderTopColor: 'gray',
+    backgroundColor: 'white',
+    padding: 5,
+    marginVertical: 20,
+    flexGrow: 1,
+    textAlignVertical: 'bottom',
+    marginLeft: 15,
+    marginRight: 15,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
+    borderBottomLeftRadius: 5,
+    minHeight: 30
   }
 });
 

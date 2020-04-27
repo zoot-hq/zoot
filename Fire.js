@@ -147,7 +147,7 @@ class Fire {
   };
 
   // send the message to the Backend
-  send = (messages, room, pm, live) => {
+  send = (messages, room, pm, live, reply, parentId) => {
     for (let i = 0; i < messages.length; i++) {
       const {text, user} = messages[i];
       const message = {
@@ -172,7 +172,8 @@ class Fire {
           users: {X: true}
         },
         hidden: false,
-        react: true
+        react: true,
+        replies: []
       };
 
       // push message to database
@@ -180,6 +181,14 @@ class Fire {
         ? firebase.database().ref('PMrooms').child(room).push(message)
         : live
         ? firebase.database().ref('livechatrooms').child(room).push(message)
+        : reply
+        ? firebase
+            .database()
+            .ref('chatrooms')
+            .child(room)
+            .child(parentId)
+            .child('replies')
+            .push(message)
         : firebase.database().ref('chatrooms').child(room).push(message);
 
       // push users object to database

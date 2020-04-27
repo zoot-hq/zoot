@@ -9,10 +9,10 @@ import {
   KeyboardAvoidingView,
   Alert
 } from 'react-native';
-import { Searchbar } from 'react-native-paper';
+import {Searchbar} from 'react-native-paper';
 import Fire from '../Fire';
-import { MaterialIndicator } from 'react-native-indicators';
-import { Notifications } from 'expo';
+import {MaterialIndicator} from 'react-native-indicators';
+import {Notifications} from 'expo';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import { Ionicons, MaterialIcons, AntDesign } from '@expo/vector-icons';
@@ -56,12 +56,19 @@ export default class ChatList extends React.Component {
     // grab chatrooms = every room has a name and numOnline attribute
     Fire.shared.getChatRoomNames((newRoom) => {
       const queriedChatrooms = this.state.queriedChatrooms;
-      if (newRoom.name) {
-        if (
-          newRoom.name.toLowerCase().includes(this.state.query.toLowerCase())
-        ) {
-          queriedChatrooms.push(newRoom);
-        }
+      // add room to querried rooms if query matches
+      if (
+        newRoom.name &&
+        newRoom.name.toLowerCase().includes(this.state.query.toLowerCase())
+      ) {
+        queriedChatrooms.push(newRoom);
+        
+//       if (newRoom.name) {
+//         if (
+//           newRoom.name.toLowerCase().includes(this.state.query.toLowerCase())
+//         ) {
+//           queriedChatrooms.push(newRoom);
+//         }
 
         // update state
         this.setState({
@@ -167,15 +174,6 @@ export default class ChatList extends React.Component {
           </Text>
         </View>
 
-        <View style={styles.testingView}>
-
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('SplashContent')}>
-            <Text style={styles.subtitle}>Splash Test</Text>
-          </TouchableOpacity>
-        </View>
-
-
         {/* navigation to user profile for development purposes
         < */}
         {/* <View style={styles.testingView}>
@@ -221,7 +219,7 @@ export default class ChatList extends React.Component {
         {/* search bar - queries all chatrooms to the users query */}
         <View style={styles.searchView}>
           <Searchbar
-            theme={{ colors: { primary: 'black' } }}
+            theme={{colors: {primary: 'black'}}}
             placeholder="Search our message boards"
             onChangeText={(query) => {
               const queriedChatrooms = this.state.chatrooms.filter(
@@ -233,14 +231,14 @@ export default class ChatList extends React.Component {
               );
               this.setState({ queriedChatrooms, query });
               if (!query.length) {
-                this.setState({ queriedChatrooms: this.state.chatrooms });
+                this.setState({queriedChatrooms: this.state.chatrooms});
               }
             }}
           />
           {/* chatroom list */}
           <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding">
             <SafeAreaView>
-              <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+              <ScrollView contentContainerStyle={{flexGrow: 1}}>
                 {/* if a query made, queried chatrooms displayed*/}
                 {this.state.queriedChatrooms.length ? (
                   this.state.queriedChatrooms.map((chatroom) => (
@@ -263,30 +261,30 @@ export default class ChatList extends React.Component {
                     </TouchableOpacity>
                   ))
                 ) : // else allow user to create a new chatroom
-                  this.state.chatrooms.length ? (
-                    <View>
-                      <Text>
-                        No results. Would you like to create this chatroom?
+                this.state.chatrooms.length ? (
+                  <View>
+                    <Text>
+                      No results. Would you like to create this chatroom?
                     </Text>
-                      <TouchableOpacity
-                        key={this.state.query}
-                        style={styles.buttonContainer}
-                        onPress={() => {
-                          Fire.shared.createChatRoom(this.state.query);
-                          this.props.navigation.navigate('ChatRoom', {
-                            chatroom: this.state.query
-                          });
-                        }}
-                      >
-                        <Text style={styles.buttonText}>
-                          + {this.state.query}{' '}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  ) : (
-                      // return loading while grabbing data from database
-                      <MaterialIndicator color="black" />
-                    )}
+                    <TouchableOpacity
+                      key={this.state.query}
+                      style={styles.buttonContainer}
+                      onPress={() => {
+                        Fire.shared.createChatRoom(this.state.query);
+                        this.props.navigation.navigate('ChatRoom', {
+                          chatroom: this.state.query
+                        });
+                      }}
+                    >
+                      <Text style={styles.buttonText}>
+                        + {this.state.query}{' '}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  // return loading while grabbing data from database
+                  <MaterialIndicator color="black" />
+                )}
               </ScrollView>
             </SafeAreaView>
           </KeyboardAvoidingView>
