@@ -11,15 +11,15 @@ import {
   Alert,
   TextInput
 } from 'react-native';
-import { MessageText, Time, utils } from 'react-native-gifted-chat';
-import { Foundation, MaterialIcons } from '@expo/vector-icons';
+import {MessageText, Time, utils} from 'react-native-gifted-chat';
+import {Foundation, MaterialIcons} from '@expo/vector-icons';
 import * as MailComposer from 'expo-mail-composer';
 import AllReplies from './AllReplies';
 import * as firebase from 'firebase';
 
 import Fire from '../Fire';
 
-const { isSameUser, isSameDay } = utils;
+const {isSameUser, isSameDay} = utils;
 
 export default class Bubble extends React.Component {
   constructor(props) {
@@ -139,14 +139,14 @@ export default class Bubble extends React.Component {
           source={{
             uri: `data:image/png;base64,${this.props.currentMessage.base64}`
           }}
-          style={{ height: 300, width: 300 }}
+          style={{height: 300, width: 300}}
         />
       );
     }
   };
 
   renderTicks() {
-    const { currentMessage } = this.props;
+    const {currentMessage} = this.props;
     if (this.props.renderTicks) {
       return this.props.renderTicks(currentMessage);
     }
@@ -177,8 +177,7 @@ export default class Bubble extends React.Component {
   }
 
   renderUsername = () => {
-    const username =
-      this.props.currentMessage.user.name || this.props.currentMessage.user;
+    const username = this.props.currentMessage.user.name;
     if (username) {
       return (
         <TouchableOpacity onLongPress={this.startPM}>
@@ -200,14 +199,14 @@ export default class Bubble extends React.Component {
 
   renderTime() {
     if (this.props.currentMessage.createdAt) {
-      const { containerStyle, wrapperStyle, ...timeProps } = this.props;
+      const {containerStyle, wrapperStyle, ...timeProps} = this.props;
       if (this.props.renderTime) {
         return this.props.renderTime(timeProps);
       }
       return (
         <Time
           {...timeProps}
-          containerStyle={{ left: [styles.timeContainer] }}
+          containerStyle={{left: [styles.timeContainer]}}
           textStyle={{
             left: [
               styles.standardFont,
@@ -241,7 +240,7 @@ export default class Bubble extends React.Component {
     if (!reaction.users[currUser]) {
       reaction.count++;
       reaction.users[currUser] = true;
-      this.setState({ reaction });
+      this.setState({reaction});
       Fire.shared.react(
         this.props.currentMessage,
         reactionType,
@@ -253,7 +252,7 @@ export default class Bubble extends React.Component {
     else if (reactionType != 'flags') {
       reaction.count--;
       delete reaction.users[currUser];
-      this.setState({ reaction });
+      this.setState({reaction});
       Fire.shared.react(
         this.props.currentMessage,
         reactionType,
@@ -305,7 +304,7 @@ export default class Bubble extends React.Component {
 
       ${message.user.name} in #${message.room}: ${
         message.text
-        } [Message ID: ${messageName}]
+      } [Message ID: ${messageName}]
       --- reported by: ${Fire.shared.username()}`
     };
     try {
@@ -329,32 +328,38 @@ export default class Bubble extends React.Component {
       `You are about to flag this message as objectionable. Flagging the message will simple hide the message
       from public view. To have the message removed, please choose the Contact Administrators option.`,
       [
-        { text: 'Cancel', onPress: () => false },
-        { text: 'Flag Message', onPress: () => this.react('flags') },
-        { text: 'Contact Administrators', onPress: () => this.contactAdmin() }
+        {text: 'Cancel', onPress: () => false},
+        {text: 'Flag Message', onPress: () => this.react('flags')},
+        {text: 'Contact Administrators', onPress: () => this.contactAdmin()}
       ],
-      { cancelable: false }
+      {cancelable: false}
     );
   };
 
   renderReactions = () => {
     if (this.state.react || this.isSameUser())
       return (
-        <View style={{ display: 'flex', flexDirection: 'row' }}>
+        <View style={{display: 'flex', flexDirection: 'row'}}>
           <TouchableOpacity
-            style={{ marginRight: 20 }}
+            style={{marginRight: 20}}
             onLongPress={() => this.react('likes')}
           >
             <Foundation name="like" color="lightgrey" size={15}>
-              <Text style={styles.count}> {this.state.likes.count || null}</Text>
+              <Text style={styles.count}>
+                {' '}
+                {this.state.likes.count || null}
+              </Text>
             </Foundation>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{ marginRight: 20 }}
+            style={{marginRight: 20}}
             onLongPress={() => this.react('loves')}
           >
             <Foundation name="heart" color="lightgrey" size={15}>
-              <Text style={styles.count}> {this.state.loves.count || null}</Text>
+              <Text style={styles.count}>
+                {' '}
+                {this.state.loves.count || null}
+              </Text>
             </Foundation>
           </TouchableOpacity>
           {/* <TouchableOpacity
@@ -366,19 +371,25 @@ export default class Bubble extends React.Component {
             </Foundation>
           </TouchableOpacity> */}
           <TouchableOpacity
-            style={{ marginRight: 20 }}
+            style={{marginRight: 20}}
             onLongPress={() => this.react('lightbulbs')}
           >
             <Foundation name="lightbulb" color="lightgrey" size={15}>
-              <Text style={styles.count}>  {this.state.lightbulbs.count || null}</Text>
+              <Text style={styles.count}>
+                {' '}
+                {this.state.lightbulbs.count || null}
+              </Text>
             </Foundation>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{ marginRight: 20 }}
+            style={{marginRight: 20}}
             onLongPress={() => this.flag()}
           >
             <Foundation name="flag" color="lightgrey" size={15}>
-              <Text style={styles.count}>  {this.state.flags.count || null}</Text>
+              <Text style={styles.count}>
+                {' '}
+                {this.state.flags.count || null}
+              </Text>
             </Foundation>
           </TouchableOpacity>
         </View>
@@ -393,8 +404,12 @@ export default class Bubble extends React.Component {
     if (this.state.react && messageUsername != currUser) {
       return (
         <TouchableOpacity onPress={this.blockPopup}>
-          <MaterialIcons name="block" size={15} color={"lightgrey"}></MaterialIcons>
-        </TouchableOpacity >
+          <MaterialIcons
+            name="block"
+            size={15}
+            color={'lightgrey'}
+          ></MaterialIcons>
+        </TouchableOpacity>
       );
     }
   }
@@ -477,10 +492,10 @@ export default class Bubble extends React.Component {
       'Block User',
       `Are you sure you would like to block ${user}? This user will no longer be able to contact you. This action cannot be undone. `,
       [
-        { text: 'No', onPress: () => false },
-        { text: 'Yes', onPress: () => this.blockUser() }
+        {text: 'No', onPress: () => false},
+        {text: 'Yes', onPress: () => this.blockUser()}
       ],
-      { cancelable: false }
+      {cancelable: false}
     );
   };
 
@@ -489,8 +504,8 @@ export default class Bubble extends React.Component {
     Alert.alert(
       'User blocked',
       `${blockedUser} has been successfully blocked.`,
-      [{ text: 'OK', onPress: () => true }],
-      { cancelable: false }
+      [{text: 'OK', onPress: () => true}],
+      {cancelable: false}
     );
   };
 
@@ -557,7 +572,7 @@ const styles = StyleSheet.create({
   count: {
     fontSize: 12,
     fontFamily: 'Futura-Light',
-    paddingBottom: 2,
+    paddingBottom: 2
   },
   standardFont: {
     fontSize: 15
