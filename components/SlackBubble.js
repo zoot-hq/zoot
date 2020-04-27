@@ -33,8 +33,14 @@ export default class Bubble extends React.Component {
       hidden: this.props.currentMessage.hidden,
       addFriend: this.props.currentMessage.addFriend || null,
       replies: [],
+      showReplies: false,
       indent: 0
     };
+  }
+
+  async componentDidMount() {
+    let replies = await this.getReplies(this.props.currentMessage);
+    await this.setState({replies: replies});
   }
 
   onLongPress() {
@@ -124,47 +130,7 @@ export default class Bubble extends React.Component {
     }
     return null;
   };
-  async getReplies(parent) {
-    const ref = await firebase
-      .database()
-      .ref('chatrooms')
-      .child(parent.room)
-      .child(parent._id);
-    if (ref.child('replies')) {
-      let replies = await ref
-        .child('replies')
-        .once('value')
-        .then(function (snapshot) {
-          return snapshot;
-        });
-      // console.log('replies from getReplies:', Object.keys(replies));
-      let keyArr = [];
-      for (let key in replies) {
-        keyArr.push(key);
-      }
-      let repliesObj = replies.val();
-      let repliesArr = [];
-      for (let reply in repliesObj) {
-        repliesObj[reply].id = reply;
-        repliesArr.push(repliesObj[reply]);
-      }
-      return repliesArr;
-    }
-  }
 
-  async addReply(parentMessage) {
-    console.log('this.state.replies:', this.state.replies);
-    // let currentIndent = this.state.indent;
-    // let newIndent = currentIndent + 10;
-    const newReplyInfo = {
-      parentId: parentMessage._id,
-      parentRoom: parentMessage.room
-    };
-    const addNewReply = this.state.replies.concat(newReplyInfo);
-    this.setState({replies: addNewReply});
-    const replies = await this.getReplies(parentMessage);
-    this.setState({replies: replies});
-  }
   renderMessageImage = () => {
     if (this.props.currentMessage.base64) {
       return (
@@ -429,6 +395,54 @@ export default class Bubble extends React.Component {
     }
   }
 
+  renderReplies() {
+    if (this.state.replies.length) {
+      return (
+        <AllReplies
+          {...this.props}
+          parentIndent={this.state.indent}
+          replies={this.state.replies}
+        />
+      );
+    }
+  }
+  async getReplies(parent) {
+    const ref = await firebase
+      .database()
+      .ref('chatrooms')
+      .child(parent.room)
+      .child(parent._id);
+    let replies = await ref
+      .child('replies')
+      .once('value')
+      .then(function (snapshot) {
+        return snapshot;
+      });
+    if (replies) {
+      let keyArr = [];
+      for (let key in replies) {
+        keyArr.push(key);
+      }
+      let repliesObj = replies.val();
+      let repliesArr = [];
+      for (let reply in repliesObj) {
+        repliesObj[reply].id = reply;
+        repliesArr.push(repliesObj[reply]);
+      }
+      return repliesArr;
+    } else {
+      return [];
+    }
+  }
+  async addReply(parentMessage) {
+    let repliesWithInfo = this.state.replies.slice();
+    repliesWithInfo.forEach((reply) => {
+      (reply.parentId = parentMessage._id),
+        (reply.parentRoom = parentMessage.room);
+    });
+    this.setState({replies: repliesWithInfo});
+  }
+
   blockPopup = () => {
     const user = this.props.currentMessage.user.name;
     Alert.alert(
@@ -483,16 +497,15 @@ export default class Bubble extends React.Component {
 
               {/* render reactions on messages with the reaction feature */}
               {this.renderReactions()}
+              <TouchableOpacity
+                onPress={() => this.setState({showReplies: true})}
+              >
+                <Text>Show Replies</Text>
+              </TouchableOpacity>
+              {this.state.showReplies && this.renderReplies()}
             </View>
           </View>
         </TouchableOpacity>
-        {this.state.replies.length ? (
-          <AllReplies
-            {...this.props}
-            parentIndent={this.state.indent}
-            replies={this.state.replies}
-          />
-        ) : null}
       </View>
     );
   }
