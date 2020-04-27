@@ -31,7 +31,6 @@ export default class AllReplies extends React.Component {
     );
   }
   render() {
-    console.log('an attempt was made to render AllReplies');
     return (
       <View>
         {this.props.replies.map((reply, idx) => {
@@ -54,10 +53,10 @@ export default class AllReplies extends React.Component {
                   placeholder="type your reply"
                   onChangeText={(text) => this.setState({text})}
                 />
-              )} */}
+              )}
               <TouchableOpacity onPress={() => this.sendReply(idx)}>
                 <Text>Submit</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           );
         })}

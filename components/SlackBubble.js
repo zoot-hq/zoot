@@ -33,12 +33,11 @@ export default class Bubble extends React.Component {
       hidden: this.props.currentMessage.hidden,
       addFriend: this.props.currentMessage.addFriend || null,
       replies: [],
-      showReplies: false,
       indent: 0
     };
   }
 
-  async componentDidMount() {
+  async componentWillMount() {
     let replies = await this.getReplies(this.props.currentMessage);
     await this.setState({replies: replies});
   }
@@ -176,7 +175,8 @@ export default class Bubble extends React.Component {
   }
 
   renderUsername = () => {
-    const username = this.props.currentMessage.user.name;
+    const username =
+      this.props.currentMessage.user.name || this.props.currentMessage.user;
     if (username) {
       return (
         <TouchableOpacity onLongPress={this.startPM}>
@@ -384,7 +384,9 @@ export default class Bubble extends React.Component {
   };
 
   renderBlock() {
-    const messageUsername = this.props.currentMessage.user.name;
+    const messageUsername = this.props.currentMessage.user.name
+      ? this.props.currentMessage.user.name
+      : this.props.currentMessage.user;
     const currUser = Fire.shared.username();
     if (this.state.react && messageUsername != currUser) {
       return (
@@ -497,12 +499,7 @@ export default class Bubble extends React.Component {
 
               {/* render reactions on messages with the reaction feature */}
               {this.renderReactions()}
-              <TouchableOpacity
-                onPress={() => this.setState({showReplies: true})}
-              >
-                <Text>Show Replies</Text>
-              </TouchableOpacity>
-              {this.state.showReplies && this.renderReplies()}
+              {this.renderReplies()}
             </View>
           </View>
         </TouchableOpacity>
