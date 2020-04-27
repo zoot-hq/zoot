@@ -113,6 +113,7 @@ export default class Bubble extends React.Component {
         return this.props.renderMessageText(messageTextProps);
       }
       return (
+        // pressing the text opens a TextInput box to add a reply
         <TouchableOpacity onPress={() => this.setState({newReply: true})}>
           <MessageText
             {...messageTextProps}
@@ -403,6 +404,7 @@ export default class Bubble extends React.Component {
       return (
         <AllReplies
           {...this.props}
+          // parentIndent indents the reply +10 spaces from its parent message
           parentIndent={this.state.indent}
           replies={this.state.replies}
         />
@@ -422,13 +424,16 @@ export default class Bubble extends React.Component {
         return snapshot;
       });
     if (replies) {
+      // put the replies in an array so we can map through them
       let keyArr = [];
       for (let key in replies) {
         keyArr.push(key);
       }
+      // deconstruct the reply from the object it's nested in
       let repliesObj = replies.val();
       let repliesArr = [];
       for (let reply in repliesObj) {
+        // make the id a property on the reply object instead of its key to make the data more accessible
         repliesObj[reply]._id = reply;
         repliesArr.push(repliesObj[reply]);
       }
@@ -437,19 +442,25 @@ export default class Bubble extends React.Component {
       return [];
     }
   }
-  addReply = async () => {
+  submitReply = async () => {
+    // first send the reply to the database
     await this.sendReply();
+    // then remove the input box from render (since we're finished with it)
     this.setState({newReply: false});
+    // get all the replies from the database including the recently added reply
     let replies = await this.getReplies(this.props.currentMessage);
+    // put all the retrieved replies on the state to display them
     await this.setState({replies: replies});
   };
   sendReply = async () => {
+    // format message to go to Fire.shared.send()
     const message = [
       {
         text: this.state.replyInput,
         user: firebase.auth().currentUser.displayName
       }
     ];
+    // pm and live are false, reply is true, parentId is used to identify which message to add it to in the DB
     await Fire.shared.send(
       message,
       this.props.currentMessage.room,
@@ -515,6 +526,7 @@ export default class Bubble extends React.Component {
               {/* render reactions on messages with the reaction feature */}
               {this.renderReactions()}
               {this.renderReplies()}
+              {/* this.state.newReply becomes true when a user clicks the message text/reply button */}
               {this.state.newReply && (
                 <View>
                   <TextInput
@@ -526,7 +538,7 @@ export default class Bubble extends React.Component {
                     style={styles.input}
                     onChangeText={(replyInput) => this.setState({replyInput})}
                   />
-                  <TouchableOpacity onPress={this.addReply}>
+                  <TouchableOpacity onPress={this.submitReply}>
                     <Text>Submit</Text>
                   </TouchableOpacity>
                 </View>
