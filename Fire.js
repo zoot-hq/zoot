@@ -197,7 +197,7 @@ class Fire {
       refToMessage.child('lightbulbs').child('users').set({X: true});
       refToMessage.child('flags').child('users').set({X: true});
 
-      // if PM, send push notification
+      // if PM, send push notification and update unread messages
       if (pm) {
         // get other users name
         const names = room.split('-');
@@ -237,10 +237,36 @@ class Fire {
                 }
               );
             });
+
+            firebase
+              .database()
+              .ref('PMnames')
+              .child(room)
+              .child('unreadMessages')
+              .child(otherUsername)
+              .once('value')
+              .then((snapshot) => {
+                firebase
+                .database()
+                .ref('PMnames')
+                .child(room)
+                .child('unreadMessages')
+                .child(otherUsername)
+                .set(snapshot.val() + 1)
+            });
         } catch (error) {}
       }
     }
   };
+
+  clearUnreads = (room) => {
+    firebase
+      .database()
+      .ref('PMnames')
+      .child(room)
+      .child('unreadMessages')
+      .set({[this.username()] : 0})
+  }
 
   enterRoom(room, pm, live) {
     // prepare initial message
@@ -314,6 +340,9 @@ class Fire {
             .child('numOnline')
             .set(snapshot.val() - 1);
         });
+
+    // if pm, clear off all unread messages
+    if (pm) this.clearUnreads(room)
   }
 
   // close the connection to the Backend
@@ -385,19 +414,25 @@ class Fire {
         return status;
       });
 
-  getChatRoomNames = (callback) =>
+  getChatRoomNames = (callback, partner) => {
+    let ref = partner ? `partnerChatroomNames/${partner}` : 'chatroomnames';
     firebase
       .database()
-      .ref('chatroomnames')
+      .ref(ref)
+      .on('child_added', (snapshot) => callback(this.parseRooms(snapshot)));
+  };
+
+  getPartnerChatRoomNames = (callback, partner) =>
+    firebase
+      .database()
+      .ref(`partnerChatroomNames/${partner}`)
       .on('child_added', (snapshot) => callback(this.parseRooms(snapshot)));
 
   removeChatRooms = (callback) =>
     firebase
       .database()
       .ref('chatroomnames')
-      .on('child_removed', (snapshot) =>
-        callback(this.parsePartners(snapshot))
-      );
+      .on('child_removed', (snapshot) => callback(this.parseRooms(snapshot)));
 
   getPMRooms = (callback) => {
     return firebase
@@ -406,18 +441,15 @@ class Fire {
       .on('child_added', (snapshot) => callback(this.parsePMs(snapshot)));
   };
 
-  getPartnerNames = (callback) =>
-    firebase
-      .database()
-      .ref('partnernames')
-      .on('child_added', (snapshot) => callback(this.parseRooms(snapshot)));
-
   parsePMs = (snapshot) => {
     const currentUser = this.username();
-    const {name} = snapshot.val();
+    const {name, unreadMessages} = snapshot.val();
     const names = name.split('-');
     if (names[0] === currentUser || names[1] === currentUser) {
-      return name;
+      if (unreadMessages) {
+        return {name, numUnread: unreadMessages[this.username()]};
+      }
+      else return {name};
     }
   };
 
@@ -518,6 +550,22 @@ class Fire {
                   .child(room)
                   .push(initMessage);
 
+                // add unread messages object
+                const names = room.split('-')
+                firebase
+                  .database()
+                  .ref('PMnames')
+                  .child(room)
+                  .child('unreadMessages')
+                  .set({[names[0]] : 0})
+
+                firebase
+                  .database()
+                  .ref('PMnames')
+                  .child(room)
+                  .child('unreadMessages')
+                  .set({[names[1]] : 0})
+
                 callback('user not blocked');
               }
             });
@@ -613,6 +661,54 @@ class Fire {
       .on('child_changed', (snapshot) => callback(snapshot.val()));
   };
 
+  // // this function sets up a connection with the database to send back updates on changes new pm messages
+  // getUpdatedNumUnreadMessages = (callback) => {
+  //   firebase
+  //     .database()
+  //     .ref('PMnames')
+  //     .on('child_changed', (snapshot) => {
+
+  //       // check to see if the updated new messages is for the current user
+  //       const {name, unreadMessages} = snapshot.val()
+  //       const names = name.split('-')
+  //       if (names[0] === this.username() || names[1] === this.username()) {
+
+  //         // return chatroom name with bool value true for unread maeeages, false for no unread messages
+  //         callback(name, unreadMessages.this.username() > 0 ? true : false)
+  //       }
+  //     })
+  //     };
+  // };
+
+
+  // get the number of unread messages on app open
+  getNumUnreadMessages = (callback) => {
+    let numUnread = 0
+    firebase
+      .database()
+      .ref('PMnames')
+      .on('child_added', (snapshot) => {
+
+        // check to see if the updated new messages is for the current user
+        const {name, unreadMessages} = snapshot.val()
+        const names = name.split('-')
+        if (names[0] === this.username() || names[1] === this.username()) {
+          if (unreadMessages) {
+            const newNum = unreadMessages[this.username()]
+            numUnread += newNum
+            callback(numUnread)
+          }
+        }
+      })
+  };
+
+  getUpdatedPartnerNumOnline = (callback) => {
+    firebase
+      .database()
+      .ref('partnerChatroomNames')
+      .on('child_changed', (snapshot) => callback(snapshot.val()));
+  };
+
   sendPasswordResetEmail = (email) => {
     return firebase.auth().sendPasswordResetEmail(email);
   };
@@ -625,6 +721,12 @@ class Fire {
       .child('notifToken')
       .set(token);
   };
+
+  getPartnerNames = (callback) =>
+    firebase
+      .database()
+      .ref('partnerNames')
+      .on('value', (snapshot) => callback(this.parsePartners(snapshot)));
 }
 
 Fire.shared = new Fire();

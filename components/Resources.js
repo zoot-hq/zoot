@@ -1,13 +1,18 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   StyleSheet,
   View,
   ScrollView,
   Linking,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from 'react-native';
 // import Select from "react-native-picker-select";
+
+import { Ionicons, Feather, AntDesign } from '@expo/vector-icons';
+
+
 import NavBar from './Navbar';
 
 export default class Resources extends Component {
@@ -37,6 +42,21 @@ export default class Resources extends Component {
       });
     }
   }
+
+
+  componentWillMount() {
+
+    // help icon
+    this.helpAlert = () => {
+      Alert.alert(
+        'Help @ Resources',
+        'Here you\'ll find the provided resources that we’ve curated just for you. \n\nTap the links to visit these external pages.'
+        [{ text: 'Got it!' }]
+      )
+    }
+  }
+
+
   render() {
     const pickerStyle = {
       inputIOS: {
@@ -56,13 +76,27 @@ export default class Resources extends Component {
     };
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>après</Text>
-        {/* <Text style={styles.subtitle}>
-          Please use our provided resources that we’ve curated just for you so
-          that you can find professional mental healthcare providers and get
-          help.
+
+        <View style={styles.innerView}>
+
+
+          {/* help icon */}
+          <View style={styles.help}>
+            <TouchableOpacity
+              onPress={() => this.helpAlert()}
+            >
+              <AntDesign name="questioncircleo" size={20} color="black" />
+            </TouchableOpacity>
+          </View>
+
+
+
+          <Text style={styles.title}>après</Text>
+          <Text style={styles.subtitle2}>
+            Resources
         </Text>
-        <Select
+
+          {/* <Select
           style={pickerStyle}
           onValueChange={(value) => this.autoScroll(value)}
           placeholder={{ label: "Select...", value: null }}
@@ -72,124 +106,136 @@ export default class Resources extends Component {
             { label: "Infant & Child Development", value: "child" },
           ]}
         ></Select> */}
-        <ScrollView
-          style={styles.scroll}
-          ref={(ref) => {
-            this.scrollRef = ref;
-          }}
-        >
-          <Text
-            onLayout={(event) => this.setLocation('maternal', event)}
-            style={styles.categoryTitle}
+          <ScrollView
+            style={styles.scroll}
+            ref={(ref) => {
+              this.scrollRef = ref;
+            }}
           >
-            Maternal Mental Health
+            <Text
+              onLayout={(event) => this.setLocation('maternal', event)}
+              style={styles.categoryTitle}
+            >
+              Maternal Mental Health
           </Text>
-          <TouchableOpacity
-            onPress={() => Linking.openURL('https://www.postpartum.net/')}
-          >
-            <Text style={styles.subtitle}>
-              Postpartum Support International
+            <TouchableOpacity
+              onPress={() => Linking.openURL('https://www.postpartum.net/')}
+            >
+              <Text style={styles.subtitle}>
+                Postpartum Support International
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => Linking.openURL('https://womensmentalhealth.org/')}
-          >
-            <Text style={styles.subtitle}>
-              MGH Center for Women's Mental Health
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => Linking.openURL('https://womensmentalhealth.org/')}
+            >
+              <Text style={styles.subtitle}>
+                MGH Center for Women's Mental Health
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() =>
-              Linking.openURL('https://www.nimh.nih.gov/index.shtml')
-            }
-          >
-            <Text style={styles.subtitle}>
-              National Institute of Mental Health
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                Linking.openURL('https://www.nimh.nih.gov/index.shtml')
+              }
+            >
+              <Text style={styles.subtitle}>
+                National Institute of Mental Health
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() =>
-              Linking.openURL(
-                'https://www.samhsa.gov/find-help/national-helpline'
-              )
-            }
-          >
-            <Text style={styles.subtitle}>SAMHSA Hotline</Text>
-          </TouchableOpacity>
-          <Text style={styles.subtitle}>
-            Crisis Text Line: Text “HELLO” to 741741
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                Linking.openURL(
+                  'https://www.samhsa.gov/find-help/national-helpline'
+                )
+              }
+            >
+              <Text style={styles.subtitle}>SAMHSA Hotline</Text>
+            </TouchableOpacity>
+            <Text style={styles.subtitle}>
+              Crisis Text Line: Text “HELLO” to 741741
           </Text>
-          <Text
-            onLayout={(event) => this.setLocation('wellness', event)}
-            style={styles.categoryTitle}
-          >
-            Wellness
+            <Text
+              onLayout={(event) => this.setLocation('wellness', event)}
+              style={styles.categoryTitle}
+            >
+              Wellness
           </Text>
-          <TouchableOpacity
-            onPress={() =>
-              Linking.openURL('https://www.youtube.com/user/yogawithadriene')
-            }
-          >
-            <Text style={styles.subtitle}>Yoga with Adriene</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() =>
-              Linking.openURL(
-                'https://www.umassmemorialhealthcare.org/umass-memorial-center-mindfulness'
-              )
-            }
-          >
-            <Text style={styles.subtitle}>
-              Center for Mindfulness Guided Meditations
+            <TouchableOpacity
+              onPress={() =>
+                Linking.openURL('https://www.youtube.com/user/yogawithadriene')
+              }
+            >
+              <Text style={styles.subtitle}>Yoga with Adriene</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                Linking.openURL(
+                  'https://www.umassmemorialhealthcare.org/umass-memorial-center-mindfulness'
+                )
+              }
+            >
+              <Text style={styles.subtitle}>
+                Center for Mindfulness Guided Meditations
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() =>
-              Linking.openURL('https://mariashriver.com/sundaypaper/')
-            }
-          >
-            <Text style={styles.subtitle}>Maria Shriver's Sunday Paper</Text>
-          </TouchableOpacity>
-          <Text
-            onLayout={(event) => this.setLocation('child', event)}
-            style={styles.categoryTitle}
-          >
-            Infant & Child Development
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                Linking.openURL('https://mariashriver.com/sundaypaper/')
+              }
+            >
+              <Text style={styles.subtitle}>Maria Shriver's Sunday Paper</Text>
+            </TouchableOpacity>
+            <Text
+              onLayout={(event) => this.setLocation('child', event)}
+              style={styles.categoryTitle}
+            >
+              Infant & Child Development
           </Text>
-          <TouchableOpacity
-            onPress={() => Linking.openURL('https://www.llli.org/')}
-          >
-            <Text style={styles.subtitle}>La Leche League</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() =>
-              Linking.openURL(
-                'https://healthychildren.org/English/Pages/default.aspx'
-              )
-            }
-          >
-            <Text style={styles.subtitle}>HealthyChildren.org</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => Linking.openURL('https://www.pbs.org/parents')}
-          >
-            <Text style={styles.subtitle}>PBS Kids for Parents</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => Linking.openURL('https://childmind.org/')}
-          >
-            <Text style={styles.subtitle}>The Child Mind Institute</Text>
-          </TouchableOpacity>
-          {/* this empty View provides enough space below the resources that each category can scroll to the top when chosen */}
-          <View style={styles.extraSpace}></View>
-        </ScrollView>
-        <NavBar />
+            <TouchableOpacity
+              onPress={() => Linking.openURL('https://www.llli.org/')}
+            >
+              <Text style={styles.subtitle}>La Leche League</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                Linking.openURL(
+                  'https://healthychildren.org/English/Pages/default.aspx'
+                )
+              }
+            >
+              <Text style={styles.subtitle}>HealthyChildren.org</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => Linking.openURL('https://www.pbs.org/parents')}
+            >
+              <Text style={styles.subtitle}>PBS Kids for Parents</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => Linking.openURL('https://childmind.org/')}
+            >
+              <Text style={styles.subtitle}>The Child Mind Institute</Text>
+            </TouchableOpacity>
+            {/* this empty View provides enough space below the resources that each category can scroll to the top when chosen */}
+            <View style={styles.extraSpace}></View>
+          </ScrollView>
+
+          <NavBar />
+        </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  help: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    backgroundColor: 'white',
+    marginTop: -30,
+    marginBottom: 20,
+    height: 20,
+    zIndex: 999,
+  },
   container: {
     display: 'flex',
     justifyContent: 'center',
@@ -197,15 +243,16 @@ const styles = StyleSheet.create({
     flex: 1
   },
   scroll: {
-    marginTop: 10
+    marginTop: -20,
   },
   title: {
-    fontSize: 60,
+    bottom: 10,
+    fontSize: 120,
     fontWeight: '700',
     textAlign: 'center',
-    marginTop: 50,
-    marginBottom: 5,
-    fontFamily: 'CormorantGaramond-Light'
+    marginBottom: 15,
+    fontFamily: 'CormorantGaramond-Light',
+    marginTop: -15,
   },
   subtitle: {
     fontSize: 18,
@@ -217,6 +264,15 @@ const styles = StyleSheet.create({
     marginLeft: 50,
     marginRight: 50
   },
+  subtitle2: {
+    fontSize: 40,
+    fontWeight: '300',
+    textAlign: 'center',
+    letterSpacing: -1,
+    marginBottom: 15,
+    fontFamily: 'Futura-Light',
+    marginTop: 10
+  },
   categoryTitle: {
     fontSize: 30,
     fontWeight: '500',
@@ -227,5 +283,11 @@ const styles = StyleSheet.create({
   },
   extraSpace: {
     height: 100
-  }
+  },
+  innerView: {
+    marginTop: 50,
+    marginRight: 20,
+    marginLeft: 20,
+    flex: 1
+  },
 });

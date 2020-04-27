@@ -59,10 +59,10 @@ export default class SignupScreen extends React.Component {
     );
   };
 
-  async handleSubmit() {
-    // set user info into storage
-    await AsyncStorage.setItem('apresLoginEmail', this.state.email);
-    await AsyncStorage.setItem('apressLoginPassword', this.state.password);
+    async handleSubmit() {
+        // set user info into storage
+        await AsyncStorage.setItem('apresLoginEmail', this.state.email);
+        await AsyncStorage.setItem('apresLoginPassword', this.state.password);
 
     // naivgate into app
     this.props.navigation.navigate('WelcomePage');
