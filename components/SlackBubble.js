@@ -8,7 +8,8 @@ import {
   ViewPropTypes,
   Platform,
   Image,
-  Alert
+  Alert,
+  TextInput
 } from 'react-native';
 import {MessageText, Time, utils} from 'react-native-gifted-chat';
 import {Foundation, MaterialIcons} from '@expo/vector-icons';
@@ -33,7 +34,9 @@ export default class Bubble extends React.Component {
       hidden: this.props.currentMessage.hidden,
       addFriend: this.props.currentMessage.addFriend || null,
       replies: [],
-      indent: 0
+      indent: 0,
+      newReply: false,
+      replyInput: ''
     };
   }
 
@@ -110,9 +113,7 @@ export default class Bubble extends React.Component {
         return this.props.renderMessageText(messageTextProps);
       }
       return (
-        <TouchableOpacity
-          onPress={() => this.addReply(this.props.currentMessage)}
-        >
+        <TouchableOpacity onPress={() => this.setState({newReply: true})}>
           <MessageText
             {...messageTextProps}
             textStyle={{
@@ -428,7 +429,7 @@ export default class Bubble extends React.Component {
       let repliesObj = replies.val();
       let repliesArr = [];
       for (let reply in repliesObj) {
-        repliesObj[reply].id = reply;
+        repliesObj[reply]._id = reply;
         repliesArr.push(repliesObj[reply]);
       }
       return repliesArr;
@@ -436,14 +437,28 @@ export default class Bubble extends React.Component {
       return [];
     }
   }
-  async addReply(parentMessage) {
-    let repliesWithInfo = this.state.replies.slice();
-    repliesWithInfo.forEach((reply) => {
-      (reply.parentId = parentMessage._id),
-        (reply.parentRoom = parentMessage.room);
-    });
-    this.setState({replies: repliesWithInfo});
-  }
+  addReply = async () => {
+    await this.sendReply();
+    this.setState({newReply: false});
+    let replies = await this.getReplies(this.props.currentMessage);
+    await this.setState({replies: replies});
+  };
+  sendReply = async () => {
+    const message = [
+      {
+        text: this.state.replyInput,
+        user: firebase.auth().currentUser.displayName
+      }
+    ];
+    await Fire.shared.send(
+      message,
+      this.props.currentMessage.room,
+      false,
+      false,
+      true,
+      this.props.currentMessage._id
+    );
+  };
 
   blockPopup = () => {
     const user = this.props.currentMessage.user.name;
@@ -500,6 +515,22 @@ export default class Bubble extends React.Component {
               {/* render reactions on messages with the reaction feature */}
               {this.renderReactions()}
               {this.renderReplies()}
+              {this.state.newReply && (
+                <View>
+                  <TextInput
+                    returnKeyType="done"
+                    placeholder="Type your reply"
+                    placeholderTextColor="#bfbfbf"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    style={styles.input}
+                    onChangeText={(replyInput) => this.setState({replyInput})}
+                  />
+                  <TouchableOpacity onPress={this.addReply}>
+                    <Text>Submit</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
           </View>
         </TouchableOpacity>
@@ -566,6 +597,28 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     marginLeft: 0,
     marginRight: 0
+  },
+  input: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'gray',
+    borderLeftWidth: 0.5,
+    borderLeftColor: 'gray',
+    borderRightWidth: 0.5,
+    borderRightColor: 'gray',
+    borderTopWidth: 0.5,
+    borderTopColor: 'gray',
+    backgroundColor: 'white',
+    padding: 5,
+    marginVertical: 20,
+    flexGrow: 1,
+    textAlignVertical: 'bottom',
+    marginLeft: 15,
+    marginRight: 15,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
+    borderBottomLeftRadius: 5,
+    minHeight: 30
   }
 });
 
