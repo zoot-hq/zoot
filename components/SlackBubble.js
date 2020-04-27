@@ -438,6 +438,19 @@ export default class Bubble extends React.Component {
       .then(function (snapshot) {
         return snapshot;
       });
+    // this returns a ref for every message in the chat, just need to match them to their respective replies
+
+    let replyRef = await ref
+      .child('replies')
+      .once('value')
+      .then(function (snapshot) {
+        return snapshot.getRef();
+      });
+    replyRef = String(replyRef);
+    console.log('original reply ref:', replyRef);
+    let startIdx = replyRef.indexOf('.com');
+    let path = replyRef.slice(startIdx + 4);
+    console.log('path:', path);
     if (replies) {
       // put the replies in an array so we can map through them
       let keyArr = [];
@@ -450,6 +463,7 @@ export default class Bubble extends React.Component {
       for (let reply in repliesObj) {
         // make the id a property on the reply object instead of its key to make the data more accessible
         repliesObj[reply]._id = reply;
+        repliesObj[reply].ref = path;
         repliesArr.push(repliesObj[reply]);
       }
       return repliesArr;
@@ -472,16 +486,19 @@ export default class Bubble extends React.Component {
     const message = [
       {
         text: this.state.replyInput,
-        user: firebase.auth().currentUser.displayName
+        user: {name: Fire.shared.username(), _id: Fire.shared.uid()}
       }
     ];
     // pm and live are false, reply is true, parentId is used to identify which message to add it to in the DB
+    // maybe the permission denied error is because the first reply doesn't have a reply ref?
+    // set the replyRef based on whether it has a parent message?
     await Fire.shared.send(
       message,
       this.props.currentMessage.room,
       false,
       false,
       true,
+      this.props.currentMessage.ref,
       this.props.currentMessage._id
     );
   };
