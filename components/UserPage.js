@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   StyleSheet,
   View,
@@ -15,7 +15,7 @@ import Fire from '../Fire';
 import * as firebase from 'firebase';
 import RNPickerSelect from 'react-native-picker-select';
 import * as MailComposer from 'expo-mail-composer';
-import { Ionicons, Feather, AntDesign } from '@expo/vector-icons';
+import {Ionicons, Feather, AntDesign} from '@expo/vector-icons';
 import NavBar from './Navbar';
 
 export default class UserPage extends Component {
@@ -38,33 +38,31 @@ export default class UserPage extends Component {
     };
     this.logout = this.logout.bind(this);
     this.roleList = [
-      'I\'m a New Mother.',
-      'I\'m a Surrogate.',
-      'I\'m a Gestational Carrier.',
-      'I\'m an Adoptive Parent.',
-      'I\'m a Hopeful Parent.',
-      'I\'m a Parent.',
-      'I\'m an Egg/Embryo Donor.',
-      'I\'n a New Parent.',
-      'I\'m Parent Recovering from Loss.',
-      'I\'m an Other Role Not Described Here.',
-      'I\'d Prefer Not to Disclose.'
-    ].map((role) => ({ label: role, value: role }));
+      "I'm a New Mother.",
+      "I'm a Surrogate.",
+      "I'm a Gestational Carrier.",
+      "I'm an Adoptive Parent.",
+      "I'm a Hopeful Parent.",
+      "I'm a Parent.",
+      "I'm an Egg/Embryo Donor.",
+      "I'n a New Parent.",
+      "I'm Parent Recovering from Loss.",
+      "I'm an Other Role Not Described Here.",
+      "I'd Prefer Not to Disclose."
+    ].map((role) => ({label: role, value: role}));
   }
   async componentDidMount() {
-
     // help icon
     this.helpAlert = () => {
       Alert.alert(
         'Help @ User Page',
         `Hey, ${this.state.user.displayName}! This is your very own user page! Update your information here`,
-        [{ text: 'Got it!' }]
-      )
-    }
-
+        [{text: 'Got it!'}]
+      );
+    };
 
     let role = await this.getUserInfo();
-    this.setState({ selectedRole: role });
+    this.setState({selectedRole: role});
   }
   async getUserInfo() {
     const name = this.state.user.displayName;
@@ -81,20 +79,26 @@ export default class UserPage extends Component {
     stateObj[type] = true;
     this.setState(stateObj);
   }
-  updateEmail() {
+  async updateEmail() {
     if (this.state.newEmail) {
-      this.setState({ error: false });
+      await firebase
+        .database()
+        .ref('users/' + this.state.user.displayName)
+        .update({
+          email: this.state.newEmail
+        });
+      this.setState({error: false});
       this.state.user
         .updateEmail(this.state.newEmail)
-        .then(() => this.setState({ emailModal: false }))
-        .catch((error) => this.setState({ error: error.message }));
+        .then(() => this.setState({emailModal: false}))
+        .catch((error) => this.setState({error: error.message}));
     } else {
-      this.setState({ error: 'Please enter a new email address.' });
+      this.setState({error: 'Please enter a new email address.'});
     }
   }
   updatePassword() {
     if (this.state.newPassword) {
-      this.setState({ error: false });
+      this.setState({error: false});
       this.state.user
         .updatePassword(this.state.newPassword)
         .then(() =>
@@ -103,35 +107,33 @@ export default class UserPage extends Component {
             passwordUpdated: true
           })
         )
-        .catch((error) => this.setState({ error: error.message }));
+        .catch((error) => this.setState({error: error.message}));
     } else {
-      this.setState({ error: 'Please enter a new password.' });
+      this.setState({error: 'Please enter a new password.'});
     }
   }
   async deleteUser() {
-    this.setState({ deleteUser: true, deleteModal: false });
+    this.setState({deleteUser: true, deleteModal: false});
     this.logout();
   }
   async logout() {
-    await this.updateDB();
     await firebase
       .auth()
       .signOut()
       .then(
         AsyncStorage.removeItem('apresLoginEmail'),
         AsyncStorage.removeItem('apresLoginPassword').catch((error) =>
-          this.setState({ error: error.message })
+          this.setState({error: error.message})
         )
       )
       .then(this.goHome());
   }
-  async updateDB() {
+  async updateRole() {
     await firebase
       .database()
       .ref('users/' + this.state.user.displayName)
       .update({
-        selectedRole: this.state.selectedRole,
-        email: this.state.newEmail
+        selectedRole: this.state.selectedRole
       });
   }
   goHome() {
@@ -161,7 +163,7 @@ export default class UserPage extends Component {
     };
     try {
       await MailComposer.composeAsync(options);
-      this.setState({ contactFormModal: false });
+      this.setState({contactFormModal: false});
     } catch (error) {
       if (error === 'Mail services are not available.') {
         this.setState({
@@ -174,14 +176,10 @@ export default class UserPage extends Component {
   render() {
     return (
       <View style={styles.container}>
-
         <View style={styles.innerView}>
-
           {/* help icon */}
           <View style={styles.help}>
-            <TouchableOpacity
-              onPress={() => this.helpAlert()}
-            >
+            <TouchableOpacity onPress={() => this.helpAlert()}>
               <AntDesign name="questioncircleo" size={20} color="black" />
             </TouchableOpacity>
           </View>
@@ -200,7 +198,7 @@ export default class UserPage extends Component {
             <Text></Text>
             {/* user email section */}
             <Text style={styles.userInfo}>email: {Fire.shared.email()}</Text>
-            <TouchableOpacity onPress={() => this.setState({ emailModal: true })}>
+            <TouchableOpacity onPress={() => this.setState({emailModal: true})}>
               <Text style={styles.userInfo}>Update email?</Text>
             </TouchableOpacity>
             <Modal isVisible={this.state.emailModal}>
@@ -209,10 +207,10 @@ export default class UserPage extends Component {
                 {this.state.error ? (
                   <Text style={styles.modalText}>{this.state.error}</Text>
                 ) : (
-                    <Text style={styles.modalText}>
-                      Type your new desired email address below.
-                    </Text>
-                  )}
+                  <Text style={styles.modalText}>
+                    Type your new desired email address below.
+                  </Text>
+                )}
                 <TextInput
                   returnKeyType="done"
                   placeholder="New email"
@@ -220,13 +218,13 @@ export default class UserPage extends Component {
                   autoCapitalize="none"
                   autoCorrect={false}
                   style={styles.input}
-                  onChangeText={(newEmail) => this.setState({ newEmail })}
+                  onChangeText={(newEmail) => this.setState({newEmail})}
                 />
                 <View style={styles.modalButtonsContainer}>
                   <TouchableOpacity
-                    style={{ width: 150 }}
+                    style={{width: 150}}
                     onPress={() =>
-                      this.setState({ emailModal: false, error: false })
+                      this.setState({emailModal: false, error: false})
                     }
                   >
                     <Text style={styles.modalButtonCancel}>Cancel</Text>
@@ -255,7 +253,7 @@ export default class UserPage extends Component {
                   <View>
                     <Text style={styles.modalTitle}>
                       Your password has been updated!
-                  </Text>
+                    </Text>
                     <TouchableOpacity
                       onPress={() =>
                         this.setState({
@@ -268,51 +266,53 @@ export default class UserPage extends Component {
                     </TouchableOpacity>
                   </View>
                 ) : (
-                    <View>
-                      <Text style={styles.modalTitle}>Update password</Text>
-                      {this.state.error ? (
-                        <Text style={styles.modalText}>{this.state.error}</Text>
-                      ) : (
-                          <Text style={styles.modalText}>
-                            Type your new desired password below.
-                          </Text>
-                        )}
-                      <TextInput
-                        returnKeyType="done"
-                        placeholder="New password"
-                        placeholderTextColor="#bfbfbf"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        secureTextEntry
-                        style={styles.input}
-                        onChangeText={(newPassword) => this.setState({ newPassword })}
-                      />
-                      <View style={styles.modalButtonsContainer}>
-                        <TouchableOpacity
-                          style={{ width: 150 }}
-                          onPress={() =>
-                            this.setState({
-                              passwordModal: false,
-                              passwordUpdated: false,
-                              error: false
-                            })
-                          }
-                        >
-                          <Text style={styles.modalButtonCancel}>Cancel</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={{
-                            width: 150,
-                            borderLeftWidth: 1,
-                            borderLeftColor: 'gray'
-                          }}
-                          onPress={() => this.updatePassword()}
-                        >
-                          <Text style={styles.modalButtonSave}>Save</Text>
-                        </TouchableOpacity>
-                      </View>
+                  <View>
+                    <Text style={styles.modalTitle}>Update password</Text>
+                    {this.state.error ? (
+                      <Text style={styles.modalText}>{this.state.error}</Text>
+                    ) : (
+                      <Text style={styles.modalText}>
+                        Type your new desired password below.
+                      </Text>
+                    )}
+                    <TextInput
+                      returnKeyType="done"
+                      placeholder="New password"
+                      placeholderTextColor="#bfbfbf"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      secureTextEntry
+                      style={styles.input}
+                      onChangeText={(newPassword) =>
+                        this.setState({newPassword})
+                      }
+                    />
+                    <View style={styles.modalButtonsContainer}>
+                      <TouchableOpacity
+                        style={{width: 150}}
+                        onPress={() =>
+                          this.setState({
+                            passwordModal: false,
+                            passwordUpdated: false,
+                            error: false
+                          })
+                        }
+                      >
+                        <Text style={styles.modalButtonCancel}>Cancel</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={{
+                          width: 150,
+                          borderLeftWidth: 1,
+                          borderLeftColor: 'gray'
+                        }}
+                        onPress={() => this.updatePassword()}
+                      >
+                        <Text style={styles.modalButtonSave}>Save</Text>
+                      </TouchableOpacity>
                     </View>
-                  )}
+                  </View>
+                )}
               </View>
             </Modal>
             <Text></Text>
@@ -322,13 +322,15 @@ export default class UserPage extends Component {
             </Text>
             <Text style={styles.userInfo}>
               Select from below to update your role.
-          </Text>
+            </Text>
             <RNPickerSelect
-              style={{ ...pickerSelectStyles }}
+              style={{...pickerSelectStyles}}
               onValueChange={(value) => {
-                this.setState({
-                  selectedRole: value
-                });
+                Promise.resolve(
+                  this.setState({
+                    selectedRole: value
+                  })
+                ).then(() => this.updateRole());
               }}
               items={this.roleList}
               placeholder={{
@@ -338,7 +340,7 @@ export default class UserPage extends Component {
             />
             {/* contact us functionality */}
             <TouchableOpacity
-              onPress={() => this.setState({ contactFormModal: true })}
+              onPress={() => this.setState({contactFormModal: true})}
               style={styles.userPageButton}
             >
               <Text style={styles.buttonText}>contact us</Text>
@@ -349,18 +351,18 @@ export default class UserPage extends Component {
                 {this.state.error ? (
                   <Text style={styles.modalText}>{this.state.error}</Text>
                 ) : (
-                    <Text style={styles.modalText}>
-                      If there is an issue you'd like us to address, send us a
-                      message by filling out this form.
-                    </Text>
-                  )}
+                  <Text style={styles.modalText}>
+                    If there is an issue you'd like us to address, send us a
+                    message by filling out this form.
+                  </Text>
+                )}
                 <TextInput
                   placeholder="Subject"
                   placeholderTextColor="#bfbfbf"
                   autoCapitalize="none"
                   autoCorrect={false}
-                  style={[styles.input, { marginVertical: 5 }]}
-                  onChangeText={(subject) => this.setState({ subject })}
+                  style={[styles.input, {marginVertical: 5}]}
+                  onChangeText={(subject) => this.setState({subject})}
                 />
                 <TextInput
                   returnKeyType="send"
@@ -376,13 +378,13 @@ export default class UserPage extends Component {
                       height: 100
                     }
                   ]}
-                  onChangeText={(message) => this.setState({ message })}
+                  onChangeText={(message) => this.setState({message})}
                 />
                 <View style={styles.modalButtonsContainer}>
                   <TouchableOpacity
-                    style={{ width: 150 }}
+                    style={{width: 150}}
                     onPress={() =>
-                      this.setState({ contactFormModal: false, error: false })
+                      this.setState({contactFormModal: false, error: false})
                     }
                   >
                     <Text style={styles.modalButtonCancel}>Cancel</Text>
@@ -401,12 +403,15 @@ export default class UserPage extends Component {
               </KeyboardAvoidingView>
             </Modal>
             {/* logout functionality */}
-            <TouchableOpacity onPress={this.logout} style={styles.userPageButton}>
+            <TouchableOpacity
+              onPress={this.logout}
+              style={styles.userPageButton}
+            >
               <Text style={styles.buttonText}>log out</Text>
             </TouchableOpacity>
             {/* delete account functionality */}
             <TouchableOpacity
-              onPress={() => this.setState({ deleteModal: true })}
+              onPress={() => this.setState({deleteModal: true})}
               style={styles.userPageButton}
             >
               <Text style={styles.buttonText}>delete</Text>
@@ -417,16 +422,16 @@ export default class UserPage extends Component {
                 {this.state.error ? (
                   <Text style={styles.modalText}>{this.state.error}</Text>
                 ) : (
-                    <Text style={styles.modalText}>
-                      By pressing "Delete", your account will be permanently
-                      deleted. This action cannot be undone.
-                    </Text>
-                  )}
+                  <Text style={styles.modalText}>
+                    By pressing "Delete", your account will be permanently
+                    deleted. This action cannot be undone.
+                  </Text>
+                )}
                 <View style={styles.deleteModalButtonsContainer}>
                   <TouchableOpacity
-                    style={{ width: 150 }}
+                    style={{width: 150}}
                     onPress={() =>
-                      this.setState({ deleteModal: false, error: false })
+                      this.setState({deleteModal: false, error: false})
                     }
                   >
                     <Text style={styles.modalButtonCancel}>Cancel</Text>
@@ -461,7 +466,7 @@ const styles = StyleSheet.create({
     marginTop: -30,
     marginBottom: 20,
     height: 20,
-    zIndex: 999,
+    zIndex: 999
   },
   innerView: {
     marginTop: 50,
@@ -482,7 +487,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 15,
     fontFamily: 'CormorantGaramond-Light',
-    marginTop: -15,
+    marginTop: -15
   },
   subtitle: {
     fontSize: 18,

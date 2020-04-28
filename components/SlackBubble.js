@@ -398,7 +398,6 @@ export default class Bubble extends React.Component {
 
   renderBlock() {
     const messageUsername = this.props.currentMessage.user.name;
-    console.log('messageUsername from renderBlock:', messageUsername);
     const currUser = Fire.shared.username();
     if (this.state.react && messageUsername != currUser) {
       return (
@@ -558,7 +557,7 @@ export default class Bubble extends React.Component {
               {this.renderReplies()}
               {/* this.state.newReply becomes true when a user clicks the message text/reply button */}
               {this.state.newReply && (
-                <View>
+                <View style={styles.replyInputContainer}>
                   <TextInput
                     returnKeyType="done"
                     placeholder="Type your reply"
@@ -666,7 +665,12 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
     borderBottomLeftRadius: 5,
-    minHeight: 30
+    minHeight: 30,
+    width: 200
+  },
+  replyInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
   }
 });
 

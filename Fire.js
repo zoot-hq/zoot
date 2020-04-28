@@ -32,7 +32,8 @@ class Fire {
       room,
       base64,
       react,
-      hidden
+      hidden,
+      isReply
     } = snapshot.val();
     const {key: _id} = snapshot;
     const message = {
@@ -48,7 +49,8 @@ class Fire {
       timestamp,
       base64,
       react,
-      hidden
+      hidden,
+      isReply
     };
     return message;
   };
