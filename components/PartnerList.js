@@ -132,7 +132,7 @@ export class PartnerList extends Component {
 
 
           {/* titles */}
-          <Text style={styles.title}>après</Text>
+          {/* <Text style={styles.title}>après</Text> */}
           <Text style={styles.subtitle2}>
             {/* Hey there! Après is proud to partner with our organizations. Users
             can privately interact with partnered organizations on Après by
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   },
   chatroomlist: {
     marginBottom: 30,
-    height: 300
+    height: 500
   },
   container: {
     display: 'flex',
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
     marginRight: 20,
     marginLeft: 20,
-    flex: 2
+    flex: 5
   },
   innerView: {
     marginTop: 50,
@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     letterSpacing: -1,
     marginBottom: 15,
-    fontFamily: 'Futura-Light',
+    fontFamily: 'CormorantGaramond-Light',
     marginTop: 10
   },
   buttonContainer: {

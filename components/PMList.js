@@ -82,7 +82,7 @@ export default class PMList extends React.Component {
 
 
           {/* titles */}
-          <Text style={styles.title}>après</Text>
+          {/* <Text style={styles.title}>après</Text> */}
 
 
           <Text style={styles.subtitle2}>
@@ -96,20 +96,20 @@ export default class PMList extends React.Component {
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                   {this.state.chatrooms.length
                     ? this.state.chatrooms.map((chatroom) =>
-                        <TouchableOpacity
-                          key={chatroom.name}
-                          style={styles.buttonContainer}
-                          onPress={() =>
-                            this.props.navigation.navigate('ChatRoom', {
-                              chatroom: chatroom.name,
-                              PM: true
-                            })
-                          }
-                        >
-                          <Text style={styles.buttonText}>
-                            <Entypo name="new-message" size={30} color="black" /> {this.getRoomName(chatroom.name)}
-                          </Text>
-                        </TouchableOpacity>
+                      <TouchableOpacity
+                        key={chatroom.name}
+                        style={styles.buttonContainer}
+                        onPress={() =>
+                          this.props.navigation.navigate('ChatRoom', {
+                            chatroom: chatroom.name,
+                            PM: true
+                          })
+                        }
+                      >
+                        <Text style={styles.buttonText}>
+                          <Entypo name="new-message" size={30} color="black" /> {this.getRoomName(chatroom.name)}
+                        </Text>
+                      </TouchableOpacity>
                     ) : null}
                 </ScrollView>
               </SafeAreaView>
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     letterSpacing: -1,
     marginBottom: 15,
-    fontFamily: 'Futura-Light',
+    fontFamily: 'CormorantGaramond-Light',
     marginTop: 10
   },
   buttonContainer: {
