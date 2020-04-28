@@ -13,7 +13,12 @@ export default AllReplies = (props) => {
               borderLeftWidth: 1
             }}
           >
-            <SlackMessage {...props} key={reply._id} currentMessage={reply} />
+            <SlackMessage
+              {...props}
+              key={reply._id}
+              currentMessage={reply}
+              dontShowDay={true}
+            />
           </View>
         );
       })}

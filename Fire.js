@@ -146,8 +146,49 @@ class Fire {
     refToMessage.child('flags').child('users').set({X: true});
   };
 
+  // send replies to the backend
+  sendReply = (newReply, room, replyRef, parentId) => {
+    const {text, user} = newReply;
+    const reply = {
+      text,
+      user,
+      room,
+      timestamp: this.timestamp,
+      createdAt: Date.now(),
+      isReply: true,
+      likes: {
+        count: 0,
+        users: {X: true}
+      },
+      loves: {
+        count: 0,
+        users: {X: true}
+      },
+      lightbulbs: {
+        count: 0,
+        users: {X: true}
+      },
+      flags: {
+        count: 0,
+        users: {X: true}
+      },
+      hidden: false,
+      react: true,
+      replies: []
+    };
+    firebase
+      // For 2+ levels of replies, this ends up creating a new reply in the room in the db in addition to the nested one, so far haven't found a way around that.
+      .database()
+      .ref(replyRef)
+      .push(reply);
+    // refToMessage.child('likes').child('users').set({X: true});
+    // refToMessage.child('loves').child('users').set({X: true});
+    // refToMessage.child('lightbulbs').child('users').set({X: true});
+    // refToMessage.child('flags').child('users').set({X: true});
+  };
+
   // send the message to the Backend
-  send = (messages, room, pm, live, reply, replyRef, parentId) => {
+  send = (messages, room, pm, live) => {
     for (let i = 0; i < messages.length; i++) {
       const {text, user} = messages[i];
       const message = {
@@ -181,15 +222,6 @@ class Fire {
         ? firebase.database().ref('PMrooms').child(room).push(message)
         : live
         ? firebase.database().ref('livechatrooms').child(room).push(message)
-        : reply
-        ? firebase
-            // this only posts data one level deep.
-            // instead of posting to parentId/replies, we'll have to push to ref we get when replies are retrieved and stored in state
-            .database()
-            .ref(replyRef)
-            // .child(parentId)
-            // .child('replies')
-            .push(message)
         : firebase.database().ref('chatrooms').child(room).push(message);
 
       // push users object to database

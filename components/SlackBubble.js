@@ -397,9 +397,8 @@ export default class Bubble extends React.Component {
   };
 
   renderBlock() {
-    const messageUsername = this.props.currentMessage.user.name
-      ? this.props.currentMessage.user.name
-      : this.props.currentMessage.user;
+    const messageUsername = this.props.currentMessage.user.name;
+    console.log('messageUsername from renderBlock:', messageUsername);
     const currUser = Fire.shared.username();
     if (this.state.react && messageUsername != currUser) {
       return (
@@ -438,19 +437,7 @@ export default class Bubble extends React.Component {
       .then(function (snapshot) {
         return snapshot;
       });
-    // this returns a ref for every message in the chat, just need to match them to their respective replies
-
-    let replyRef = await ref
-      .child('replies')
-      .once('value')
-      .then(function (snapshot) {
-        return snapshot.getRef();
-      });
-    replyRef = String(replyRef);
-    console.log('original reply ref:', replyRef);
-    let startIdx = replyRef.indexOf('.com');
-    let path = replyRef.slice(startIdx + 4);
-    console.log('path:', path);
+    const path = await this.getReplyRef(this.props.currentMessage);
     if (replies) {
       // put the replies in an array so we can map through them
       let keyArr = [];
@@ -471,9 +458,27 @@ export default class Bubble extends React.Component {
       return [];
     }
   }
+  async getReplyRef(parent) {
+    const ref = await firebase
+      .database()
+      .ref('chatrooms')
+      .child(parent.room)
+      .child(parent._id);
+    let replyRef = await ref
+      .child('replies')
+      .once('value')
+      .then(function (snapshot) {
+        return snapshot.getRef();
+      });
+    replyRef = String(replyRef);
+    let startIdx = replyRef.indexOf('.com');
+    let path = replyRef.slice(startIdx + 4);
+    return path;
+  }
   submitReply = async () => {
     // first send the reply to the database
-    await this.sendReply();
+    let replyRef = await this.getReplyRef(this.props.currentMessage);
+    await this.sendReply(replyRef);
     // then remove the input box from render (since we're finished with it)
     this.setState({newReply: false});
     // get all the replies from the database including the recently added reply
@@ -481,24 +486,17 @@ export default class Bubble extends React.Component {
     // put all the retrieved replies on the state to display them
     await this.setState({replies: replies});
   };
-  sendReply = async () => {
+  sendReply = async (replyRef) => {
     // format message to go to Fire.shared.send()
-    const message = [
-      {
-        text: this.state.replyInput,
-        user: {name: Fire.shared.username(), _id: Fire.shared.uid()}
-      }
-    ];
+    const message = {
+      text: this.state.replyInput,
+      user: {name: Fire.shared.username(), _id: Fire.shared.uid()}
+    };
     // pm and live are false, reply is true, parentId is used to identify which message to add it to in the DB
-    // maybe the permission denied error is because the first reply doesn't have a reply ref?
-    // set the replyRef based on whether it has a parent message?
-    await Fire.shared.send(
+    await Fire.shared.sendReply(
       message,
       this.props.currentMessage.room,
-      false,
-      false,
-      true,
-      this.props.currentMessage.ref,
+      replyRef,
       this.props.currentMessage._id
     );
   };
@@ -536,7 +534,7 @@ export default class Bubble extends React.Component {
       <View style={styles.headerView}>
         {this.renderUsername()}
         {this.renderTime()}
-        {/* {this.renderBlock()} */}
+        {this.renderBlock()}
         {/* {this.renderTicks()} */}
       </View>
     );
