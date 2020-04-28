@@ -397,9 +397,8 @@ export default class Bubble extends React.Component {
   };
 
   renderBlock() {
-    const messageUsername = this.props.currentMessage.user.name
-      ? this.props.currentMessage.user.name
-      : this.props.currentMessage.user;
+    const messageUsername = this.props.currentMessage.user.name;
+    console.log('messageUsername from renderBlock:', messageUsername);
     const currUser = Fire.shared.username();
     if (this.state.react && messageUsername != currUser) {
       return (
@@ -438,6 +437,7 @@ export default class Bubble extends React.Component {
       .then(function (snapshot) {
         return snapshot;
       });
+    const path = await this.getReplyRef(this.props.currentMessage);
     if (replies) {
       // put the replies in an array so we can map through them
       let keyArr = [];
@@ -450,6 +450,7 @@ export default class Bubble extends React.Component {
       for (let reply in repliesObj) {
         // make the id a property on the reply object instead of its key to make the data more accessible
         repliesObj[reply]._id = reply;
+        repliesObj[reply].ref = path;
         repliesArr.push(repliesObj[reply]);
       }
       return repliesArr;
@@ -457,9 +458,27 @@ export default class Bubble extends React.Component {
       return [];
     }
   }
+  async getReplyRef(parent) {
+    const ref = await firebase
+      .database()
+      .ref('chatrooms')
+      .child(parent.room)
+      .child(parent._id);
+    let replyRef = await ref
+      .child('replies')
+      .once('value')
+      .then(function (snapshot) {
+        return snapshot.getRef();
+      });
+    replyRef = String(replyRef);
+    let startIdx = replyRef.indexOf('.com');
+    let path = replyRef.slice(startIdx + 4);
+    return path;
+  }
   submitReply = async () => {
     // first send the reply to the database
-    await this.sendReply();
+    let replyRef = await this.getReplyRef(this.props.currentMessage);
+    await this.sendReply(replyRef);
     // then remove the input box from render (since we're finished with it)
     this.setState({newReply: false});
     // get all the replies from the database including the recently added reply
@@ -467,21 +486,17 @@ export default class Bubble extends React.Component {
     // put all the retrieved replies on the state to display them
     await this.setState({replies: replies});
   };
-  sendReply = async () => {
+  sendReply = async (replyRef) => {
     // format message to go to Fire.shared.send()
-    const message = [
-      {
-        text: this.state.replyInput,
-        user: firebase.auth().currentUser.displayName
-      }
-    ];
+    const message = {
+      text: this.state.replyInput,
+      user: {name: Fire.shared.username(), _id: Fire.shared.uid()}
+    };
     // pm and live are false, reply is true, parentId is used to identify which message to add it to in the DB
-    await Fire.shared.send(
+    await Fire.shared.sendReply(
       message,
       this.props.currentMessage.room,
-      false,
-      false,
-      true,
+      replyRef,
       this.props.currentMessage._id
     );
   };
@@ -519,7 +534,7 @@ export default class Bubble extends React.Component {
       <View style={styles.headerView}>
         {this.renderUsername()}
         {this.renderTime()}
-        {/* {this.renderBlock()} */}
+        {this.renderBlock()}
         {/* {this.renderTicks()} */}
       </View>
     );
