@@ -1,12 +1,19 @@
 import React from 'react';
-import { View, Text, StyleSheet, AppState, Alert, TouchableOpacity } from 'react-native';
-import { GiftedChat } from 'react-native-gifted-chat';
-import { MaterialIndicator } from 'react-native-indicators';
+import {
+  View,
+  Text,
+  StyleSheet,
+  AppState,
+  Alert,
+  TouchableOpacity
+} from 'react-native';
+import {GiftedChat} from 'react-native-gifted-chat';
+import {MaterialIndicator} from 'react-native-indicators';
 import SlackMessage from './SlackMessage';
 import Fire from '../Fire';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
-import { Ionicons, Feather, AntDesign } from '@expo/vector-icons';
+import {Ionicons, Feather, AntDesign} from '@expo/vector-icons';
 
 export default class ChatRoom extends React.Component {
   constructor(props) {
@@ -25,18 +32,14 @@ export default class ChatRoom extends React.Component {
   }
 
   componentDidMount = () => {
-
-
     // help icon
     this.helpAlert = () => {
       Alert.alert(
         'Help @ Message Boards',
         'Welcome to the message boards. \n\nReact to posts by longpressing icons beneath messages.\n\nPress the flag icon to flag abusive messages, and press the block icon to block abusive users.\n\nSwipe right to return to the home screen.',
-        [{ text: 'Got it!' }]
-      )
-    }
-
-
+        [{text: 'Got it!'}]
+      );
+    };
 
     //get messages for chatroom
     Fire.shared.on(
@@ -44,9 +47,11 @@ export default class ChatRoom extends React.Component {
       this.state.pm,
       this.state.live,
       (message) => {
-        this.setState((previousState) => ({
-          messages: GiftedChat.append(previousState.messages, message)
-        }));
+        if (message.user) {
+          this.setState((previousState) => ({
+            messages: GiftedChat.append(previousState.messages, message)
+          }));
+        }
       }
     );
 
@@ -121,7 +126,7 @@ export default class ChatRoom extends React.Component {
 
   renderMessage(props) {
     const {
-      currentMessage: { text: currText }
+      currentMessage: {text: currText}
     } = props;
 
     let messageTextStyle;
@@ -130,7 +135,7 @@ export default class ChatRoom extends React.Component {
 
   // load earlier messages from backend
   loadEarlier = async () => {
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
 
     const newMessages = [];
 
@@ -150,11 +155,11 @@ export default class ChatRoom extends React.Component {
       }));
     }
 
-    this.setState({ isLoading: false });
+    this.setState({isLoading: false});
   };
 
   // returns true if a user has scrolled to the top of all messages, false otherwise
-  isCloseToTop({ layoutMeasurement, contentOffset, contentSize }) {
+  isCloseToTop({layoutMeasurement, contentOffset, contentSize}) {
     const paddingToTop = 80;
     return (
       contentSize.height - layoutMeasurement.height - paddingToTop <=
@@ -189,19 +194,15 @@ export default class ChatRoom extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-
         <View style={styles.innerView}>
-
           {/* help button */}
           <View style={styles.help}>
-            <TouchableOpacity
-              onPress={() => this.helpAlert()}
-            >
+            <TouchableOpacity onPress={() => this.helpAlert()}>
               <AntDesign name="questioncircleo" size={20} color="black" />
             </TouchableOpacity>
           </View>
 
-          <View style={{ flex: 1, marginBottom: 40 }}>
+          <View style={{flex: 1, marginBottom: 40}}>
             <Text style={styles.title}>#{this.state.room}</Text>
             {/* <Text style={styles.tips}>
               Welcome to #{this.state.room}.
@@ -210,9 +211,9 @@ export default class ChatRoom extends React.Component {
               messages={this.state.messages}
               listViewProps={{
                 scrollEventThrottle: 400,
-                onScroll: ({ nativeEvent }) => {
+                onScroll: ({nativeEvent}) => {
                   if (this.isCloseToTop(nativeEvent) && !this.state.isLoading) {
-                    this.setState({ isLoading: true });
+                    this.setState({isLoading: true});
                     this.loadEarlier();
                   }
                 },
@@ -231,7 +232,7 @@ export default class ChatRoom extends React.Component {
               renderAvatar={null}
               sendImage={this.sendImage}
               renderLoading={() => <MaterialIndicator color="black" />}
-            // renderChatFooter={this.renderChatFooter}
+              // renderChatFooter={this.renderChatFooter}
             />
           </View>
         </View>
@@ -251,7 +252,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
     paddingLeft: 30,
     height: 20,
-    zIndex: 999,
+    zIndex: 999
   },
   container: {
     flex: 1,
@@ -267,7 +268,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     fontFamily: 'CormorantGaramond-Light',
     backgroundColor: 'white',
-    zIndex: 1,
+    zIndex: 1
   },
   tips: {
     fontSize: 11,
@@ -289,5 +290,5 @@ const styles = StyleSheet.create({
   innerView: {
     marginTop: 50,
     flex: 1
-  },
+  }
 });
