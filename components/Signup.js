@@ -13,18 +13,18 @@ import Fire from '../Fire';
 import RNPickerSelect from 'react-native-picker-select';
 
 const roleList = [
-  'A New Mother',
-  'A Surrogate',
-  'A Gestational Carrier',
-  'An Adoptive Parent',
-  'A Hopeful Parent',
-  'A Parent',
-  'An Egg/Embryo Donor',
-  'A New Parent',
-  'A Parent Recovering from Loss',
-  'Other',
-  'Prefer Not to Disclose'
-].map((role) => ({label: role, value: role}));
+  "I'm a New Mother.",
+  "I'm a Surrogate.",
+  "I'm a Gestational Carrier.",
+  "I'm an Adoptive Parent.",
+  "I'm a Hopeful Parent.",
+  "I'm a Parent.",
+  "I'm an Egg/Embryo Donor.",
+  "I'n a New Parent.",
+  "I'm Parent Recovering from Loss.",
+  "I'm an Other Role Not Described Here.",
+  "I'd Prefer Not to Disclose."
+].map((role) => ({ label: role, value: role }));
 
 export default class SignupScreen extends React.Component {
   constructor() {
@@ -55,14 +55,14 @@ export default class SignupScreen extends React.Component {
             4. If you experience a user who repeatedly behaves in an unacceptable manner, please flag the user for review.
             5. If you are struggling in a way that feels overwhelming, please see our resources for access to professional mental healthcare providers, and get help.
             6. We are open and love your feedback. Please send us your suggestions on how to improve your experience.`,
-      [{text: 'OK', onPress: () => this.handleSubmit()}]
+      [{ text: 'OK', onPress: () => this.handleSubmit() }]
     );
   };
 
-    async handleSubmit() {
-        // set user info into storage
-        await AsyncStorage.setItem('apresLoginEmail', this.state.email);
-        await AsyncStorage.setItem('apresLoginPassword', this.state.password);
+  async handleSubmit() {
+    // set user info into storage
+    await AsyncStorage.setItem('apresLoginEmail', this.state.email);
+    await AsyncStorage.setItem('apresLoginPassword', this.state.password);
 
     // naivgate into app
     this.props.navigation.navigate('WelcomePage');
@@ -76,7 +76,7 @@ export default class SignupScreen extends React.Component {
     };
     return (
       <View style={styles.container}>
-        <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
+        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
           <View style={styles.container}>
             <Text style={styles.title}>après</Text>
             <View style={styles.field}>
@@ -88,15 +88,15 @@ export default class SignupScreen extends React.Component {
                 autoCapitalize="none"
                 autoCorrect={false}
                 style={styles.input}
-                onChangeText={username => this.setState({username})}
+                onChangeText={username => this.setState({ username })}
                 ref={input => (this.username = input)}
                 blurOnSubmit={false}
               />
             </View>
             {(this.state.error === 'username is required.' ||
               this.state.error === 'username already taken.') && (
-              <Text style={styles.error}>{this.state.error}</Text>
-            )}
+                <Text style={styles.error}>{this.state.error}</Text>
+              )}
             <View style={styles.field}>
               <Text style={styles.text}>email</Text>
               <TextInput
@@ -107,7 +107,7 @@ export default class SignupScreen extends React.Component {
                 autoCapitalize="none"
                 autoCorrect={false}
                 style={styles.input}
-                onChangeText={email => this.setState({email})}
+                onChangeText={email => this.setState({ email })}
                 ref={input => (this.email = input)}
                 keyboardType="email-address"
                 blurOnSubmit={false}
@@ -115,9 +115,9 @@ export default class SignupScreen extends React.Component {
             </View>
             {(this.state.error === 'The email address is badly formatted.' ||
               this.state.error ===
-                'The email address is already in use by another account.') && (
-              <Text style={styles.error}>{this.state.error}</Text>
-            )}
+              'The email address is already in use by another account.') && (
+                <Text style={styles.error}>{this.state.error}</Text>
+              )}
             <View style={styles.field}>
               <Text style={styles.text}>password</Text>
               <TextInput
@@ -125,7 +125,7 @@ export default class SignupScreen extends React.Component {
                 secureTextEntry
                 onSubmitEditing={() => this.birthday.focus()}
                 style={styles.input}
-                onChangeText={password => this.setState({password})}
+                onChangeText={password => this.setState({ password })}
                 ref={input => (this.password = input)}
                 blurOnSubmit={false}
               />
@@ -133,9 +133,9 @@ export default class SignupScreen extends React.Component {
             {(this.state.error ===
               'The password must be 6 characters long or more.' ||
               this.state.error ===
-                'Password should be at least 6 characters') && (
-              <Text style={styles.error}>{this.state.error}</Text>
-            )}
+              'Password should be at least 6 characters') && (
+                <Text style={styles.error}>{this.state.error}</Text>
+              )}
             <View style={styles.field}>
               <Text style={styles.text}>birthday (ddmmyyyy)</Text>
               <TextInput
@@ -144,7 +144,7 @@ export default class SignupScreen extends React.Component {
                 onSubmitEditing={() => this.city.focus()}
                 autoCorrect={false}
                 style={styles.input}
-                onChangeText={birthday => this.setState({birthday})}
+                onChangeText={birthday => this.setState({ birthday })}
                 ref={input => (this.birthday = input)}
                 keyboardType="number-pad"
                 blurOnSubmit={false}
@@ -159,7 +159,7 @@ export default class SignupScreen extends React.Component {
                 autoCapitalize="none"
                 autoCorrect={false}
                 style={styles.input}
-                onChangeText={city => this.setState({city})}
+                onChangeText={city => this.setState({ city })}
                 ref={input => (this.city = input)}
                 blurOnSubmit={false}
               />
@@ -195,14 +195,14 @@ export default class SignupScreen extends React.Component {
             <View style={styles.roleIdOuterWrap}>
               <View style={styles.roleIdInnerWrap}>
                 <Text
-                  style={[{marginTop: 12, alignSelf: 'center'}, styles.text]}
+                  style={[{ marginTop: 12, alignSelf: 'center' }, styles.text]}
                 >
                   What best describes you?
                   {'\n'}
                 </Text>
                 <View>
                   <RNPickerSelect
-                    style={{...pickerSelectStyles}}
+                    style={{ ...pickerSelectStyles }}
                     onValueChange={(value) => {
                       this.setState({
                         selectedRole: value
@@ -249,7 +249,7 @@ export default class SignupScreen extends React.Component {
                 );
                 // if error occured, put it on state
                 if (status) {
-                  this.setState({error: status.message});
+                  this.setState({ error: status.message });
                 }
                 // if everything is good
                 else {
