@@ -32,7 +32,8 @@ class Fire {
       room,
       base64,
       react,
-      hidden
+      hidden,
+      isReply
     } = snapshot.val();
     const {key: _id} = snapshot;
     const message = {
@@ -48,7 +49,8 @@ class Fire {
       timestamp,
       base64,
       react,
-      hidden
+      hidden,
+      isReply
     };
     return message;
   };
@@ -146,8 +148,45 @@ class Fire {
     refToMessage.child('flags').child('users').set({X: true});
   };
 
+  // send replies to the backend
+  sendReply = (newReply, room, replyRef, parentId) => {
+    const {text, user} = newReply;
+    const reply = {
+      text,
+      user,
+      room,
+      timestamp: this.timestamp,
+      createdAt: Date.now(),
+      isReply: true,
+      likes: {
+        count: 0,
+        users: {X: true}
+      },
+      loves: {
+        count: 0,
+        users: {X: true}
+      },
+      lightbulbs: {
+        count: 0,
+        users: {X: true}
+      },
+      flags: {
+        count: 0,
+        users: {X: true}
+      },
+      hidden: false,
+      react: true,
+      replies: []
+    };
+    firebase
+      // For 2+ levels of replies, this ends up creating a new reply in the room in the db in addition to the nested one, so far haven't found a way around that.
+      .database()
+      .ref(replyRef)
+      .push(reply);
+  };
+
   // send the message to the Backend
-  send = (messages, room, pm, live, reply, parentId) => {
+  send = (messages, room, pm, live) => {
     for (let i = 0; i < messages.length; i++) {
       const {text, user} = messages[i];
       const message = {
@@ -181,14 +220,6 @@ class Fire {
         ? firebase.database().ref('PMrooms').child(room).push(message)
         : live
         ? firebase.database().ref('livechatrooms').child(room).push(message)
-        : reply
-        ? firebase
-            .database()
-            .ref('chatrooms')
-            .child(room)
-            .child(parentId)
-            .child('replies')
-            .push(message)
         : firebase.database().ref('chatrooms').child(room).push(message);
 
       // push users object to database
