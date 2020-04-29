@@ -1,10 +1,10 @@
 {
-  "expoServerPort": 19000,
-  "expoServerNgrokUrl": "https://eq-hia.anonymous.zoot.exp.direct",
-  "packagerNgrokUrl": "https://packager.eq-hia.anonymous.zoot.exp.direct",
-  "ngrokPid": 9008,
+  "expoServerPort": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "devToolsPort": 19002,
-  "packagerPort": 19001,
-  "packagerPid": 31242,
+  "packagerPort": null,
+  "packagerPid": null,
   "webpackServerPort": null
 }
