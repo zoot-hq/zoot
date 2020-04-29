@@ -183,10 +183,6 @@ class Fire {
       .database()
       .ref(replyRef)
       .push(reply);
-    // refToMessage.child('likes').child('users').set({X: true});
-    // refToMessage.child('loves').child('users').set({X: true});
-    // refToMessage.child('lightbulbs').child('users').set({X: true});
-    // refToMessage.child('flags').child('users').set({X: true});
   };
 
   // send the message to the Backend
