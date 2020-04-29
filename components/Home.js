@@ -22,7 +22,8 @@ export default class HomeScreen extends React.Component {
     // get fonts
     await Font.loadAsync({
       'CormorantGaramond-Light': require('../assets/fonts/CormorantGaramond-Light.ttf'),
-      'Futura-Light': require('../assets/fonts/FuturaLight.ttf')
+      'Futura-Light': require('../assets/fonts/FuturaLight.ttf'),
+      'Futura-Medium': require('../assets/fonts/FuturaMedium.ttf')
     });
 
     // attempt to login user in
@@ -36,7 +37,7 @@ export default class HomeScreen extends React.Component {
     }
 
     // else navigate to regular login
-    else this.setState({readyToLoad: true});
+    else this.setState({ readyToLoad: true });
   }
   render() {
     if (!this.state.readyToLoad) {

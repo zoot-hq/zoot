@@ -18,6 +18,8 @@ import { Ionicons, Feather, AntDesign } from '@expo/vector-icons';
 import BackIcon from '../assets/icons/BackIcon';
 import HelpIcon from '../assets/icons/HelpIcon';
 
+import BackButton from './BackButton';
+
 
 export default class ChatRoom extends React.Component {
   constructor(props) {
