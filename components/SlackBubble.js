@@ -36,7 +36,8 @@ export default class Bubble extends React.Component {
       replies: [],
       indent: 0,
       newReply: false,
-      replyInput: ''
+      replyInput: '',
+      showReplies: true
     };
   }
 
@@ -415,12 +416,29 @@ export default class Bubble extends React.Component {
   renderReplies() {
     if (this.state.replies.length) {
       return (
-        <AllReplies
-          {...this.props}
-          // parentIndent indents the reply +10 spaces from its parent message
-          parentIndent={this.state.indent}
-          replies={this.state.replies}
-        />
+        <View>
+          {this.state.showReplies ? (
+            <View>
+              <TouchableOpacity
+                onPress={() => this.setState({showReplies: false})}
+              >
+                <Text style={styles.replyButton}>Hide replies</Text>
+              </TouchableOpacity>
+              <AllReplies
+                {...this.props}
+                // parentIndent indents the reply +10 spaces from its parent message
+                parentIndent={this.state.indent}
+                replies={this.state.replies}
+              />
+            </View>
+          ) : (
+            <TouchableOpacity
+              onPress={() => this.setState({showReplies: true})}
+            >
+              <Text style={styles.replyButton}>Show replies</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       );
     }
   }
@@ -557,7 +575,7 @@ export default class Bubble extends React.Component {
               {this.renderReplies()}
               {/* this.state.newReply becomes true when a user clicks the message text/reply button */}
               {this.state.newReply && (
-                <View style={styles.replyInputContainer}>
+                <View>
                   <TextInput
                     returnKeyType="done"
                     placeholder="Type your reply"
@@ -567,9 +585,16 @@ export default class Bubble extends React.Component {
                     style={styles.input}
                     onChangeText={(replyInput) => this.setState({replyInput})}
                   />
-                  <TouchableOpacity onPress={this.submitReply}>
-                    <Text>Submit</Text>
-                  </TouchableOpacity>
+                  <View style={styles.replyInputContainer}>
+                    <TouchableOpacity
+                      onPress={() => this.setState({newReply: false})}
+                    >
+                      <Text style={styles.replyButton}>Cancel</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this.submitReply}>
+                      <Text style={styles.replyButton}>Submit</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               )}
             </View>
@@ -656,7 +681,7 @@ const styles = StyleSheet.create({
     borderTopColor: 'gray',
     backgroundColor: 'white',
     padding: 5,
-    marginVertical: 20,
+    marginVertical: 5,
     flexGrow: 1,
     textAlignVertical: 'bottom',
     marginLeft: 15,
@@ -670,7 +695,11 @@ const styles = StyleSheet.create({
   },
   replyInputContainer: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'space-around'
+  },
+  replyButton: {
+    fontFamily: 'CormorantGaramond-Light'
   }
 });
 
