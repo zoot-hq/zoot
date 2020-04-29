@@ -20,6 +20,10 @@ import {
 } from 'react-navigation';
 import * as MailComposer from 'expo-mail-composer';
 
+import BookmarkIcon from '../assets/icons/BookmarkIcon';
+import HelpIcon from '../assets/icons/HelpIcon';
+
+
 
 import Navbar from './Navbar';
 import ChatList from './ChatList';
@@ -38,12 +42,21 @@ export class PartnerList extends Component {
 
   async componentDidMount() {
 
-    // help icon
+    // help alert
     this.helpAlert = () => {
       Alert.alert(
-        'Help @ Partnered Organizations',
+        'Help',
         'Hey there! \n\n Après is proud to partner with our organizations. \n\nUsers can privately interact with partnered organizations on Après by requesting a secret access code from the real - world organizations which they belong to.',
         [{ text: 'Got it!' }]
+      )
+    }
+
+    // bookmark alert
+    this.bookmark = () => {
+      Alert.alert(
+        'Bookmarks coming soon!',
+        'Bookmarked boards are in the works. Hang tight!',
+        [{ text: 'OK!' }]
       )
     }
 
@@ -120,19 +133,30 @@ export class PartnerList extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
-
-          {/* help icon */}
+          {/* bookmark button */}
           <View style={styles.help}>
+
+            <TouchableOpacity
+              onPress={() => this.bookmark()}
+            >
+              <BookmarkIcon />
+            </TouchableOpacity>
+
+
+            {/* help button */}
+
             <TouchableOpacity
               onPress={() => this.helpAlert()}
             >
-              <AntDesign name="questioncircleo" size={20} color="black" />
+              {/* <AntDesign name="questioncircleo" size={20} color="black" /> */}
+              <HelpIcon />
             </TouchableOpacity>
+
           </View>
 
 
           {/* titles */}
-          <Text style={styles.title}>après</Text>
+          {/* <Text style={styles.title}>après</Text> */}
           <Text style={styles.subtitle2}>
             {/* Hey there! Après is proud to partner with our organizations. Users
             can privately interact with partnered organizations on Après by
@@ -232,15 +256,16 @@ const styles = StyleSheet.create({
   help: {
     display: 'flex',
     flexDirection: 'row',
-    alignSelf: 'flex-end',
+    justifyContent: 'space-between',
     backgroundColor: 'white',
     marginTop: -30,
     marginBottom: 20,
     height: 20,
+    zIndex: 999,
   },
   chatroomlist: {
     marginBottom: 30,
-    height: 300
+    height: 500
   },
   container: {
     display: 'flex',
@@ -252,7 +277,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
     marginRight: 20,
     marginLeft: 20,
-    flex: 2
+    flex: 5
   },
   innerView: {
     marginTop: 50,
@@ -283,7 +308,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     letterSpacing: -1,
     marginBottom: 15,
-    fontFamily: 'Futura-Light',
+    fontFamily: 'CormorantGaramond-Light',
     marginTop: 10
   },
   buttonContainer: {

@@ -22,7 +22,8 @@ export default class HomeScreen extends React.Component {
     // get fonts
     await Font.loadAsync({
       'CormorantGaramond-Light': require('../assets/fonts/CormorantGaramond-Light.ttf'),
-      'Futura-Light': require('../assets/fonts/FuturaLight.ttf')
+      'Futura-Light': require('../assets/fonts/FuturaLight.ttf'),
+      'Futura-Medium': require('../assets/fonts/FuturaMedium.ttf')
     });
 
     // attempt to login user in
@@ -36,7 +37,7 @@ export default class HomeScreen extends React.Component {
     }
 
     // else navigate to regular login
-    else this.setState({readyToLoad: true});
+    else this.setState({ readyToLoad: true });
   }
   render() {
     if (!this.state.readyToLoad) {
@@ -75,15 +76,16 @@ const styles = StyleSheet.create({
     flex: 1
   },
   title: {
-    fontSize: 60,
+    fontSize: 120,
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 50,
+    marginTop: -100,
     fontFamily: 'CormorantGaramond-Light'
   },
   buttonContainer: {
     borderStyle: 'solid',
-    borderWidth: 1,
+    borderWidth: 0,
     paddingVertical: 5,
     marginBottom: 15,
     marginRight: 50,
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'black',
     fontWeight: '600',
-    fontSize: 30,
-    fontFamily: 'CormorantGaramond-Light'
+    fontSize: 40,
+    fontFamily: 'Futura-Light'
   }
 });
