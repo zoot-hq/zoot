@@ -643,9 +643,9 @@ const styles = StyleSheet.create({
   }
 });
 
+
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
-    marginVertical: 10,
     alignSelf: 'center',
     fontSize: 16,
     paddingTop: 13,
@@ -655,6 +655,8 @@ const pickerSelectStyles = StyleSheet.create({
     borderColor: 'gray',
     borderRadius: 4,
     backgroundColor: 'white',
-    color: 'black'
+    color: 'black',
+    fontFamily: 'Futura-Light',
+    width: 300,
   }
 });

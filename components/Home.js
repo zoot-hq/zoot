@@ -76,15 +76,16 @@ const styles = StyleSheet.create({
     flex: 1
   },
   title: {
-    fontSize: 60,
+    fontSize: 120,
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 50,
+    marginTop: -100,
     fontFamily: 'CormorantGaramond-Light'
   },
   buttonContainer: {
     borderStyle: 'solid',
-    borderWidth: 1,
+    borderWidth: 0,
     paddingVertical: 5,
     marginBottom: 15,
     marginRight: 50,
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'black',
     fontWeight: '600',
-    fontSize: 30,
-    fontFamily: 'CormorantGaramond-Light'
+    fontSize: 40,
+    fontFamily: 'Futura-Light'
   }
 });
