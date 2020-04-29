@@ -20,6 +20,10 @@ import {
 } from 'react-navigation';
 import * as MailComposer from 'expo-mail-composer';
 
+import BookmarkIcon from '../assets/icons/BookmarkIcon';
+import HelpIcon from '../assets/icons/HelpIcon';
+
+
 
 import Navbar from './Navbar';
 import ChatList from './ChatList';
@@ -38,12 +42,21 @@ export class PartnerList extends Component {
 
   async componentDidMount() {
 
-    // help icon
+    // help alert
     this.helpAlert = () => {
       Alert.alert(
-        'Help @ Partnered Organizations',
+        'Help',
         'Hey there! \n\n Après is proud to partner with our organizations. \n\nUsers can privately interact with partnered organizations on Après by requesting a secret access code from the real - world organizations which they belong to.',
         [{ text: 'Got it!' }]
+      )
+    }
+
+    // bookmark alert
+    this.bookmark = () => {
+      Alert.alert(
+        'Bookmarks coming soon!',
+        'Bookmarked boards are in the works. Hang tight!',
+        [{ text: 'OK!' }]
       )
     }
 
@@ -120,14 +133,25 @@ export class PartnerList extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
-
-          {/* help icon */}
+          {/* bookmark button */}
           <View style={styles.help}>
+
+            <TouchableOpacity
+              onPress={() => this.bookmark()}
+            >
+              <BookmarkIcon />
+            </TouchableOpacity>
+
+
+            {/* help button */}
+
             <TouchableOpacity
               onPress={() => this.helpAlert()}
             >
-              <AntDesign name="questioncircleo" size={20} color="black" />
+              {/* <AntDesign name="questioncircleo" size={20} color="black" /> */}
+              <HelpIcon />
             </TouchableOpacity>
+
           </View>
 
 
@@ -232,11 +256,12 @@ const styles = StyleSheet.create({
   help: {
     display: 'flex',
     flexDirection: 'row',
-    alignSelf: 'flex-end',
+    justifyContent: 'space-between',
     backgroundColor: 'white',
     marginTop: -30,
     marginBottom: 20,
     height: 20,
+    zIndex: 999,
   },
   chatroomlist: {
     marginBottom: 30,

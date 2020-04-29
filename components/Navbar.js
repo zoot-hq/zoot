@@ -3,7 +3,8 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  Alert
+  Alert,
+  Image
 } from 'react-native';
 import {
   AntDesign,
@@ -12,24 +13,23 @@ import {
   MaterialCommunityIcons
 } from '@expo/vector-icons';
 import Fire from '../Fire';
-import {withNavigation} from 'react-navigation';
+import { withNavigation } from 'react-navigation';
+import Svg, { Circle, Rect } from 'react-native-svg';
 
-// import { NavigationContainer } from '@react-navigation/native';
-// import { createStackNavigator } from '@react-navigation/stack';
-// const Stack = createStackNavigator();
-// function MyStack() {
-//     return (
-//         <NavigationContainer>
-//             <Stack.Navigator>
-//                 <Stack.Screen
-//                     name="Home"
-//                     component={ChatList}
-//                 />
-//                 <Stack.Screen name="UserPage" component={UserPage} />
-//             </Stack.Navigator>
-//         </NavigationContainer>
-//     );
-// }
+import HomeIcon from '../assets/icons/HomeIcon.js'
+
+import UserIcon from '../assets/icons/UserIcon.js'
+
+import InboxIcon from '../assets/icons/InboxIcon.js'
+
+import LiveIcon from '../assets/icons/LiveIcon.js'
+
+import PartnerIcon from '../assets/icons/PartnerIcon.js'
+
+import ResourceIcon from '../assets/icons/ResourceIcon.js'
+
+
+
 
 class Navbar extends React.Component {
   constructor() {
@@ -42,8 +42,8 @@ class Navbar extends React.Component {
   }
 
   componentDidMount = () => {
-      this.getLiveChatAvailability();
-      this.getNumUnreadMessages()
+    this.getLiveChatAvailability();
+    this.getNumUnreadMessages()
 
     setInterval(() => {
       this.getLiveChatAvailability();
@@ -53,7 +53,7 @@ class Navbar extends React.Component {
 
   getNumUnreadMessages = () => {
     Fire.shared.getNumUnreadMessages((num) => {
-      this.setState({numUnreadMessages : +num})
+      this.setState({ numUnreadMessages: +num })
     })
   }
 
@@ -68,61 +68,61 @@ class Navbar extends React.Component {
         4. If you experience a user who repeatedly behaves in an unacceptable manner, please flag the user for review.
         5. If you are struggling in a way that feels overwhelming, please see our resources for access to professional mental healthcare providers, and get help.
         6. We are open and love your feedback. Please send us your suggestions on how to improve your experience.`,
-            [
-                {
-                    text: 'OK',
-                    onPress: () =>
-                        this.props.navigation.navigate('ChatRoom', {
-                            chatroom: timeToAcceptableFirebaseString,
-                            live: true
-                        })
-                }
-            ]
-        );
-    };
+      [
+        {
+          text: 'OK',
+          onPress: () =>
+            this.props.navigation.navigate('ChatRoom', {
+              chatroom: timeToAcceptableFirebaseString,
+              live: true
+            })
+        }
+      ]
+    );
+  };
 
-    getLiveChatAvailability = () => {
+  getLiveChatAvailability = () => {
 
-        // get nyc time
-        const currTime = new Date();
-        const currNyTime = this.changeTimezone(currTime, 'America/New_York');
+    // get nyc time
+    const currTime = new Date();
+    const currNyTime = this.changeTimezone(currTime, 'America/New_York');
 
-        // if time is inside set time for live chat, set state to true
-        if (
-            currNyTime.getDay() === 3 &&
-            (currNyTime.getHours() === 21 ||
-                (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30))
-        )
-            this.setState({ liveChatAvailable: true });
-    };
+    // if time is inside set time for live chat, set state to true
+    if (
+      currNyTime.getDay() === 3 &&
+      (currNyTime.getHours() === 21 ||
+        (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30))
+    )
+      this.setState({ liveChatAvailable: true });
+  };
 
-    liveChat = () => {
-        // get nyc time
-        const currTime = new Date();
-        const currNyTime = this.changeTimezone(currTime, 'America/New_York');
+  liveChat = () => {
+    // get nyc time
+    const currTime = new Date();
+    const currNyTime = this.changeTimezone(currTime, 'America/New_York');
 
-        // if time is inside set time for live chat
-        if (
-            (
-                currNyTime.getDay() === 2 &&
-                (currNyTime.getHours() === 21 ||
-                    (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30))
-            )
-        ) {
-            const timeToAcceptableFirebaseString = `live-${currNyTime.getMonth()}-${currNyTime.getDate()}-${currNyTime.getFullYear()}`;
+    // if time is inside set time for live chat
+    if (
+      (
+        currNyTime.getDay() === 2 &&
+        (currNyTime.getHours() === 21 ||
+          (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30))
+      )
+    ) {
+      const timeToAcceptableFirebaseString = `live-${currNyTime.getMonth()}-${currNyTime.getDate()}-${currNyTime.getFullYear()}`;
 
-            Fire.shared.createLiveRoomIfDoesNotExist(
-                timeToAcceptableFirebaseString,
-                () => {
-                    this.communityPopup(timeToAcceptableFirebaseString);
-                }
-            );
-        } else {
-            Alert.alert(
-                'Live Chat Unavailable',
-                'Sorry we missed you! Live chat is available every Wednesday from 9PM EST until 10:30PM EST. No invitation necessary!',
-                [{ text: 'See you next time!' }]
-            );
+      Fire.shared.createLiveRoomIfDoesNotExist(
+        timeToAcceptableFirebaseString,
+        () => {
+          this.communityPopup(timeToAcceptableFirebaseString);
+        }
+      );
+    } else {
+      Alert.alert(
+        'Live Chat Unavailable',
+        'Sorry we missed you! Live chat is available every Wednesday from 9PM EST until 10:30PM EST. No invitation necessary!',
+        [{ text: 'See you next time!' }]
+      );
     }
   };
 
@@ -143,37 +143,57 @@ class Navbar extends React.Component {
           <TouchableOpacity
             onPress={() => this.props.navigation.replace('ChatList')}
           >
-            <AntDesign name="home" size={30} color="black" />
+            {/* <AntDesign name="home" size={30} color="black" /> */}
+
+            <HomeIcon />
+
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => this.props.navigation.replace('UserPage')}
           >
-            <AntDesign name="user" size={30} color="black"></AntDesign>
+            {/* <AntDesign name="user" size={30} color="black"></AntDesign> */}
+
+            <UserIcon />
+
+
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => this.props.navigation.replace('PMList')}
           >
-            <AntDesign name="message1" size={30} color="black" />
+            {/* <AntDesign name="message1" size={30} color="black" /> */}
+
+            <InboxIcon />
+
+
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={this.liveChat}
           >
-            <Ionicons name="md-megaphone" size={30} color="black" />
+            {/* <Ionicons name="md-megaphone" size={30} color="black" /> */}
+
+            <LiveIcon />
+
+
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => this.props.navigation.replace('PartnerList')}
           >
-            <MaterialIcons name="account-balance" size={30} color="black" />
+            {/* <MaterialIcons name="account-balance" size={30} color="black" /> */}
+
+            <PartnerIcon />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => this.props.navigation.replace('Resources')}
           >
-            <AntDesign name="book" size={30} color="black" />
+            {/* <AntDesign name="book" size={30} color="black" /> */}
+
+            <ResourceIcon />
+
           </TouchableOpacity>
         </View>
 

@@ -17,6 +17,8 @@ import RNPickerSelect from 'react-native-picker-select';
 import * as MailComposer from 'expo-mail-composer';
 import { Ionicons, Feather, AntDesign } from '@expo/vector-icons';
 import NavBar from './Navbar';
+import BookmarkIcon from '../assets/icons/BookmarkIcon';
+import HelpIcon from '../assets/icons/HelpIcon';
 
 export default class UserPage extends Component {
   constructor(props) {
@@ -52,14 +54,23 @@ export default class UserPage extends Component {
     ].map((role) => ({ label: role, value: role }));
   }
   async componentDidMount() {
-    // help icon
+    // help alert
     this.helpAlert = () => {
       Alert.alert(
-        'Help @ User Page',
-        `Hey, ${this.state.user.displayName}! This is your very own user page! Update your information here`,
+        'Help',
+        'Update your information here.',
         [{ text: 'Got it!' }]
-      );
-    };
+      )
+    }
+
+    // bookmark alert
+    this.bookmark = () => {
+      Alert.alert(
+        'Bookmarks coming soon!',
+        'Bookmarked boards are in the works. Hang tight!',
+        [{ text: 'OK!' }]
+      )
+    }
 
     let role = await this.getUserInfo();
     this.setState({ selectedRole: role });
@@ -177,12 +188,29 @@ export default class UserPage extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
-          {/* help icon */}
+
+          {/* bookmark button */}
           <View style={styles.help}>
-            <TouchableOpacity onPress={() => this.helpAlert()}>
-              <AntDesign name="questioncircleo" size={20} color="black" />
+
+            <TouchableOpacity
+              onPress={() => this.bookmark()}
+            >
+              <BookmarkIcon />
             </TouchableOpacity>
+
+
+            {/* help button */}
+
+            <TouchableOpacity
+              onPress={() => this.helpAlert()}
+            >
+              {/* <AntDesign name="questioncircleo" size={20} color="black" /> */}
+              <HelpIcon />
+            </TouchableOpacity>
+
           </View>
+
+
           {/* <Text style={styles.title}>après</Text> */}
           <Text style={styles.subtitle2}>
             {/* Hey, {this.state.user.displayName}! This is your very own user page!
@@ -466,12 +494,12 @@ const styles = StyleSheet.create({
   help: {
     display: 'flex',
     flexDirection: 'row',
-    alignSelf: 'flex-end',
+    justifyContent: 'space-between',
     backgroundColor: 'white',
     marginTop: -30,
     marginBottom: 20,
     height: 20,
-    zIndex: 999
+    zIndex: 999,
   },
   innerView: {
     marginTop: 50,

@@ -1,6 +1,6 @@
 import React from 'react';
 import SlackMessage from './SlackMessage';
-import {View} from 'react-native';
+import { View } from 'react-native';
 
 export default AllReplies = (props) => {
   return (
