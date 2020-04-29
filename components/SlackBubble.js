@@ -108,7 +108,7 @@ export default class Bubble extends React.Component {
     if (this.state.hidden && !this.isSameUser()) {
       return (
         <TouchableOpacity onLongPress={() => this.unhideMessage()}>
-          <Text style={styles.slackMessageText}>
+          <Text style={styles.slackMessageTextFlagged}>
             This message has been flagged by a user as abusive. Longpress here
             to view this message which may contain objectionable content at your
             own volition and risk.{' '}
@@ -353,7 +353,7 @@ export default class Bubble extends React.Component {
   renderReactions = () => {
     if (this.state.react || this.isSameUser())
       return (
-        <View style={{ display: 'flex', flexDirection: 'row' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 15 }}>
           <TouchableOpacity
             style={{ marginRight: 20 }}
             onLongPress={() => this.react('likes')}
@@ -408,7 +408,7 @@ export default class Bubble extends React.Component {
             style={{ marginRight: 20 }}
             onPress={() => this.setState({ newReply: true })}
           >
-            <Feather name="corner-right-down" color="lightgrey" size={20} />
+            <Feather name="corner-right-down" color="lightgrey" size={15} />
           </TouchableOpacity>
 
           {this.renderDisplayReplies()}
@@ -673,6 +673,12 @@ const styles = StyleSheet.create({
   //   fontFamily: 'CormorantGaramond-Light'
   // },
   slackMessageText: {
+    marginLeft: 0,
+    marginRight: 0,
+    fontFamily: 'Futura-Light',
+    color: 'black',
+  },
+  slackMessageTextFlagged: {
     marginLeft: 0,
     marginRight: 0,
     fontFamily: 'Futura-Light',
