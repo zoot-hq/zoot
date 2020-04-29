@@ -1,10 +1,10 @@
 {
-  "expoServerPort": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerPort": 19000,
+  "expoServerNgrokUrl": "https://xq-zmd.malkam.zoot.exp.direct",
+  "packagerNgrokUrl": "https://packager.xq-zmd.malkam.zoot.exp.direct",
+  "ngrokPid": 34149,
   "devToolsPort": 19002,
-  "packagerPort": null,
-  "packagerPid": null,
+  "packagerPort": 19001,
+  "packagerPid": 34137,
   "webpackServerPort": null
 }

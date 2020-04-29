@@ -15,8 +15,8 @@ import {MaterialIndicator} from 'react-native-indicators';
 import {Notifications} from 'expo';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
-import { Ionicons, MaterialIcons, AntDesign } from '@expo/vector-icons';
-import {componentDidMount as loadNavbar} from './Navbar'
+import {Ionicons, MaterialIcons, AntDesign} from '@expo/vector-icons';
+import {componentDidMount as loadNavbar} from './Navbar';
 import Navbar from './Navbar';
 
 export default class ChatList extends React.Component {
@@ -31,28 +31,25 @@ export default class ChatList extends React.Component {
   }
   // EV: this was component Will Mount - had to change it to "did" because otherwise it can't update state (apparently you can't do that from an unmounted component). This was eventually what worked! It still gave me a warning, but it also worked.
   async componentDidMount() {
-
     // help icon
     this.helpAlert = () => {
       Alert.alert(
         'Help @ Home',
-        'Welcome to après!\n\n This is your home page.\n\n Use the navbar to navigate to your user page, your personal messages, live chat, our partnered boards, and the resources page. \n\n Search our message boards for a topic you\'re interested in. Don\'t see it already? Press the + icon to create it, and start the conversation! ',
-        [{ text: 'Got it!' }]
-      )
-    }
+        "Welcome to après!\n\n This is your home page.\n\n Use the navbar to navigate to your user page, your personal messages, live chat, our partnered boards, and the resources page. \n\n Search our message boards for a topic you're interested in. Don't see it already? Press the + icon to create it, and start the conversation! ",
+        [{text: 'Got it!'}]
+      );
+    };
 
     // This updates the partner property in the state successfully
-    const { params } = this.props.navigation.state;
-    console.log({ params });
+    const {params} = this.props.navigation.state;
     if (params) {
       const partner = params.partner ? params.partner : null;
       await this.setState(
-        { partner: partner },
+        {partner: partner},
         console.log('partner in state at line 40, ', this.state.partner)
       );
     }
 
-    // EV: One thing I tried to do is add the partner (from state) to the arguments of Fire.shared.getChatroomNames, then adding it to the function in fire.js (see there, line 379).
     // grab chatrooms = every room has a name and numOnline attribute
     Fire.shared.getChatRoomNames((newRoom) => {
       const queriedChatrooms = this.state.queriedChatrooms;
@@ -62,14 +59,6 @@ export default class ChatList extends React.Component {
         newRoom.name.toLowerCase().includes(this.state.query.toLowerCase())
       ) {
         queriedChatrooms.push(newRoom);
-        
-//       if (newRoom.name) {
-//         if (
-//           newRoom.name.toLowerCase().includes(this.state.query.toLowerCase())
-//         ) {
-//           queriedChatrooms.push(newRoom);
-//         }
-
         // update state
         this.setState({
           chatrooms: [...this.state.chatrooms, newRoom].sort((a, b) =>
@@ -107,7 +96,7 @@ export default class ChatList extends React.Component {
     // set what the app does when a user clicks on notification
     this._notificationSubscription = Notifications.addListener(
       (notification) => {
-        const { pm, room } = notification.data;
+        const {pm, room} = notification.data;
 
         // if notification is due to pm
         if (pm) {
@@ -135,18 +124,20 @@ export default class ChatList extends React.Component {
 
       const livechatnotif = {
         title: 'live chat',
-        body: 'live chat starting now',
-      }
+        body: 'live chat starting now'
+      };
 
       const schedulingOptions = {
-        time: (new Date()).getTime() + 1000,
+        time: new Date().getTime() + 1000,
         repat: 'weekly'
-      }
+      };
 
       // schedule live chat notifications
-      Notifications.scheduleLocalNotificationAsync(livechatnotif, schedulingOptions)
-
-    } catch (error) { }
+      Notifications.scheduleLocalNotificationAsync(
+        livechatnotif,
+        schedulingOptions
+      );
+    } catch (error) {}
   };
 
   componentWillUnmount() {
@@ -157,12 +148,9 @@ export default class ChatList extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
-
           {/* help button */}
           <View style={styles.help}>
-            <TouchableOpacity
-              onPress={() => this.helpAlert()}
-            >
+            <TouchableOpacity onPress={() => this.helpAlert()}>
               <AntDesign name="questioncircleo" size={20} color="black" />
             </TouchableOpacity>
           </View>
@@ -229,7 +217,7 @@ export default class ChatList extends React.Component {
                     .includes(query.toLowerCase());
                 }
               );
-              this.setState({ queriedChatrooms, query });
+              this.setState({queriedChatrooms, query});
               if (!query.length) {
                 this.setState({queriedChatrooms: this.state.chatrooms});
               }
@@ -270,7 +258,10 @@ export default class ChatList extends React.Component {
                       key={this.state.query}
                       style={styles.buttonContainer}
                       onPress={() => {
-                        Fire.shared.createChatRoom(this.state.query);
+                        Fire.shared.createChatRoom(
+                          this.state.query,
+                          this.state.partner
+                        );
                         this.props.navigation.navigate('ChatRoom', {
                           chatroom: this.state.query
                         });
@@ -305,7 +296,7 @@ const styles = StyleSheet.create({
     marginTop: -30,
     marginBottom: 20,
     height: 20,
-    zIndex: 999,
+    zIndex: 999
   },
   chatroomlist: {
     marginBottom: 30,
@@ -336,7 +327,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 15,
     fontFamily: 'CormorantGaramond-Light',
-    marginTop: -15,
+    marginTop: -15
   },
   subtitle: {
     fontSize: 20,
@@ -378,6 +369,6 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
     borderWidth: 1,
     marginTop: 40,
-    margin: 20,
+    margin: 20
   }
 });

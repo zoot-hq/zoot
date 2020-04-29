@@ -238,21 +238,21 @@ class Fire {
               );
             });
 
-            firebase
-              .database()
-              .ref('PMnames')
-              .child(room)
-              .child('unreadMessages')
-              .child(otherUsername)
-              .once('value')
-              .then((snapshot) => {
-                firebase
+          firebase
+            .database()
+            .ref('PMnames')
+            .child(room)
+            .child('unreadMessages')
+            .child(otherUsername)
+            .once('value')
+            .then((snapshot) => {
+              firebase
                 .database()
                 .ref('PMnames')
                 .child(room)
                 .child('unreadMessages')
                 .child(otherUsername)
-                .set(snapshot.val() + 1)
+                .set(snapshot.val() + 1);
             });
         } catch (error) {}
       }
@@ -265,8 +265,8 @@ class Fire {
       .ref('PMnames')
       .child(room)
       .child('unreadMessages')
-      .set({[this.username()] : 0})
-  }
+      .set({[this.username()]: 0});
+  };
 
   enterRoom(room, pm, live) {
     // prepare initial message
@@ -342,7 +342,7 @@ class Fire {
         });
 
     // if pm, clear off all unread messages
-    if (pm) this.clearUnreads(room)
+    if (pm) this.clearUnreads(room);
   }
 
   // close the connection to the Backend
@@ -448,12 +448,12 @@ class Fire {
     if (names[0] === currentUser || names[1] === currentUser) {
       if (unreadMessages) {
         return {name, numUnread: unreadMessages[this.username()]};
-      }
-      else return {name};
+      } else return {name};
     }
   };
 
   parseRooms = (snapshot) => {
+    console.log({snapshot});
     const {name, numOnline} = snapshot.val();
     return {name, numOnline};
   };
@@ -463,44 +463,50 @@ class Fire {
     return {name};
   };
 
-  createChatRoom = async (room) =>
-    firebase
-      .database()
-      .ref('chatrooms')
-      .child(room)
-      .once('value', (snapshot) => {
-        const exists = snapshot.val() !== null;
+  createChatRoom = async (room, partner) => {
+    if (partner) {
+      console.log('has partner, calling create partner chatroom');
+      this.createPartnerChatRoom(room, partner);
+    } else {
+      firebase
+        .database()
+        .ref('chatrooms')
+        .child(room)
+        .once('value', (snapshot) => {
+          const exists = snapshot.val() !== null;
 
-        if (!exists) {
-          // add room to chatroom list
-          firebase
-            .database()
-            .ref('chatroomnames')
-            .child(room)
-            .set({name: room});
+          if (!exists) {
+            // add room to chatroom list
+            firebase
+              .database()
+              .ref('chatroomnames')
+              .child(room)
+              .set({name: room});
 
-          // add number of participants
-          firebase
-            .database()
-            .ref('chatroomnames')
-            .child(room)
-            .child('numOnline')
-            .set(0);
+            // add number of participants
+            firebase
+              .database()
+              .ref('chatroomnames')
+              .child(room)
+              .child('numOnline')
+              .set(0);
 
-          const initMessage = {
-            room,
-            text: `Welcome to # ${room} - send a message to get the conversation started`,
-            timestamp: Date.now(),
-            user: {
-              name: `#${room}`
-            },
-            react: false
-          };
+            const initMessage = {
+              room,
+              text: `Welcome to # ${room} - send a message to get the conversation started`,
+              timestamp: Date.now(),
+              user: {
+                name: `#${room}`
+              },
+              react: false
+            };
 
-          // add room to chatrooms, with initial message
-          firebase.database().ref('chatrooms').child(room).push(initMessage);
-        }
-      });
+            // add room to chatrooms, with initial message
+            firebase.database().ref('chatrooms').child(room).push(initMessage);
+          }
+        });
+    }
+  };
 
   createPMRoom = async (room, callback) =>
     firebase
@@ -551,20 +557,20 @@ class Fire {
                   .push(initMessage);
 
                 // add unread messages object
-                const names = room.split('-')
+                const names = room.split('-');
                 firebase
                   .database()
                   .ref('PMnames')
                   .child(room)
                   .child('unreadMessages')
-                  .set({[names[0]] : 0})
+                  .set({[names[0]]: 0});
 
                 firebase
                   .database()
                   .ref('PMnames')
                   .child(room)
                   .child('unreadMessages')
-                  .set({[names[1]] : 0})
+                  .set({[names[1]]: 0});
 
                 callback('user not blocked');
               }
@@ -680,26 +686,24 @@ class Fire {
   //     };
   // };
 
-
   // get the number of unread messages on app open
   getNumUnreadMessages = (callback) => {
-    let numUnread = 0
+    let numUnread = 0;
     firebase
       .database()
       .ref('PMnames')
       .on('child_added', (snapshot) => {
-
         // check to see if the updated new messages is for the current user
-        const {name, unreadMessages} = snapshot.val()
-        const names = name.split('-')
+        const {name, unreadMessages} = snapshot.val();
+        const names = name.split('-');
         if (names[0] === this.username() || names[1] === this.username()) {
           if (unreadMessages) {
-            const newNum = unreadMessages[this.username()]
-            numUnread += newNum
-            callback(numUnread)
+            const newNum = unreadMessages[this.username()];
+            numUnread += newNum;
+            callback(numUnread);
           }
         }
-      })
+      });
   };
 
   getUpdatedPartnerNumOnline = (callback) => {
@@ -727,6 +731,53 @@ class Fire {
       .database()
       .ref('partnerNames')
       .on('value', (snapshot) => callback(this.parsePartners(snapshot)));
+
+  createPartnerChatRoom = async (room, partner) =>
+    firebase
+      .database()
+      .ref('partnerChatrooms')
+      .child(partner)
+      .child(room)
+      .once('value', (snapshot) => {
+        const exists = snapshot.val() !== null;
+
+        if (!exists) {
+          // add room to chatroom list
+          firebase
+            .database()
+            .ref('partnerChatroomNames')
+            .child(partner)
+            .child(room)
+            .set({name: room});
+
+          // add number of participants
+          firebase
+            .database()
+            .ref('partnerChatroomNames')
+            .child(partner)
+            .child(room)
+            .child('numOnline')
+            .set(0);
+
+          const initMessage = {
+            room,
+            text: `Welcome to # ${room} - send a message to get the conversation started`,
+            timestamp: Date.now(),
+            user: {
+              name: `#${room}`
+            },
+            react: false
+          };
+
+          // add room to chatrooms, with initial message
+          firebase
+            .database()
+            .ref('partnerChatrooms')
+            .child(partner)
+            .child(room)
+            .push(initMessage);
+        }
+      });
 }
 
 Fire.shared = new Fire();
