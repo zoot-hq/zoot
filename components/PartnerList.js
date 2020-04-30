@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   Text,
+  TextInput,
   Alert,
   View,
   StyleSheet,
@@ -19,6 +20,15 @@ import {
   withNavigation
 } from 'react-navigation';
 import * as MailComposer from 'expo-mail-composer';
+import {
+  CodeField,
+  Cursor,
+  useBlurOnFulfill,
+  useClearByFocusCell,
+} from 'react-native-confirmation-code-field';
+
+import Modal from 'react-native-modal';
+
 
 import BookmarkIcon from '../assets/icons/BookmarkIcon';
 import HelpIcon from '../assets/icons/HelpIcon';
@@ -32,6 +42,10 @@ export class PartnerList extends Component {
   constructor() {
     super();
     this.state = {
+      passcode: '',
+      passcodeModal: false,
+      locked: true,
+      unlocked: false,
       partnerNames: [],
       queriedPartners: [],
       query: '',
@@ -57,6 +71,15 @@ export class PartnerList extends Component {
         'Bookmarks coming soon!',
         'Bookmarked boards are in the works. Hang tight!',
         [{ text: 'OK!' }]
+      )
+    }
+
+    // testing 
+    this.noGo = () => {
+      Alert.alert(
+        'Not working!',
+        'Not working....',
+        [{ text: 'K...' }]
       )
     }
 
@@ -86,6 +109,17 @@ export class PartnerList extends Component {
     } catch (error) {
       console.error(error);
     }
+
+    try {
+      let partners = await this.getPartnerNames();
+      this.setState({ partnerNames: Object.keys(partners) });
+    } catch (error) {
+      console.error(error);
+    }
+
+
+
+
   }
 
   async getPartnerNames() {
@@ -128,10 +162,57 @@ export class PartnerList extends Component {
 
 
 
+
   render() {
     console.log(this.state.partnerNames, 'partner names in state');
+
+    const passcode = this.state.partnerNames.passcode;
+
+    this.unlock = () => {
+      this.setState({
+        unlocked: true,
+        locked: false,
+        passcodeModal: false,
+        error: false
+      });
+      // this.resetNavigation();
+      // this.props.navigation.navigate('ChatList', {
+      //   partner: partner
+      // });
+    }
+
+
+
+    renderLock = () => {
+      if (this.state.unlocked) {
+        return (
+          <Feather name="unlock" size={55} color="black"></Feather>
+        )
+      }
+      if (this.state.locked) {
+        return (
+          <Feather name="lock" size={55} color="black"></Feather>
+        )
+      }
+    }
+
+
+    checkPasscode = () => {
+      if (this.state.passcode === "1234") {
+        return (
+          this.unlock()
+        )
+      }
+      else {
+        return (
+          this.noGo()
+        )
+      }
+    }
+
+
     return (
-      <View style={styles.container}>
+      <View style={styles.container} >
         <View style={styles.innerView}>
           {/* bookmark button */}
           <View style={styles.help}>
@@ -164,6 +245,7 @@ export class PartnerList extends Component {
             which they belong to. */}
             Partnered Organizations
           </Text>
+
         </View>
         <View style={styles.searchView}>
           <Searchbar
@@ -212,19 +294,25 @@ export class PartnerList extends Component {
                         key={partner}
                         style={styles.buttonContainer}
                         onPress={() => {
-                          this.resetNavigation();
+                          // this.resetNavigation();
                           // EV:line 140 is also an async function
                           // this.getPartnerChatlist();
+                          // this.props.navigation.navigate('ChatList', {
+                          //   partner: partner
+                          //   // EV: if you leave in line 144, it'll pass a promise. If you await it, it'll pass nothing at all.
+                          //   // chatrooms: this.state.selectedPartnerChatrooms
+                          // });
+                          this.setState({ passcodeModal: true })
+                          this.resetNavigation();
                           this.props.navigation.navigate('ChatList', {
                             partner: partner
-                            // EV: if you leave in line 144, it'll pass a promise. If you await it, it'll pass nothing at all.
-                            // chatrooms: this.state.selectedPartnerChatrooms
                           });
-                        }}
-                      >
+                        }
+                        }>
                         <View style={styles.singleChatView}>
                           <Text style={styles.buttonText}>
                             <Feather name="unlock" size={25} color="black"></Feather> {`${partner}`}
+                            {`\ntesting passcode: ${partner.passcode}`}
                           </Text>
                           {/* <Ionicons name="md-people" size={25} color="grey">
                           {' '}
@@ -241,7 +329,68 @@ export class PartnerList extends Component {
                     )}
               </ScrollView>
             </SafeAreaView>
-            <TouchableOpacity onPress={() => contactAdmin()}><Text style={styles.subtitle}>Interested in partnering with Après? Click here to send us an email! Let’s chat. </Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => contactAdmin()}><Text style={styles.subtitle}>Interested in partnering with Après? Click here to send us an email! </Text></TouchableOpacity>
+
+
+
+            {/* <TouchableOpacity onPress={() => this.unlock()}> */}
+            <TouchableOpacity onPress={() => this.setState({ passcodeModal: true })}>
+              <Text>
+                {'\n'}{'\n'}{'\n'}{'\n'}{'\n'}{'\n'}{'\n'}{'\n'}CLICK HERE TO TEST LOCK/UNLOCK BELOW{'\n'}
+                test password for unlocking = 1234{'\n'}
+              </Text>
+            </TouchableOpacity>
+
+            <Modal isVisible={this.state.passcodeModal}>
+              <View style={styles.modal}>
+                <Text style={styles.modalTitle}>Enter Passcode</Text>
+                {this.state.error ? (
+                  <Text style={styles.modalText}>{this.state.error}</Text>
+                ) : (
+                    <Text style={styles.modalText}>
+                      Your organization will provide you with a secret passcode to access thier private message boards on Après.
+                    </Text>
+                  )}
+                <TextInput
+                  returnKeyType="done"
+                  placeholder="Enter passcode..."
+                  placeholderTextColor="#bfbfbf"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={styles.input}
+                  onChangeText={(passcode) => this.setState({ passcode })
+                  }
+                />
+                <View style={styles.modalButtonsContainer}>
+                  <TouchableOpacity
+                    style={{ width: 150 }}
+                    onPress={() =>
+                      this.setState({ passcodeModal: false, error: false })
+                    }
+                  >
+                    <Text style={styles.modalButtonCancel}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      width: 150,
+                      borderLeftWidth: 1,
+                      borderLeftColor: 'gray'
+                    }}
+                    onPress={() => checkPasscode()}
+                  >
+                    <Text style={styles.modalButtonSave}>Enter</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+
+
+            {renderLock()}
+
+
+
+
+
           </KeyboardAvoidingView>
 
         </View>
@@ -342,8 +491,91 @@ const styles = StyleSheet.create({
     borderColor: 'red',
     borderStyle: 'dashed',
     borderWidth: 1,
-    margin: 10
-  }
+    margin: 10,
+  },
+  modal: {
+    backgroundColor: 'whitesmoke',
+    borderRadius: 10,
+    width: 300,
+    alignSelf: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '500',
+    textAlign: 'center',
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 20
+  },
+  modalText: {
+    fontSize: 15,
+    textAlign: 'center',
+    marginLeft: 20,
+    marginRight: 20
+  },
+  input: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'gray',
+    borderLeftWidth: 0.5,
+    borderLeftColor: 'gray',
+    borderRightWidth: 0.5,
+    borderRightColor: 'gray',
+    borderTopWidth: 0.5,
+    borderTopColor: 'gray',
+    backgroundColor: 'white',
+    padding: 5,
+    marginVertical: 20,
+    flexGrow: 1,
+    textAlignVertical: 'bottom',
+    marginLeft: 15,
+    marginRight: 15,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
+    borderBottomLeftRadius: 5,
+    minHeight: 30
+  },
+  modalButtonsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: 'gray'
+  },
+  deleteModalButtonsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: 'gray',
+    marginTop: 15
+  },
+  modalButtonCancel: {
+    color: '#0073e6',
+    fontSize: 20,
+    textAlign: 'center',
+    marginVertical: 10
+  },
+  modalButtonSave: {
+    color: '#0073e6',
+    fontSize: 20,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginVertical: 10
+  },
+  root: { flex: 1, padding: 20 },
+  title: { textAlign: 'center', fontSize: 30 },
+  codeFiledRoot: { marginTop: 20 },
+  cell: {
+    width: 40,
+    height: 40,
+    lineHeight: 38,
+    fontSize: 24,
+    borderWidth: 2,
+    borderColor: '#00000030',
+    textAlign: 'center',
+  },
+  focusCell: {
+    borderColor: '#000',
+  },
 });
 
 export default withNavigation(PartnerList);
