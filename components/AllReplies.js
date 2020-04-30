@@ -1,6 +1,6 @@
 import React from 'react';
 import SlackMessage from './SlackMessage';
-import {View, Dimensions} from 'react-native';
+import { View, Dimensions } from 'react-native';
 
 let viewWidth = Dimensions.get('window').width;
 
@@ -16,7 +16,7 @@ export default AllReplies = (props) => {
               borderLeftWidth: 0.5,
               borderColor: 'gray',
               // this is supposed to prevent the text input from growing beyond the screen size
-              maxWidth: viewWidth - 20
+              // width: viewWidth - 20,
             }}
           >
             <SlackMessage {...props} currentMessage={reply} />
