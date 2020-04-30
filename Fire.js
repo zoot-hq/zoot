@@ -484,7 +484,6 @@ class Fire {
   };
 
   parseRooms = (snapshot) => {
-    console.log({snapshot});
     const {name, numOnline} = snapshot.val();
     return {name, numOnline};
   };
