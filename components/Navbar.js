@@ -99,17 +99,18 @@ class Navbar extends React.Component {
   liveChat = () => {
     // get nyc time
     const currTime = new Date();
-    const currNyTime = this.changeTimezone(currTime, 'America/New_York');
+    const currNyTime = this.changeTimezone(currTime, 'America/New_York')
+
 
     // if time is inside set time for live chat
     if (
       (
-        currNyTime.getDay() === 2 &&
+        currNyTime.getDay() === 3 &&
         (currNyTime.getHours() === 21 ||
           (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30))
       )
     ) {
-      const timeToAcceptableFirebaseString = `live-${currNyTime.getMonth()}-${currNyTime.getDate()}-${currNyTime.getFullYear()}`;
+      const timeToAcceptableFirebaseString = `live-${currNyTime.getMonth() + 1}-${currNyTime.getDate()}-${currNyTime.getFullYear()}`;
 
       Fire.shared.createLiveRoomIfDoesNotExist(
         timeToAcceptableFirebaseString,

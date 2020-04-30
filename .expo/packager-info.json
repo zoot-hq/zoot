@@ -1,10 +1,10 @@
 {
-  "expoServerPort": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
-  "devToolsPort": 19003,
-  "packagerPort": null,
-  "packagerPid": null,
+  "expoServerPort": 19000,
+  "expoServerNgrokUrl": "https://vu-d8j.lisjak.zoot.exp.direct",
+  "packagerNgrokUrl": "https://packager.vu-d8j.lisjak.zoot.exp.direct",
+  "ngrokPid": 47485,
+  "devToolsPort": 19002,
+  "packagerPort": 19001,
+  "packagerPid": 47471,
   "webpackServerPort": null
 }
