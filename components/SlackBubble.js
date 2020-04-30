@@ -612,8 +612,28 @@ export default class Bubble extends React.Component {
           accessibilityTraits="text"
           {...this.props.touchableProps}
         >
+
+
+
+          {/* Indented Chatstyle
+          <View style={[styles.wrapper, this.props.wrapperStyle]}>
+            <View>
+              <View
+                onLayout={(event) => {
+                  messageViewWidth = event.nativeEvent.layout.width;
+                }}
+                style={[
+                  this.props.currentMessage.isReply
+                    ? {
+                      maxWidth: 200,
+                      flexDirection: 'row'
+                    }
+                    : { maxWidth: 300, flexDirection: 'row' }
+                ]}
+              > */}
+
+
           <View>
-            {/* <View style={[styles.wrapper, this.props.wrapperStyle]}> */}
             <View>
               {/* {this.renderCustomView()} */}
               <View
