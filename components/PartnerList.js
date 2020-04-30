@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   Text,
   TextInput,
@@ -10,9 +10,9 @@ import {
   ScrollView,
   KeyboardAvoidingView
 } from 'react-native';
-import { Searchbar } from 'react-native-paper';
-import { MaterialIndicator } from 'react-native-indicators';
-import { Ionicons, Feather, AntDesign } from '@expo/vector-icons';
+import {Searchbar} from 'react-native-paper';
+import {MaterialIndicator} from 'react-native-indicators';
+import {Ionicons, Feather, AntDesign} from '@expo/vector-icons';
 import * as firebase from 'firebase';
 import {
   StackActions,
@@ -24,65 +24,57 @@ import {
   CodeField,
   Cursor,
   useBlurOnFulfill,
-  useClearByFocusCell,
+  useClearByFocusCell
 } from 'react-native-confirmation-code-field';
 
 import Modal from 'react-native-modal';
 
-
 import BookmarkIcon from '../assets/icons/BookmarkIcon';
 import HelpIcon from '../assets/icons/HelpIcon';
 
-
-
 import Navbar from './Navbar';
-import ChatList from './ChatList';
 
+// firebase.auth().currentUser.unlockedPartners
 export class PartnerList extends Component {
   constructor() {
     super();
     this.state = {
       passcode: '',
       passcodeModal: false,
-      locked: true,
-      unlocked: false,
       partnerNames: [],
+      passcodes: [],
       queriedPartners: [],
       query: '',
-      selectedPartnerChatrooms: {}
+      selectedPartnerChatrooms: {},
+      unlockedPartners: firebase.auth().currentUser.child('unlockedPartners'),
+      currentUserName: firebase.auth().currentUser.displayName
     };
   }
 
-
   async componentDidMount() {
-
+    console.log('current user object', firebase.auth().currentUser);
     // help alert
     this.helpAlert = () => {
       Alert.alert(
         'Help',
         'Hey there! \n\n Après is proud to partner with our organizations. \n\nUsers can privately interact with partnered organizations on Après by requesting a secret access code from the real - world organizations which they belong to.',
-        [{ text: 'Got it!' }]
-      )
-    }
+        [{text: 'Got it!'}]
+      );
+    };
 
     // bookmark alert
     this.bookmark = () => {
       Alert.alert(
         'Bookmarks coming soon!',
         'Bookmarked boards are in the works. Hang tight!',
-        [{ text: 'OK!' }]
-      )
-    }
+        [{text: 'OK!'}]
+      );
+    };
 
-    // testing 
+    // testing
     this.noGo = () => {
-      Alert.alert(
-        'Not working!',
-        'Not working....',
-        [{ text: 'K...' }]
-      )
-    }
-
+      Alert.alert('Wrong password!', 'Please try again.', [{text: 'OK'}]);
+    };
 
     contactAdmin = async () => {
       const options = {
@@ -92,7 +84,7 @@ export class PartnerList extends Component {
       };
       try {
         await MailComposer.composeAsync(options);
-        this.setState({ contactFormModal: false });
+        this.setState({contactFormModal: false});
       } catch (error) {
         if (error === 'Mail services are not available.') {
           this.setState({
@@ -101,25 +93,26 @@ export class PartnerList extends Component {
           });
         }
       }
-    }
+    };
 
     try {
       let partners = await this.getPartnerNames();
-      this.setState({ partnerNames: Object.keys(partners) });
+      this.setState({partnerNames: Object.values(partners)});
     } catch (error) {
       console.error(error);
     }
+  }
 
+  async getPasscodes() {
+    let ref = firebase.database().ref(`partnerNames`);
     try {
-      let partners = await this.getPartnerNames();
-      this.setState({ partnerNames: Object.keys(partners) });
+      let query = await ref.once('value').then(function (snapshot) {
+        return snapshot.val();
+      });
+      return query;
     } catch (error) {
       console.error(error);
     }
-
-
-
-
   }
 
   async getPartnerNames() {
@@ -137,104 +130,75 @@ export class PartnerList extends Component {
   resetNavigation() {
     const resetAction = StackActions.reset({
       index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'ChatList' })]
+      actions: [NavigationActions.navigate({routeName: 'ChatList'})]
     });
     this.props.navigation.dispatch(resetAction);
   }
 
-  // EV: it occurred to me here to load the partner's chatrooms on the partnerlist page. This didn't work because it required calling an async function when navigating (to pull up the chatrooms of the board that was clicked). I'm not sure why, but as soon as I did that, both navigation params (partner name and the actual chatlist) disappeared.
-  // async getPartnerChatlist(partner) {
-  //   let ref = firebase.database().ref(`partnerChatroomNames/${partner}`);
-  //   try {
-  //     let query = await ref.once('value').then(function (snapshot) {
-  //       return snapshot.val();
-  //     });
-  //     this.setState({selectedPartnerChatrooms: query});
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
-
-
-
-
-
-
-
-
   render() {
-    console.log(this.state.partnerNames, 'partner names in state');
-
     const passcode = this.state.partnerNames.passcode;
-
-    this.unlock = () => {
+    console.log(this.state.unlockedPartners, 'unlocked partners on state');
+    this.unlock = (partnerName) => {
       this.setState({
-        unlocked: true,
-        locked: false,
         passcodeModal: false,
-        error: false
+        error: false,
+        unlockedPartners: {...this.state.unlockedPartners, partnerName: true}
       });
-      // this.resetNavigation();
-      // this.props.navigation.navigate('ChatList', {
-      //   partner: partner
-      // });
-    }
+      // add this partner to user's list of unlocked partners in firebase
+      firebase
+        .database()
+        .ref(`users/${this.state.currentUserName}`)
+        .child('unlockedPartners')
+        .set({
+          partnerName: true
+        });
+    };
 
-
-
-    renderLock = () => {
-      if (this.state.unlocked) {
-        return (
-          <Feather name="unlock" size={55} color="black"></Feather>
-        )
+    renderLock = (partnerName) => {
+      if (this.state.unlockedPartners[partnerName]) {
+        return <Feather name="unlock" size={25} color="black"></Feather>;
+      } else {
+        return <Feather name="lock" size={25} color="black"></Feather>;
       }
-      if (this.state.locked) {
-        return (
-          <Feather name="lock" size={55} color="black"></Feather>
-        )
-      }
-    }
+    };
 
-
-    checkPasscode = () => {
-      if (this.state.passcode === "1234") {
-        return (
-          this.unlock()
-        )
+    checkPasscode = (partnerName) => {
+      if (this.state.passcode === '1234') {
+        return this.unlock(partnerName);
+      } else {
+        return this.noGo();
       }
-      else {
-        return (
-          this.noGo()
-        )
-      }
-    }
+    };
 
+    checkLockState = (partnerName) => {
+      console.log(this.state, 'state in check lock');
+      console.log({partnerName});
+      if (this.state.unlockedPartners[partnerName]) {
+        this.resetNavigation();
+        this.props.navigation.navigate('ChatList', {
+          partner: partnerName
+        });
+      } else {
+        this.setState({passcodeModal: true});
+      }
+    };
 
     return (
-      <View style={styles.container} >
+      <View style={styles.container}>
         <View style={styles.innerView}>
           {/* bookmark button */}
           <View style={styles.help}>
-
-            <TouchableOpacity
-              onPress={() => this.bookmark()}
-            >
+            <TouchableOpacity onPress={() => this.bookmark()}>
               <BookmarkIcon />
             </TouchableOpacity>
 
-
             {/* help button */}
 
-            <TouchableOpacity
-              onPress={() => this.helpAlert()}
-            >
+            <TouchableOpacity onPress={() => this.helpAlert()}>
               {/* <AntDesign name="questioncircleo" size={20} color="black" /> */}
               <HelpIcon />
             </TouchableOpacity>
-
           </View>
-
 
           {/* titles */}
           {/* <Text style={styles.title}>après</Text> */}
@@ -245,42 +209,43 @@ export class PartnerList extends Component {
             which they belong to. */}
             Partnered Organizations
           </Text>
-
         </View>
         <View style={styles.searchView}>
           <Searchbar
-            theme={{ colors: { primary: 'black' } }}
+            theme={{colors: {primary: 'black'}}}
             placeholder="Search for a partnered organization"
             onChangeText={(query) => {
               const queriedPartners = this.state.partnerNames.filter(
                 (partner) => {
-                  return partner.toLowerCase().includes(query.toLowerCase());
+                  return partner.name
+                    .toLowerCase()
+                    .includes(query.toLowerCase());
                 }
               );
-              this.setState({ queriedPartners, query });
+              this.setState({queriedPartners, query});
               if (!query.length) {
-                this.setState({ queriedPartners: this.state.partnerNames });
+                this.setState({queriedPartners: this.state.partnerNames});
               }
             }}
           />
           {/* partner board list */}
           <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding">
             <SafeAreaView>
-              <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+              <ScrollView contentContainerStyle={{flexGrow: 1}}>
                 {/* if a query made, queried chatrooms displayed*/}
                 {this.state.queriedPartners.length ? (
                   this.state.queriedPartners.map((partner, idx) => (
                     <TouchableOpacity
                       key={idx}
                       style={styles.buttonContainer}
-                    // onPress={() =>
-                    //   this.props.navigation.navigate('ChatRoom', {
-                    //     chatroom: chatroom.name
-                    //   })
-                    // }
+                      // onPress={() =>
+                      //   this.props.navigation.navigate('ChatRoom', {
+                      //     chatroom: chatroom.name
+                      //   })
+                      // }
                     >
                       <View style={styles.singleChatView}>
-                        <Text style={styles.buttonText}># {partner}</Text>
+                        <Text style={styles.buttonText}># {partner.name}</Text>
                         <Ionicons name="md-people" size={25} color="grey">
                           {' '}
                         </Ionicons>
@@ -288,111 +253,126 @@ export class PartnerList extends Component {
                     </TouchableOpacity>
                   ))
                 ) : // else if a search has not run but the list of partners isn't empty, display all partners
-                  this.state.partnerNames.length ? (
-                    this.state.partnerNames.map((partner) => (
-                      <TouchableOpacity
-                        key={partner}
-                        style={styles.buttonContainer}
-                        onPress={() => {
-                          // this.resetNavigation();
-                          // EV:line 140 is also an async function
-                          // this.getPartnerChatlist();
-                          // this.props.navigation.navigate('ChatList', {
-                          //   partner: partner
-                          //   // EV: if you leave in line 144, it'll pass a promise. If you await it, it'll pass nothing at all.
-                          //   // chatrooms: this.state.selectedPartnerChatrooms
-                          // });
-                          this.setState({ passcodeModal: true })
-                          this.resetNavigation();
-                          this.props.navigation.navigate('ChatList', {
-                            partner: partner
-                          });
-                        }
-                        }>
-                        <View style={styles.singleChatView}>
-                          <Text style={styles.buttonText}>
-                            <Feather name="unlock" size={25} color="black"></Feather> {`${partner}`}
-                            {`\ntesting passcode: ${partner.passcode}`}
-                          </Text>
-                          {/* <Ionicons name="md-people" size={25} color="grey">
+                this.state.partnerNames.length ? (
+                  this.state.partnerNames.map((partner) => (
+                    <TouchableOpacity
+                      key={partner.name}
+                      style={styles.buttonContainer}
+                      onPress={() => {
+                        // this.resetNavigation();
+                        // EV:line 140 is also an async function
+                        // this.getPartnerChatlist();
+                        // this.props.navigation.navigate('ChatList', {
+                        //   partner: partner
+                        //   // EV: if you leave in line 144, it'll pass a promise. If you await it, it'll pass nothing at all.
+                        //   // chatrooms: this.state.selectedPartnerChatrooms
+                        // });
+                        checkLockState(partner.name);
+                        // this.resetNavigation();
+                        // this.props.navigation.navigate('ChatList', {
+                        //   partner: partner.name
+                        // });
+                      }}
+                    >
+                      <View style={styles.singleChatView}>
+                        <Text style={styles.buttonText}>
+                          {renderLock(partner.name)}{' '}
+                        </Text>
+                        <Modal isVisible={this.state.passcodeModal}>
+                          <View style={styles.modal}>
+                            <Text style={styles.modalTitle}>
+                              Enter Passcode
+                            </Text>
+                            {this.state.error ? (
+                              <Text style={styles.modalText}>
+                                {this.state.error}
+                              </Text>
+                            ) : (
+                              <Text style={styles.modalText}>
+                                Your organization will provide you with a secret
+                                passcode to access thier private message boards
+                                on Après.
+                              </Text>
+                            )}
+                            <TextInput
+                              returnKeyType="done"
+                              placeholder="Enter passcode..."
+                              placeholderTextColor="#bfbfbf"
+                              autoCapitalize="none"
+                              autoCorrect={false}
+                              style={styles.input}
+                              onChangeText={(passcode) =>
+                                this.setState({passcode})
+                              }
+                            />
+                            <View style={styles.modalButtonsContainer}>
+                              <TouchableOpacity
+                                style={{width: 150}}
+                                onPress={() =>
+                                  this.setState({
+                                    passcodeModal: false,
+                                    error: false
+                                  })
+                                }
+                              >
+                                <Text style={styles.modalButtonCancel}>
+                                  Cancel
+                                </Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                style={{
+                                  width: 150,
+                                  borderLeftWidth: 1,
+                                  borderLeftColor: 'gray'
+                                }}
+                                onPress={() => checkPasscode(partner.name)}
+                              >
+                                <Text style={styles.modalButtonSave}>
+                                  Enter
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        </Modal>
+                        <Text style={styles.buttonText}>
+                          {`${partner.name}`}
+                          {`\ntesting passcode: ${partner.passcode}`}
+                          {`\ntesting partner: ${partner.name}`}
+                        </Text>
+                        {/* <Ionicons name="md-people" size={25} color="grey">
                           {' '}
                         </Ionicons> */}
-                        </View>
-                      </TouchableOpacity>
-                    ))
-                  ) : (
-                      <View>
-                        <Text>
-                          We are not yet partnered with this organization.
-                    </Text>
                       </View>
-                    )}
+                    </TouchableOpacity>
+                  ))
+                ) : (
+                  <View>
+                    <Text>
+                      We are not yet partnered with this organization.
+                    </Text>
+                  </View>
+                )}
               </ScrollView>
             </SafeAreaView>
-            <TouchableOpacity onPress={() => contactAdmin()}><Text style={styles.subtitle}>Interested in partnering with Après? Click here to send us an email! </Text></TouchableOpacity>
-
-
-
-            {/* <TouchableOpacity onPress={() => this.unlock()}> */}
-            <TouchableOpacity onPress={() => this.setState({ passcodeModal: true })}>
-              <Text>
-                {'\n'}{'\n'}{'\n'}{'\n'}{'\n'}{'\n'}{'\n'}{'\n'}CLICK HERE TO TEST LOCK/UNLOCK BELOW{'\n'}
-                test password for unlocking = 1234{'\n'}
+            <TouchableOpacity onPress={() => contactAdmin()}>
+              <Text style={styles.subtitle}>
+                Interested in partnering with Après? Click here to send us an
+                email!{' '}
               </Text>
             </TouchableOpacity>
 
-            <Modal isVisible={this.state.passcodeModal}>
-              <View style={styles.modal}>
-                <Text style={styles.modalTitle}>Enter Passcode</Text>
-                {this.state.error ? (
-                  <Text style={styles.modalText}>{this.state.error}</Text>
-                ) : (
-                    <Text style={styles.modalText}>
-                      Your organization will provide you with a secret passcode to access thier private message boards on Après.
-                    </Text>
-                  )}
-                <TextInput
-                  returnKeyType="done"
-                  placeholder="Enter passcode..."
-                  placeholderTextColor="#bfbfbf"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  style={styles.input}
-                  onChangeText={(passcode) => this.setState({ passcode })
-                  }
-                />
-                <View style={styles.modalButtonsContainer}>
-                  <TouchableOpacity
-                    style={{ width: 150 }}
-                    onPress={() =>
-                      this.setState({ passcodeModal: false, error: false })
-                    }
-                  >
-                    <Text style={styles.modalButtonCancel}>Cancel</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{
-                      width: 150,
-                      borderLeftWidth: 1,
-                      borderLeftColor: 'gray'
-                    }}
-                    onPress={() => checkPasscode()}
-                  >
-                    <Text style={styles.modalButtonSave}>Enter</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </Modal>
-
+            {/* <TouchableOpacity onPress={() => this.unlock()}> */}
+            {/* <TouchableOpacity
+              onPress={() => this.setState({passcodeModal: true})}
+            >
+              <Text>
+                CLICK HERE TO TEST LOCK/UNLOCK BELOW{'\n'}
+                test password for unlocking = 1234{'\n'}
+              </Text>
+            </TouchableOpacity> */}
 
             {renderLock()}
-
-
-
-
-
           </KeyboardAvoidingView>
-
         </View>
 
         <Navbar />
@@ -410,7 +390,7 @@ const styles = StyleSheet.create({
     marginTop: -30,
     marginBottom: 20,
     height: 20,
-    zIndex: 999,
+    zIndex: 999
   },
   chatroomlist: {
     marginBottom: 30,
@@ -441,7 +421,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 15,
     fontFamily: 'CormorantGaramond-Light',
-    marginTop: -15,
+    marginTop: -15
   },
   subtitle: {
     fontSize: 15,
@@ -491,13 +471,13 @@ const styles = StyleSheet.create({
     borderColor: 'red',
     borderStyle: 'dashed',
     borderWidth: 1,
-    margin: 10,
+    margin: 10
   },
   modal: {
     backgroundColor: 'whitesmoke',
     borderRadius: 10,
     width: 300,
-    alignSelf: 'center',
+    alignSelf: 'center'
   },
   modalTitle: {
     fontSize: 20,
@@ -561,9 +541,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 10
   },
-  root: { flex: 1, padding: 20 },
-  title: { textAlign: 'center', fontSize: 30 },
-  codeFiledRoot: { marginTop: 20 },
+  root: {flex: 1, padding: 20},
+  title: {textAlign: 'center', fontSize: 30},
+  codeFiledRoot: {marginTop: 20},
   cell: {
     width: 40,
     height: 40,
@@ -571,11 +551,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     borderWidth: 2,
     borderColor: '#00000030',
-    textAlign: 'center',
+    textAlign: 'center'
   },
   focusCell: {
-    borderColor: '#000',
-  },
+    borderColor: '#000'
+  }
 });
 
 export default withNavigation(PartnerList);
