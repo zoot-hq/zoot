@@ -56,6 +56,7 @@ export default class ChatRoom extends React.Component {
       );
     };
 
+
     //get messages for chatroom
     Fire.shared.on(
       this.state.room,
@@ -95,7 +96,7 @@ export default class ChatRoom extends React.Component {
         // if time is outside set time for live chat
         if (
           !(
-            currNyTime.getDay() === 2 &&
+            currNyTime.getDay() === 3 &&
             (currNyTime.getHours() === 21 ||
               (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30))
           )
@@ -198,6 +199,10 @@ export default class ChatRoom extends React.Component {
     }
   };
 
+
+
+
+
   // renderChatFooter = () => {
   //   return (
   //     <TouchableOpacity style={styles.chatFooter} onPress={() => this.uploadImage()}>
@@ -207,14 +212,41 @@ export default class ChatRoom extends React.Component {
   // }
 
   render() {
+
+    //conditional rendering for each different type of chatroom
+    // need to add partnered board chat room conditional 
+      renderHeaderText = () => {
+    if (this.state.pm) {
+      return (
+        <Text >Welcome to your personal messages in #{ this.state.room}. Happy chatting!</Text >
+      )
+    }
+    if (this.state.live) {
+      return (
+        <Text>Welcome to the #{this.state.room} message board. Once this live chat ends, it will no longer be available.`</Text>
+      )
+    }
+    else {
+
+      return (
+        <Text> Welcome to the #{this.state.room} message board. Get started by posting a tip or asking a question. </Text >
+      )
+    }
+  }
+
+
+
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
           {/* back button */}
-          <View style={styles.help}>
+          {/* 
             <TouchableOpacity onPress={() => this.back()}>
               <BackIcon />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+
+          <View style={styles.help}>
+            <BackButton />
 
             {/* help button */}
 
@@ -227,8 +259,11 @@ export default class ChatRoom extends React.Component {
           <View style={{ flex: 1, marginBottom: 40, }}>
             <Text style={styles.subtitle2}>#{this.state.room}</Text>
             <Text style={styles.subtitle}>
-              Welcome to the #{this.state.room} message board. Get started by
-              posting a tip or asking a question.
+
+
+              {renderHeaderText()}
+
+
             </Text>
             <GiftedChat
               messages={this.state.messages}
@@ -259,7 +294,7 @@ export default class ChatRoom extends React.Component {
             />
           </View>
         </View>
-      </View>
+      </View >
     );
   }
 }
