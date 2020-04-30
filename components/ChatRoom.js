@@ -214,7 +214,8 @@ export default class ChatRoom extends React.Component {
   render() {
 
     //conditional rendering for each different type of chatroom
-    // need to add partnered board chat room conditional 
+    //once we add categories, we need to modify the chatrooms to say 
+    //Welcome to the #{this.state.room} message board located within CATEGORY NAME/PARTNER NAME
       renderHeaderText = () => {
     if (this.state.pm) {
       return (

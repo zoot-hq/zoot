@@ -1,10 +1,10 @@
 {
   "expoServerPort": 19000,
-  "expoServerNgrokUrl": "https://vu-d8j.lisjak.zoot.exp.direct",
-  "packagerNgrokUrl": "https://packager.vu-d8j.lisjak.zoot.exp.direct",
-  "ngrokPid": 47485,
-  "devToolsPort": 19002,
+  "expoServerNgrokUrl": "https://vw-q27.lisjak.zoot.exp.direct",
+  "packagerNgrokUrl": "https://packager.vw-q27.lisjak.zoot.exp.direct",
+  "ngrokPid": 52786,
+  "devToolsPort": 19003,
   "packagerPort": 19001,
-  "packagerPid": 47471,
+  "packagerPid": 52772,
   "webpackServerPort": null
 }
