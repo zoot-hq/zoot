@@ -5,15 +5,16 @@ import {
   StyleSheet,
   AppState,
   Alert,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions
 } from 'react-native';
-import {GiftedChat} from 'react-native-gifted-chat';
-import {MaterialIndicator} from 'react-native-indicators';
+import { GiftedChat } from 'react-native-gifted-chat';
+import { MaterialIndicator } from 'react-native-indicators';
 import SlackMessage from './SlackMessage';
 import Fire from '../Fire';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
-import {Ionicons, Feather, AntDesign} from '@expo/vector-icons';
+import { Ionicons, Feather, AntDesign } from '@expo/vector-icons';
 
 import BackIcon from '../assets/icons/BackIcon';
 import HelpIcon from '../assets/icons/HelpIcon';
@@ -42,7 +43,7 @@ export default class ChatRoom extends React.Component {
       Alert.alert(
         'Help',
         'Welcome to the message boards. \n\nReact to posts by longpressing icons beneath messages.\n\nPress the flag icon to flag abusive messages, and press the block icon to block abusive users.\n\nSwipe right to return to the home screen.',
-        [{text: 'Got it!'}]
+        [{ text: 'Got it!' }]
       );
     };
 
@@ -51,7 +52,7 @@ export default class ChatRoom extends React.Component {
       Alert.alert(
         'Back button coming soon!',
         'The back button is in the works. Hang tight!',
-        [{text: 'OK!'}]
+        [{ text: 'OK!' }]
       );
     };
 
@@ -140,7 +141,7 @@ export default class ChatRoom extends React.Component {
 
   renderMessage(props) {
     const {
-      currentMessage: {text: currText}
+      currentMessage: { text: currText }
     } = props;
 
     let messageTextStyle;
@@ -149,7 +150,7 @@ export default class ChatRoom extends React.Component {
 
   // load earlier messages from backend
   loadEarlier = async () => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
 
     const newMessages = [];
 
@@ -169,11 +170,11 @@ export default class ChatRoom extends React.Component {
       }));
     }
 
-    this.setState({isLoading: false});
+    this.setState({ isLoading: false });
   };
 
   // returns true if a user has scrolled to the top of all messages, false otherwise
-  isCloseToTop({layoutMeasurement, contentOffset, contentSize}) {
+  isCloseToTop({ layoutMeasurement, contentOffset, contentSize }) {
     const paddingToTop = 80;
     return (
       contentSize.height - layoutMeasurement.height - paddingToTop <=
@@ -223,7 +224,7 @@ export default class ChatRoom extends React.Component {
             </TouchableOpacity>
           </View>
 
-          <View style={{flex: 1, marginBottom: 40}}>
+          <View style={{ flex: 1, marginBottom: 40, }}>
             <Text style={styles.subtitle2}>#{this.state.room}</Text>
             <Text style={styles.subtitle}>
               Welcome to the #{this.state.room} message board. Get started by
@@ -233,9 +234,9 @@ export default class ChatRoom extends React.Component {
               messages={this.state.messages}
               listViewProps={{
                 scrollEventThrottle: 400,
-                onScroll: ({nativeEvent}) => {
+                onScroll: ({ nativeEvent }) => {
                   if (this.isCloseToTop(nativeEvent) && !this.state.isLoading) {
-                    this.setState({isLoading: true});
+                    this.setState({ isLoading: true });
                     this.loadEarlier();
                   }
                 },
@@ -254,7 +255,7 @@ export default class ChatRoom extends React.Component {
               renderAvatar={null}
               sendImage={this.sendImage}
               renderLoading={() => <MaterialIndicator color="black" />}
-              // renderChatFooter={this.renderChatFooter}
+            // renderChatFooter={this.renderChatFooter}
             />
           </View>
         </View>
@@ -262,6 +263,8 @@ export default class ChatRoom extends React.Component {
     );
   }
 }
+
+const win = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   help: {
@@ -278,7 +281,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    width: win.width,
+    borderColor: 'aqua'
   },
   title: {
     top: 10,

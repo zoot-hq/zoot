@@ -41,7 +41,7 @@ export default class Message extends React.Component {
       return this.props.renderBubble(bubbleProps);
     }
     return (
-      <View styles={{ marginBottom: 20 }}>
+      <View styles={{ marginBottom: 20, }}>
         <Bubble {...bubbleProps} />
       </View>
     );
@@ -58,7 +58,10 @@ export default class Message extends React.Component {
       <View>
         {/* {this.renderDay()} */}
         <View
-          style={[styles.container, { marginBottom }, this.props.containerStyle]}
+          style={[styles.container, { marginBottom }, {
+            flex: 1, flexDirection: 'row', flexWrap: "wrap", alignSelf: 'baseline',
+            //borderColor: 'green', borderStyle: 'solid', borderWidth: 2, margin: 2, 
+          }, this.props.containerStyle]}
         >
           {/* {this.renderAvatar()} */}
           {this.renderBubble()}
