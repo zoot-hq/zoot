@@ -11,6 +11,8 @@ import {
 // import Select from "react-native-picker-select";
 
 import { Ionicons, Feather, AntDesign } from '@expo/vector-icons';
+import BookmarkIcon from '../assets/icons/BookmarkIcon';
+import HelpIcon from '../assets/icons/HelpIcon';
 
 
 import NavBar from './Navbar';
@@ -46,12 +48,21 @@ export default class Resources extends Component {
 
   componentWillMount() {
 
-    // help icon
+    // help alert
     this.helpAlert = () => {
       Alert.alert(
-        'Help @ Resources',
-        'Here you\'ll find the provided resources that we’ve curated just for you. \n\nTap the links to visit these external pages.'
+        'Help',
+        'Here you\'ll find the provided resources that we’ve curated just for you. \n\nTap the links to visit these external pages.',
         [{ text: 'Got it!' }]
+      )
+    }
+
+    // bookmark alert
+    this.bookmark = () => {
+      Alert.alert(
+        'Bookmarks coming soon!',
+        'Bookmarked boards are in the works. Hang tight!',
+        [{ text: 'OK!' }]
       )
     }
   }
@@ -74,24 +85,38 @@ export default class Resources extends Component {
       },
       placeholderColor: 'black'
     };
+
+
     return (
       <View style={styles.container}>
 
         <View style={styles.innerView}>
 
 
-          {/* help icon */}
+          {/* bookmark button */}
           <View style={styles.help}>
+
+            <TouchableOpacity
+              onPress={() => this.bookmark()}
+            >
+              <BookmarkIcon />
+            </TouchableOpacity>
+
+
+            {/* help button */}
+
             <TouchableOpacity
               onPress={() => this.helpAlert()}
             >
-              <AntDesign name="questioncircleo" size={20} color="black" />
+              {/* <AntDesign name="questioncircleo" size={20} color="black" /> */}
+              <HelpIcon />
             </TouchableOpacity>
+
           </View>
 
 
 
-          <Text style={styles.title}>après</Text>
+          {/* <Text style={styles.title}>après</Text> */}
           <Text style={styles.subtitle2}>
             Resources
         </Text>
@@ -218,8 +243,9 @@ export default class Resources extends Component {
             <View style={styles.extraSpace}></View>
           </ScrollView>
 
-          <NavBar />
+
         </View>
+        <NavBar />
       </View>
     );
   }
@@ -229,7 +255,7 @@ const styles = StyleSheet.create({
   help: {
     display: 'flex',
     flexDirection: 'row',
-    alignSelf: 'flex-end',
+    justifyContent: 'space-between',
     backgroundColor: 'white',
     marginTop: -30,
     marginBottom: 20,
@@ -270,7 +296,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     letterSpacing: -1,
     marginBottom: 15,
-    fontFamily: 'Futura-Light',
+    fontFamily: 'CormorantGaramond-Light',
     marginTop: 10
   },
   categoryTitle: {

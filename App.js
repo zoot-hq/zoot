@@ -42,7 +42,7 @@ const navigator = createStackNavigator(
       name: 'ChatList',
       screen: ChatList,
       navigationOptions: {
-        headerVisible: false
+        // gesturesEnabled: false,
       }
     },
     ChatRoom,

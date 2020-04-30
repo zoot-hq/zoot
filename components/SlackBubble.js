@@ -9,17 +9,20 @@ import {
   Platform,
   Image,
   Alert,
-  TextInput
+  TextInput,
+  Dimensions
 } from 'react-native';
-import {MessageText, Time, utils} from 'react-native-gifted-chat';
-import {Foundation, MaterialIcons} from '@expo/vector-icons';
+import { MessageText, Time, utils } from 'react-native-gifted-chat';
+import { Feather, Foundation, MaterialIcons } from '@expo/vector-icons';
 import * as MailComposer from 'expo-mail-composer';
 import AllReplies from './AllReplies';
 import * as firebase from 'firebase';
 
 import Fire from '../Fire';
 
-const {isSameUser, isSameDay} = utils;
+const { isSameUser, isSameDay } = utils;
+
+let messageViewWidth;
 
 export default class Bubble extends React.Component {
   constructor(props) {
@@ -42,8 +45,18 @@ export default class Bubble extends React.Component {
   }
 
   async componentWillMount() {
+
     let replies = await this.getReplies(this.props.currentMessage);
-    await this.setState({replies: replies});
+    await this.setState({ replies: replies });
+
+    // reply alert
+    this.reply = () => {
+      Alert.alert(
+        'Reply in the reaction bar coming soon!',
+        'Currently you can reply by clicking a message!',
+        [{ text: 'OK!' }]
+      );
+    };
   }
 
   onLongPress() {
@@ -95,7 +108,7 @@ export default class Bubble extends React.Component {
     if (this.state.hidden && !this.isSameUser()) {
       return (
         <TouchableOpacity onLongPress={() => this.unhideMessage()}>
-          <Text style={styles.slackMessageText}>
+          <Text style={styles.slackMessageTextFlagged}>
             This message has been flagged by a user as abusive. Longpress here
             to view this message which may contain objectionable content at your
             own volition and risk.{' '}
@@ -115,19 +128,23 @@ export default class Bubble extends React.Component {
       }
       return (
         // pressing the text opens a TextInput box to add a reply
-        <TouchableOpacity onPress={() => this.setState({newReply: true})}>
-          <MessageText
-            {...messageTextProps}
-            textStyle={{
-              left: [
-                styles.standardFont,
-                styles.slackMessageText,
-                messageTextProps.textStyle,
-                messageTextStyle
-              ]
-            }}
-          />
-        </TouchableOpacity>
+        // <TouchableOpacity onPress={() => this.setState({ newReply: true })}>
+
+
+        <MessageText
+          {...messageTextProps}
+          textStyle={{
+            left: [
+              styles.standardFont,
+              styles.slackMessageText,
+              messageTextProps.textStyle,
+              messageTextStyle,
+              styles.testingYellow
+            ]
+          }}
+        />
+
+        // </TouchableOpacity>
       );
     }
     return null;
@@ -140,14 +157,14 @@ export default class Bubble extends React.Component {
           source={{
             uri: `data:image/png;base64,${this.props.currentMessage.base64}`
           }}
-          style={{height: 300, width: 300}}
+          style={{ height: 300, width: 300 }}
         />
       );
     }
   };
 
   renderTicks() {
-    const {currentMessage} = this.props;
+    const { currentMessage } = this.props;
     if (this.props.renderTicks) {
       return this.props.renderTicks(currentMessage);
     }
@@ -186,11 +203,11 @@ export default class Bubble extends React.Component {
             style={[
               styles.standardFont,
               styles.headerItem,
-              styles.username,
-              this.props.usernameStyle
+              // this.props.usernameStyle,
+              styles.username
             ]}
           >
-            {username}
+            {username}:
           </Text>
         </TouchableOpacity>
       );
@@ -198,29 +215,29 @@ export default class Bubble extends React.Component {
     return null;
   };
 
-  renderTime() {
-    if (this.props.currentMessage.createdAt) {
-      const {containerStyle, wrapperStyle, ...timeProps} = this.props;
-      if (this.props.renderTime) {
-        return this.props.renderTime(timeProps);
-      }
-      return (
-        <Time
-          {...timeProps}
-          containerStyle={{left: [styles.timeContainer]}}
-          textStyle={{
-            left: [
-              styles.standardFont,
-              styles.headerItem,
-              styles.time,
-              timeProps.textStyle
-            ]
-          }}
-        />
-      );
-    }
-    return null;
-  }
+  // renderTime() {
+  //   if (this.props.currentMessage.createdAt) {
+  //     const { containerStyle, wrapperStyle, ...timeProps } = this.props;
+  //     if (this.props.renderTime) {
+  //       return this.props.renderTime(timeProps);
+  //     }
+  //     return (
+  //       <Time
+  //         {...timeProps}
+  //         containerStyle={{ left: [styles.timeContainer] }}
+  //         textStyle={{
+  //           left: [
+  //             styles.standardFont,
+  //             styles.headerItem,
+  //             styles.time,
+  //             timeProps.textStyle
+  //           ]
+  //         }}
+  //       />
+  //     );
+  //   }
+  //   return null;
+  // }
 
   renderCustomView() {
     if (this.props.renderCustomView) {
@@ -241,7 +258,7 @@ export default class Bubble extends React.Component {
     if (!reaction.users[currUser]) {
       reaction.count++;
       reaction.users[currUser] = true;
-      this.setState({reaction});
+      this.setState({ reaction });
       Fire.shared.react(
         this.props.currentMessage,
         reactionType,
@@ -253,7 +270,7 @@ export default class Bubble extends React.Component {
     else if (reactionType != 'flags') {
       reaction.count--;
       delete reaction.users[currUser];
-      this.setState({reaction});
+      this.setState({ reaction });
       Fire.shared.react(
         this.props.currentMessage,
         reactionType,
@@ -305,7 +322,7 @@ export default class Bubble extends React.Component {
 
       ${message.user.name} in #${message.room}: ${
         message.text
-      } [Message ID: ${messageName}]
+        } [Message ID: ${messageName}]
       --- reported by: ${Fire.shared.username()}`
     };
     try {
@@ -329,20 +346,20 @@ export default class Bubble extends React.Component {
       `You are about to flag this message as objectionable. Flagging the message will simple hide the message
       from public view. To have the message removed, please choose the Contact Administrators option.`,
       [
-        {text: 'Cancel', onPress: () => false},
-        {text: 'Flag Message', onPress: () => this.react('flags')},
-        {text: 'Contact Administrators', onPress: () => this.contactAdmin()}
+        { text: 'Cancel', onPress: () => false },
+        { text: 'Flag Message', onPress: () => this.react('flags') },
+        { text: 'Contact Administrators', onPress: () => this.contactAdmin() }
       ],
-      {cancelable: false}
+      { cancelable: false }
     );
   };
 
   renderReactions = () => {
     if (this.state.react || this.isSameUser())
       return (
-        <View style={{display: 'flex', flexDirection: 'row'}}>
+        <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 15 }}>
           <TouchableOpacity
-            style={{marginRight: 20}}
+            style={{ marginRight: 20 }}
             onLongPress={() => this.react('likes')}
           >
             <Foundation name="like" color="lightgrey" size={15}>
@@ -353,7 +370,7 @@ export default class Bubble extends React.Component {
             </Foundation>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{marginRight: 20}}
+            style={{ marginRight: 20 }}
             onLongPress={() => this.react('loves')}
           >
             <Foundation name="heart" color="lightgrey" size={15}>
@@ -363,16 +380,9 @@ export default class Bubble extends React.Component {
               </Text>
             </Foundation>
           </TouchableOpacity>
-          {/* <TouchableOpacity
-            style={{marginRight: 20}}
-            onLongPress={() => this.react('addFriend')}
-          >
-            <Foundation name="person_add" color="lightgrey" size={20}>
-              <Text> Add friend </Text>
-            </Foundation>
-          </TouchableOpacity> */}
+
           <TouchableOpacity
-            style={{marginRight: 20}}
+            style={{ marginRight: 20 }}
             onLongPress={() => this.react('lightbulbs')}
           >
             <Foundation name="lightbulb" color="lightgrey" size={15}>
@@ -383,7 +393,7 @@ export default class Bubble extends React.Component {
             </Foundation>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{marginRight: 20}}
+            style={{ marginRight: 20 }}
             onLongPress={() => this.flag()}
           >
             <Foundation name="flag" color="lightgrey" size={15}>
@@ -393,6 +403,17 @@ export default class Bubble extends React.Component {
               </Text>
             </Foundation>
           </TouchableOpacity>
+
+          {this.renderBlock()}
+
+          <TouchableOpacity
+            style={{ marginRight: 20 }}
+            onPress={() => this.setState({ newReply: true })}
+          >
+            <Feather name="corner-right-down" color="lightgrey" size={15} />
+          </TouchableOpacity>
+
+          {this.renderDisplayReplies()}
         </View>
       );
   };
@@ -407,6 +428,7 @@ export default class Bubble extends React.Component {
             name="block"
             size={15}
             color={'lightgrey'}
+            style={{ marginRight: 20 }}
           ></MaterialIcons>
         </TouchableOpacity>
       );
@@ -414,34 +436,57 @@ export default class Bubble extends React.Component {
   }
 
   renderReplies() {
+    if (this.state.showReplies) {
+      return (
+        <View>
+          {/* {this.state.showReplies ? (
+             <View>
+               <TouchableOpacity
+                 onPress={() => this.setState({ showReplies: false })}
+               >
+                 <Text style={styles.replyButton}>Hide all replies</Text>
+               </TouchableOpacity> */}
+          <AllReplies
+            {...this.props}
+            // parentIndent indents the reply +10 spaces from its parent message
+            parentIndent={this.state.indent}
+            replies={this.state.replies}
+          />
+        </View>
+        //   ) : (
+        //       <TouchableOpacity
+        //         onPress={() => this.setState({ showReplies: true })}
+        //       >
+        //         <Text style={styles.replyButton}>Show all replies</Text>
+        //       </TouchableOpacity>
+        //     )}
+        // </View>
+      );
+    }
+  }
+
+  renderDisplayReplies() {
     if (this.state.replies.length) {
       return (
         <View>
           {this.state.showReplies ? (
-            <View>
-              <TouchableOpacity
-                onPress={() => this.setState({showReplies: false})}
-              >
-                <Text style={styles.replyButton}>Hide replies</Text>
-              </TouchableOpacity>
-              <AllReplies
-                {...this.props}
-                // parentIndent indents the reply +10 spaces from its parent message
-                parentIndent={this.state.indent}
-                replies={this.state.replies}
-              />
-            </View>
-          ) : (
             <TouchableOpacity
-              onPress={() => this.setState({showReplies: true})}
+              onPress={() => this.setState({ showReplies: false })}
             >
-              <Text style={styles.replyButton}>Show replies</Text>
+              <Text style={styles.replyButton}>Hide replies</Text>
             </TouchableOpacity>
-          )}
+          ) : (
+              <TouchableOpacity
+                onPress={() => this.setState({ showReplies: true })}
+              >
+                <Text style={styles.replyButton}>Show replies</Text>
+              </TouchableOpacity>
+            )}
         </View>
       );
     }
   }
+
   async getReplies(parent) {
     const ref = await firebase
       .database()
@@ -497,17 +542,17 @@ export default class Bubble extends React.Component {
     let replyRef = await this.getReplyRef(this.props.currentMessage);
     await this.sendReply(replyRef);
     // then remove the input box from render (since we're finished with it)
-    this.setState({newReply: false});
+    this.setState({ newReply: false });
     // get all the replies from the database including the recently added reply
     let replies = await this.getReplies(this.props.currentMessage);
     // put all the retrieved replies on the state to display them
-    await this.setState({replies: replies});
+    await this.setState({ replies: replies });
   };
   sendReply = async (replyRef) => {
     // format message to go to Fire.shared.send()
     const message = {
       text: this.state.replyInput,
-      user: {name: Fire.shared.username(), _id: Fire.shared.uid()}
+      user: { name: Fire.shared.username(), _id: Fire.shared.uid() }
     };
     // pm and live are false, reply is true, parentId is used to identify which message to add it to in the DB
     await Fire.shared.sendReply(
@@ -524,10 +569,10 @@ export default class Bubble extends React.Component {
       'Block User',
       `Are you sure you would like to block ${user}? This user will no longer be able to contact you. This action cannot be undone. `,
       [
-        {text: 'No', onPress: () => false},
-        {text: 'Yes', onPress: () => this.blockUser()}
+        { text: 'No', onPress: () => false },
+        { text: 'Yes', onPress: () => this.blockUser() }
       ],
-      {cancelable: false}
+      { cancelable: false }
     );
   };
 
@@ -536,8 +581,8 @@ export default class Bubble extends React.Component {
     Alert.alert(
       'User blocked',
       `${blockedUser} has been successfully blocked.`,
-      [{text: 'OK', onPress: () => true}],
-      {cancelable: false}
+      [{ text: 'OK', onPress: () => true }],
+      { cancelable: false }
     );
   };
 
@@ -547,28 +592,87 @@ export default class Bubble extends React.Component {
   };
 
   render() {
-    const messageHeader = (
-      <View style={styles.headerView}>
-        {this.renderUsername()}
-        {this.renderTime()}
-        {this.renderBlock()}
-        {/* {this.renderTicks()} */}
-      </View>
-    );
+    // const messageHeader = (
+    //   <View style={styles.headerView}>
+    //     {/* {this.renderUsername()} */}
+    //     {/* {this.renderTime()} */}
+    //     {/* {this.renderBlock()} */}
+    //     {/* {this.renderTicks()} */}
+    //   </View>
+    // );
+
+
+    const win = Dimensions.get('window');
 
     return (
+
       <View style={[styles.container, this.props.containerStyle]}>
         <TouchableOpacity
           onLongPress={this.onLongPress}
           accessibilityTraits="text"
           {...this.props.touchableProps}
         >
+
+
+
+          {/* Indented Chatstyle
           <View style={[styles.wrapper, this.props.wrapperStyle]}>
             <View>
+              <View
+                onLayout={(event) => {
+                  messageViewWidth = event.nativeEvent.layout.width;
+                }}
+                style={[
+                  this.props.currentMessage.isReply
+                    ? {
+                      maxWidth: 200,
+                      flexDirection: 'row'
+                    }
+                    : { maxWidth: 300, flexDirection: 'row' }
+                ]}
+              > */}
+
+
+          <View>
+            <View>
               {/* {this.renderCustomView()} */}
-              {messageHeader}
-              {this.renderMessageImage()}
-              {this.renderMessageText()}
+              <View
+                onLayout={(event) => {
+                  messageViewWidth = event.nativeEvent.layout.width;
+                }}
+                style={[
+                  this.props.currentMessage.isReply
+                    ? {
+                      // maxWidth: win.width,
+                      flexDirection: 'row',        // F
+                      flexWrap: 'wrap',
+                      flex: 1,
+                      // alignContent: 'flex-start',
+                      // maxWidth: win.width,
+                      // alignSelf: 'baseline',
+                      // borderColor: 'blue',
+                      // borderStyle: 'dashed',
+                      // borderWidth: 2,
+                    }
+                    : {
+                      flex: 1,
+                      // maxWidth: win.width,
+                      flexDirection: 'row',        // F
+                      flexWrap: 'wrap',
+                      // alignContent: 'flex-start',
+                      // alignSelf: 'baseline',
+                      // borderColor: 'blue',
+                      // borderStyle: 'solid',
+                      // borderWidth: 2,
+                    }
+                ]}
+              >
+
+                {this.renderUsername()}
+                {/* {this.renderMessageImage()} */}
+                {this.renderMessageText()}
+
+              </View>
 
               {/* render reactions on messages with the reaction feature */}
               {this.renderReactions()}
@@ -583,11 +687,11 @@ export default class Bubble extends React.Component {
                     autoCapitalize="none"
                     autoCorrect={false}
                     style={styles.input}
-                    onChangeText={(replyInput) => this.setState({replyInput})}
+                    onChangeText={(replyInput) => this.setState({ replyInput })}
                   />
                   <View style={styles.replyInputContainer}>
                     <TouchableOpacity
-                      onPress={() => this.setState({newReply: false})}
+                      onPress={() => this.setState({ newReply: false })}
                     >
                       <Text style={styles.replyButton}>Cancel</Text>
                     </TouchableOpacity>
@@ -605,6 +709,8 @@ export default class Bubble extends React.Component {
   }
 }
 
+const win = Dimensions.get('window');
+
 // Note: Everything is forced to be "left" positioned with this component.
 // The "right" position is only used in the default Bubble.
 const styles = StyleSheet.create({
@@ -614,29 +720,72 @@ const styles = StyleSheet.create({
     paddingBottom: 2
   },
   standardFont: {
-    fontSize: 15
+    fontSize: 16
   },
+  // messageContainer: {
+  //   flexDirection: 'row',
+  //   maxWidth: messageViewWidth
+  // },
+  username: {
+    fontFamily: 'Futura-Medium',
+    height: 20,
+    // marginTop: 2,
+    // borderColor: 'hotpink',
+    // borderWidth: 2,
+    alignSelf: 'baseline',
+    flex: 0,
+    flexDirection: 'row',        // F
+    flexWrap: 'wrap',
+    // fontWeight: "900",
+  },
+  // username: {
+  //   // fontWeight: 'bold',
+  //   fontWeight: '300',
+  //   fontFamily: 'CormorantGaramond-Light'
+  // },
   slackMessageText: {
     marginLeft: 0,
     marginRight: 0,
-    fontFamily: 'Futura-Light'
+    fontFamily: 'Futura-Light',
+    color: 'black'
+  },
+  testingYellow: {
+    flexWrap: 'wrap',
+    flex: 1,
+    // maxWidth: win.width - 20,
+    alignSelf: 'baseline',
+    // flexShrink: 1,
+    overflow: 'hidden',
+    // borderColor: 'yellow',
+    // borderStyle: 'solid',
+    // borderWidth: 2,
+    // margin: 0,
+  },
+  slackMessageTextFlagged: {
+    marginLeft: 0,
+    marginRight: 0,
+    fontFamily: 'Futura-Light',
+    color: 'gray'
   },
   container: {
     flex: 1,
     alignItems: 'flex-start',
     alignSelf: 'stretch'
   },
-  wrapper: {
-    marginRight: 0,
-    minHeight: 20,
-    alignSelf: 'stretch',
-    justifyContent: 'flex-end'
-  },
-  username: {
-    // fontWeight: 'bold',
-    fontWeight: '300',
-    fontFamily: 'CormorantGaramond-Light'
-  },
+  // wrapper: {
+
+  //   marginRight: 0,
+  //   minHeight: 20,
+  //   alignSelf: 'stretch',
+  //   justifyContent: 'flex-end',
+  //   maxWidth: win.width,
+  //   flexWrap: 'wrap',
+  //   borderColor: 'orange',
+  //   flexShrink: 1,
+  //   borderStyle: 'solid',
+  //   borderWidth: 2,
+  //   alignSelf: 'baseline',
+  // },
   time: {
     textAlign: 'left',
     fontSize: 12,
@@ -699,7 +848,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around'
   },
   replyButton: {
-    fontFamily: 'CormorantGaramond-Light'
+    fontFamily: 'CormorantGaramond-Light',
+    color: 'gray'
   }
 });
 

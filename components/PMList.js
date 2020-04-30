@@ -13,6 +13,9 @@ import Fire from '../Fire';
 import { MaterialIndicator } from 'react-native-indicators';
 import { Ionicons, Feather, AntDesign, Entypo } from '@expo/vector-icons';
 
+import BookmarkIcon from '../assets/icons/BookmarkIcon';
+import HelpIcon from '../assets/icons/HelpIcon';
+
 import NavBar from './Navbar';
 
 export default class PMList extends React.Component {
@@ -35,12 +38,21 @@ export default class PMList extends React.Component {
       }
     });
 
-    // help icon
+    // help alert
     this.helpAlert = () => {
       Alert.alert(
-        'Help @ Personal Messages',
+        'Help',
         'Ready to chat some more? When you start a private message with another user, it will appear here.\n\nTo get started, navigate back to the home page, click on a message board, and longpress on a user\'s name. \n\n A new chat will then open up between you and that user, and it will also appear on this list. \n\n Happy chatting!',
         [{ text: 'Got it!' }]
+      )
+    }
+
+    // bookmark alert
+    this.bookmark = () => {
+      Alert.alert(
+        'Bookmarks coming soon!',
+        'Bookmarked boards are in the works. Hang tight!',
+        [{ text: 'OK!' }]
       )
     }
   }
@@ -69,20 +81,32 @@ export default class PMList extends React.Component {
         {/* <View style={styles.container}> */}
         <View style={styles.innerView}>
 
-          {/* help icon */}
+          {/* bookmark button */}
           <View style={styles.help}>
+
+            <TouchableOpacity
+              onPress={() => this.bookmark()}
+            >
+              <BookmarkIcon />
+            </TouchableOpacity>
+
+
+            {/* help button */}
+
             <TouchableOpacity
               onPress={() => this.helpAlert()}
             >
-              <AntDesign name="questioncircleo" size={20} color="black" />
+              {/* <AntDesign name="questioncircleo" size={20} color="black" /> */}
+              <HelpIcon />
             </TouchableOpacity>
+
           </View>
 
 
 
 
           {/* titles */}
-          <Text style={styles.title}>après</Text>
+          {/* <Text style={styles.title}>après</Text> */}
 
 
           <Text style={styles.subtitle2}>
@@ -96,20 +120,20 @@ export default class PMList extends React.Component {
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                   {this.state.chatrooms.length
                     ? this.state.chatrooms.map((chatroom) =>
-                        <TouchableOpacity
-                          key={chatroom.name}
-                          style={styles.buttonContainer}
-                          onPress={() =>
-                            this.props.navigation.navigate('ChatRoom', {
-                              chatroom: chatroom.name,
-                              PM: true
-                            })
-                          }
-                        >
-                          <Text style={styles.buttonText}>
-                            <Entypo name="new-message" size={30} color="black" /> {this.getRoomName(chatroom.name)}
-                          </Text>
-                        </TouchableOpacity>
+                      <TouchableOpacity
+                        key={chatroom.name}
+                        style={styles.buttonContainer}
+                        onPress={() =>
+                          this.props.navigation.navigate('ChatRoom', {
+                            chatroom: chatroom.name,
+                            PM: true
+                          })
+                        }
+                      >
+                        <Text style={styles.buttonText}>
+                          <Entypo name="new-message" size={30} color="black" /> {this.getRoomName(chatroom.name)}
+                        </Text>
+                      </TouchableOpacity>
                     ) : null}
                 </ScrollView>
               </SafeAreaView>
@@ -126,7 +150,7 @@ const styles = StyleSheet.create({
   help: {
     display: 'flex',
     flexDirection: 'row',
-    alignSelf: 'flex-end',
+    justifyContent: 'space-between',
     backgroundColor: 'white',
     marginTop: -30,
     marginBottom: 20,
@@ -174,7 +198,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     letterSpacing: -1,
     marginBottom: 15,
-    fontFamily: 'Futura-Light',
+    fontFamily: 'CormorantGaramond-Light',
     marginTop: 10
   },
   buttonContainer: {

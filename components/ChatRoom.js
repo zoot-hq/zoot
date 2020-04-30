@@ -5,15 +5,21 @@ import {
   StyleSheet,
   AppState,
   Alert,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions
 } from 'react-native';
-import {GiftedChat} from 'react-native-gifted-chat';
-import {MaterialIndicator} from 'react-native-indicators';
+import { GiftedChat } from 'react-native-gifted-chat';
+import { MaterialIndicator } from 'react-native-indicators';
 import SlackMessage from './SlackMessage';
 import Fire from '../Fire';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
-import {Ionicons, Feather, AntDesign} from '@expo/vector-icons';
+import { Ionicons, Feather, AntDesign } from '@expo/vector-icons';
+
+import BackIcon from '../assets/icons/BackIcon';
+import HelpIcon from '../assets/icons/HelpIcon';
+
+import BackButton from './BackButton';
 
 export default class ChatRoom extends React.Component {
   constructor(props) {
@@ -35,11 +41,21 @@ export default class ChatRoom extends React.Component {
     // help icon
     this.helpAlert = () => {
       Alert.alert(
-        'Help @ Message Boards',
+        'Help',
         'Welcome to the message boards. \n\nReact to posts by longpressing icons beneath messages.\n\nPress the flag icon to flag abusive messages, and press the block icon to block abusive users.\n\nSwipe right to return to the home screen.',
-        [{text: 'Got it!'}]
+        [{ text: 'Got it!' }]
       );
     };
+
+    // back alet
+    this.back = () => {
+      Alert.alert(
+        'Back button coming soon!',
+        'The back button is in the works. Hang tight!',
+        [{ text: 'OK!' }]
+      );
+    };
+
 
     //get messages for chatroom
     Fire.shared.on(
@@ -80,7 +96,7 @@ export default class ChatRoom extends React.Component {
         // if time is outside set time for live chat
         if (
           !(
-            currNyTime.getDay() === 2 &&
+            currNyTime.getDay() === 3 &&
             (currNyTime.getHours() === 21 ||
               (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30))
           )
@@ -126,7 +142,7 @@ export default class ChatRoom extends React.Component {
 
   renderMessage(props) {
     const {
-      currentMessage: {text: currText}
+      currentMessage: { text: currText }
     } = props;
 
     let messageTextStyle;
@@ -135,7 +151,7 @@ export default class ChatRoom extends React.Component {
 
   // load earlier messages from backend
   loadEarlier = async () => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
 
     const newMessages = [];
 
@@ -155,11 +171,11 @@ export default class ChatRoom extends React.Component {
       }));
     }
 
-    this.setState({isLoading: false});
+    this.setState({ isLoading: false });
   };
 
   // returns true if a user has scrolled to the top of all messages, false otherwise
-  isCloseToTop({layoutMeasurement, contentOffset, contentSize}) {
+  isCloseToTop({ layoutMeasurement, contentOffset, contentSize }) {
     const paddingToTop = 80;
     return (
       contentSize.height - layoutMeasurement.height - paddingToTop <=
@@ -183,6 +199,10 @@ export default class ChatRoom extends React.Component {
     }
   };
 
+
+
+
+
   // renderChatFooter = () => {
   //   return (
   //     <TouchableOpacity style={styles.chatFooter} onPress={() => this.uploadImage()}>
@@ -192,28 +212,67 @@ export default class ChatRoom extends React.Component {
   // }
 
   render() {
+
+    //conditional rendering for each different type of chatroom
+    //once we add categories, we need to modify the chatrooms to say 
+    //Welcome to the #{this.state.room} message board located within CATEGORY NAME/PARTNER NAME
+      renderHeaderText = () => {
+    if (this.state.pm) {
+      return (
+        <Text >Welcome to your personal messages in #{ this.state.room}. Happy chatting!</Text >
+      )
+    }
+    if (this.state.live) {
+      return (
+        <Text>Welcome to the #{this.state.room} message board. Once this live chat ends, it will no longer be available.`</Text>
+      )
+    }
+    else {
+
+      return (
+        <Text> Welcome to the #{this.state.room} message board. Get started by posting a tip or asking a question. </Text >
+      )
+    }
+  }
+
+
+
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
-          {/* help button */}
+          {/* back button */}
+          {/* 
+            <TouchableOpacity onPress={() => this.back()}>
+              <BackIcon />
+            </TouchableOpacity> */}
+
           <View style={styles.help}>
+            <BackButton />
+
+            {/* help button */}
+
             <TouchableOpacity onPress={() => this.helpAlert()}>
-              <AntDesign name="questioncircleo" size={20} color="black" />
+              {/* <AntDesign name="questioncircleo" size={20} color="black" /> */}
+              <HelpIcon />
             </TouchableOpacity>
           </View>
 
-          <View style={{flex: 1, marginBottom: 40}}>
-            <Text style={styles.title}>#{this.state.room}</Text>
-            {/* <Text style={styles.tips}>
-              Welcome to #{this.state.room}.
-          </Text> */}
+          <View style={{ flex: 1, marginBottom: 40, }}>
+            <Text style={styles.subtitle2}>#{this.state.room}</Text>
+            <Text style={styles.subtitle}>
+
+
+              {renderHeaderText()}
+
+
+            </Text>
             <GiftedChat
               messages={this.state.messages}
               listViewProps={{
                 scrollEventThrottle: 400,
-                onScroll: ({nativeEvent}) => {
+                onScroll: ({ nativeEvent }) => {
                   if (this.isCloseToTop(nativeEvent) && !this.state.isLoading) {
-                    this.setState({isLoading: true});
+                    this.setState({ isLoading: true });
                     this.loadEarlier();
                   }
                 },
@@ -232,31 +291,35 @@ export default class ChatRoom extends React.Component {
               renderAvatar={null}
               sendImage={this.sendImage}
               renderLoading={() => <MaterialIndicator color="black" />}
-              // renderChatFooter={this.renderChatFooter}
+            // renderChatFooter={this.renderChatFooter}
             />
           </View>
         </View>
-      </View>
+      </View >
     );
   }
 }
+
+const win = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   help: {
     display: 'flex',
     flexDirection: 'row',
-    alignSelf: 'flex-end',
+    justifyContent: 'space-between',
     backgroundColor: 'white',
     marginTop: -30,
-    marginBottom: -20,
-    marginRight: 20,
-    paddingLeft: 30,
+    marginBottom: 20,
     height: 20,
-    zIndex: 999
+    zIndex: 999,
+    marginRight: 20,
+    marginLeft: 20
   },
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    width: win.width,
+    borderColor: 'aqua'
   },
   title: {
     top: 10,
@@ -270,6 +333,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     zIndex: 1
   },
+  subtitle2: {
+    fontSize: 40,
+    fontWeight: '300',
+    textAlign: 'center',
+    letterSpacing: -1,
+    marginBottom: 15,
+    fontFamily: 'CormorantGaramond-Light',
+    marginTop: -15
+  },
   tips: {
     fontSize: 11,
     fontWeight: 'bold',
@@ -281,6 +353,15 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingBottom: 10
   },
+  subtitle: {
+    fontSize: 20,
+    fontWeight: '300',
+    color: 'gray',
+    textAlign: 'center',
+    marginBottom: 10,
+    fontFamily: 'Futura-Light',
+    marginTop: 2
+  },
   chatFooter: {
     borderTopColor: 'black',
     borderTopWidth: 1,
@@ -289,6 +370,8 @@ const styles = StyleSheet.create({
   },
   innerView: {
     marginTop: 50,
+    marginLeft: 3,
+    marginRight: 3,
     flex: 1
   }
 });
