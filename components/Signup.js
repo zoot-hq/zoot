@@ -25,7 +25,7 @@ const roleList = [
   "I'm Parent Recovering from Loss.",
   "I'm an Other Role Not Described Here.",
   "I'd Prefer Not to Disclose."
-].map((role) => ({ label: role, value: role }));
+].map((role) => ({label: role, value: role}));
 
 export default class SignupScreen extends React.Component {
   constructor() {
@@ -56,7 +56,7 @@ export default class SignupScreen extends React.Component {
             4. If you experience a user who repeatedly behaves in an unacceptable manner, please flag the user for review.
             5. If you are struggling in a way that feels overwhelming, please see our resources for access to professional mental healthcare providers, and get help.
             6. We are open and love your feedback. Please send us your suggestions on how to improve your experience.`,
-      [{ text: 'OK', onPress: () => this.handleSubmit() }]
+      [{text: 'OK', onPress: () => this.handleSubmit()}]
     );
   };
 
@@ -77,7 +77,7 @@ export default class SignupScreen extends React.Component {
     };
     return (
       <View style={styles.container}>
-        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+        <KeyboardAvoidingView style={{flex: 1}}>
           <View style={styles.container}>
             <Text style={styles.title}>après</Text>
             <View style={styles.internalcontainer}>
@@ -90,15 +90,15 @@ export default class SignupScreen extends React.Component {
                   autoCapitalize="none"
                   autoCorrect={false}
                   style={styles.input}
-                  onChangeText={username => this.setState({ username })}
-                  ref={input => (this.username = input)}
+                  onChangeText={(username) => this.setState({username})}
+                  ref={(input) => (this.username = input)}
                   blurOnSubmit={false}
                 />
               </View>
               {(this.state.error === 'username is required.' ||
                 this.state.error === 'username already taken.') && (
-                  <Text style={styles.error}>{this.state.error}</Text>
-                )}
+                <Text style={styles.error}>{this.state.error}</Text>
+              )}
               <View style={styles.field}>
                 <Text style={styles.text}>email</Text>
                 <TextInput
@@ -109,17 +109,17 @@ export default class SignupScreen extends React.Component {
                   autoCapitalize="none"
                   autoCorrect={false}
                   style={styles.input}
-                  onChangeText={email => this.setState({ email })}
-                  ref={input => (this.email = input)}
+                  onChangeText={(email) => this.setState({email})}
+                  ref={(input) => (this.email = input)}
                   keyboardType="email-address"
                   blurOnSubmit={false}
                 />
               </View>
               {(this.state.error === 'The email address is badly formatted.' ||
                 this.state.error ===
-                'The email address is already in use by another account.') && (
-                  <Text style={styles.error}>{this.state.error}</Text>
-                )}
+                  'The email address is already in use by another account.') && (
+                <Text style={styles.error}>{this.state.error}</Text>
+              )}
               <View style={styles.field}>
                 <Text style={styles.text}>password</Text>
                 <TextInput
@@ -127,17 +127,17 @@ export default class SignupScreen extends React.Component {
                   secureTextEntry
                   onSubmitEditing={() => this.birthday.focus()}
                   style={styles.input}
-                  onChangeText={password => this.setState({ password })}
-                  ref={input => (this.password = input)}
+                  onChangeText={(password) => this.setState({password})}
+                  ref={(input) => (this.password = input)}
                   blurOnSubmit={false}
                 />
               </View>
               {(this.state.error ===
                 'The password must be 6 characters long or more.' ||
                 this.state.error ===
-                'Password should be at least 6 characters') && (
-                  <Text style={styles.error}>{this.state.error}</Text>
-                )}
+                  'Password should be at least 6 characters') && (
+                <Text style={styles.error}>{this.state.error}</Text>
+              )}
               {/* <View style={styles.field}>
               <Text style={styles.text}>birthday (ddmmyyyy)</Text>
               <TextInput
@@ -195,19 +195,18 @@ export default class SignupScreen extends React.Component {
               />
             </View> */}
               <View style={styles.roleIdOuterWrap}>
-
                 <Text
-                  style={[{ marginTop: 12, alignSelf: 'center' }, styles.text]}
-                >  What best describes you?
+                  style={[{marginTop: 12, alignSelf: 'center'}, styles.text]}
+                >
+                  {' '}
+                  What best describes you?
                   {'\n'}
                 </Text>
 
                 <View style={styles.roleIdInnerWrap}>
-
-
                   <View>
                     <RNPickerSelect
-                      style={{ ...pickerSelectStyles }}
+                      style={{...pickerSelectStyles}}
                       onValueChange={(value) => {
                         this.setState({
                           selectedRole: value
@@ -254,7 +253,7 @@ export default class SignupScreen extends React.Component {
                   );
                   // if error occured, put it on state
                   if (status) {
-                    this.setState({ error: status.message });
+                    this.setState({error: status.message});
                   }
                   // if everything is good
                   else {
@@ -269,7 +268,7 @@ export default class SignupScreen extends React.Component {
                 <Text style={styles.eulaText}>
                   By proceeding with signing in and clicking 'sign up', you
                   agree to our terms as listed in our
-            </Text>
+                </Text>
                 <Text
                   style={styles.link}
                   onPress={() =>
@@ -279,12 +278,11 @@ export default class SignupScreen extends React.Component {
                   }
                 >
                   End-User License Agreement (EULA) of Après.
-            </Text>
+                </Text>
               </View>
             </View>
           </View>
         </KeyboardAvoidingView>
-
       </View>
     );
   }
@@ -292,7 +290,7 @@ export default class SignupScreen extends React.Component {
 const styles = StyleSheet.create({
   internalContainer: {
     marginLeft: 30,
-    marginRight: 30,
+    marginRight: 30
   },
   container: {
     display: 'flex',
@@ -317,7 +315,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     fontFamily: 'Futura-Light',
     textAlign: 'center',
-    lineHeight: 15,
+    lineHeight: 15
   },
   link: {
     color: 'black',
@@ -344,7 +342,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginRight: 50,
     marginLeft: 50,
-    marginBottom: 10,
+    marginBottom: 10
   },
   input: {
     borderBottomWidth: 1,
@@ -353,7 +351,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'bottom',
     marginLeft: 2,
     fontFamily: 'Futura-Light',
-    fontSize: 22,
+    fontSize: 22
   },
   buttonContainer: {
     borderStyle: 'solid',
@@ -363,7 +361,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginRight: 50,
     marginLeft: 50,
-    paddingBottom: 15,
+    paddingBottom: 15
   },
   buttonText: {
     textAlign: 'center',
@@ -382,7 +380,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: 'Futura-Light',
-    fontSize: 22,
+    fontSize: 22
   },
   modal: {
     paddingVertical: 50,
@@ -391,7 +389,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   guidelinesText: {
     fontFamily: 'Futura-Light',
@@ -451,6 +449,6 @@ const pickerSelectStyles = StyleSheet.create({
     backgroundColor: 'white',
     color: 'black',
     fontFamily: 'Futura-Light',
-    width: 300,
+    width: 300
   }
 });
