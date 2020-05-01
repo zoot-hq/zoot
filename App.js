@@ -1,5 +1,8 @@
 // Stack Navigation
 
+import React, { Component } from 'react';
+import { StatusBar } from 'react-native';
+
 import ChatList from './components/ChatList';
 import ChatRoom from './components/ChatRoom';
 import Home from './components/Home';
@@ -14,6 +17,7 @@ import { createStackNavigator } from 'react-navigation';
 import PartnerList from './components/PartnerList';
 import Splash from './components/Splash';
 import SplashContent from './components/SplashContent';
+
 
 
 // disabled yellow comments/alerts
@@ -31,6 +35,8 @@ let stringDate = msDate.toString();
 console.log(
   `=========================== JS RELOAD at ${stringDate} ===============================`
 );
+
+<StatusBar hidden />
 
 const navigator = createStackNavigator(
   {
