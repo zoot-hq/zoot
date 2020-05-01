@@ -43,7 +43,6 @@ export class PartnerList extends Component {
       passcode: '',
       passcodeModal: false,
       partnerNames: [],
-      // partnerName: '',
       passcodes: [],
       queriedPartners: [],
       query: '',
@@ -157,9 +156,6 @@ export class PartnerList extends Component {
 
   render() {
     renderLock = (partner) => {
-      // if (this.state.unlockedPartners[partnerName]) {
-      // if (this.state.unlockedPartners) {
-
       console.log('\n=========renderLock======');
       console.log('\nthis.state.partner.name)' + partner.name);
       console.log(
@@ -171,9 +167,6 @@ export class PartnerList extends Component {
         '\nObject.values(this.state.unlockedPartners) ' +
           Object.values(this.state.unlockedPartners)
       );
-
-      // console.log('\npartner)' + (partner.name))
-      // console.log('\nincludes ' + this.state.unlockedPartners.includes(partner.name))
       console.log(this.state.unlockedPartners.hasOwnProperty('92Y'));
       let partnerKey = this.state.currentPartner.name;
 
@@ -188,13 +181,6 @@ export class PartnerList extends Component {
 
     checkPasscode = () => {
       console.log('\n=======checkPasscode======\n');
-
-      // console.log('\n(this.state.currentPartner)');
-      // console.log(this.state.currentPartner);
-
-      // console.log('\n(this.state.currentPartner.passcode)');
-      // console.log(this.state.currentPartner.passcode);
-
       if (this.state.passcode === this.state.currentPartner.passcode) {
         return this.unlock(this.state.currentPartner);
       } else {
@@ -203,8 +189,6 @@ export class PartnerList extends Component {
     };
 
     checkLockState = (partner) => {
-      // console.log('partnername in checklockstate line 183: ', partnerName);
-
       console.log('==============checkLockState============\n');
       console.log(this.state.unlockedPartners);
 
@@ -224,12 +208,6 @@ export class PartnerList extends Component {
 
       console.log('\n=======setCurrentPartner======\n');
       console.log(this.state.unlockedPartners);
-
-      // console.log('\npartnerName.name')
-      // console.log(partnerName.name)
-
-      // console.log('\npartnerName.passcode')
-      // console.log(partnerName.passcode)
 
       console.log('\npartner');
       console.log(partner);
@@ -404,9 +382,9 @@ export class PartnerList extends Component {
                                 // console.log(partner)
                               }}
                             >
-                              <Text style={styles.modalButtonSave}>Enter</Text>
-                              )}
-                              <TextInput
+                              {/* <Text style={styles.modalButtonSave}>Enter</Text> */}
+                              {/* )} */}
+                              {/* <TextInput
                                 returnKeyType="done"
                                 placeholder="Enter passcode..."
                                 placeholderTextColor="#bfbfbf"
@@ -416,9 +394,9 @@ export class PartnerList extends Component {
                                 onChangeText={(passcode) =>
                                   this.setState({passcode})
                                 }
-                              />
+                              /> */}
                               <View style={styles.modalButtonsContainer}>
-                                <TouchableOpacity
+                                {/* <TouchableOpacity
                                   style={{width: 150}}
                                   onPress={() =>
                                     this.setState({
@@ -430,7 +408,7 @@ export class PartnerList extends Component {
                                   <Text style={styles.modalButtonCancel}>
                                     Cancel
                                   </Text>
-                                </TouchableOpacity>
+                                </TouchableOpacity> */}
                                 <TouchableOpacity
                                   style={{
                                     width: 150,
@@ -442,7 +420,7 @@ export class PartnerList extends Component {
                                       'partner name in onpress: ',
                                       partner.name
                                     );
-                                    this.checkPasscode(partner.name);
+                                    checkPasscode(partner.name);
                                   }}
                                 >
                                   <Text style={styles.modalButtonSave}>
