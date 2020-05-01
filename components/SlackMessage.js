@@ -8,14 +8,14 @@ import {
   TouchableOpacity,
   Vibration
 } from 'react-native';
-import { Avatar, Day, utils } from 'react-native-gifted-chat';
+import {Avatar, Day, utils} from 'react-native-gifted-chat';
 import Bubble from './SlackBubble';
 
-const { isSameUser, isSameDay } = utils;
+const {isSameUser, isSameDay} = utils;
 
 export default class Message extends React.Component {
   getInnerComponentProps() {
-    const { containerStyle, ...props } = this.props;
+    const {containerStyle, ...props} = this.props;
     return {
       ...props,
       position: 'left',
@@ -41,7 +41,7 @@ export default class Message extends React.Component {
       return this.props.renderBubble(bubbleProps);
     }
     return (
-      <View styles={{ marginBottom: 20, }}>
+      <View styles={{marginBottom: 20}}>
         <Bubble {...bubbleProps} />
       </View>
     );
@@ -58,10 +58,21 @@ export default class Message extends React.Component {
       <View>
         {/* {this.renderDay()} */}
         <View
-          style={[styles.container, { marginBottom }, {
-            flex: 1, flexDirection: 'row', flexWrap: "wrap", alignSelf: 'baseline',
-            //borderColor: 'green', borderStyle: 'solid', borderWidth: 2, margin: 2, 
-          }, this.props.containerStyle]}
+          style={[
+            styles.container,
+            {marginBottom},
+            {
+              flex: 1,
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              alignSelf: 'baseline',
+              borderColor: 'green',
+              borderStyle: 'solid',
+              borderWidth: 2,
+              margin: 2
+            },
+            this.props.containerStyle
+          ]}
         >
           {/* {this.renderAvatar()} */}
           {this.renderBubble()}

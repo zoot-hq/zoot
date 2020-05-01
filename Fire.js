@@ -149,8 +149,19 @@ class Fire {
   };
 
   // send replies to the backend
-  sendReply = (newReply, room, replyRef, parentId) => {
+  sendReply = async (newReply, room, parentId) => {
     const {text, user} = newReply;
+    const parentLevel = await firebase
+      .database()
+      .ref('chatrooms')
+      .child(room)
+      .child(parentId)
+      .child('level')
+      .once('value')
+      .then(function (snapshot) {
+        return snapshot.val();
+      });
+    console.log(typeof parentLevel, parentLevel);
     const reply = {
       text,
       user,
@@ -176,12 +187,16 @@ class Fire {
       },
       hidden: false,
       react: true,
-      replies: []
+      replies: [],
+      level: parentLevel + 1
     };
     firebase
       // For 2+ levels of replies, this ends up creating a new reply in the room in the db in addition to the nested one, so far haven't found a way around that.
       .database()
-      .ref(replyRef)
+      .ref('chatrooms')
+      .child(room)
+      .child(parentId)
+      .child('replies')
       .push(reply);
   };
 
@@ -212,7 +227,8 @@ class Fire {
         },
         hidden: false,
         react: true,
-        replies: []
+        replies: [],
+        level: 0
       };
 
       // push message to database
