@@ -14,6 +14,7 @@ import {Searchbar} from 'react-native-paper';
 import {MaterialIndicator} from 'react-native-indicators';
 import {Ionicons, Feather, AntDesign} from '@expo/vector-icons';
 import * as firebase from 'firebase';
+import Fire from '../Fire';
 import {
   StackActions,
   NavigationActions,
@@ -46,13 +47,14 @@ export class PartnerList extends Component {
       queriedPartners: [],
       query: '',
       selectedPartnerChatrooms: {},
-      unlockedPartners: firebase.auth().currentUser.child('unlockedPartners'),
+      unlockedPartners: {},
       currentUserName: firebase.auth().currentUser.displayName
     };
   }
 
   async componentDidMount() {
-    console.log('current user object', firebase.auth().currentUser);
+    const unlockedPartners = await this.getUnlockedPartnerNames();
+    this.setState({unlockedPartners: unlockedPartners});
     // help alert
     this.helpAlert = () => {
       Alert.alert(
@@ -114,6 +116,19 @@ export class PartnerList extends Component {
       console.error(error);
     }
   }
+  async getUnlockedPartnerNames() {
+    let ref = firebase
+      .database()
+      .ref(`users/${this.state.currentUserName}/unlockedPartners`);
+    try {
+      let query = await ref.once('value').then(function (snapshot) {
+        return snapshot.val();
+      });
+      return query;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   async getPartnerNames() {
     let ref = firebase.database().ref(`partnerNames`);
@@ -136,22 +151,17 @@ export class PartnerList extends Component {
   }
 
   render() {
-    const passcode = this.state.partnerNames.passcode;
-    console.log(this.state.unlockedPartners, 'unlocked partners on state');
     this.unlock = (partnerName) => {
+      console.log('partner name in unlock ', partnerName);
       this.setState({
         passcodeModal: false,
         error: false,
         unlockedPartners: {...this.state.unlockedPartners, partnerName: true}
       });
-      // add this partner to user's list of unlocked partners in firebase
-      firebase
-        .database()
-        .ref(`users/${this.state.currentUserName}`)
-        .child('unlockedPartners')
-        .set({
-          partnerName: true
-        });
+      this.resetNavigation();
+      this.props.navigation.navigate('ChatList', {
+        partner: partnerName
+      });
     };
 
     renderLock = (partnerName) => {
@@ -163,7 +173,11 @@ export class PartnerList extends Component {
     };
 
     checkPasscode = (partnerName) => {
-      if (this.state.passcode === '1234') {
+      const curPartnerCode = this.state.partnerNames.filter(
+        (partner) => partner.name === partnerName
+      )[0].passcode;
+      console.log({curPartnerCode});
+      if (this.state.passcode === curPartnerCode) {
         return this.unlock(partnerName);
       } else {
         return this.noGo();
@@ -171,8 +185,7 @@ export class PartnerList extends Component {
     };
 
     checkLockState = (partnerName) => {
-      console.log(this.state, 'state in check lock');
-      console.log({partnerName});
+      console.log('partnername in checklockstate line 183: ', partnerName);
       if (this.state.unlockedPartners[partnerName]) {
         this.resetNavigation();
         this.props.navigation.navigate('ChatList', {
