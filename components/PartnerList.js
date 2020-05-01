@@ -153,6 +153,13 @@ export class PartnerList extends Component {
   render() {
     this.unlock = (partnerName) => {
       console.log('partner name in unlock ', partnerName);
+      let unlockedPartnersRef = `users/${this.state.currentUserName}/unlockedPartners`;
+      firebase
+        .database()
+        .ref(unlockedPartnersRef)
+        .update({
+          [partnerName]: true
+        });
       this.setState({
         passcodeModal: false,
         error: false,

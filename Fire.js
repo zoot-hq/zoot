@@ -810,12 +810,7 @@ class Fire {
         }
       });
 
-  getUsersUnblockedPartners = async (username) =>
-    await firebase
-      .database()
-      .ref('users')
-      .child(username)
-      .on('child_added', (snapshot) => callback(this.parsePartners(snapshot)));
+  
 }
 
 Fire.shared = new Fire();
