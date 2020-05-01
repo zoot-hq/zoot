@@ -28,7 +28,8 @@ export default class ChatList extends React.Component {
       chatrooms: [],
       queriedChatrooms: [],
       query: '',
-      partner: null
+      partner: null,
+      category: null
     };
   }
   // EV: this was component Will Mount - had to change it to "did" because otherwise it can't update state (apparently you can't do that from an unmounted component). This was eventually what worked! It still gave me a warning, but it also worked.
@@ -55,33 +56,47 @@ export default class ChatList extends React.Component {
     const {params} = this.props.navigation.state;
     if (params) {
       const partner = params.partner ? params.partner : null;
-      await this.setState(
-        {partner: partner},
-        console.log('partner in state at line 40, ', this.state.partner)
+      const category = params.category ? params.category : null;
+      await this.setState({
+        partner: partner,
+        category: category
+      });
+      console.log('partner in state in ChatList.js ', this.state.partner);
+      console.log('category in state in ChatList.js ', this.state.category);
+    }
+    if (this.state.category) {
+      let arrOfFilteredRooms = await Fire.shared.getCategoryChatRoomNames(
+        this.state.category
+      );
+      this.setState({queriedChatrooms: arrOfFilteredRooms});
+    }
+    // grab chatrooms = every room has a name and numOnline attribute
+    else {
+      Fire.shared.getChatRoomNames(
+        (newRoom) => {
+          const queriedChatrooms = this.state.queriedChatrooms;
+          // add room to querried rooms if query matches
+          if (
+            newRoom.name &&
+            newRoom.name.toLowerCase().includes(this.state.query.toLowerCase())
+          ) {
+            queriedChatrooms.push(newRoom);
+            // update state
+            this.setState({
+              chatrooms: [...this.state.chatrooms, newRoom].sort((a, b) =>
+                a.name > b.name ? 1 : -1
+              ),
+              queriedChatrooms: queriedChatrooms.sort((a, b) =>
+                a.name > b.name ? 1 : -1
+              )
+            });
+          }
+          // add room to querried rooms if query matches
+        },
+        this.state.partner,
+        this.state.category
       );
     }
-
-    // grab chatrooms = every room has a name and numOnline attribute
-    Fire.shared.getChatRoomNames((newRoom) => {
-      const queriedChatrooms = this.state.queriedChatrooms;
-      // add room to querried rooms if query matches
-      if (
-        newRoom.name &&
-        newRoom.name.toLowerCase().includes(this.state.query.toLowerCase())
-      ) {
-        queriedChatrooms.push(newRoom);
-        // update state
-        this.setState({
-          chatrooms: [...this.state.chatrooms, newRoom].sort((a, b) =>
-            a.name > b.name ? 1 : -1
-          ),
-          queriedChatrooms: queriedChatrooms.sort((a, b) =>
-            a.name > b.name ? 1 : -1
-          )
-        });
-      }
-      // add room to querried rooms if query matches
-    }, this.state.partner);
 
     // update numOnline as it changes in database
     Fire.shared.getUpdatedNumOnline((updatedRoom) => {
@@ -180,22 +195,25 @@ export default class ChatList extends React.Component {
           </Text>
         </View>
 
-        {/* navigation to user profile for development purposes
-        < */}
-        {/* <View style={styles.testingView}>
-          <Text style={styles.subtitle} > For testing purposes only:</Text>
+        {/* navigation to user profile for development purposes */}
+
+        <View style={styles.testingView}>
+          <Text style={styles.subtitle}> For testing purposes only:</Text>
 
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('UserPage')}>
-            <Text style={styles.subtitle}>User Page</Text>
+            onPress={() => this.props.navigation.navigate('CategoryList')}
+          >
+            <Text style={styles.subtitle}>CategoryList</Text>
           </TouchableOpacity>
+        </View>
 
-          <TouchableOpacity
+        {/* <TouchableOpacity
             onPress={() => this.props.navigation.navigate('Resources')}>
             <Text style={styles.subtitle}>Resources</Text>
           </TouchableOpacity>
+         */}
 
-
+        {/*
           <View
             style={{
               display: 'flex',
@@ -278,7 +296,8 @@ export default class ChatList extends React.Component {
                       onPress={() => {
                         Fire.shared.createChatRoom(
                           this.state.query,
-                          this.state.partner
+                          this.state.partner,
+                          this.state.category
                         );
                         this.props.navigation.navigate('ChatRoom', {
                           chatroom: this.state.query

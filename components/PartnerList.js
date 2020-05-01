@@ -43,21 +43,22 @@ export class PartnerList extends Component {
       passcode: '',
       passcodeModal: false,
       partnerNames: [],
+      // partnerName: '',
       passcodes: [],
       queriedPartners: [],
       query: '',
       selectedPartnerChatrooms: {},
       unlockedPartners: {},
+      currentPartner: {},
       currentUserName: firebase.auth().currentUser.displayName
     };
-
-    this.checkLockState = this.checkLockState.bind(this);
-    this.unlock = this.unlock.bind(this);
   }
 
   async componentDidMount() {
     const unlockedPartners = await this.getUnlockedPartnerNames();
+
     this.setState({unlockedPartners: unlockedPartners});
+
     // help alert
     this.helpAlert = () => {
       Alert.alert(
@@ -84,7 +85,7 @@ export class PartnerList extends Component {
     contactAdmin = async () => {
       const options = {
         recipients: ['info@apres.chat'],
-        subject: 'Partnerning with Après',
+        subject: 'Partnering with Après',
         body: this.state.message
       };
       try {
@@ -119,6 +120,7 @@ export class PartnerList extends Component {
       console.error(error);
     }
   }
+
   async getUnlockedPartnerNames() {
     let ref = firebase
       .database()
@@ -153,66 +155,99 @@ export class PartnerList extends Component {
     this.props.navigation.dispatch(resetAction);
   }
 
-  unlock = (partnerName) => {
-    console.log('partner name in unlock ', partnerName);
-    let unlockedPartnersRef = `users/${this.state.currentUserName}/unlockedPartners`;
-    firebase
-      .database()
-      .ref(unlockedPartnersRef)
-      .update({
-        [partnerName]: true
-      });
-    this.setState({
-      passcodeModal: false,
-      error: false,
-      unlockedPartners: {...this.state.unlockedPartners, partnerName: true}
-    });
-    this.resetNavigation();
-    this.props.navigation.navigate('ChatList', {
-      partner: partnerName
-    });
-  };
+  render() {
+    renderLock = (partner) => {
+      // if (this.state.unlockedPartners[partnerName]) {
+      // if (this.state.unlockedPartners) {
 
-  checkLockState = (partnerName) => {
-    console.log('partnername in checklockstate line 203: ', partnerName);
-    if (this.state.unlockedPartners[partnerName]) {
+      console.log('\n=========renderLock======');
+      console.log('\nthis.state.partner.name)' + partner.name);
+      console.log(
+        '\nthis.state.unlockedPartners)' + this.state.unlockedPartners
+      );
+      // console.log('\ntype of bject.values(this.state.unlockedPartners)' + typeof (Object.values(this.state.unlockedPartners)))
+      // console.log('\ntype of this.state.unlockedPartners)' + typeof (this.state.unlockedPartners))
+      console.log(
+        '\nObject.values(this.state.unlockedPartners) ' +
+          Object.values(this.state.unlockedPartners)
+      );
+
+      // console.log('\npartner)' + (partner.name))
+      // console.log('\nincludes ' + this.state.unlockedPartners.includes(partner.name))
+      console.log(this.state.unlockedPartners.hasOwnProperty('92Y'));
+      let partnerKey = this.state.currentPartner.name;
+
+      // if ('partner.name' in this.state.unlockedPartners.hasOwnProperty) {
+      if (Object.values(this.state.unlockedPartners).includes(partner.name)) {
+        // if (this.state.unlockedPartners.includes(partner.name)) {
+        return <Feather name="unlock" size={25} color="black" />;
+      } else {
+        return <Feather name="lock" size={25} color="black" />;
+      }
+    };
+
+    checkPasscode = () => {
+      console.log('\n=======checkPasscode======\n');
+
+      // console.log('\n(this.state.currentPartner)');
+      // console.log(this.state.currentPartner);
+
+      // console.log('\n(this.state.currentPartner.passcode)');
+      // console.log(this.state.currentPartner.passcode);
+
+      if (this.state.passcode === this.state.currentPartner.passcode) {
+        return this.unlock(this.state.currentPartner);
+      } else {
+        return this.noGo();
+      }
+    };
+
+    checkLockState = (partner) => {
+      // console.log('partnername in checklockstate line 183: ', partnerName);
+
+      console.log('==============checkLockState============\n');
+      console.log(this.state.unlockedPartners);
+
+      if (Object.values(this.state.unlockedPartners).includes(partner.name)) {
+        this.resetNavigation();
+        this.props.navigation.navigate('ChatList', {
+          partner: partner.name
+        });
+      } else {
+        this.setState({passcodeModal: true});
+        // console.log(this.state.passcodeModal + 'this.state.passcodeModal checklockModal')
+      }
+    };
+
+    setCurrentPartner = (partner) => {
+      this.setState({currentPartner: partner});
+
+      console.log('\n=======setCurrentPartner======\n');
+      console.log(this.state.unlockedPartners);
+
+      // console.log('\npartnerName.name')
+      // console.log(partnerName.name)
+
+      // console.log('\npartnerName.passcode')
+      // console.log(partnerName.passcode)
+
+      console.log('\npartner');
+      console.log(partner);
+    };
+
+    this.unlock = () => {
+      this.setState({
+        passcodeModal: false,
+        error: false
+      });
+      firebase
+        .database()
+        .ref(`users/${this.state.currentUserName}/unlockedPartners`)
+        .push(this.state.currentPartner.name);
       this.resetNavigation();
       this.props.navigation.navigate('ChatList', {
-        partner: partnerName
+        partner: this.state.currentPartner.name
       });
-    } else {
-      this.setState({passcodeModal: true});
-    }
-  };
-
-  checkPasscode = (partnerName) => {
-    const curPartner = this.state.partnerNames.filter((partner) => {
-      console.log(
-        partner.name,
-        partner.passcode,
-        'current partner and their passcode',
-        partnerName,
-        'partnername passed into function',
-        '\n are they equal?\n',
-        partner.name === partnerName
-      );
-      return partner.name === partnerName;
-    });
-    // [0].passcode;
-    console.log({curPartner});
-    if (this.state.passcode === curPartner.passcode) {
-      return this.unlock(partnerName);
-    } else {
-      return this.noGo();
-    }
-  };
-  render() {
-    renderLock = (partnerName) => {
-      if (this.state.unlockedPartners[partnerName]) {
-        return <Feather name="unlock" size={25} color="black"></Feather>;
-      } else {
-        return <Feather name="lock" size={25} color="black"></Feather>;
-      }
     };
 
     return (
@@ -286,39 +321,90 @@ export class PartnerList extends Component {
                   ))
                 ) : // else if a search has not run but the list of partners isn't empty, display all partners
                 this.state.partnerNames.length ? (
-                  this.state.partnerNames.map((partner) => {
-                    console.log('partner in map: ', partner.name);
-                    return (
-                      <TouchableOpacity
-                        key={partner.name}
-                        style={styles.buttonContainer}
-                        onPress={() => {
-                          this.checkLockState(partner.name);
-                          // this.resetNavigation();
-                          // this.props.navigation.navigate('ChatList', {
-                          //   partner: partner.name
-                          // });
-                        }}
+                  this.state.partnerNames.map((partner) => (
+                    <View key={partner.name}>
+                      <Modal
+                        modalData={this.state.modalData}
+                        isVisible={this.state.passcodeModal}
+                        state={this.currentPartner}
                       >
-                        <View style={styles.singleChatView}>
-                          <Text style={styles.buttonText}>
-                            {renderLock(partner.name)}{' '}
-                          </Text>
-                          <Modal isVisible={this.state.passcodeModal}>
-                            <View style={styles.modal}>
-                              <Text style={styles.modalTitle}>
-                                Enter Passcode
+                        <View style={styles.modal}>
+                          <Text style={styles.modalTitle}>Enter Passcode</Text>
+                          {this.state.error ? (
+                            <Text style={styles.modalText}>
+                              {this.state.error}
+                            </Text>
+                          ) : (
+                            <Text style={styles.modalText}>
+                              Your organization will provide you with a secret
+                              passcode to access thier private message boards on
+                              Après.
+                            </Text>
+                          )}
+                          <TextInput
+                            returnKeyType="done"
+                            placeholder="Enter passcode..."
+                            placeholderTextColor="#bfbfbf"
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            style={styles.input}
+                            onChangeText={(passcode) =>
+                              this.setState({passcode})
+                            }
+                          />
+                          <View style={styles.modalButtonsContainer}>
+                            <TouchableOpacity
+                              style={{width: 150}}
+                              onPress={() =>
+                                this.setState({
+                                  passcodeModal: false,
+                                  error: false
+                                })
+                              }
+                            >
+                              <Text style={styles.modalButtonCancel}>
+                                Cancel
                               </Text>
-                              {this.state.error ? (
-                                <Text style={styles.modalText}>
-                                  {this.state.error}
-                                </Text>
-                              ) : (
-                                <Text style={styles.modalText}>
-                                  Your organization will provide you with a
-                                  secret passcode to access thier private
-                                  message boards on Après.
-                                </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              style={{
+                                width: 150,
+                                borderLeftWidth: 1,
+                                borderLeftColor: 'gray'
+                              }}
+                              // key={partner.name}
+                              onPress={() => {
+                                checkPasscode(this.state.currentPartner);
+
+                                console.log(
+                                  '\n=======onPress checkPasscode======\n'
+                                );
+
+                                // console.log('\npartnerName.name')
+                                // console.log(partnerName.name)
+
+                                // console.log('\npartnerName.passcode')
+                                // console.log(partnerName.passcode)
+
+                                // console.log('\npartnerName')
+                                // console.log(partnerName)
+
+                                console.log('\n(this.state.currentPartner)');
+                                console.log(this.state.currentPartner);
+
+                                console.log(
+                                  '\n(this.state.currentPartner.passcode)'
+                                );
+                                console.log(this.state.currentPartner.passcode);
+
+                                // console.log('\npartner.passcode')
+                                // console.log(partner.passcode)
+
+                                // console.log('\npartner')
+                                // console.log(partner)
+                              }}
+                            >
+                              <Text style={styles.modalButtonSave}>Enter</Text>
                               )}
                               <TextInput
                                 returnKeyType="done"
@@ -364,20 +450,64 @@ export class PartnerList extends Component {
                                   </Text>
                                 </TouchableOpacity>
                               </View>
-                            </View>
-                          </Modal>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      </Modal>
+
+                      <TouchableOpacity
+                        key={partner.name}
+                        style={styles.buttonContainer}
+                        onPress={() => {
+                          checkLockState(partner);
+                          setCurrentPartner(partner);
+                          // renderModal(partner)
+
+                          console.log(
+                            '\n=======onPress checkLockState======\n'
+                          );
+
+                          console.log('\npartner.name');
+                          console.log(partner.name);
+
+                          console.log('\npartner.passcode');
+                          console.log(partner.passcode);
+
+                          console.log('\npartner');
+                          console.log(partner);
+
+                          // console.log('\npartnerName.name')
+                          // console.log(partnerName.name)
+
+                          // console.log('\npartnerName.passcode')
+                          // console.log(partnerName.passcode)
+
+                          // console.log('\npartnerName')
+                          // console.log(partnerName)
+                        }}
+                      >
+                        {/* {renderModal(partner)} */}
+
+                        <View style={styles.singleChatView}>
+                          <Text style={styles.buttonText}>
+                            {renderLock(partner)}{' '}
+                          </Text>
+
                           <Text style={styles.buttonText}>
                             {`${partner.name}`}
-                            {`\ntesting passcode: ${partner.passcode}`}
-                            {`\ntesting partner: ${partner.name}`}
                           </Text>
+                          <Text
+                            style={styles.subtitle}
+                          >{`\ntesting passcode: ${partner.passcode}`}</Text>
+                          {/* {`\ntesting partner: ${partner.name}`} */}
+
                           {/* <Ionicons name="md-people" size={25} color="grey">
                           {' '}
                         </Ionicons> */}
                         </View>
                       </TouchableOpacity>
-                    );
-                  })
+                    </View>
+                  ))
                 ) : (
                   <View>
                     <Text>
@@ -390,7 +520,7 @@ export class PartnerList extends Component {
             <TouchableOpacity onPress={() => contactAdmin()}>
               <Text style={styles.subtitle}>
                 Interested in partnering with Après? Click here to send us an
-                email!{' '}
+                email!
               </Text>
             </TouchableOpacity>
 
@@ -404,7 +534,7 @@ export class PartnerList extends Component {
               </Text>
             </TouchableOpacity> */}
 
-            {renderLock()}
+            {/* {renderLock()} */}
           </KeyboardAvoidingView>
         </View>
 
