@@ -17,6 +17,7 @@ import { createStackNavigator } from 'react-navigation';
 import PartnerList from './components/PartnerList';
 import Splash from './components/Splash';
 import SplashContent from './components/SplashContent';
+import CategoryList from './components/CategoryList';
 
 
 
@@ -60,6 +61,7 @@ const navigator = createStackNavigator(
     Resources,
     Navbar,
     PartnerList,
+    CategoryList
   },
   {
     headerMode: 'none',
