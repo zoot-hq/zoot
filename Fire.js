@@ -460,6 +460,22 @@ class Fire {
       .ref(`partnerChatroomNames/${partner}`)
       .on('child_added', (snapshot) => callback(this.parseRooms(snapshot)));
 
+  getCategoryChatRoomNames = async (category) => {
+    const filteredChatrooms = await firebase
+      .database()
+      .ref(`categoryChatroomNames/${category}`)
+      .once('value')
+      .then(function (snapshot) {
+        return snapshot.val();
+      });
+    // add each item to array to return:
+    let filteredArray = [];
+    for (let name in filteredChatrooms) {
+      filteredArray.push(filteredChatrooms[name]);
+    }
+    return filteredArray;
+  };
+
   removeChatRooms = (callback) =>
     firebase
       .database()
