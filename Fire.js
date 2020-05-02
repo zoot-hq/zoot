@@ -35,7 +35,7 @@ class Fire {
       hidden,
       isReply
     } = snapshot.val();
-    const { key: _id } = snapshot;
+    const {key: _id} = snapshot;
     const message = {
       _id,
       createdAt: new Date(timestamp),
@@ -142,15 +142,15 @@ class Fire {
       .push(message);
 
     // push users object to database
-    refToMessage.child('likes').child('users').set({ X: true });
-    refToMessage.child('loves').child('users').set({ X: true });
-    refToMessage.child('lightbulbs').child('users').set({ X: true });
-    refToMessage.child('flags').child('users').set({ X: true });
+    refToMessage.child('likes').child('users').set({X: true});
+    refToMessage.child('loves').child('users').set({X: true});
+    refToMessage.child('lightbulbs').child('users').set({X: true});
+    refToMessage.child('flags').child('users').set({X: true});
   };
 
   // send replies to the backend
   sendReply = (newReply, room, parentId) => {
-    const { text, user } = newReply;
+    const {text, user} = newReply;
     const reply = {
       text,
       user,
@@ -160,19 +160,19 @@ class Fire {
       isReply: true,
       likes: {
         count: 0,
-        users: { X: true }
+        users: {X: true}
       },
       loves: {
         count: 0,
-        users: { X: true }
+        users: {X: true}
       },
       lightbulbs: {
         count: 0,
-        users: { X: true }
+        users: {X: true}
       },
       flags: {
         count: 0,
-        users: { X: true }
+        users: {X: true}
       },
       hidden: false,
       react: true,
@@ -191,7 +191,7 @@ class Fire {
   // send the message to the Backend
   send = (messages, room, pm, live) => {
     for (let i = 0; i < messages.length; i++) {
-      const { text, user } = messages[i];
+      const {text, user} = messages[i];
       const message = {
         text,
         user,
@@ -199,19 +199,19 @@ class Fire {
         timestamp: this.timestamp,
         likes: {
           count: 0,
-          users: { X: true }
+          users: {X: true}
         },
         loves: {
           count: 0,
-          users: { X: true }
+          users: {X: true}
         },
         lightbulbs: {
           count: 0,
-          users: { X: true }
+          users: {X: true}
         },
         flags: {
           count: 0,
-          users: { X: true }
+          users: {X: true}
         },
         hidden: false,
         react: true,
@@ -226,10 +226,10 @@ class Fire {
         : firebase.database().ref('chatrooms').child(room).push(message);
 
       // push users object to database
-      refToMessage.child('likes').child('users').set({ X: true });
-      refToMessage.child('loves').child('users').set({ X: true });
-      refToMessage.child('lightbulbs').child('users').set({ X: true });
-      refToMessage.child('flags').child('users').set({ X: true });
+      refToMessage.child('likes').child('users').set({X: true});
+      refToMessage.child('loves').child('users').set({X: true});
+      refToMessage.child('lightbulbs').child('users').set({X: true});
+      refToMessage.child('flags').child('users').set({X: true});
 
       // if PM, send push notification and update unread messages
       if (pm) {
@@ -254,7 +254,7 @@ class Fire {
                 title: `New private message from ${this.username()}`,
                 body: `${text}`,
                 _displayInForeground: true,
-                data: { from: this.username(), pm: true, room }
+                data: {from: this.username(), pm: true, room}
               };
 
               // send notification
@@ -299,7 +299,7 @@ class Fire {
       .ref('PMnames')
       .child(room)
       .child('unreadMessages')
-      .set({ [this.username()]: 0 });
+      .set({[this.username()]: 0});
   };
 
   enterRoom(room, pm, live) {
@@ -398,7 +398,7 @@ class Fire {
   ) => {
     try {
       // check to see if username already exists
-      const status = await this.userExists(username, { exists: false });
+      const status = await this.userExists(username, {exists: false});
       if (status.val() || username === 'X') {
         throw new Error('username already taken.');
       }
@@ -494,23 +494,23 @@ class Fire {
 
   parsePMs = (snapshot) => {
     const currentUser = this.username();
-    const { name, unreadMessages } = snapshot.val();
+    const {name, unreadMessages} = snapshot.val();
     const names = name.split('-');
     if (names[0] === currentUser || names[1] === currentUser) {
       if (unreadMessages) {
-        return { name, numUnread: unreadMessages[this.username()] };
-      } else return { name };
+        return {name, numUnread: unreadMessages[this.username()]};
+      } else return {name};
     }
   };
 
   parseRooms = (snapshot) => {
-    const { name, numOnline } = snapshot.val();
-    return { name, numOnline };
+    const {name, numOnline} = snapshot.val();
+    return {name, numOnline};
   };
 
   parsePartners = (snapshot) => {
-    const { name } = snapshot.val();
-    return { name };
+    const {name} = snapshot.val();
+    return {name};
   };
 
   createChatRoom = async (room, partner) => {
@@ -531,7 +531,7 @@ class Fire {
               .database()
               .ref('chatroomnames')
               .child(room)
-              .set({ name: room });
+              .set({name: room});
 
             // add number of participants
             firebase
@@ -587,7 +587,7 @@ class Fire {
                   .database()
                   .ref('PMnames')
                   .child(room)
-                  .set({ name: room });
+                  .set({name: room});
 
                 const initMessage = {
                   room,
@@ -613,14 +613,14 @@ class Fire {
                   .ref('PMnames')
                   .child(room)
                   .child('unreadMessages')
-                  .set({ [names[0]]: 0 });
+                  .set({[names[0]]: 0});
 
                 firebase
                   .database()
                   .ref('PMnames')
                   .child(room)
                   .child('unreadMessages')
-                  .set({ [names[1]]: 0 });
+                  .set({[names[1]]: 0});
 
                 callback('user not blocked');
               }
@@ -642,7 +642,7 @@ class Fire {
             .database()
             .ref('livechatnames')
             .child(room)
-            .set({ name: room });
+            .set({name: room});
 
           // add number of participants
           firebase
@@ -676,11 +676,11 @@ class Fire {
   // this function updates the database in increasing the reaction type of
   // a message by 1
   react(message, reactionType, updatedCount) {
-    const { room, _id } = message;
+    const {room, _id} = message;
     const ref = firebase.database().ref('chatrooms').child(room).child(_id);
 
     // set number of likes/loves
-    ref.child(reactionType).set({ count: updatedCount });
+    ref.child(reactionType).set({count: updatedCount});
 
     //set users object
     ref.child(reactionType).child('users').set(message[reactionType].users);
@@ -744,7 +744,7 @@ class Fire {
       .ref('PMnames')
       .on('child_added', (snapshot) => {
         // check to see if the updated new messages is for the current user
-        const { name, unreadMessages } = snapshot.val();
+        const {name, unreadMessages} = snapshot.val();
         const names = name.split('-');
         if (names[0] === this.username() || names[1] === this.username()) {
           if (unreadMessages) {
@@ -798,7 +798,7 @@ class Fire {
             .ref('partnerChatroomNames')
             .child(partner)
             .child(room)
-            .set({ name: room });
+            .set({name: room});
 
           // add number of participants
           firebase
