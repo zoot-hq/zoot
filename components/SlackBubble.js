@@ -45,7 +45,6 @@ export default class Bubble extends React.Component {
   }
 
   async componentWillMount() {
-
     let replies = await this.getReplies(this.props.currentMessage);
     await this.setState({ replies: replies });
 
@@ -129,7 +128,6 @@ export default class Bubble extends React.Component {
       return (
         // pressing the text opens a TextInput box to add a reply
         // <TouchableOpacity onPress={() => this.setState({ newReply: true })}>
-
 
         <MessageText
           {...messageTextProps}
@@ -322,7 +320,7 @@ export default class Bubble extends React.Component {
 
       ${message.user.name} in #${message.room}: ${
         message.text
-        } [Message ID: ${messageName}]
+      } [Message ID: ${messageName}]
       --- reported by: ${Fire.shared.username()}`
     };
     try {
@@ -357,7 +355,9 @@ export default class Bubble extends React.Component {
   renderReactions = () => {
     if (this.state.react || this.isSameUser())
       return (
-        <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 15 }}>
+        <View
+          style={{ display: 'flex', flexDirection: 'row', marginBottom: 15 }}
+        >
           <TouchableOpacity
             style={{ marginRight: 20 }}
             onLongPress={() => this.react('likes')}
@@ -476,12 +476,12 @@ export default class Bubble extends React.Component {
               <Text style={styles.replyButton}>Hide replies</Text>
             </TouchableOpacity>
           ) : (
-              <TouchableOpacity
-                onPress={() => this.setState({ showReplies: true })}
-              >
-                <Text style={styles.replyButton}>Show replies</Text>
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity
+              onPress={() => this.setState({ showReplies: true })}
+            >
+              <Text style={styles.replyButton}>Show replies</Text>
+            </TouchableOpacity>
+          )}
         </View>
       );
     }
@@ -499,7 +499,6 @@ export default class Bubble extends React.Component {
       .then(function (snapshot) {
         return snapshot;
       });
-    const path = await this.getReplyRef(this.props.currentMessage);
     if (replies) {
       // put the replies in an array so we can map through them
       let keyArr = [];
@@ -512,30 +511,17 @@ export default class Bubble extends React.Component {
       for (let reply in repliesObj) {
         // make the id a property on the reply object instead of its key to make the data more accessible
         repliesObj[reply]._id = reply;
-        repliesObj[reply].ref = path;
+        if (!parent.isReply) {
+          repliesObj[reply].level = 1;
+        } else {
+          repliesObj[reply].level = parent.level + 1;
+        }
         repliesArr.push(repliesObj[reply]);
       }
       return repliesArr;
     } else {
       return [];
     }
-  }
-  async getReplyRef(parent) {
-    const ref = await firebase
-      .database()
-      .ref('chatrooms')
-      .child(parent.room)
-      .child(parent._id);
-    let replyRef = await ref
-      .child('replies')
-      .once('value')
-      .then(function (snapshot) {
-        return snapshot.getRef();
-      });
-    replyRef = String(replyRef);
-    let startIdx = replyRef.indexOf('.com');
-    let path = replyRef.slice(startIdx + 4);
-    return path;
   }
   submitReply = async () => {
     // first send the reply to the database
@@ -601,20 +587,15 @@ export default class Bubble extends React.Component {
     //   </View>
     // );
 
-
     const win = Dimensions.get('window');
 
     return (
-
       <View style={[styles.container, this.props.containerStyle]}>
         <TouchableOpacity
           onLongPress={this.onLongPress}
           accessibilityTraits="text"
           {...this.props.touchableProps}
         >
-
-
-
           {/* Indented Chatstyle
           <View style={[styles.wrapper, this.props.wrapperStyle]}>
             <View>
@@ -632,7 +613,6 @@ export default class Bubble extends React.Component {
                 ]}
               > */}
 
-
           <View>
             <View>
               {/* {this.renderCustomView()} */}
@@ -643,35 +623,33 @@ export default class Bubble extends React.Component {
                 style={[
                   this.props.currentMessage.isReply
                     ? {
-                      // maxWidth: win.width,
-                      flexDirection: 'row',        // F
-                      flexWrap: 'wrap',
-                      flex: 1,
-                      // alignContent: 'flex-start',
-                      // maxWidth: win.width,
-                      // alignSelf: 'baseline',
-                      // borderColor: 'blue',
-                      // borderStyle: 'dashed',
-                      // borderWidth: 2,
-                    }
+                        // maxWidth: win.width,
+                        flexDirection: 'row', // F
+                        flexWrap: 'wrap',
+                        flex: 1
+                        // alignContent: 'flex-start',
+                        // maxWidth: win.width,
+                        // alignSelf: 'baseline',
+                        // borderColor: 'blue',
+                        // borderStyle: 'dashed',
+                        // borderWidth: 2,
+                      }
                     : {
-                      flex: 1,
-                      // maxWidth: win.width,
-                      flexDirection: 'row',        // F
-                      flexWrap: 'wrap',
-                      // alignContent: 'flex-start',
-                      // alignSelf: 'baseline',
-                      // borderColor: 'blue',
-                      // borderStyle: 'solid',
-                      // borderWidth: 2,
-                    }
+                        flex: 1,
+                        // maxWidth: win.width,
+                        flexDirection: 'row', // F
+                        flexWrap: 'wrap'
+                        // alignContent: 'flex-start',
+                        // alignSelf: 'baseline',
+                        // borderColor: 'blue',
+                        // borderStyle: 'solid',
+                        // borderWidth: 2,
+                      }
                 ]}
               >
-
                 {this.renderUsername()}
                 {/* {this.renderMessageImage()} */}
                 {this.renderMessageText()}
-
               </View>
 
               {/* render reactions on messages with the reaction feature */}
@@ -734,8 +712,8 @@ const styles = StyleSheet.create({
     // borderWidth: 2,
     alignSelf: 'baseline',
     flex: 0,
-    flexDirection: 'row',        // F
-    flexWrap: 'wrap',
+    flexDirection: 'row', // F
+    flexWrap: 'wrap'
     // fontWeight: "900",
   },
   // username: {
@@ -755,7 +733,7 @@ const styles = StyleSheet.create({
     // maxWidth: win.width - 20,
     alignSelf: 'baseline',
     // flexShrink: 1,
-    overflow: 'hidden',
+    overflow: 'hidden'
     // borderColor: 'yellow',
     // borderStyle: 'solid',
     // borderWidth: 2,
