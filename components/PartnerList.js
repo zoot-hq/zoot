@@ -157,7 +157,7 @@ export class PartnerList extends Component {
   resetNavigation() {
     const resetAction = StackActions.reset({
       index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'ChatList' })]
+      actions: [NavigationActions.navigate({ routeName: 'PartnerList' })]
     });
     this.props.navigation.dispatch(resetAction);
   }
@@ -570,7 +570,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: 'white',
-    marginTop: -30,
+    marginTop: -10,
     marginBottom: 20,
     height: 20,
     zIndex: 999

@@ -37,18 +37,18 @@ export default class LoginScreen extends React.Component {
         [
           {
             text: 'Ok, great!',
-            onPress: () => this.setState({showResetPasswordForm: false})
+            onPress: () => this.setState({ showResetPasswordForm: false })
           }
         ]
       );
     } catch (error) {
-      this.setState({resetPasswordError: true});
+      this.setState({ resetPasswordError: true });
     }
   };
 
   render() {
     return (
-      <KeyboardAvoidingView style={{flex: 1}}>
+      <KeyboardAvoidingView style={{ flex: 1 }}>
         <View style={styles.container}>
           <Text style={styles.title}>après</Text>
           <View style={styles.field}>
@@ -60,7 +60,7 @@ export default class LoginScreen extends React.Component {
               autoCapitalize="none"
               autoCorrect={false}
               style={styles.input}
-              onChangeText={(email) => this.setState({email})}
+              onChangeText={(email) => this.setState({ email })}
             />
           </View>
           <View style={styles.internalcontainer}>
@@ -70,14 +70,14 @@ export default class LoginScreen extends React.Component {
                 returnKeyType="done"
                 secureTextEntry
                 style={styles.input}
-                onChangeText={(password) => this.setState({password})}
+                onChangeText={(password) => this.setState({ password })}
                 blurOnSubmit={false}
                 ref={(input) => (this.passwordInput = input)}
               />
             </View>
             {!!this.state.error && (
               <TouchableOpacity
-                onPress={() => this.setState({showResetPasswordForm: true})}
+                onPress={() => this.setState({ showResetPasswordForm: true })}
               >
                 <Text style={styles.error}>
                   {' '}
@@ -106,9 +106,9 @@ export default class LoginScreen extends React.Component {
                   );
 
                   // navigate into app
-                  this.props.navigation.navigate('ChatList');
+                  this.props.navigation.navigate('CategoryList');
                 } else {
-                  this.setState({error: true});
+                  this.setState({ error: true });
                 }
               }}
             >
@@ -145,7 +145,7 @@ export default class LoginScreen extends React.Component {
                     autoCapitalize="none"
                     autoCorrect={false}
                     style={styles.input}
-                    onChangeText={(email) => this.setState({email})}
+                    onChangeText={(email) => this.setState({ email })}
                   />
                 </View>
                 {!!this.state.resetPasswordError && (
@@ -160,7 +160,7 @@ export default class LoginScreen extends React.Component {
                   <Text style={styles.buttonText}>reset password</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => this.setState({showResetPasswordForm: false})}
+                  onPress={() => this.setState({ showResetPasswordForm: false })}
                 >
                   <Text style={styles.cancel}>cancel</Text>
                 </TouchableOpacity>

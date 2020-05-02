@@ -106,7 +106,7 @@ export default class ChatRoom extends React.Component {
             [
               {
                 text: 'See you next time!',
-                onPress: () => this.props.navigation.replace('ChatList')
+                onPress: () => this.props.navigation.replace('CategoryList')
               }
             ]
           );
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: 'white',
-    marginTop: -30,
+    marginTop: -10,
     marginBottom: 20,
     height: 20,
     zIndex: 999,
