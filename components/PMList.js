@@ -71,6 +71,12 @@ export default class PMList extends React.Component {
     }
   }
 
+
+
+
+
+
+
   render() {
     if (!this.state.grabbed) {
       return <MaterialIndicator color="black" />;
@@ -152,7 +158,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: 'white',
-    marginTop: -30,
+    marginTop: -10,
     marginBottom: 20,
     height: 20,
     zIndex: 999,

@@ -32,19 +32,22 @@ import Modal from 'react-native-modal';
 
 import BookmarkIcon from '../assets/icons/BookmarkIcon';
 import HelpIcon from '../assets/icons/HelpIcon';
+import InfoIcon from '../assets/icons/InfoIcon';
+import ChevronIcon from '../assets/icons/ChevronIcon';
 
 import Navbar from './Navbar';
 
 
 export class CategoryList extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             categoryNames: [],
             categoryName: '',
             passcodes: [],
             queriedcategorys: [],
             query: '',
+            showDescription: false,
             selectedcategoryChatrooms: {},
             currentCategory: {},
             currentUserName: firebase.auth().currentUser.displayName,
@@ -102,7 +105,7 @@ export class CategoryList extends Component {
     resetNavigation() {
         const resetAction = StackActions.reset({
             index: 0,
-            actions: [NavigationActions.navigate({ routeName: 'ChatList' })]
+            actions: [NavigationActions.navigate({ routeName: 'CategoryList' })]
         });
         this.props.navigation.dispatch(resetAction);
     }
@@ -126,7 +129,51 @@ export class CategoryList extends Component {
 
 
 
+        toggleDescription = (category) => {
+            if (this.state.showDescription === false) {
+                return (
+                    <View style={styles.insideButton}>
+                        <TouchableOpacity
+                            key={category.name}
+                            onPress={() => {
+                                setCurrentCategory(category);
+                                this.resetNavigation();
+                                this.props.navigation.navigate('ChatList', {
+                                    category: category.name
 
+                                })
+                            }
+                            }
+                        >
+                            <Text style={styles.buttonText}>
+                                {category.name}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                )
+            }
+            if (this.state.showDescription === true) {
+                return (
+                    <View style={styles.insideButton}>
+                        <TouchableOpacity
+                            key={category.name}
+                            onPress={() => {
+                                setCurrentCategory(category);
+                                this.resetNavigation();
+                                this.props.navigation.navigate('ChatList', {
+                                    category: category.name
+                                })
+                            }
+                            }
+                        >
+                            <Text style={styles.description}>
+                                {category.description}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                )
+            }
+        }
 
 
 
@@ -158,114 +205,101 @@ export class CategoryList extends Component {
                     </View>
 
                     {/* titles */}
-                    {/* <Text style={styles.title}>après</Text> */}
-                    <Text style={styles.subtitle2}>
-                        categories
+
+
+                    <Text style={styles.title}>
+                        après
+                    </Text>
+
+
+                    <Text style={styles.subtitle}>
+                        Welcome.{'\n'}What type support are you here for?
           </Text>
+
                 </View>
+
+
                 <View style={styles.searchView}>
-                    {/* <Searchbar 
-                        theme={{ colors: { primary: 'black' } }}
-                        placeholder="Search for a categoryed organization"
-                        onChangeText={(query) => {
-                            const queriedcategorys = this.state.categoryNames.filter(
-                                (category) => {
-                                    return category.name
-                                        .toLowerCase()
-                                        .includes(query.toLowerCase());
-                                }
-                            );
-                            this.setState({ queriedcategorys, query });
-                            if (!query.length) {
-                                this.setState({ queriedcategorys: this.state.categoryNames });
-                            }
-                        }}
-                    /> */}
 
 
-                    {/* category board list */}
+                    {/* category list */}
                     <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding">
                         <SafeAreaView>
                             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 
 
 
-
-
-                                {/* if a query made, queried chatrooms displayed
-                                {this.state.queriedcategorys.length ? (
-                                    this.state.queriedcategorys.map((category, idx) => (
-                                        <TouchableOpacity
-                                            key={idx}
-                                            style={styles.buttonContainer}
-                                        //onPress ={() =>
-                                        //   this.props.navigation.navigate('ChatRoom', {
-                                        //     chatroom: chatroom.name
-                                        //   })
-                                        // }
-                                        >
-                                            <View style={styles.singleChatView}>
-                                                <Text style={styles.buttonText}># {category.name}</Text>
-                                                <Ionicons name="md-people" size={25} color="grey">
-                                                    {' '}
-                                                </Ionicons>
-                                            </View>
-                                        </TouchableOpacity>
-                                    ))
-                                ) : // else if a search has not run but the list of categorys isn't empty, display all categorys */}
-
-
-
-
-
-
-                                {/* {this.state.categoryNames.length ? ( */}
-
                                 {this.state.categoryNames.slice(0).reverse().map((category) => (
 
 
-                                    <View key={category.name}>
+                                    // <View key={category.name}>
 
 
 
 
+                                    <View style={styles.buttonContainer}>
+                                        <View style={styles.singleChatView}>
 
 
-                                        <TouchableOpacity
-                                            key={category.name}
-                                            style={styles.buttonContainer}
-                                            onPress={() => {
-                                                setCurrentCategory(category);
-                                                this.resetNavigation();
-                                                this.props.navigation.navigate('ChatList', {
-                                                    category: category.name
-
-                                                })
-                                            }
-                                            }
-                                        >
-
-
-
-                                            <View style={styles.singleChatView}>
-                                                <Text style={styles.buttonText}>
-                                                    {' -- '}
-                                                </Text>
-
-
-                                                <Text style={styles.buttonText}>
-                                                    {`${category.name}`}</Text>
-
+                                            <View style={styles.info}>
+                                                <TouchableOpacity
+                                                    key={category.name}
+                                                    onPress={() => {
+                                                        this.setState({ showDescription: !this.state.showDescription })
+                                                    }
+                                                    }
+                                                >
+                                                    <InfoIcon />
+                                                </TouchableOpacity>
                                             </View>
-                                        </TouchableOpacity>
+
+                                            {/* <View style={styles.insideButton}>
+                                                <TouchableOpacity
+                                                    key={category.name}
+                                                    onPress={() => {
+                                                        setCurrentCategory(category);
+                                                        this.resetNavigation();
+                                                        this.props.navigation.navigate('ChatList', {
+                                                            category: category.name
+
+                                                        })
+                                                    }
+                                                    }
+                                                > */}
 
 
 
+                                            {/* <Text style={styles.buttonText}>
+                                                                {`${category.name}`}</Text> */}
 
+                                            {/* <Text style={styles.subtitle}>{`\n${category.description}`}</Text> */}
 
+                                            {/* </TouchableOpacity> */}
+                                            {/* </View> */}
 
+                                            {toggleDescription(category)}
 
+                                            <View style={styles.chevron}>
+                                                {/* <TouchableOpacity
+                                                        key={category.name}
+                                                        onPress={() => {
+                                                            setCurrentCategory(category);
+                                                            this.resetNavigation();
+                                                            this.props.navigation.navigate('ChatList', {
+                                                                category: category.name
+
+                                                            })
+                                                        }
+                                                        }
+                                                    > */}
+                                                <ChevronIcon />
+                                                {/* </TouchableOpacity> */}
+                                            </View>
+
+                                        </View>
                                     </View>
+
+                                    // </View>
                                 ))}
 
                             </ScrollView>
@@ -285,14 +319,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: 'white',
-        marginTop: -30,
+        marginTop: -10,
         marginBottom: 20,
         height: 20,
         zIndex: 999
     },
     chatroomlist: {
         marginBottom: 30,
-        height: 500
+        flex: 2,
     },
     container: {
         display: 'flex',
@@ -304,7 +338,7 @@ const styles = StyleSheet.create({
         marginTop: 0,
         marginRight: 20,
         marginLeft: 20,
-        flex: 5
+        flex: 2
     },
     innerView: {
         marginTop: 50,
@@ -322,12 +356,13 @@ const styles = StyleSheet.create({
         marginTop: -15
     },
     subtitle: {
-        fontSize: 15,
+        fontSize: 20,
         fontWeight: '300',
         textAlign: 'center',
         marginBottom: 8,
         fontFamily: 'Futura-Light',
-        marginTop: 10
+        marginTop: -10,
+        marginBottom: 10,
     },
     subtitle2: {
         fontSize: 40,
@@ -341,15 +376,16 @@ const styles = StyleSheet.create({
     buttonContainer: {
         borderStyle: 'solid',
         borderWidth: 1,
-        padding: 5,
+        padding: 10,
         marginTop: 5,
         marginLeft: 5
     },
     buttonText: {
         color: 'black',
         fontWeight: '600',
-        fontSize: 28,
-        fontFamily: 'Futura-Light'
+        fontSize: 42,
+        fontFamily: 'Futura-Light',
+        padding: 15,
     },
     searchbar: {
         color: 'black',
@@ -358,12 +394,6 @@ const styles = StyleSheet.create({
     numOnline: {
         fontSize: 20,
         fontFamily: 'Futura-Light'
-    },
-    singleChatView: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center'
     },
     testingView: {
         borderColor: 'red',
@@ -439,21 +469,52 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginVertical: 10
     },
-    root: { flex: 1, padding: 20 },
-    title: { textAlign: 'center', fontSize: 30 },
-    codeFiledRoot: { marginTop: 20 },
-    cell: {
-        width: 40,
-        height: 40,
-        lineHeight: 38,
-        fontSize: 24,
-        borderWidth: 2,
-        borderColor: '#00000030',
-        textAlign: 'center'
+    info: {
+        // borderColor: 'pink',
+        // borderWidth: 2,
+        // borderStyle: 'solid',
+        alignSelf: "flex-start",
+        marginRight: 8,
+        flex: 0.5,
     },
-    focusCell: {
-        borderColor: '#000'
-    }
+    chevron: {
+        // borderColor: 'orange',
+        // borderWidth: 2,
+        // borderStyle: 'solid',
+        // marginLeft: 8,
+        flex: 0.5,
+        alignSelf: "stretch",
+        justifyContent: 'center',
+        alignItems: 'center',
+
+    },
+    singleChatView: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        // borderColor: 'yellow',
+        // borderWidth: 2,
+        // borderStyle: 'solid',
+        justifyContent: 'center',
+        display: 'flex',
+        flexDirection: 'row',
+    },
+    insideButton: {
+        // borderColor: 'blue',
+        // borderWidth: 2,
+        // borderStyle: 'solid',
+        flex: 5,
+        alignItems: 'center',
+    },
+    description: {
+        fontSize: 15,
+        fontWeight: '300',
+        textAlign: 'center',
+        fontFamily: 'Futura-Light',
+        padding: 4,
+    },
+
 });
 
 export default withNavigation(CategoryList);

@@ -141,10 +141,14 @@ class Navbar extends React.Component {
     return (
       <View>
         <View style={styles.navbar}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => this.props.navigation.replace('ChatList')}
+          > */}
+
+
+          <TouchableOpacity
+            onPress={() => this.props.navigation.replace('CategoryList')}
           >
-            {/* <AntDesign name="home" size={30} color="black" /> */}
 
             <HomeIcon />
 
