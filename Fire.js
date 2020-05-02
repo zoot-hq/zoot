@@ -159,8 +159,10 @@ class Fire {
       .child('level')
       .once('value')
       .then(function (snapshot) {
+        console.log('inside query:', snapshot.val());
         return snapshot.val();
       });
+    const newLevel = Number(parentLevel) + 1;
     console.log(typeof parentLevel, parentLevel);
     const reply = {
       text,
@@ -188,7 +190,7 @@ class Fire {
       hidden: false,
       react: true,
       replies: [],
-      level: parentLevel + 1
+      level: newLevel
     };
     firebase
       // For 2+ levels of replies, this ends up creating a new reply in the room in the db in addition to the nested one, so far haven't found a way around that.

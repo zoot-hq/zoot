@@ -511,6 +511,11 @@ export default class Bubble extends React.Component {
         // make the id a property on the reply object instead of its key to make the data more accessible
         repliesObj[reply]._id = reply;
         // repliesObj[reply].ref = path;
+        if (!parent.isReply) {
+          repliesObj[reply].level = 1;
+        } else {
+          repliesObj[reply].level = parent.level + 1;
+        }
         repliesArr.push(repliesObj[reply]);
       }
       return repliesArr;
