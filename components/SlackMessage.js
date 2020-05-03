@@ -66,9 +66,9 @@ export default class Message extends React.Component {
               flexDirection: 'row',
               flexWrap: 'wrap',
               alignSelf: 'baseline',
-              borderColor: 'green',
-              borderStyle: 'solid',
-              borderWidth: 2,
+              // borderColor: 'green',
+              // borderStyle: 'solid',
+              // borderWidth: 2,
               margin: 2
             },
             this.props.containerStyle

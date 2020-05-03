@@ -585,7 +585,6 @@ export default class Bubble extends React.Component {
     //   </View>
     // );
     const win = Dimensions.get('window');
-
     return (
       <View style={[styles.container, this.props.containerStyle]}>
         <TouchableOpacity
@@ -614,9 +613,6 @@ export default class Bubble extends React.Component {
             <View>
               {/* {this.renderCustomView()} */}
               <View
-                onLayout={(event) => {
-                  messageViewWidth = event.nativeEvent.layout.width;
-                }}
                 style={[
                   this.props.currentMessage.isReply
                     ? {
@@ -704,7 +700,7 @@ const styles = StyleSheet.create({
   username: {
     fontFamily: 'Futura-Medium',
     height: 20,
-    // marginTop: 2,
+    marginTop: 2,
     // borderColor: 'hotpink',
     // borderWidth: 2,
     alignSelf: 'baseline',
