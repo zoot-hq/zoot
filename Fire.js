@@ -151,19 +151,6 @@ class Fire {
   // send replies to the backend
   sendReply = async (newReply, room, parentId) => {
     const {text, user} = newReply;
-    const parentLevel = await firebase
-      .database()
-      .ref('chatrooms')
-      .child(room)
-      .child(parentId)
-      .child('level')
-      .once('value')
-      .then(function (snapshot) {
-        console.log('inside query:', snapshot.val());
-        return snapshot.val();
-      });
-    const newLevel = Number(parentLevel) + 1;
-    console.log(typeof parentLevel, parentLevel);
     const reply = {
       text,
       user,
@@ -189,8 +176,7 @@ class Fire {
       },
       hidden: false,
       react: true,
-      replies: [],
-      level: newLevel
+      replies: []
     };
     firebase
       // If a reply is made to a reply, the reply ID is duplicated at the root of the chatroom as if it's a new message, except that its only child in the DB is 'replies'. If we decide to allow the user to delete replies, they should be deleted from both locations.
@@ -229,8 +215,7 @@ class Fire {
         },
         hidden: false,
         react: true,
-        replies: [],
-        level: 0
+        replies: []
       };
 
       // push message to database

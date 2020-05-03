@@ -585,7 +585,6 @@ export default class Bubble extends React.Component {
     //   </View>
     // );
     const win = Dimensions.get('window');
-    console.log(this.props.currentMessage.level);
     return (
       <View style={[styles.container, this.props.containerStyle]}>
         <TouchableOpacity
@@ -652,7 +651,8 @@ export default class Bubble extends React.Component {
               {/* this.state.newReply becomes true when a user clicks the message text/reply button */}
               {this.state.newReply && (
                 <View>
-                  {this.props.currentMessage.level < 5 ? (
+                  {!this.props.currentMessage.level ||
+                  this.props.currentMessage.level < 5 ? (
                     <View>
                       <TextInput
                         returnKeyType="done"
@@ -677,7 +677,7 @@ export default class Bubble extends React.Component {
                       </View>
                     </View>
                   ) : (
-                    <Text>
+                    <Text style={styles.slackMessageText}>
                       Sorry, this message has reached the maximum number of
                       replies.
                     </Text>
