@@ -585,6 +585,7 @@ export default class Bubble extends React.Component {
     //   </View>
     // );
     const win = Dimensions.get('window');
+    console.log(this.props.currentMessage.level);
     return (
       <View style={[styles.container, this.props.containerStyle]}>
         <TouchableOpacity
@@ -651,25 +652,36 @@ export default class Bubble extends React.Component {
               {/* this.state.newReply becomes true when a user clicks the message text/reply button */}
               {this.state.newReply && (
                 <View>
-                  <TextInput
-                    returnKeyType="done"
-                    placeholder="Type your reply"
-                    placeholderTextColor="#bfbfbf"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    style={styles.input}
-                    onChangeText={(replyInput) => this.setState({replyInput})}
-                  />
-                  <View style={styles.replyInputContainer}>
-                    <TouchableOpacity
-                      onPress={() => this.setState({newReply: false})}
-                    >
-                      <Text style={styles.replyButton}>Cancel</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={this.submitReply}>
-                      <Text style={styles.replyButton}>Submit</Text>
-                    </TouchableOpacity>
-                  </View>
+                  {this.props.currentMessage.level < 5 ? (
+                    <View>
+                      <TextInput
+                        returnKeyType="done"
+                        placeholder="Type your reply"
+                        placeholderTextColor="#bfbfbf"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        style={styles.input}
+                        onChangeText={(replyInput) =>
+                          this.setState({replyInput})
+                        }
+                      />
+                      <View style={styles.replyInputContainer}>
+                        <TouchableOpacity
+                          onPress={() => this.setState({newReply: false})}
+                        >
+                          <Text style={styles.replyButton}>Cancel</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={this.submitReply}>
+                          <Text style={styles.replyButton}>Submit</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  ) : (
+                    <Text>
+                      Sorry, this message has reached the maximum number of
+                      replies.
+                    </Text>
+                  )}
                 </View>
               )}
             </View>
