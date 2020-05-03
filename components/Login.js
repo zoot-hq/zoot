@@ -106,7 +106,7 @@ export default class LoginScreen extends React.Component {
                   );
 
                   // navigate into app
-                  this.props.navigation.navigate('ChatList');
+                  this.props.navigation.navigate('CategoryList');
                 } else {
                   this.setState({error: true});
                 }

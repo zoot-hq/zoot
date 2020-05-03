@@ -17,6 +17,7 @@ import { createStackNavigator } from 'react-navigation';
 import PartnerList from './components/PartnerList';
 import Splash from './components/Splash';
 import SplashContent from './components/SplashContent';
+import CategoryList from './components/CategoryList';
 
 
 
@@ -40,26 +41,73 @@ console.log(
 
 const navigator = createStackNavigator(
   {
-    Home,
-    Splash,
-    SplashContent,
-    // remove swipe back gesture from chatlist
-    ChatList: {
-      name: 'ChatList',
-      screen: ChatList,
+    Home: {
+      name: 'Home',
+      screen: Home,
       navigationOptions: {
-        // gesturesEnabled: false,
+        gesturesEnabled: false,
       }
     },
+    Splash: {
+      name: 'Splash',
+      screen: Splash,
+      navigationOptions: {
+        gesturesEnabled: false,
+      }
+    },
+    SplashContent,
+    ChatList,
     ChatRoom,
-    Signup,
-    Login,
-    WelcomePage,
-    PMList,
-    UserPage,
-    Resources,
+    Signup: {
+      name: 'Signup',
+      screen: Signup,
+      navigationOptions: {
+        gesturesEnabled: true,
+      }
+    },
+    Login: {
+      name: 'Login',
+      screen: Login,
+      navigationOptions: {
+        gesturesEnabled: true,
+      }
+    },
+    PMList: {
+      name: 'PMList',
+      screen: PMList,
+      navigationOptions: {
+        gesturesEnabled: false,
+      }
+    },
+    UserPage: {
+      name: 'UserPage',
+      screen: UserPage,
+      navigationOptions: {
+        gesturesEnabled: false,
+      }
+    },
+    Resources: {
+      name: 'Resources',
+      screen: Resources,
+      navigationOptions: {
+        gesturesEnabled: false,
+      }
+    },
     Navbar,
-    PartnerList,
+    PartnerList: {
+      name: 'PartnerList',
+      screen: PartnerList,
+      navigationOptions: {
+        gesturesEnabled: false,
+      }
+    },
+    CategoryList: {
+      name: 'CategoryList',
+      screen: CategoryList,
+      navigationOptions: {
+        gesturesEnabled: false,
+      }
+    },
   },
   {
     headerMode: 'none',

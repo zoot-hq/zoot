@@ -497,7 +497,6 @@ export default class Bubble extends React.Component {
       .then(function (snapshot) {
         return snapshot;
       });
-    // const path = await this.getReplyRef(this.props.currentMessage);
     if (replies) {
       // put the replies in an array so we can map through them
       let keyArr = [];
@@ -510,7 +509,6 @@ export default class Bubble extends React.Component {
       for (let reply in repliesObj) {
         // make the id a property on the reply object instead of its key to make the data more accessible
         repliesObj[reply]._id = reply;
-        // repliesObj[reply].ref = path;
         if (!parent.isReply) {
           repliesObj[reply].level = 1;
         } else {
@@ -523,23 +521,6 @@ export default class Bubble extends React.Component {
       return [];
     }
   }
-  // async getReplyRef(parent) {
-  //   const ref = await firebase
-  //     .database()
-  //     .ref('chatrooms')
-  //     .child(parent.room)
-  //     .child(parent._id);
-  //   let replyRef = await ref
-  //     .child('replies')
-  //     .once('value')
-  //     .then(function (snapshot) {
-  //       return snapshot.getRef();
-  //     });
-  //   replyRef = String(replyRef);
-  //   let startIdx = replyRef.indexOf('.com');
-  //   let path = replyRef.slice(startIdx + 4);
-  //   return path;
-  // }
   submitReply = async () => {
     // first send the reply to the database
     // let replyRef = await this.getReplyRef(this.props.currentMessage);
@@ -642,13 +623,13 @@ export default class Bubble extends React.Component {
                         // maxWidth: win.width,
                         flexDirection: 'row', // F
                         flexWrap: 'wrap',
-                        flex: 1,
+                        flex: 1
                         // alignContent: 'flex-start',
                         // maxWidth: win.width,
                         // alignSelf: 'baseline',
-                        borderColor: 'blue',
-                        borderStyle: 'dashed',
-                        borderWidth: 2
+                        // borderColor: 'blue',
+                        // borderStyle: 'dashed',
+                        // borderWidth: 2,
                       }
                     : {
                         flex: 1,

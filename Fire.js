@@ -193,7 +193,7 @@ class Fire {
       level: newLevel
     };
     firebase
-      // For 2+ levels of replies, this ends up creating a new reply in the room in the db in addition to the nested one, so far haven't found a way around that.
+      // If a reply is made to a reply, the reply ID is duplicated at the root of the chatroom as if it's a new message, except that its only child in the DB is 'replies'. If we decide to allow the user to delete replies, they should be deleted from both locations.
       .database()
       .ref('chatrooms')
       .child(room)
@@ -477,6 +477,22 @@ class Fire {
       .database()
       .ref(`partnerChatroomNames/${partner}`)
       .on('child_added', (snapshot) => callback(this.parseRooms(snapshot)));
+
+  getCategoryChatRoomNames = async (category) => {
+    const filteredChatrooms = await firebase
+      .database()
+      .ref(`categoryChatroomNames/${category}`)
+      .once('value')
+      .then(function (snapshot) {
+        return snapshot.val();
+      });
+    // add each item to array to return:
+    let filteredArray = [];
+    for (let name in filteredChatrooms) {
+      filteredArray.push(filteredChatrooms[name]);
+    }
+    return filteredArray;
+  };
 
   removeChatRooms = (callback) =>
     firebase
