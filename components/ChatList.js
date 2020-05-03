@@ -237,7 +237,7 @@ export default class ChatList extends React.Component {
 
 
         {/* <Text style={styles.subtitle}>
-            Welcome.{'\n'}What type support are you here for?
+            Welcome.{'\n'}What type of support are you here for?
           </Text>
         </View> */}
 
