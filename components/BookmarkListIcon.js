@@ -39,12 +39,28 @@ export default class BookmarkListIcon extends Component {
       .child('bookmarks')
       .child(chatroom.name)
       .set(chatroom);
+    this.setState({bookmarked: true});
+  }
+
+  async removeFromBookmarks(chatroom) {
+    await firebase
+      .database()
+      .ref('users')
+      .child(Fire.shared.username())
+      .child('bookmarks')
+      .child(chatroom.name)
+      .remove();
+    this.setState({bookmarked: false});
   }
 
   render() {
     return (
       <Feather
-        onPress={() => this.addToBookmarks(this.props.chatroom)}
+        onPress={() =>
+          this.state.bookmarked
+            ? this.removeFromBookmarks(this.props.chatroom)
+            : this.addToBookmarks(this.props.chatroom)
+        }
         name="bookmark"
         size={15}
         style={{color: this.state.bookmarked ? 'black' : '#bfbfbf'}}
