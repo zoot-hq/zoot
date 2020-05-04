@@ -2,8 +2,8 @@
   "expoServerPort": null,
   "packagerPort": null,
   "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerNgrokUrl": "https://y5-ce2.anonymous.zoot.exp.direct",
+  "packagerNgrokUrl": "https://packager.y5-ce2.anonymous.zoot.exp.direct",
+  "ngrokPid": 27060,
   "devToolsPort": 19002
 }
