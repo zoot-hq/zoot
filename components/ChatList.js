@@ -49,11 +49,13 @@ export default class ChatList extends React.Component {
 
     // bookmark alert
     this.bookmark = () => {
-      Alert.alert(
-        'Bookmarks coming soon!',
-        'Bookmarked boards are in the works. Hang tight!',
-        [{text: 'OK!'}]
-      );
+      this.getBookmarkedChats();
+      this.setState({bookmarks: true});
+      // Alert.alert(
+      //   'Bookmarks coming soon!',
+      //   'Bookmarked boards are in the works. Hang tight!',
+      //   [{text: 'OK!'}]
+      // );
     };
 
     // This updates the partner property in the state successfully
@@ -61,14 +63,18 @@ export default class ChatList extends React.Component {
     if (params) {
       const partner = params.partner ? params.partner : null;
       const category = params.category ? params.category : null;
+      const bookmarks = params.bookmarks ? params.bookmarks : null;
       await this.setState({
         partner: partner,
-        category: category
+        category: category,
+        bookmarks: bookmarks
       });
       console.log('partner in state in ChatList.js ', this.state.partner);
       console.log('category in state in ChatList.js ', this.state.category);
     }
-    if (this.state.category) {
+    if (this.state.bookmarks) {
+      this.getBookmarkedChats();
+    } else if (this.state.category) {
       let arrOfFilteredRooms = await Fire.shared.getCategoryChatRoomNames(
         this.state.category
       );
@@ -140,6 +146,22 @@ export default class ChatList extends React.Component {
     );
   }
 
+  async getBookmarkedChats() {
+    const userRef = await firebase
+      .database()
+      .ref('users')
+      .child(Fire.shared.username());
+    const bookmarkedChatsObj = await userRef
+      .child('bookmarks')
+      .once('value')
+      .then((snapshot) => snapshot.val());
+    const bookmarkedChatsArr = [];
+    for (let name in bookmarkedChatsObj) {
+      bookmarkedChatsArr.push(bookmarkedChatsObj[name]);
+    }
+    this.setState({queriedChatrooms: bookmarkedChatsArr});
+  }
+
   registerForPushNotificationsAsync = async () => {
     if (!Constants.isDevice) return;
     try {
@@ -179,13 +201,14 @@ export default class ChatList extends React.Component {
       if (this.state.partner) {
         return <Text style={styles.subtitle2}>{this.state.partner}</Text>;
       }
-      if (this.state.category) {
+      if (this.state.bookmarks) {
+        return <Text style={styles.subtitle2}>Bookmarked Boards</Text>;
+      } else if (this.state.category) {
         return <Text style={styles.subtitle2}>{this.state.category}</Text>;
       } else {
         return <Text style={styles.subtitle2}>Message Boards</Text>;
       }
     };
-
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
