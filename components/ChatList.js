@@ -35,6 +35,7 @@ export default class ChatList extends React.Component {
       partner: null,
       category: null
     };
+    this.bookmarkRemoved = this.bookmarkRemoved.bind(this);
   }
   // EV: this was component Will Mount - had to change it to "did" because otherwise it can't update state (apparently you can't do that from an unmounted component). This was eventually what worked! It still gave me a warning, but it also worked.
   async componentDidMount() {
@@ -160,6 +161,12 @@ export default class ChatList extends React.Component {
       bookmarkedChatsArr.push(bookmarkedChatsObj[name]);
     }
     this.setState({queriedChatrooms: bookmarkedChatsArr});
+  }
+
+  bookmarkRemoved() {
+    if (this.state.bookmarks) {
+      this.getBookmarkedChats();
+    }
   }
 
   registerForPushNotificationsAsync = async () => {
@@ -325,7 +332,10 @@ export default class ChatList extends React.Component {
                       <View style={styles.singleChatView}>
                         <Text style={styles.buttonText}># {chatroom.name}</Text>
                         <View style={styles.singleChatIcons}>
-                          <BookmarkListIcon chatroom={chatroom} />
+                          <BookmarkListIcon
+                            chatroom={chatroom}
+                            bookmarkRemoved={this.bookmarkRemoved}
+                          />
                           <Ionicons name="md-people" size={25} color="grey">
                             {' '}
                             {chatroom.numOnline}
@@ -359,6 +369,10 @@ export default class ChatList extends React.Component {
                       </Text>
                     </TouchableOpacity>
                   </View>
+                ) : this.state.bookmarks ? (
+                  <Text style={styles.subtitle2}>
+                    You have not bookmarked any chatrooms yet.
+                  </Text>
                 ) : (
                   // return loading while grabbing data from database
                   <MaterialIndicator color="black" />

@@ -51,6 +51,7 @@ export default class BookmarkListIcon extends Component {
       .child(chatroom.name)
       .remove();
     this.setState({bookmarked: false});
+    this.props.bookmarkRemoved();
   }
 
   render() {
