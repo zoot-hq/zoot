@@ -35,6 +35,7 @@ export default class ChatList extends React.Component {
       partner: null,
       category: null
     };
+    // removes the bookmark from this component if the user clicks it in the nested component
     this.bookmarkRemoved = this.bookmarkRemoved.bind(this);
   }
   // EV: this was component Will Mount - had to change it to "did" because otherwise it can't update state (apparently you can't do that from an unmounted component). This was eventually what worked! It still gave me a warning, but it also worked.
