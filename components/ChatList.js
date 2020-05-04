@@ -21,6 +21,7 @@ import Navbar from './Navbar';
 import BookmarkIcon from '../assets/icons/BookmarkIcon';
 import HelpIcon from '../assets/icons/HelpIcon';
 import * as firebase from 'firebase';
+import BookmarkListIcon from './BookmarkListIcon';
 
 export default class ChatList extends React.Component {
   constructor(props) {
@@ -169,16 +170,6 @@ export default class ChatList extends React.Component {
     } catch (error) {}
   };
 
-  async addToBookmarks(chatroom) {
-    await firebase
-      .database()
-      .ref('users')
-      .child(Fire.shared.username())
-      .child('bookmarks')
-      .child(chatroom.name)
-      .set(chatroom);
-  }
-
   componentWillUnmount() {
     console.log('unmount firing >>>>>>>');
   }
@@ -311,14 +302,7 @@ export default class ChatList extends React.Component {
                       <View style={styles.singleChatView}>
                         <Text style={styles.buttonText}># {chatroom.name}</Text>
                         <View style={styles.singleChatIcons}>
-                          <Feather
-                            onPress={() => this.addToBookmarks(chatroom)}
-                            name="bookmark"
-                            size={15}
-                            color="#bfbfbf"
-                          >
-                            {' '}
-                          </Feather>
+                          <BookmarkListIcon chatroom={chatroom} />
                           <Ionicons name="md-people" size={25} color="grey">
                             {' '}
                             {chatroom.numOnline}
