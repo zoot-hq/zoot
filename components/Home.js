@@ -33,7 +33,7 @@ export default class HomeScreen extends React.Component {
 
     // if successful login, navigate in
     if (!status) {
-      this.props.navigation.navigate('ChatList');
+      this.props.navigation.navigate('CategoryList');
     }
 
     // else navigate to regular login

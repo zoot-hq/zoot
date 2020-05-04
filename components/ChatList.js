@@ -9,14 +9,14 @@ import {
   KeyboardAvoidingView,
   Alert
 } from 'react-native';
-import {Searchbar} from 'react-native-paper';
+import { Searchbar } from 'react-native-paper';
 import Fire from '../Fire';
-import {MaterialIndicator} from 'react-native-indicators';
-import {Notifications} from 'expo';
+import { MaterialIndicator } from 'react-native-indicators';
+import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
-import {Ionicons, MaterialIcons, AntDesign, Feather} from '@expo/vector-icons';
-import {componentDidMount as loadNavbar} from './Navbar';
+import { Ionicons, MaterialIcons, AntDesign, Feather } from '@expo/vector-icons';
+import { componentDidMount as loadNavbar } from './Navbar';
 import Navbar from './Navbar';
 import BookmarkIcon from '../assets/icons/BookmarkIcon';
 import HelpIcon from '../assets/icons/HelpIcon';
@@ -25,6 +25,8 @@ export default class ChatList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      category: this.props.navigation.state.params.category,
+      partner: this.props.navigation.state.params.partner,
       chatrooms: [],
       queriedChatrooms: [],
       query: '',
@@ -39,7 +41,7 @@ export default class ChatList extends React.Component {
       Alert.alert(
         'Help',
         "Welcome to après!\n\n This is your home page.\n\n Use the navbar to navigate to your user page, your personal messages, live chat, our partnered boards, and the resources page. \n\n Search our message boards for a topic you're interested in. Don't see it already? Press the + icon to create it, and start the conversation! ",
-        [{text: 'Got it!'}]
+        [{ text: 'Got it!' }]
       );
     };
 
@@ -48,12 +50,12 @@ export default class ChatList extends React.Component {
       Alert.alert(
         'Bookmarks coming soon!',
         'Bookmarked boards are in the works. Hang tight!',
-        [{text: 'OK!'}]
+        [{ text: 'OK!' }]
       );
     };
 
     // This updates the partner property in the state successfully
-    const {params} = this.props.navigation.state;
+    const { params } = this.props.navigation.state;
     if (params) {
       const partner = params.partner ? params.partner : null;
       const category = params.category ? params.category : null;
@@ -68,7 +70,7 @@ export default class ChatList extends React.Component {
       let arrOfFilteredRooms = await Fire.shared.getCategoryChatRoomNames(
         this.state.category
       );
-      this.setState({queriedChatrooms: arrOfFilteredRooms});
+      this.setState({ queriedChatrooms: arrOfFilteredRooms });
     }
     // grab chatrooms = every room has a name and numOnline attribute
     else {
@@ -98,6 +100,9 @@ export default class ChatList extends React.Component {
       );
     }
 
+
+
+
     // update numOnline as it changes in database
     Fire.shared.getUpdatedNumOnline((updatedRoom) => {
       this.setState({
@@ -122,7 +127,7 @@ export default class ChatList extends React.Component {
     // set what the app does when a user clicks on notification
     this._notificationSubscription = Notifications.addListener(
       (notification) => {
-        const {pm, room} = notification.data;
+        const { pm, room } = notification.data;
 
         // if notification is due to pm
         if (pm) {
@@ -163,7 +168,7 @@ export default class ChatList extends React.Component {
         livechatnotif,
         schedulingOptions
       );
-    } catch (error) {}
+    } catch (error) { }
   };
 
   componentWillUnmount() {
@@ -171,6 +176,33 @@ export default class ChatList extends React.Component {
   }
 
   render() {
+
+    renderHeader = () => {
+
+
+      if (this.state.partner) {
+        return (
+          <Text style={styles.subtitle2}>
+            {this.state.partner}
+          </Text>
+        )
+      }
+      if (this.state.category) {
+        return (
+          <Text style={styles.subtitle2}>
+            {this.state.category}
+          </Text>
+        );
+      } else {
+        return (
+          <Text style={styles.subtitle2}>
+            Message Boards
+          </Text>
+        );
+      }
+    };
+
+
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
@@ -189,15 +221,29 @@ export default class ChatList extends React.Component {
           </View>
 
           {/* titles */}
-          <Text style={styles.title}>après</Text>
-          <Text style={styles.subtitle}>
-            Welcome.{'\n'}What type support are you here for?
-          </Text>
+
+
+          {/* <Text style={styles.title}>
+
+            après
+          
+          </Text> */}
+
+          <Text style={styles.subtitle2}>{renderHeader()}</Text>
+
+
+
         </View>
+
+
+        {/* <Text style={styles.subtitle}>
+            Welcome.{'\n'}What type of support are you here for?
+          </Text>
+        </View> */}
 
         {/* navigation to user profile for development purposes */}
 
-        <View style={styles.testingView}>
+        {/* <View style={styles.testingView}>
           <Text style={styles.subtitle}> For testing purposes only:</Text>
 
           <TouchableOpacity
@@ -205,7 +251,7 @@ export default class ChatList extends React.Component {
           >
             <Text style={styles.subtitle}>CategoryList</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         {/* <TouchableOpacity
             onPress={() => this.props.navigation.navigate('Resources')}>
@@ -243,7 +289,7 @@ export default class ChatList extends React.Component {
         {/* search bar - queries all chatrooms to the users query */}
         <View style={styles.searchView}>
           <Searchbar
-            theme={{colors: {primary: 'black'}}}
+            theme={{ colors: { primary: 'black' } }}
             placeholder="Search our message boards"
             onChangeText={(query) => {
               const queriedChatrooms = this.state.chatrooms.filter(
@@ -253,16 +299,16 @@ export default class ChatList extends React.Component {
                     .includes(query.toLowerCase());
                 }
               );
-              this.setState({queriedChatrooms, query});
+              this.setState({ queriedChatrooms, query });
               if (!query.length) {
-                this.setState({queriedChatrooms: this.state.chatrooms});
+                this.setState({ queriedChatrooms: this.state.chatrooms });
               }
             }}
           />
           {/* chatroom list */}
           <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding">
             <SafeAreaView>
-              <ScrollView contentContainerStyle={{flexGrow: 1}}>
+              <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 {/* if a query made, queried chatrooms displayed*/}
                 {this.state.queriedChatrooms.length ? (
                   this.state.queriedChatrooms.map((chatroom) => (
@@ -285,34 +331,34 @@ export default class ChatList extends React.Component {
                     </TouchableOpacity>
                   ))
                 ) : // else allow user to create a new chatroom
-                this.state.chatrooms.length ? (
-                  <View>
-                    <Text>
-                      No results. Would you like to create this chatroom?
+                  this.state.chatrooms.length ? (
+                    <View>
+                      <Text>
+                        No results. Would you like to create this chatroom?
                     </Text>
-                    <TouchableOpacity
-                      key={this.state.query}
-                      style={styles.buttonContainer}
-                      onPress={() => {
-                        Fire.shared.createChatRoom(
-                          this.state.query,
-                          this.state.partner,
-                          this.state.category
-                        );
-                        this.props.navigation.navigate('ChatRoom', {
-                          chatroom: this.state.query
-                        });
-                      }}
-                    >
-                      <Text style={styles.buttonText}>
-                        + {this.state.query}{' '}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                ) : (
-                  // return loading while grabbing data from database
-                  <MaterialIndicator color="black" />
-                )}
+                      <TouchableOpacity
+                        key={this.state.query}
+                        style={styles.buttonContainer}
+                        onPress={() => {
+                          Fire.shared.createChatRoom(
+                            this.state.query,
+                            this.state.partner,
+                            this.state.category
+                          );
+                          this.props.navigation.navigate('ChatRoom', {
+                            chatroom: this.state.query
+                          });
+                        }}
+                      >
+                        <Text style={styles.buttonText}>
+                          + {this.state.query}{' '}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                      // return loading while grabbing data from database
+                      <MaterialIndicator color="black" />
+                    )}
               </ScrollView>
             </SafeAreaView>
           </KeyboardAvoidingView>
@@ -325,19 +371,20 @@ export default class ChatList extends React.Component {
 }
 
 const styles = StyleSheet.create({
+
   help: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: 'white',
-    marginTop: -30,
+    marginTop: -10,
     marginBottom: 20,
     height: 20,
     zIndex: 999
   },
   chatroomlist: {
     marginBottom: 30,
-    height: 300
+    height: 500
   },
   container: {
     display: 'flex',
@@ -349,7 +396,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
     marginRight: 20,
     marginLeft: 20,
-    flex: 2
+    flex: 5
   },
   innerView: {
     marginTop: 50,
@@ -367,11 +414,20 @@ const styles = StyleSheet.create({
     marginTop: -15
   },
   subtitle: {
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: '300',
     textAlign: 'center',
     marginBottom: 8,
     fontFamily: 'Futura-Light',
+    marginTop: 10
+  },
+  subtitle2: {
+    fontSize: 40,
+    fontWeight: '300',
+    textAlign: 'center',
+    letterSpacing: -1,
+    marginBottom: 15,
+    fontFamily: 'CormorantGaramond-Light',
     marginTop: 10
   },
   buttonContainer: {
@@ -405,7 +461,10 @@ const styles = StyleSheet.create({
     borderColor: 'red',
     borderStyle: 'dashed',
     borderWidth: 1,
-    marginTop: 40,
-    margin: 20
+    margin: 10
+  },
+  numOnline: {
+    fontSize: 20,
+    fontFamily: 'Futura-Light'
   }
 });
