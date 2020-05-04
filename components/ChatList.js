@@ -79,6 +79,7 @@ export default class ChatList extends React.Component {
       let arrOfFilteredRooms = await Fire.shared.getCategoryChatRoomNames(
         this.state.category
       );
+      // create a copy in order to restore the original if user types a search query then deletes it
       this.setState({
         queriedChatrooms: arrOfFilteredRooms,
         copyOfQueriedChatrooms: arrOfFilteredRooms
