@@ -10,8 +10,8 @@ import {
   Alert
 } from 'react-native';
 import Fire from '../Fire';
-import { MaterialIndicator } from 'react-native-indicators';
-import { Ionicons, Feather, AntDesign, Entypo } from '@expo/vector-icons';
+import {MaterialIndicator} from 'react-native-indicators';
+import {Ionicons, Feather, AntDesign, Entypo} from '@expo/vector-icons';
 
 import BookmarkIcon from '../assets/icons/BookmarkIcon';
 import HelpIcon from '../assets/icons/HelpIcon';
@@ -31,7 +31,7 @@ export default class PMList extends React.Component {
     //grab chatrooms
     Fire.shared.getPMRooms((room) => {
       if (room) {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
           chatrooms: [...prevState.chatrooms, room],
           grabbed: true
         }));
@@ -42,20 +42,23 @@ export default class PMList extends React.Component {
     this.helpAlert = () => {
       Alert.alert(
         'Help',
-        'Ready to chat some more? When you start a private message with another user, it will appear here.\n\nTo get started, navigate back to the home page, click on a message board, and longpress on a user\'s name. \n\n A new chat will then open up between you and that user, and it will also appear on this list. \n\n Happy chatting!',
-        [{ text: 'Got it!' }]
-      )
-    }
+        "Ready to chat some more? When you start a private message with another user, it will appear here.\n\nTo get started, navigate back to the home page, click on a message board, and longpress on a user's name. \n\n A new chat will then open up between you and that user, and it will also appear on this list. \n\n Happy chatting!",
+        [{text: 'Got it!'}]
+      );
+    };
 
     // bookmark alert
     this.bookmark = () => {
-      Alert.alert(
-        'Bookmarks coming soon!',
-        'Bookmarked boards are in the works. Hang tight!',
-        [{ text: 'OK!' }]
-      )
-    }
-  }
+      this.props.navigation.navigate('ChatList', {
+        bookmarks: true
+      });
+      // Alert.alert(
+      //   'Bookmarks coming soon!',
+      //   'Bookmarked boards are in the works. Hang tight!',
+      //   [{ text: 'OK!' }]
+      // )
+    };
+  };
 
   componentWillUnmount() {
     Fire.shared.off();
@@ -71,76 +74,60 @@ export default class PMList extends React.Component {
     }
   }
 
-
-
-
-
-
-
   render() {
     if (!this.state.grabbed) {
       return <MaterialIndicator color="black" />;
     }
     return (
       <View style={styles.outerContainer}>
-
         {/* <View style={styles.container}> */}
         <View style={styles.innerView}>
-
           {/* bookmark button */}
           <View style={styles.help}>
-
-            <TouchableOpacity
-              onPress={() => this.bookmark()}
-            >
+            <TouchableOpacity onPress={() => this.bookmark()}>
               <BookmarkIcon />
             </TouchableOpacity>
 
-
             {/* help button */}
 
-            <TouchableOpacity
-              onPress={() => this.helpAlert()}
-            >
+            <TouchableOpacity onPress={() => this.helpAlert()}>
               {/* <AntDesign name="questioncircleo" size={20} color="black" /> */}
               <HelpIcon />
             </TouchableOpacity>
-
           </View>
-
-
-
 
           {/* titles */}
           {/* <Text style={styles.title}>après</Text> */}
 
-
-          <Text style={styles.subtitle2}>
-            Personal Messages
-            </Text>
+          <Text style={styles.subtitle2}>Personal Messages</Text>
 
           <ScrollView>
-
             <KeyboardAvoidingView behavior="padding">
               <SafeAreaView>
-                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                <ScrollView contentContainerStyle={{flexGrow: 1}}>
                   {this.state.chatrooms.length
-                    ? this.state.chatrooms.map((chatroom) =>
-                      <TouchableOpacity
-                        key={chatroom.name}
-                        style={styles.buttonContainer}
-                        onPress={() =>
-                          this.props.navigation.navigate('ChatRoom', {
-                            chatroom: chatroom.name,
-                            PM: true
-                          })
-                        }
-                      >
-                        <Text style={styles.buttonText}>
-                          <Entypo name="new-message" size={30} color="black" /> {this.getRoomName(chatroom.name)}
-                        </Text>
-                      </TouchableOpacity>
-                    ) : null}
+                    ? this.state.chatrooms.map((chatroom) => (
+                        <TouchableOpacity
+                          key={chatroom.name}
+                          style={styles.buttonContainer}
+                          onPress={() =>
+                            this.props.navigation.navigate('ChatRoom', {
+                              chatroom: chatroom.name,
+                              PM: true
+                            })
+                          }
+                        >
+                          <Text style={styles.buttonText}>
+                            <Entypo
+                              name="new-message"
+                              size={30}
+                              color="black"
+                            />{' '}
+                            {this.getRoomName(chatroom.name)}
+                          </Text>
+                        </TouchableOpacity>
+                      ))
+                    : null}
                 </ScrollView>
               </SafeAreaView>
             </KeyboardAvoidingView>
@@ -161,7 +148,7 @@ const styles = StyleSheet.create({
     marginTop: -10,
     marginBottom: 20,
     height: 20,
-    zIndex: 999,
+    zIndex: 999
   },
   outerContainer: {
     backgroundColor: 'white',
@@ -179,7 +166,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     justifyContent: 'center',
     marginTop: 50,
-    flex: 1,
+    flex: 1
   },
   title: {
     bottom: 10,
@@ -188,7 +175,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 15,
     fontFamily: 'CormorantGaramond-Light',
-    marginTop: -15,
+    marginTop: -15
   },
   subtitle: {
     fontSize: 20,
@@ -219,7 +206,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 28,
     fontFamily: 'Futura-Light',
-    padding: 2,
+    padding: 2
   },
   searchbar: {
     color: 'black',
