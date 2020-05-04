@@ -37,18 +37,18 @@ export default class LoginScreen extends React.Component {
         [
           {
             text: 'Ok, great!',
-            onPress: () => this.setState({showResetPasswordForm: false})
+            onPress: () => this.setState({ showResetPasswordForm: false })
           }
         ]
       );
     } catch (error) {
-      this.setState({resetPasswordError: true});
+      this.setState({ resetPasswordError: true });
     }
   };
 
   render() {
     return (
-      <KeyboardAvoidingView style={{flex: 1}}>
+      <KeyboardAvoidingView style={{ flex: 1 }}>
         <View style={styles.container}>
           <Text style={styles.title}>après</Text>
           <View style={styles.field}>
@@ -60,8 +60,9 @@ export default class LoginScreen extends React.Component {
               autoCapitalize="none"
               autoCorrect={false}
               style={styles.input}
-              onChangeText={(email) => this.setState({email})}
+              onChangeText={(email) => this.setState({ email })}
             />
+
           </View>
           <View style={styles.internalcontainer}>
             <View style={styles.field}>
@@ -70,18 +71,22 @@ export default class LoginScreen extends React.Component {
                 returnKeyType="done"
                 secureTextEntry
                 style={styles.input}
-                onChangeText={(password) => this.setState({password})}
+                onChangeText={(password) => this.setState({ password })}
                 blurOnSubmit={false}
                 ref={(input) => (this.passwordInput = input)}
               />
             </View>
+            <TouchableOpacity onPress={() => this.setState({ showResetPasswordForm: true })}>
+              <Text style={styles.forgot}>
+                Forgot your password? Click here. </Text>
+            </TouchableOpacity>
             {!!this.state.error && (
               <TouchableOpacity
-                onPress={() => this.setState({showResetPasswordForm: true})}
+                onPress={() => this.setState({ showResetPasswordForm: true })}
               >
                 <Text style={styles.error}>
                   {' '}
-                  invalid login credentials - click here to reset your password{' '}
+                  Invalid login credentials - click here to reset your password.{' '}
                 </Text>
               </TouchableOpacity>
             )}
@@ -108,10 +113,11 @@ export default class LoginScreen extends React.Component {
                   // navigate into app
                   this.props.navigation.navigate('CategoryList');
                 } else {
-                  this.setState({error: true});
+                  this.setState({ error: true });
                 }
               }}
             >
+
               <Text style={styles.buttonText}>log in</Text>
             </TouchableOpacity>
           </View>
@@ -145,7 +151,7 @@ export default class LoginScreen extends React.Component {
                     autoCapitalize="none"
                     autoCorrect={false}
                     style={styles.input}
-                    onChangeText={(email) => this.setState({email})}
+                    onChangeText={(email) => this.setState({ email })}
                   />
                 </View>
                 {!!this.state.resetPasswordError && (
@@ -153,17 +159,23 @@ export default class LoginScreen extends React.Component {
                     <Text style={styles.error}> email not found </Text>
                   </TouchableOpacity>
                 )}
-                <TouchableOpacity
-                  style={styles.buttonContainer}
-                  onPress={this.resetPassword}
+                <View
+                // style={styles.formButtonContainer}
                 >
-                  <Text style={styles.buttonText}>reset password</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => this.setState({showResetPasswordForm: false})}
-                >
-                  <Text style={styles.cancel}>cancel</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.buttonContainer2}
+                    onPress={this.resetPassword}
+                  >
+                    <Text style={styles.formButtonText}>reset password</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.formButtonContainer}>
+                  <TouchableOpacity
+                    onPress={() => this.setState({ showResetPasswordForm: false })}
+                  >
+                    <Text style={styles.formButtonText}>cancel</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </Modal>
           </View>
@@ -197,7 +209,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginRight: 50,
     marginLeft: 50,
-    letterSpacing: 1,
+    letterSpacing: 0,
     fontFamily: 'Futura-Light',
     textAlign: 'center',
     lineHeight: 15
@@ -209,7 +221,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginRight: 50,
     marginLeft: 50,
-    letterSpacing: 1,
+    letterSpacing: 0,
     fontFamily: 'Futura-Light',
     textAlign: 'center'
   },
@@ -243,7 +255,16 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     paddingVertical: 5,
     marginBottom: 15,
-    marginTop: 30,
+    marginTop: 40,
+    marginRight: 50,
+    marginLeft: 50
+  },
+  buttonContainer2: {
+    borderStyle: 'solid',
+    borderWidth: 0,
+    paddingVertical: 5,
+    marginBottom: 15,
+    marginTop: 20,
     marginRight: 50,
     marginLeft: 50
   },
@@ -254,6 +275,23 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontFamily: 'Futura-Light'
   },
+  formButtonText: {
+    textAlign: 'center',
+    color: 'black',
+    fontWeight: '600',
+    fontSize: 40,
+    fontFamily: 'Futura-Light',
+    borderTopWidth: 10,
+    borderStyle: 'solid',
+    borderColor: 'black',
+  },
+  formButtonContainer: {
+    borderTopWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'lightgray',
+    paddingTop: 15,
+    paddingBottom: 0,
+  },
   cancel: {
     fontFamily: 'CormorantGaramond-Light',
     textAlign: 'center',
@@ -262,6 +300,16 @@ const styles = StyleSheet.create({
   error: {
     color: 'red',
     fontSize: 15,
+    marginBottom: 0,
+    fontFamily: 'Futura-Light',
+    marginRight: 50,
+    marginLeft: 50,
+    marginTop: 10,
+    textAlign: 'center'
+  },
+  forgot: {
+    color: 'black',
+    fontSize: 20,
     marginBottom: 0,
     fontFamily: 'Futura-Light',
     marginRight: 50,
