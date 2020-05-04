@@ -79,7 +79,10 @@ export default class ChatList extends React.Component {
       let arrOfFilteredRooms = await Fire.shared.getCategoryChatRoomNames(
         this.state.category
       );
-      this.setState({queriedChatrooms: arrOfFilteredRooms});
+      this.setState({
+        queriedChatrooms: arrOfFilteredRooms,
+        copyOfQueriedChatrooms: arrOfFilteredRooms
+      });
     }
     // grab chatrooms = every room has a name and numOnline attribute
     else {
@@ -160,7 +163,10 @@ export default class ChatList extends React.Component {
     for (let name in bookmarkedChatsObj) {
       bookmarkedChatsArr.push(bookmarkedChatsObj[name]);
     }
-    this.setState({queriedChatrooms: bookmarkedChatsArr});
+    this.setState({
+      queriedChatrooms: bookmarkedChatsArr,
+      copyOfQueriedChatrooms: bookmarkedChatsArr
+    });
   }
 
   bookmarkRemoved() {
@@ -300,16 +306,20 @@ export default class ChatList extends React.Component {
             theme={{colors: {primary: 'black'}}}
             placeholder="Search our message boards"
             onChangeText={(query) => {
-              const queriedChatrooms = this.state.chatrooms.filter(
+              const queriedChatrooms = this.state.queriedChatrooms.filter(
                 (chatroom) => {
                   return chatroom.name
                     .toLowerCase()
                     .includes(query.toLowerCase());
                 }
               );
-              this.setState({queriedChatrooms, query});
-              if (!query.length) {
-                this.setState({queriedChatrooms: this.state.chatrooms});
+              if (query.length) {
+                this.setState({queriedChatrooms, query});
+              } else {
+                // if the user deletes their query, restore the list to its original form
+                this.setState({
+                  queriedChatrooms: this.state.copyOfQueriedChatrooms
+                });
               }
             }}
           />
