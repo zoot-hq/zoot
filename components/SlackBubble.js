@@ -523,8 +523,9 @@ export default class Bubble extends React.Component {
   }
   submitReply = async () => {
     // first send the reply to the database
-    let replyRef = await this.getReplyRef(this.props.currentMessage);
-    await this.sendReply(replyRef);
+    // let replyRef = await this.getReplyRef(this.props.currentMessage);
+    // await this.sendReply(replyRef);
+    await this.sendReply();
     // then remove the input box from render (since we're finished with it)
     this.setState({newReply: false});
     // get all the replies from the database including the recently added reply
@@ -532,7 +533,7 @@ export default class Bubble extends React.Component {
     // put all the retrieved replies on the state to display them
     await this.setState({replies: replies});
   };
-  sendReply = async (replyRef) => {
+  sendReply = async () => {
     // format message to go to Fire.shared.send()
     const message = {
       text: this.state.replyInput,
@@ -542,7 +543,6 @@ export default class Bubble extends React.Component {
     await Fire.shared.sendReply(
       message,
       this.props.currentMessage.room,
-      replyRef,
       this.props.currentMessage._id
     );
   };
@@ -584,9 +584,7 @@ export default class Bubble extends React.Component {
     //     {/* {this.renderTicks()} */}
     //   </View>
     // );
-
     const win = Dimensions.get('window');
-
     return (
       <View style={[styles.container, this.props.containerStyle]}>
         <TouchableOpacity
@@ -615,9 +613,6 @@ export default class Bubble extends React.Component {
             <View>
               {/* {this.renderCustomView()} */}
               <View
-                onLayout={(event) => {
-                  messageViewWidth = event.nativeEvent.layout.width;
-                }}
                 style={[
                   this.props.currentMessage.isReply
                     ? {
@@ -656,25 +651,37 @@ export default class Bubble extends React.Component {
               {/* this.state.newReply becomes true when a user clicks the message text/reply button */}
               {this.state.newReply && (
                 <View>
-                  <TextInput
-                    returnKeyType="done"
-                    placeholder="Type your reply"
-                    placeholderTextColor="#bfbfbf"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    style={styles.input}
-                    onChangeText={(replyInput) => this.setState({replyInput})}
-                  />
-                  <View style={styles.replyInputContainer}>
-                    <TouchableOpacity
-                      onPress={() => this.setState({newReply: false})}
-                    >
-                      <Text style={styles.replyButton}>Cancel</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={this.submitReply}>
-                      <Text style={styles.replyButton}>Submit</Text>
-                    </TouchableOpacity>
-                  </View>
+                  {!this.props.currentMessage.level ||
+                  this.props.currentMessage.level < 5 ? (
+                    <View>
+                      <TextInput
+                        returnKeyType="done"
+                        placeholder="Type your reply"
+                        placeholderTextColor="#bfbfbf"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        style={styles.input}
+                        onChangeText={(replyInput) =>
+                          this.setState({replyInput})
+                        }
+                      />
+                      <View style={styles.replyInputContainer}>
+                        <TouchableOpacity
+                          onPress={() => this.setState({newReply: false})}
+                        >
+                          <Text style={styles.replyButton}>Cancel</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={this.submitReply}>
+                          <Text style={styles.replyButton}>Submit</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  ) : (
+                    <Text style={styles.slackMessageText}>
+                      Sorry, this message has reached the maximum number of
+                      replies.
+                    </Text>
+                  )}
                 </View>
               )}
             </View>
@@ -705,7 +712,7 @@ const styles = StyleSheet.create({
   username: {
     fontFamily: 'Futura-Medium',
     height: 20,
-    // marginTop: 2,
+    marginTop: 2,
     // borderColor: 'hotpink',
     // borderWidth: 2,
     alignSelf: 'baseline',
