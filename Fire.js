@@ -399,14 +399,13 @@ class Fire {
     try {
       // check to see if username already exists
       const status = await this.userExists(username, {exists: false});
-      if (status.val() || username === 'X') {
+      if (status.exists || username === 'X') {
         throw new Error('username already taken.');
       }
 
       await firebase.auth().createUserWithEmailAndPassword(email, password);
       await firebase.auth().signInWithEmailAndPassword(email, password);
 
-      console.log('new user id:', firebase.auth().currentUser.uid);
       // add in custom fields
       const refToUser = firebase
         .database()
@@ -423,6 +422,10 @@ class Fire {
         unlockedPartners: {}
       });
 
+      // add username to allUsernames:
+      const name = await firebase.database().ref('usernames').child(username);
+      name.set(username);
+
       // add displayname
       const user = firebase.auth().currentUser;
       await user.updateProfile({
@@ -431,8 +434,6 @@ class Fire {
     } catch (error) {
       return error;
     }
-    // add username to allUsernames:
-    firebase.database().ref('usernames').child(username);
   };
 
   login = async (email, password) => {
@@ -445,17 +446,14 @@ class Fire {
 
   // returns true if username exists, false otherwise
   userExists = async (username, status) => {
-    console.log('checking if user exists');
     const allNames = await firebase.database().ref('usernames');
-    allNames.once('value').then(
-      function (snapshot) {
-        console.log('snapshot:', snapshot.val());
+    const namesObj = await allNames.once('value', (snapshot) => snapshot);
+    for (let name in namesObj.val()) {
+      if (name === username) {
+        status.exists = true;
       }
-      // if (snapshot.exists()) {
-      //   status.exists = true;
-      // }
-      // return status;
-    );
+    }
+    return status;
   };
 
   getChatRoomNames = (callback, partner) => {
