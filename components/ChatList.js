@@ -35,6 +35,8 @@ export default class ChatList extends React.Component {
       partner: null,
       category: null
     };
+    // removes the bookmark from this component if the user clicks it in the nested component
+    this.bookmarkRemoved = this.bookmarkRemoved.bind(this);
   }
   // EV: this was component Will Mount - had to change it to "did" because otherwise it can't update state (apparently you can't do that from an unmounted component). This was eventually what worked! It still gave me a warning, but it also worked.
   async componentDidMount() {
@@ -78,7 +80,11 @@ export default class ChatList extends React.Component {
       let arrOfFilteredRooms = await Fire.shared.getCategoryChatRoomNames(
         this.state.category
       );
-      this.setState({queriedChatrooms: arrOfFilteredRooms});
+      // create a copy in order to restore the original if user types a search query then deletes it
+      this.setState({
+        queriedChatrooms: arrOfFilteredRooms,
+        copyOfQueriedChatrooms: arrOfFilteredRooms
+      });
     }
     // grab chatrooms = every room has a name and numOnline attribute
     else {
@@ -159,7 +165,16 @@ export default class ChatList extends React.Component {
     for (let name in bookmarkedChatsObj) {
       bookmarkedChatsArr.push(bookmarkedChatsObj[name]);
     }
-    this.setState({queriedChatrooms: bookmarkedChatsArr});
+    this.setState({
+      queriedChatrooms: bookmarkedChatsArr,
+      copyOfQueriedChatrooms: bookmarkedChatsArr
+    });
+  }
+
+  bookmarkRemoved() {
+    if (this.state.bookmarks) {
+      this.getBookmarkedChats();
+    }
   }
 
   registerForPushNotificationsAsync = async () => {
@@ -293,16 +308,20 @@ export default class ChatList extends React.Component {
             theme={{colors: {primary: 'black'}}}
             placeholder="Search our message boards"
             onChangeText={(query) => {
-              const queriedChatrooms = this.state.chatrooms.filter(
+              const queriedChatrooms = this.state.queriedChatrooms.filter(
                 (chatroom) => {
                   return chatroom.name
                     .toLowerCase()
                     .includes(query.toLowerCase());
                 }
               );
-              this.setState({queriedChatrooms, query});
-              if (!query.length) {
-                this.setState({queriedChatrooms: this.state.chatrooms});
+              if (query.length) {
+                this.setState({queriedChatrooms, query});
+              } else {
+                // if the user deletes their query, restore the list to its original form
+                this.setState({
+                  queriedChatrooms: this.state.copyOfQueriedChatrooms
+                });
               }
             }}
           />
@@ -325,7 +344,10 @@ export default class ChatList extends React.Component {
                       <View style={styles.singleChatView}>
                         <Text style={styles.buttonText}># {chatroom.name}</Text>
                         <View style={styles.singleChatIcons}>
-                          <BookmarkListIcon chatroom={chatroom} />
+                          <BookmarkListIcon
+                            chatroom={chatroom}
+                            bookmarkRemoved={this.bookmarkRemoved}
+                          />
                           <Ionicons name="md-people" size={25} color="grey">
                             {' '}
                             {chatroom.numOnline}
@@ -359,6 +381,10 @@ export default class ChatList extends React.Component {
                       </Text>
                     </TouchableOpacity>
                   </View>
+                ) : this.state.bookmarks ? (
+                  <Text style={styles.subtitle2}>
+                    You have not bookmarked any chatrooms yet.
+                  </Text>
                 ) : (
                   // return loading while grabbing data from database
                   <MaterialIndicator color="black" />
