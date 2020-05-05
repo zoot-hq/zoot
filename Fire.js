@@ -406,9 +406,14 @@ class Fire {
       await firebase.auth().createUserWithEmailAndPassword(email, password);
       await firebase.auth().signInWithEmailAndPassword(email, password);
 
+      console.log('new user id:', firebase.auth().currentUser.uid);
       // add in custom fields
-      const refToUser = firebase.database().ref('users').child(username);
+      const refToUser = firebase
+        .database()
+        .ref('users')
+        .child(firebase.auth().currentUser.uid);
       refToUser.set({
+        username,
         birthday,
         city,
         children,
@@ -426,6 +431,8 @@ class Fire {
     } catch (error) {
       return error;
     }
+    // add username to allUsernames:
+    firebase.database().ref('usernames').child(username);
   };
 
   login = async (email, password) => {
@@ -437,17 +444,19 @@ class Fire {
   };
 
   // returns true if username exists, false otherwise
-  userExists = async (username, status) =>
-    await firebase
-      .database()
-      .ref('users')
-      .child(username)
-      .once('value', (snapshot) => {
-        if (snapshot.exists()) {
-          status.exists = true;
-        }
-        return status;
-      });
+  userExists = async (username, status) => {
+    console.log('checking if user exists');
+    const allNames = await firebase.database().ref('usernames');
+    allNames.once('value').then(
+      function (snapshot) {
+        console.log('snapshot:', snapshot.val());
+      }
+      // if (snapshot.exists()) {
+      //   status.exists = true;
+      // }
+      // return status;
+    );
+  };
 
   getChatRoomNames = (callback, partner) => {
     let ref = partner ? `partnerChatroomNames/${partner}` : 'chatroomnames';
