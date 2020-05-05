@@ -189,7 +189,7 @@ class Fire {
   };
 
   // send the message to the Backend
-  send = (messages, room, pm, live) => {
+  send = async (messages, room, pm, live) => {
     for (let i = 0; i < messages.length; i++) {
       const {text, user} = messages[i];
       const message = {
@@ -237,13 +237,13 @@ class Fire {
         const names = room.split('-');
         const otherUsername =
           names[0] === this.username() ? names[1] : names[0];
-
+        const otherUserId = await this.findUserByUsername(otherUsername);
         try {
           // get token for other user
           firebase
             .database()
             .ref('users')
-            .child(otherUsername)
+            .child(otherUserId)
             .child('notifToken')
             .once('value')
             .then(async (snapshot) => {
@@ -292,6 +292,17 @@ class Fire {
       }
     }
   };
+
+  async findUserByUsername(name) {
+    let usersId = await firebase
+      .database()
+      .ref('usernames')
+      .child(name)
+      .child('uid')
+      .once('value')
+      .then((snapshot) => snapshot);
+    return usersId;
+  }
 
   clearUnreads = (room) => {
     firebase
@@ -422,9 +433,9 @@ class Fire {
         unlockedPartners: {}
       });
 
-      // add username to allUsernames:
+      // add username to usernames list:
       const name = await firebase.database().ref('usernames').child(username);
-      name.set(username);
+      name.set({username, uid: firebase.auth().currentUser.uid});
 
       // add displayname
       const user = firebase.auth().currentUser;
@@ -778,7 +789,7 @@ class Fire {
     firebase
       .database()
       .ref('users')
-      .child(this.username())
+      .child(this.uid())
       .child('notifToken')
       .set(token);
   };
@@ -840,7 +851,7 @@ class Fire {
     await firebase
       .database()
       .ref('users')
-      .child(username)
+      .child(this.uid())
       .on('child_added', (snapshot) => callback(this.parsePartners(snapshot)));
 }
 

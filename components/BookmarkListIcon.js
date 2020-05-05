@@ -19,7 +19,7 @@ export default class BookmarkListIcon extends Component {
     const bookmarked = await firebase
       .database()
       .ref('users')
-      .child(Fire.shared.username())
+      .child(Fire.shared.uid())
       .child('bookmarks')
       .child(chatroomName)
       .once('value')
@@ -35,7 +35,7 @@ export default class BookmarkListIcon extends Component {
     await firebase
       .database()
       .ref('users')
-      .child(Fire.shared.username())
+      .child(Fire.shared.uid())
       .child('bookmarks')
       .child(chatroom.name)
       .set(chatroom);
@@ -46,7 +46,7 @@ export default class BookmarkListIcon extends Component {
     await firebase
       .database()
       .ref('users')
-      .child(Fire.shared.username())
+      .child(Fire.shared.uid())
       .child('bookmarks')
       .child(chatroom.name)
       .remove();

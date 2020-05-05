@@ -156,7 +156,7 @@ export default class ChatList extends React.Component {
     const userRef = await firebase
       .database()
       .ref('users')
-      .child(Fire.shared.username());
+      .child(Fire.shared.uid());
     const bookmarkedChatsObj = await userRef
       .child('bookmarks')
       .once('value')
