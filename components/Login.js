@@ -8,7 +8,8 @@ import {
   KeyboardAvoidingView,
   Linking,
   AsyncStorage,
-  Alert
+  Alert,
+  Platform
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Fire from '../Fire';
@@ -36,7 +37,7 @@ export default class LoginScreen extends React.Component {
         `An email has been sent to ${this.state.email} with further instructions on how to reset your password.`,
         [
           {
-            text: 'Ok, great!',
+            text: 'Got it!',
             onPress: () => this.setState({ showResetPasswordForm: false })
           }
         ]
@@ -47,8 +48,18 @@ export default class LoginScreen extends React.Component {
   };
 
   render() {
+    const keyboardVerticalOffset =
+      // Platform.OS === 'ios' ? 
+      40
+    //  : 
+    // 0
+
     return (
+      // <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
       <KeyboardAvoidingView style={{ flex: 1 }}>
+        {/* // behavior='position' 
+        // keyboardVerticalOffset={keyboardVerticalOffset} */}
+
         <View style={styles.container}>
           <Text style={styles.title}>après</Text>
           <View style={styles.field}>
@@ -181,6 +192,7 @@ export default class LoginScreen extends React.Component {
           </View>
         </View>
       </KeyboardAvoidingView>
+      // </TouchableWithoutFeedback>
     );
   }
 }
