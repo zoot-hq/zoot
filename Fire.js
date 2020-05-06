@@ -408,6 +408,12 @@ class Fire {
     selectedRole
   ) => {
     try {
+      if (
+        username.length !==
+        username.replace(/[`~!@#$%^&*()-_+={}|'":;<>,./\?]/g, '').length
+      ) {
+        throw new Error('username must not contain special characters');
+      }
       // check to see if username already exists
       const status = await this.userExists(username, {exists: false});
       if (status.exists || username === 'X') {
@@ -460,7 +466,7 @@ class Fire {
     const allNames = await firebase.database().ref('usernames');
     const namesObj = await allNames.once('value', (snapshot) => snapshot);
     for (let name in namesObj.val()) {
-      if (name === username) {
+      if (name.toLowerCase() === username.toLowerCase()) {
         status.exists = true;
       }
     }
