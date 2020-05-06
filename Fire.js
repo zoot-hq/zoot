@@ -408,18 +408,7 @@ class Fire {
     selectedRole
   ) => {
     try {
-      if (
-        username.length !==
-        username.replace(/[`~!@#$%^&*()-_+={}|'":;<>,./\?]/g, '').length
-      ) {
-        throw new Error('username must not contain special characters');
-      }
-      // check to see if username already exists
-      const status = await this.userExists(username, {exists: false});
-      if (status.exists || username === 'X') {
-        throw new Error('username already taken.');
-      }
-
+      await this.validateUsername(username);
       await firebase.auth().createUserWithEmailAndPassword(email, password);
       await firebase.auth().signInWithEmailAndPassword(email, password);
 
@@ -450,6 +439,20 @@ class Fire {
       });
     } catch (error) {
       return error;
+    }
+  };
+
+  validateUsername = async (username) => {
+    if (
+      username.length !==
+      username.replace(/[`~!@#$%^&*()-_+={}|'":;<>,./\?]/g, '').length
+    ) {
+      throw new Error('username must not contain special characters');
+    }
+    // check to see if username already exists
+    const status = await this.userExists(username, {exists: false});
+    if (status.exists || username === 'X') {
+      throw new Error('username already taken.');
     }
   };
 

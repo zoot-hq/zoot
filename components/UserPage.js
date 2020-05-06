@@ -25,6 +25,8 @@ export default class UserPage extends Component {
     super(props);
     this.state = {
       user: firebase.auth().currentUser,
+      usernameModal: false,
+      newUsername: '',
       emailModal: false,
       passwordModal: false,
       newEmail: firebase.auth().currentUser.email,
@@ -75,9 +77,8 @@ export default class UserPage extends Component {
     this.setState({selectedRole: role});
   }
   async getUserInfo() {
-    const name = this.state.user.displayName;
     let selectedRole = '';
-    let ref = firebase.database().ref(`users/${name}`);
+    let ref = firebase.database().ref(`users/${Fire.shared.uid()}`);
     let query = await ref.once('value').then(function (snapshot) {
       return snapshot;
     });
@@ -88,6 +89,49 @@ export default class UserPage extends Component {
     const stateObj = {};
     stateObj[type] = true;
     this.setState(stateObj);
+  }
+  async updateUsername() {
+    if (this.state.newUsername) {
+      // validate new username
+      try {
+        await Fire.shared.validateUsername(this.state.newUsername);
+        // remove username from list of usernames/uids
+        await firebase
+          .database()
+          .ref('usernames')
+          .child(Fire.shared.username())
+          .remove()
+          .catch(function (error) {
+            this.setState({error: error.message});
+          });
+        // create a new entry in list of usernames/uids with new username
+        // add username to usernames list:
+        const name = await firebase
+          .database()
+          .ref('usernames')
+          .child(this.state.newUsername);
+        name.set({
+          username: this.state.newUsername,
+          uid: firebase.auth().currentUser.uid
+        });
+        // update the username in the user object in the realtime database
+        await firebase
+          .database()
+          .ref('users/' + Fire.shared.uid())
+          .update({username: this.state.newUsername});
+        this.setState({error: false});
+        // update the display name in the user's authentication data
+        this.state.user
+          .updateProfile({displayName: this.state.newUsername})
+          .then(() => this.setState({usernameModal: false}))
+          .catch((error) => this.setState({error: error.message}));
+      } catch (error) {
+        this.setState({error: error.message});
+      }
+    } else {
+      this.setState({error: 'Please enter a new username.'});
+    }
+    this.setState({newUsername: ''});
   }
   async updateEmail() {
     if (this.state.newEmail) {
@@ -105,6 +149,7 @@ export default class UserPage extends Component {
     } else {
       this.setState({error: 'Please enter a new email address.'});
     }
+    this.setState({newEmail: ''});
   }
   updatePassword() {
     if (this.state.newPassword) {
@@ -213,10 +258,55 @@ export default class UserPage extends Component {
           </Text>
           <ScrollView>
             {/* username section */}
-            {/* <Text style={styles.username}>{this.state.user.displayName}</Text> */}
             <Text style={styles.userInfo}>
-              username: {this.state.user.displayName}
+              username: {Fire.shared.username()}
             </Text>
+            <TouchableOpacity
+              onPress={() => this.setState({usernameModal: true})}
+            >
+              <Text style={styles.userInfo}>Update username?</Text>
+            </TouchableOpacity>
+            <Modal isVisible={this.state.usernameModal}>
+              <View style={styles.modal}>
+                <Text style={styles.modalTitle}>Update username</Text>
+                {this.state.error ? (
+                  <Text style={styles.modalText}>{this.state.error}</Text>
+                ) : (
+                  <Text style={styles.modalText}>
+                    Type your new desired username below.
+                  </Text>
+                )}
+                <TextInput
+                  returnKeyType="done"
+                  placeholder="New username"
+                  placeholderTextColor="#bfbfbf"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={styles.input}
+                  onChangeText={(newUsername) => this.setState({newUsername})}
+                />
+                <View style={styles.modalButtonsContainer}>
+                  <TouchableOpacity
+                    style={{width: 150}}
+                    onPress={() =>
+                      this.setState({usernameModal: false, error: false})
+                    }
+                  >
+                    <Text style={styles.modalButtonCancel}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      width: 150,
+                      borderLeftWidth: 1,
+                      borderLeftColor: 'gray'
+                    }}
+                    onPress={() => this.updateUsername()}
+                  >
+                    <Text style={styles.modalButtonSave}>Save</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
             <Text></Text>
             {/* user email section */}
             <Text style={styles.userInfo}>email: {Fire.shared.email()}</Text>
