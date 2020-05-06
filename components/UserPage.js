@@ -75,9 +75,8 @@ export default class UserPage extends Component {
     this.setState({selectedRole: role});
   }
   async getUserInfo() {
-    const name = this.state.user.displayName;
     let selectedRole = '';
-    let ref = firebase.database().ref(`users/${name}`);
+    let ref = firebase.database().ref(`users/${Fire.shared.uid()}`);
     let query = await ref.once('value').then(function (snapshot) {
       return snapshot;
     });
@@ -93,7 +92,7 @@ export default class UserPage extends Component {
     if (this.state.newEmail) {
       await firebase
         .database()
-        .ref('users/' + this.state.user.displayName)
+        .ref('users/' + Fire.shared.uid())
         .update({
           email: this.state.newEmail
         });
@@ -124,7 +123,26 @@ export default class UserPage extends Component {
   }
   async deleteUser() {
     this.setState({deleteUser: true, deleteModal: false});
+    const name = Fire.shared.username();
+    const id = Fire.shared.uid();
     this.logout();
+    await this.state.user.delete();
+    await firebase
+      .database()
+      .ref('users')
+      .child(id)
+      .remove()
+      .catch(function (error) {
+        console.log(error);
+      });
+    await firebase
+      .database()
+      .ref('usernames')
+      .child(name)
+      .remove()
+      .catch(function (error) {
+        console.log(error);
+      });
   }
   async logout() {
     await firebase
@@ -141,7 +159,7 @@ export default class UserPage extends Component {
   async updateRole() {
     await firebase
       .database()
-      .ref('users/' + this.state.user.displayName)
+      .ref('users/' + Fire.shared.uid())
       .update({
         selectedRole: this.state.selectedRole
       });
@@ -149,20 +167,7 @@ export default class UserPage extends Component {
   goHome() {
     this.props.navigation.replace('Home');
   }
-  async componentWillUnmount() {
-    if (this.state.deleteUser) {
-      await this.state.user.delete().then(
-        firebase
-          .database()
-          .ref('users')
-          .child(this.state.user.displayName)
-          .remove()
-          .catch(function (error) {
-            console.log(error);
-          })
-      );
-    }
-  }
+
   async contactAdmin() {
     const options = {
       recipients: ['info@apres.chat'],
@@ -339,6 +344,7 @@ export default class UserPage extends Component {
             <Text style={styles.userInfo}>
               Select from below to update your role.
             </Text>
+            <Text> </Text>
             <View style={styles.picker}>
               <RNPickerSelect
                 style={{...pickerSelectStyles}}

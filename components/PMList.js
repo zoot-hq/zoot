@@ -23,7 +23,8 @@ export default class PMList extends React.Component {
     super();
     this.state = {
       chatrooms: [],
-      grabbed: false
+      grabbed: false,
+      noPMRoomsFound: false
     };
   }
 
@@ -35,6 +36,8 @@ export default class PMList extends React.Component {
           chatrooms: [...prevState.chatrooms, room],
           grabbed: true
         }));
+      } else {
+        this.setState({noPMRoomsFound: true});
       }
     });
 
@@ -75,7 +78,7 @@ export default class PMList extends React.Component {
   }
 
   render() {
-    if (!this.state.grabbed) {
+    if (!this.state.grabbed && !this.state.noPMRoomsFound) {
       return <MaterialIndicator color="black" />;
     }
     return (
@@ -100,38 +103,43 @@ export default class PMList extends React.Component {
           {/* <Text style={styles.title}>après</Text> */}
 
           <Text style={styles.subtitle2}>Personal Messages</Text>
-
-          <ScrollView>
-            <KeyboardAvoidingView behavior="padding">
-              <SafeAreaView>
-                <ScrollView contentContainerStyle={{flexGrow: 1}}>
-                  {this.state.chatrooms.length
-                    ? this.state.chatrooms.map((chatroom) => (
-                        <TouchableOpacity
-                          key={chatroom.name}
-                          style={styles.buttonContainer}
-                          onPress={() =>
-                            this.props.navigation.navigate('ChatRoom', {
-                              chatroom: chatroom.name,
-                              PM: true
-                            })
-                          }
-                        >
-                          <Text style={styles.buttonText}>
-                            <Entypo
-                              name="new-message"
-                              size={30}
-                              color="black"
-                            />{' '}
-                            {this.getRoomName(chatroom.name)}
-                          </Text>
-                        </TouchableOpacity>
-                      ))
-                    : null}
-                </ScrollView>
-              </SafeAreaView>
-            </KeyboardAvoidingView>
-          </ScrollView>
+          {!this.state.grabbed && this.state.noPMRoomsFound ? (
+            <Text style={styles.subtitle2}>
+              You have no private messages yet.
+            </Text>
+          ) : (
+            <ScrollView>
+              <KeyboardAvoidingView behavior="padding">
+                <SafeAreaView>
+                  <ScrollView contentContainerStyle={{flexGrow: 1}}>
+                    {this.state.chatrooms.length
+                      ? this.state.chatrooms.map((chatroom) => (
+                          <TouchableOpacity
+                            key={chatroom.name}
+                            style={styles.buttonContainer}
+                            onPress={() =>
+                              this.props.navigation.navigate('ChatRoom', {
+                                chatroom: chatroom.name,
+                                PM: true
+                              })
+                            }
+                          >
+                            <Text style={styles.buttonText}>
+                              <Entypo
+                                name="new-message"
+                                size={30}
+                                color="black"
+                              />{' '}
+                              {this.getRoomName(chatroom.name)}
+                            </Text>
+                          </TouchableOpacity>
+                        ))
+                      : null}
+                  </ScrollView>
+                </SafeAreaView>
+              </KeyboardAvoidingView>
+            </ScrollView>
+          )}
         </View>
         <NavBar />
       </View>

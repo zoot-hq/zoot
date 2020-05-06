@@ -60,7 +60,7 @@ export default class Bubble extends React.Component {
 
   onLongPress() {
     // const messageUsername = this.props.currentMessage.user.name
-    // const currentUsername = Fire.shared.username()
+    // const currentUserId = Fire.shared.username()
     // const room = this.props.currentMessage.room
     // if (this.props.currentMessage.text && (messageUsername != currentUsername) && this.props.currentMessage.react){
     //   const options = [
@@ -278,15 +278,14 @@ export default class Bubble extends React.Component {
   }
 
   isSameUser = () => {
-    const otherUsername = this.props.currentMessage.user.name;
-    const currentUsername = Fire.shared.username();
-    return otherUsername === currentUsername;
+    const otherUserId = this.props.currentMessage.user._id;
+    const currentUserId = Fire.shared.uid();
+    return otherUserId === currentUserId;
   };
 
   startPM = () => {
     const otherUsername = this.props.currentMessage.user.name;
     const currentUsername = Fire.shared.username();
-
     if (!this.isSameUser()) {
       const comboName =
         otherUsername < currentUsername
@@ -417,9 +416,9 @@ export default class Bubble extends React.Component {
   };
 
   renderBlock() {
-    const messageUsername = this.props.currentMessage.user.name;
-    const currUser = Fire.shared.username();
-    if (this.state.react && messageUsername != currUser) {
+    const messageUserId = this.props.currentMessage.user._id;
+    const currUser = Fire.shared.uid();
+    if (this.state.react && messageUserId != currUser) {
       return (
         <TouchableOpacity onPress={this.blockPopup}>
           <MaterialIcons
@@ -585,6 +584,7 @@ export default class Bubble extends React.Component {
     //   </View>
     // );
     const win = Dimensions.get('window');
+
     return (
       <View style={[styles.container, this.props.containerStyle]}>
         <TouchableOpacity
