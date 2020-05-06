@@ -75,9 +75,8 @@ export default class UserPage extends Component {
     this.setState({selectedRole: role});
   }
   async getUserInfo() {
-    const name = this.state.user.displayName;
     let selectedRole = '';
-    let ref = firebase.database().ref(`users/${name}`);
+    let ref = firebase.database().ref(`users/${Fire.shared.uid()}`);
     let query = await ref.once('value').then(function (snapshot) {
       return snapshot;
     });
@@ -345,6 +344,7 @@ export default class UserPage extends Component {
             <Text style={styles.userInfo}>
               Select from below to update your role.
             </Text>
+            <Text> </Text>
             <View style={styles.picker}>
               <RNPickerSelect
                 style={{...pickerSelectStyles}}
