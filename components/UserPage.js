@@ -435,6 +435,7 @@ export default class UserPage extends Component {
             <Text style={styles.userInfo}>
               Select from below to update your role.
             </Text>
+            <Text> </Text>
             <View style={styles.picker}>
               <RNPickerSelect
                 style={{...pickerSelectStyles}}
