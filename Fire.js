@@ -443,10 +443,7 @@ class Fire {
   };
 
   validateUsername = async (username) => {
-    if (
-      username.length !==
-      username.replace(/[`~!@#$%^&*()-_+={}|'":;<>,./\?]/g, '').length
-    ) {
+    if (username.length !== username.replace(/[^a-zA-Z0-9]/g, '').length) {
       throw new Error('username must not contain special characters');
     }
     // check to see if username already exists
