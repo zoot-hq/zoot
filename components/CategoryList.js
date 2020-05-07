@@ -321,8 +321,9 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderWidth: 1,
     padding: 10,
-    marginTop: 5,
-    marginLeft: 5
+    marginTop: 10,
+    marginLeft: 20,
+    marginRight: 20,
   },
   buttonText: {
     color: 'black',
