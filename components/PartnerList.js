@@ -292,9 +292,15 @@ export class PartnerList extends Component {
                     .includes(query.toLowerCase());
                 }
               );
+              if (!queriedPartners.length) {
+                this.setState({unsuccessfulSearch: true});
+              }
               this.setState({queriedPartners, query});
               if (!query.length) {
-                this.setState({queriedPartners: this.state.partnerNames});
+                this.setState({
+                  queriedPartners: this.state.partnerNames,
+                  unsuccessfulSearch: false
+                });
               }
             }}
           />
@@ -303,7 +309,12 @@ export class PartnerList extends Component {
             <SafeAreaView>
               <ScrollView contentContainerStyle={{flexGrow: 1}}>
                 {/* if a query made, queried chatrooms displayed*/}
-                {this.state.queriedPartners.length ? (
+
+                {this.state.unsuccessfulSearch ? (
+                  <Text style={styles.subtitle}>
+                    We are not yet partnered with this organization.
+                  </Text>
+                ) : this.state.queriedPartners.length ? (
                   this.state.queriedPartners.map((partner, idx) => (
                     <TouchableOpacity
                       key={idx}
@@ -466,13 +477,7 @@ export class PartnerList extends Component {
                       </TouchableOpacity>
                     </View>
                   ))
-                ) : (
-                  <View>
-                    <Text>
-                      We are not yet partnered with this organization.
-                    </Text>
-                  </View>
-                )}
+                ) : null}
               </ScrollView>
             </SafeAreaView>
             <TouchableOpacity onPress={() => contactAdmin()}>
