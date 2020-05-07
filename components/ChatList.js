@@ -264,43 +264,32 @@ export default class ChatList extends React.Component {
       }
     };
     return (
-      <View style={styles.container}>
-        <DismissKeyboard>
+      <DismissKeyboard>
+        <View style={styles.container}>
+
           <View style={styles.innerView}>
+
+
+
+
 
             <View style={styles.help}>
 
               {renderBookmarkOrBack()}
 
 
-              {/* bookmark button */}
-              {/* <TouchableOpacity onPress={() => this.bookmark()}>
-              <BookmarkIcon />
-            </TouchableOpacity> */}
 
-              {/* help button */}
 
               <TouchableOpacity onPress={() => this.helpAlert()}>
-                {/* <AntDesign name="questioncircleo" size={20} color="black" /> */}
+
                 <HelpIcon />
               </TouchableOpacity>
             </View>
 
-            {/* titles */}
-
-            {/* <Text style={styles.title}>
-
-            après
-
-          </Text> */}
 
             <Text style={styles.subtitle2}>{renderHeader()}</Text>
           </View>
 
-          {/* <Text style={styles.subtitle}>
-            Welcome.{'\n'}What type of support are you here for?
-          </Text>
-        </View> */}
 
           {/* navigation to user profile for development purposes */}
 
@@ -314,38 +303,8 @@ export default class ChatList extends React.Component {
           </TouchableOpacity>
         </View> */}
 
-          {/* <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Resources')}>
-            <Text style={styles.subtitle}>Resources</Text>
-          </TouchableOpacity>
-         */}
 
-          {/*
-          <View
-            style={{
-              display: 'flex',
-              alignItems: 'space-between',
-              marginTop: 10,
-              flexDirection: 'row',
-              alignSelf: 'center'
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('PMList')}
-            >
-              <Ionicons name="ios-chatbubbles" size={30} color="grey"></Ionicons>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={this.liveChat}>
-              <MaterialIcons
-                name="speaker-phone"
-                size={30}
-                color={this.state.liveChatAvailable ? 'green' : 'grey'}
-              ></MaterialIcons>
-            </TouchableOpacity>
-          </View>
-        </View>
 
- */}
 
           {/* search bar - queries all chatrooms to the users query */}
           <View style={styles.searchView}>
@@ -372,7 +331,31 @@ export default class ChatList extends React.Component {
                 }}
               />
             </View>
+
+
+
+
+
+
+            {/* <DismissKeyboard> */}
+
+
+
+
+
+
+
+
             {/* chatroom list */}
+
+
+
+
+
+
+
+
+
             <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding">
               <SafeAreaView>
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -442,11 +425,15 @@ export default class ChatList extends React.Component {
                 </ScrollView>
               </SafeAreaView>
             </KeyboardAvoidingView>
+
           </View>
 
+
           <Navbar navigation={this.props.navigation} />
-        </DismissKeyboard>
-      </View>
+
+
+        </View >
+      </DismissKeyboard>
     );
   }
 }
