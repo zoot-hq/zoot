@@ -315,12 +315,16 @@ export default class ChatList extends React.Component {
                     .includes(query.toLowerCase());
                 }
               );
+              if (!queriedChatrooms.length) {
+                this.setState({unsuccessfulSearch: true});
+              }
               if (query.length) {
                 this.setState({queriedChatrooms, query});
               } else {
                 // if the user deletes their query, restore the list to its original form
                 this.setState({
-                  queriedChatrooms: this.state.copyOfQueriedChatrooms
+                  queriedChatrooms: this.state.copyOfQueriedChatrooms,
+                  unsuccessfulSearch: false
                 });
               }
             }}
@@ -357,9 +361,9 @@ export default class ChatList extends React.Component {
                     </TouchableOpacity>
                   ))
                 ) : // else allow user to create a new chatroom
-                this.state.chatrooms.length ? (
+                this.state.unsuccessfulSearch ? (
                   <View>
-                    <Text>
+                    <Text style={styles.subtitle}>
                       No results. Would you like to create this chatroom?
                     </Text>
                     <TouchableOpacity

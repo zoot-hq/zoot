@@ -127,7 +127,7 @@ export class PartnerList extends Component {
   async getUnlockedPartnerNames() {
     let ref = firebase
       .database()
-      .ref(`users/${this.state.currentUserName}/unlockedPartners`);
+      .ref(`users/${Fire.shared.uid()}/unlockedPartners`);
     try {
       let query = await ref.once('value').then(function (snapshot) {
         return snapshot.val();
@@ -161,31 +161,35 @@ export class PartnerList extends Component {
   render() {
     renderLock = (partner) => {
       // if (this.state.unlockedPartners[partnerName]) {
-      if (this.state.unlockedPartners) {
-        console.log('\n=========renderLock======');
-        console.log('\nthis.state.partner.name)' + partner.name);
-        console.log(
-          '\nthis.state.unlockedPartners)' + this.state.unlockedPartners
-        );
-        // console.log('\ntype of bject.values(this.state.unlockedPartners)' + typeof (Object.values(this.state.unlockedPartners)))
-        // console.log('\ntype of this.state.unlockedPartners)' + typeof (this.state.unlockedPartners))
-        // console.log(
-        //   '\nObject.values(this.state.unlockedPartners) ' +
-        //     Object.values(this.state.unlockedPartners)
-        // );
+      console.log('\n=========renderLock======');
+      console.log('\nthis.state.partner.name)' + partner.name);
+      console.log(
+        '\nthis.state.unlockedPartners)' + this.state.unlockedPartners
+      );
+      // console.log('\ntype of bject.values(this.state.unlockedPartners)' + typeof (Object.values(this.state.unlockedPartners)))
+      // console.log('\ntype of this.state.unlockedPartners)' + typeof (this.state.unlockedPartners))
+      // console.log(
+      //   '\nObject.values(this.state.unlockedPartners) ' +
+      //     Object.values(this.state.unlockedPartners)
+      // );
 
-        // console.log('\npartner)' + (partner.name))
-        // console.log('\nincludes ' + this.state.unlockedPartners.includes(partner.name))
-        console.log(this.state.unlockedPartners.hasOwnProperty('92Y'));
-        let partnerKey = this.state.currentPartner.name;
+      // console.log('\npartner)' + (partner.name))
+      // console.log('\nincludes ' + this.state.unlockedPartners.includes(partner.name))
+      console.log(
+        this.state.unlockedPartners &&
+          this.state.unlockedPartners.hasOwnProperty('92Y')
+      );
+      let partnerKey = this.state.currentPartner.name;
 
-        // if ('partner.name' in this.state.unlockedPartners.hasOwnProperty) {
-        if (Object.values(this.state.unlockedPartners).includes(partner.name)) {
-          // if (this.state.unlockedPartners.includes(partner.name)) {
-          return <Feather name="unlock" size={25} color="black" />;
-        } else {
-          return <Feather name="lock" size={25} color="black" />;
-        }
+      // if ('partner.name' in this.state.unlockedPartners.hasOwnProperty) {
+      if (
+        this.state.unlockedPartners &&
+        Object.values(this.state.unlockedPartners).includes(partner.name)
+      ) {
+        // if (this.state.unlockedPartners.includes(partner.name)) {
+        return <Feather name="unlock" size={25} color="black" />;
+      } else {
+        return <Feather name="lock" size={25} color="black" />;
       }
     };
 
@@ -211,7 +215,10 @@ export class PartnerList extends Component {
       console.log('==============checkLockState============\n');
       console.log(this.state.unlockedPartners);
 
-      if (Object.values(this.state.unlockedPartners).includes(partner.name)) {
+      if (
+        this.state.unlockedPartners &&
+        Object.values(this.state.unlockedPartners).includes(partner.name)
+      ) {
         this.resetNavigation();
         this.props.navigation.navigate('ChatList', {
           partner: partner.name
@@ -245,7 +252,7 @@ export class PartnerList extends Component {
       });
       firebase
         .database()
-        .ref(`users/${this.state.currentUserName}/unlockedPartners`)
+        .ref(`users/${Fire.shared.uid()}/unlockedPartners`)
         .push(this.state.currentPartner.name);
       this.resetNavigation();
       this.props.navigation.navigate('ChatList', {
