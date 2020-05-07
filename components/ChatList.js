@@ -44,11 +44,20 @@ export default class ChatList extends React.Component {
   async componentDidMount() {
     // help alert
     this.helpAlert = () => {
-      Alert.alert(
-        'Help',
-        "Welcome to après!\n\n This is your home page.\n\n Use the navbar to navigate to your user page, your personal messages, live chat, our partnered boards, and the resources page. \n\n Search our message boards for a topic you're interested in. Don't see it already? Press the + icon to create it, and start the conversation! ",
-        [{ text: 'Got it!' }]
-      );
+      if (this.state.bookmarks) {
+        Alert.alert(
+          'Help',
+          'This is your list of bookmarked message boards.\n\n Your favorite message boards will appear here when you press the bookmark icon next to a message board\'s name.\n\n To remove a bookmarked board, simply press the bookmark icon again.',
+          [{ text: 'Got it!' }]
+        );
+      }
+      else {
+        Alert.alert(
+          'Help',
+          "Welcome to après!\n\n This is your home page.\n\n Use the navbar to navigate to your user page, your personal messages, live chat, our partnered boards, and the resources page. \n\n Search our message boards for a topic you're interested in. Don't see it already? Press the + icon to create it, and start the conversation! ",
+          [{ text: 'Got it!' }]
+        );
+      }
     };
 
     // bookmark alert
@@ -412,8 +421,8 @@ export default class ChatList extends React.Component {
                       </TouchableOpacity>
                     </View>
                   ) : this.state.bookmarks ? (
-                    <Text style={styles.subtitle2}>
-                      You have not bookmarked any chatrooms yet.
+                    <Text style={styles.searchResultText}>
+                      No bookmarks found. {'\n'} Press the help icon for more information.
                     </Text>
                   ) : (
                         // return loading while grabbing data from database
@@ -500,11 +509,18 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'black',
     fontWeight: '600',
-    fontSize: 28,
+    fontSize: 22,
     fontFamily: 'Futura-Light'
   },
-  searchbar: {
+  searchResultText: {
     color: 'black',
+    fontWeight: '600',
+    fontSize: 22,
+    fontFamily: 'Futura-Light',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  searchbar: {
     marginLeft: 20,
     marginRight: 20,
   },
