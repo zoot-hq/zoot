@@ -161,31 +161,31 @@ export class PartnerList extends Component {
   render() {
     renderLock = (partner) => {
       // if (this.state.unlockedPartners[partnerName]) {
-      // if (this.state.unlockedPartners) {
+      if (this.state.unlockedPartners) {
+        console.log('\n=========renderLock======');
+        console.log('\nthis.state.partner.name)' + partner.name);
+        console.log(
+          '\nthis.state.unlockedPartners)' + this.state.unlockedPartners
+        );
+        // console.log('\ntype of bject.values(this.state.unlockedPartners)' + typeof (Object.values(this.state.unlockedPartners)))
+        // console.log('\ntype of this.state.unlockedPartners)' + typeof (this.state.unlockedPartners))
+        // console.log(
+        //   '\nObject.values(this.state.unlockedPartners) ' +
+        //     Object.values(this.state.unlockedPartners)
+        // );
 
-      console.log('\n=========renderLock======');
-      console.log('\nthis.state.partner.name)' + partner.name);
-      console.log(
-        '\nthis.state.unlockedPartners)' + this.state.unlockedPartners
-      );
-      // console.log('\ntype of bject.values(this.state.unlockedPartners)' + typeof (Object.values(this.state.unlockedPartners)))
-      // console.log('\ntype of this.state.unlockedPartners)' + typeof (this.state.unlockedPartners))
-      console.log(
-        '\nObject.values(this.state.unlockedPartners) ' +
-          Object.values(this.state.unlockedPartners)
-      );
+        // console.log('\npartner)' + (partner.name))
+        // console.log('\nincludes ' + this.state.unlockedPartners.includes(partner.name))
+        console.log(this.state.unlockedPartners.hasOwnProperty('92Y'));
+        let partnerKey = this.state.currentPartner.name;
 
-      // console.log('\npartner)' + (partner.name))
-      // console.log('\nincludes ' + this.state.unlockedPartners.includes(partner.name))
-      console.log(this.state.unlockedPartners.hasOwnProperty('92Y'));
-      let partnerKey = this.state.currentPartner.name;
-
-      // if ('partner.name' in this.state.unlockedPartners.hasOwnProperty) {
-      if (Object.values(this.state.unlockedPartners).includes(partner.name)) {
-        // if (this.state.unlockedPartners.includes(partner.name)) {
-        return <Feather name="unlock" size={25} color="black" />;
-      } else {
-        return <Feather name="lock" size={25} color="black" />;
+        // if ('partner.name' in this.state.unlockedPartners.hasOwnProperty) {
+        if (Object.values(this.state.unlockedPartners).includes(partner.name)) {
+          // if (this.state.unlockedPartners.includes(partner.name)) {
+          return <Feather name="unlock" size={25} color="black" />;
+        } else {
+          return <Feather name="lock" size={25} color="black" />;
+        }
       }
     };
 
