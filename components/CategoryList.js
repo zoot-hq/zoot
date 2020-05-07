@@ -65,11 +65,14 @@ export class CategoryList extends Component {
 
     // bookmark alert
     this.bookmark = () => {
-      Alert.alert(
-        'Bookmarks coming soon!',
-        'Bookmarked boards are in the works. Hang tight!',
-        [{text: 'OK!'}]
-      );
+      this.props.navigation.navigate('ChatList', {
+        bookmarks: true
+      });
+      // Alert.alert(
+      //   'Bookmarks coming soon!',
+      //   'Bookmarked boards are in the works. Hang tight!',
+      //   [{text: 'OK!'}]
+      // );
     };
 
     try {
