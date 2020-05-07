@@ -538,7 +538,7 @@ class Fire {
     return {name};
   };
 
-  createChatRoom = async (room, partner) => {
+  createChatRoom = async (room, partner, category) => {
     if (partner) {
       console.log('has partner, calling create partner chatroom');
       this.createPartnerChatRoom(room, partner);
@@ -557,6 +557,14 @@ class Fire {
               .ref('chatroomnames')
               .child(room)
               .set({name: room});
+
+            // add to respective category
+            firebase
+              .database()
+              .ref('categoryChatroomNames')
+              .child(category)
+              .child(room)
+              .set({name: room, numOnline: 0});
 
             // add number of participants
             firebase
