@@ -73,19 +73,6 @@ export default class HomeScreen extends React.Component {
   //   this.props.navigation.dispatch(resetAction);
   // }
 
-  async leavePage() {
-    // const timeTillLive = this.state.liveChatBegins.fromNow();
-    // if (timeTillLive <= 0) {
-    //   console.log('===========leaving page===============');
-    //   await this.setState(
-    //     {
-    //       liveChatBegins: this.state.liveChatBegins.add(1, 'minutes')
-    //     },
-    //     this.buildNotification()
-    //   );
-    // }
-  }
-
   async componentDidMount() {
     await this.registerForPushNotificationsAsync();
     console.log(
@@ -157,7 +144,6 @@ export default class HomeScreen extends React.Component {
 
     // if successful login, navigate in
     if (!status) {
-      this.leavePage();
       this.props.navigation.navigate('CategoryList');
     }
 
