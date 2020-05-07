@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   ScrollView,
   KeyboardAvoidingView,
+  StatusBar
 } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { MaterialIndicator } from 'react-native-indicators';
@@ -153,6 +154,13 @@ export class CategoryList extends Component {
     return (
       <View style={styles.container}>
         <StatusBarSettings />
+
+        <StatusBar
+          barStyle="dark-content"
+          hidden={false}
+          backgroundColor="#00BCD4"
+          translucent={true} />
+
         <View style={styles.innerView}>
           {/* bookmark button */}
           <View style={styles.help}>

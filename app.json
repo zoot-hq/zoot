@@ -4,6 +4,11 @@
     "slug": "apres",
     "privacy": "public",
     "sdkVersion": "34.0.0",
+    "splash": {
+      "image": "./assets/Comp-1_1.gif",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
     "platforms": [
       "ios",
       "android",
