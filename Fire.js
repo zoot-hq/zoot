@@ -189,7 +189,7 @@ class Fire {
   };
 
   // send the message to the Backend
-  send = (messages, room, pm, live) => {
+  send = async (messages, room, pm, live) => {
     for (let i = 0; i < messages.length; i++) {
       const {text, user} = messages[i];
       const message = {
@@ -237,13 +237,13 @@ class Fire {
         const names = room.split('-');
         const otherUsername =
           names[0] === this.username() ? names[1] : names[0];
-
+        const otherUserId = await this.findUserByUsername(otherUsername);
         try {
           // get token for other user
           firebase
             .database()
             .ref('users')
-            .child(otherUsername)
+            .child(otherUserId)
             .child('notifToken')
             .once('value')
             .then(async (snapshot) => {
@@ -292,6 +292,17 @@ class Fire {
       }
     }
   };
+
+  async findUserByUsername(name) {
+    let usersId = await firebase
+      .database()
+      .ref('usernames')
+      .child(name)
+      .child('uid')
+      .once('value')
+      .then((snapshot) => snapshot);
+    return usersId;
+  }
 
   clearUnreads = (room) => {
     firebase
@@ -397,18 +408,17 @@ class Fire {
     selectedRole
   ) => {
     try {
-      // check to see if username already exists
-      const status = await this.userExists(username, {exists: false});
-      if (status.val() || username === 'X') {
-        throw new Error('username already taken.');
-      }
-
+      await this.validateUsername(username);
       await firebase.auth().createUserWithEmailAndPassword(email, password);
       await firebase.auth().signInWithEmailAndPassword(email, password);
 
       // add in custom fields
-      const refToUser = firebase.database().ref('users').child(username);
+      const refToUser = firebase
+        .database()
+        .ref('users')
+        .child(firebase.auth().currentUser.uid);
       refToUser.set({
+        username,
         birthday,
         city,
         children,
@@ -418,6 +428,10 @@ class Fire {
         unlockedPartners: {}
       });
 
+      // add username to usernames list:
+      const name = await firebase.database().ref('usernames').child(username);
+      name.set({username, uid: firebase.auth().currentUser.uid});
+
       // add displayname
       const user = firebase.auth().currentUser;
       await user.updateProfile({
@@ -425,6 +439,17 @@ class Fire {
       });
     } catch (error) {
       return error;
+    }
+  };
+
+  validateUsername = async (username) => {
+    if (username.length !== username.replace(/[^a-zA-Z0-9]/g, '').length) {
+      throw new Error('username must not contain special characters');
+    }
+    // check to see if username already exists
+    const status = await this.userExists(username, {exists: false});
+    if (status.exists || username === 'X') {
+      throw new Error('username already taken.');
     }
   };
 
@@ -437,17 +462,16 @@ class Fire {
   };
 
   // returns true if username exists, false otherwise
-  userExists = async (username, status) =>
-    await firebase
-      .database()
-      .ref('users')
-      .child(username)
-      .once('value', (snapshot) => {
-        if (snapshot.exists()) {
-          status.exists = true;
-        }
-        return status;
-      });
+  userExists = async (username, status) => {
+    const allNames = await firebase.database().ref('usernames');
+    const namesObj = await allNames.once('value', (snapshot) => snapshot);
+    for (let name in namesObj.val()) {
+      if (name.toLowerCase() === username.toLowerCase()) {
+        status.exists = true;
+      }
+    }
+    return status;
+  };
 
   getChatRoomNames = (callback, partner) => {
     let ref = partner ? `partnerChatroomNames/${partner}` : 'chatroomnames';
@@ -771,7 +795,7 @@ class Fire {
     firebase
       .database()
       .ref('users')
-      .child(this.username())
+      .child(this.uid())
       .child('notifToken')
       .set(token);
   };
@@ -833,7 +857,7 @@ class Fire {
     await firebase
       .database()
       .ref('users')
-      .child(username)
+      .child(this.uid())
       .on('child_added', (snapshot) => callback(this.parsePartners(snapshot)));
 }
 
