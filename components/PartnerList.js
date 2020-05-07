@@ -8,7 +8,9 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Keyboard,
+  TouchableWithoutFeedback
 } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { MaterialIndicator } from 'react-native-indicators';
@@ -35,7 +37,17 @@ import HelpIcon from '../assets/icons/HelpIcon';
 
 import Navbar from './Navbar';
 
-// firebase.auth().currentUser.unlockedPartners
+
+
+
+const DismissKeyboard = ({ children }) => (
+  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    {children}
+  </TouchableWithoutFeedback>
+);
+
+
+
 export class PartnerList extends Component {
   constructor() {
     super();
@@ -254,205 +266,207 @@ export class PartnerList extends Component {
     };
 
     return (
-      <View style={styles.container}>
-        <View style={styles.innerView}>
-          {/* bookmark button */}
-          <View style={styles.help}>
-            <TouchableOpacity onPress={() => this.bookmark()}>
-              <BookmarkIcon />
-            </TouchableOpacity>
+      <DismissKeyboard>
+        <View style={styles.container}>
+          <View style={styles.innerView}>
+            {/* bookmark button */}
+            <View style={styles.help}>
+              <TouchableOpacity onPress={() => this.bookmark()}>
+                <BookmarkIcon />
+              </TouchableOpacity>
 
-            {/* help button */}
+              {/* help button */}
 
-            <TouchableOpacity onPress={() => this.helpAlert()}>
-              {/* <AntDesign name="questioncircleo" size={20} color="black" /> */}
-              <HelpIcon />
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity onPress={() => this.helpAlert()}>
+                {/* <AntDesign name="questioncircleo" size={20} color="black" /> */}
+                <HelpIcon />
+              </TouchableOpacity>
+            </View>
 
-          {/* titles */}
-          {/* <Text style={styles.title}>après</Text> */}
-          <Text style={styles.subtitle2}>
-            {/* Hey there! Après is proud to partner with our organizations. Users
+            {/* titles */}
+            {/* <Text style={styles.title}>après</Text> */}
+            <Text style={styles.subtitle2}>
+              {/* Hey there! Après is proud to partner with our organizations. Users
             can privately interact with partnered organizations on Après by
             requesting a secret access code from the real- world organizations
             which they belong to. */}
             Partnered Organizations
           </Text>
-        </View>
-        <View style={styles.searchView}>
-          <View style={styles.searchbar}>
-            <Searchbar
-              theme={{ colors: { primary: 'black' } }}
-              placeholder="Search for a partner..."
-              onChangeText={(query) => {
-                const queriedPartners = this.state.partnerNames.filter(
-                  (partner) => {
-                    return partner.name
-                      .toLowerCase()
-                      .includes(query.toLowerCase());
-                  }
-                );
-                this.setState({ queriedPartners, query });
-                if (!query.length) {
-                  this.setState({ queriedPartners: this.state.partnerNames });
-                }
-              }}
-            />
           </View>
-          {/* partner board list */}
-          <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding">
-            <SafeAreaView>
-              <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                {/* if a query made, queried chatrooms displayed*/}
-                {this.state.queriedPartners.length ? (
-                  this.state.queriedPartners.map((partner, idx) => (
-                    <TouchableOpacity
-                      key={partner.name}
-                      style={styles.buttonContainer}
-                      onPress={() => {
-                        checkLockState(partner);
-                        setCurrentPartner(partner);
+          <View style={styles.searchView}>
+            <View style={styles.searchbar}>
+              <Searchbar
+                theme={{ colors: { primary: 'black' } }}
+                placeholder="Search for a partner..."
+                onChangeText={(query) => {
+                  const queriedPartners = this.state.partnerNames.filter(
+                    (partner) => {
+                      return partner.name
+                        .toLowerCase()
+                        .includes(query.toLowerCase());
+                    }
+                  );
+                  this.setState({ queriedPartners, query });
+                  if (!query.length) {
+                    this.setState({ queriedPartners: this.state.partnerNames });
+                  }
+                }}
+              />
+            </View>
+            {/* partner board list */}
+            <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding">
+              <SafeAreaView>
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                  {/* if a query made, queried chatrooms displayed*/}
+                  {this.state.queriedPartners.length ? (
+                    this.state.queriedPartners.map((partner, idx) => (
+                      <TouchableOpacity
+                        key={partner.name}
+                        style={styles.buttonContainer}
+                        onPress={() => {
+                          checkLockState(partner);
+                          setCurrentPartner(partner);
 
-                      }}
-                    >
-                      {/* {renderModal(partner)} */}
+                        }}
+                      >
+                        {/* {renderModal(partner)} */}
 
-                      <View style={styles.singleChatView}>
-                        <Text style={styles.buttonText}>
-                          {renderLock(partner)}{' '}
-                        </Text>
+                        <View style={styles.singleChatView}>
+                          <Text style={styles.buttonText}>
+                            {renderLock(partner)}{' '}
+                          </Text>
 
-                        <Text style={styles.buttonText}>
-                          {`${partner.name}`}
-                        </Text>
-                        <Text
-                          style={styles.subtitle}
-                        >{`\ntesting passcode: ${partner.passcode}`}</Text>
+                          <Text style={styles.buttonText}>
+                            {`${partner.name}`}
+                          </Text>
+                          <Text
+                            style={styles.subtitle}
+                          >{`\ntesting passcode: ${partner.passcode}`}</Text>
 
-                      </View>
-                    </TouchableOpacity>
-                  ))
-                ) : // else if a search has not run but the list of partners isn't empty, display all partners
-                  this.state.partnerNames.length ? (
-                    this.state.partnerNames.map((partner) => (
-                      <View key={partner.name}>
-                        <Modal
-                          modalData={this.state.modalData}
-                          isVisible={this.state.passcodeModal}
-                          state={this.currentPartner}
-                        >
-                          <View style={styles.modal}>
-                            <Text style={styles.modalTitle}>Enter Passcode</Text>
-                            {this.state.error ? (
-                              <Text style={styles.modalText}>
-                                {this.state.error}
-                              </Text>
-                            ) : (
+                        </View>
+                      </TouchableOpacity>
+                    ))
+                  ) : // else if a search has not run but the list of partners isn't empty, display all partners
+                    this.state.partnerNames.length ? (
+                      this.state.partnerNames.map((partner) => (
+                        <View key={partner.name}>
+                          <Modal
+                            modalData={this.state.modalData}
+                            isVisible={this.state.passcodeModal}
+                            state={this.currentPartner}
+                          >
+                            <View style={styles.modal}>
+                              <Text style={styles.modalTitle}>Enter Passcode</Text>
+                              {this.state.error ? (
                                 <Text style={styles.modalText}>
-                                  Your organization will provide you with a secret
-                                  passcode to access thier private message boards on
-                                  Après.
+                                  {this.state.error}
                                 </Text>
-                              )}
-                            <TextInput
-                              returnKeyType="done"
-                              placeholder="Enter passcode..."
-                              placeholderTextColor="#bfbfbf"
-                              autoCapitalize="none"
-                              autoCorrect={false}
-                              style={styles.input}
-                              onChangeText={(passcode) =>
-                                this.setState({ passcode })
-                              }
-                            />
-                            <View style={styles.modalButtonsContainer}>
-                              <TouchableOpacity
-                                style={{ width: 150 }}
-                                onPress={() =>
-                                  this.setState({
-                                    passcodeModal: false,
-                                    error: false
-                                  })
+                              ) : (
+                                  <Text style={styles.modalText}>
+                                    Your organization will provide you with a secret
+                                    passcode to access thier private message boards on
+                                    Après.
+                                  </Text>
+                                )}
+                              <TextInput
+                                returnKeyType="done"
+                                placeholder="Enter passcode..."
+                                placeholderTextColor="#bfbfbf"
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                style={styles.input}
+                                onChangeText={(passcode) =>
+                                  this.setState({ passcode })
                                 }
-                              >
-                                <Text style={styles.modalButtonCancel}>
-                                  Cancel
+                              />
+                              <View style={styles.modalButtonsContainer}>
+                                <TouchableOpacity
+                                  style={{ width: 150 }}
+                                  onPress={() =>
+                                    this.setState({
+                                      passcodeModal: false,
+                                      error: false
+                                    })
+                                  }
+                                >
+                                  <Text style={styles.modalButtonCancel}>
+                                    Cancel
                               </Text>
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                style={{
-                                  width: 150,
-                                  borderLeftWidth: 1,
-                                  borderLeftColor: 'gray'
-                                }}
-                                // key={partner.name}
-                                onPress={() => {
-                                  checkPasscode(this.state.currentPartner);
-                                }}
-                              >
-                                <Text style={styles.modalButtonSave}>Enter</Text>
-                              </TouchableOpacity>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                  style={{
+                                    width: 150,
+                                    borderLeftWidth: 1,
+                                    borderLeftColor: 'gray'
+                                  }}
+                                  // key={partner.name}
+                                  onPress={() => {
+                                    checkPasscode(this.state.currentPartner);
+                                  }}
+                                >
+                                  <Text style={styles.modalButtonSave}>Enter</Text>
+                                </TouchableOpacity>
+                              </View>
                             </View>
-                          </View>
-                        </Modal>
+                          </Modal>
 
-                        <TouchableOpacity
-                          key={partner.name}
-                          style={styles.buttonContainer}
-                          onPress={() => {
-                            checkLockState(partner);
-                            setCurrentPartner(partner);
+                          <TouchableOpacity
+                            key={partner.name}
+                            style={styles.buttonContainer}
+                            onPress={() => {
+                              checkLockState(partner);
+                              setCurrentPartner(partner);
 
-                          }}
-                        >
-                          {/* {renderModal(partner)} */}
+                            }}
+                          >
+                            {/* {renderModal(partner)} */}
 
-                          <View style={styles.singleChatView}>
-                            <Text style={styles.buttonText}>
-                              {renderLock(partner)}{' '}
-                            </Text>
+                            <View style={styles.singleChatView}>
+                              <Text style={styles.buttonText}>
+                                {renderLock(partner)}{' '}
+                              </Text>
 
-                            <Text style={styles.buttonText}>
-                              {`${partner.name}`}
-                            </Text>
-                            <Text
-                              style={styles.subtitle}
-                            >{`\ntesting passcode: ${partner.passcode}`}</Text>
-                            {/* {`\ntesting partner: ${partner.name}`} */}
+                              <Text style={styles.buttonText}>
+                                {`${partner.name}`}
+                              </Text>
+                              <Text
+                                style={styles.subtitle}
+                              >{`\ntesting passcode: ${partner.passcode}`}</Text>
+                              {/* {`\ntesting partner: ${partner.name}`} */}
 
-                            {/* <Ionicons name="md-people" size={25} color="grey">
+                              {/* <Ionicons name="md-people" size={25} color="grey">
                           {' '}
                         </Ionicons> */}
-                          </View>
-                        </TouchableOpacity>
-                      </View>
-                    ))
-                  ) : this.state.partners ? (
-                    <View>
-                      <Text style={styles.searchResultText}>
-                        We are not yet partnered with this organization.
+                            </View>
+                          </TouchableOpacity>
+                        </View>
+                      ))
+                    ) : this.state.partners ? (
+                      <View>
+                        <Text style={styles.searchResultText}>
+                          We are not yet partnered with this organization.
                     </Text>
-                    </View>
-                  )
-                      : (
-                        // return loading while grabbing data from database
-                        <MaterialIndicator color="black" />
-                      )}
-              </ScrollView>
-            </SafeAreaView>
-            <TouchableOpacity onPress={() => contactAdmin()}>
-              <Text style={styles.subtitle}>
-                Interested in partnering with Après? Click here to send us an
-                email!
+                      </View>
+                    )
+                        : (
+                          // return loading while grabbing data from database
+                          <MaterialIndicator color="black" />
+                        )}
+                </ScrollView>
+              </SafeAreaView>
+              <TouchableOpacity onPress={() => contactAdmin()}>
+                <Text style={styles.subtitle}>
+                  Interested in partnering with Après? Click here to send us an
+                  email!
               </Text>
-            </TouchableOpacity>
+              </TouchableOpacity>
 
-          </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+          </View>
+
+          <Navbar />
         </View>
-
-        <Navbar />
-      </View>
+      </DismissKeyboard>
     );
   }
 }
