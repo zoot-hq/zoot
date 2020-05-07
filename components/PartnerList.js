@@ -284,7 +284,7 @@ export class PartnerList extends Component {
           <View style={styles.searchbar}>
             <Searchbar
               theme={{ colors: { primary: 'black' } }}
-              placeholder="Search for a partnered organization"
+              placeholder="Search for a partner..."
               onChangeText={(query) => {
                 const queriedPartners = this.state.partnerNames.filter(
                   (partner) => {
@@ -308,19 +308,28 @@ export class PartnerList extends Component {
                 {this.state.queriedPartners.length ? (
                   this.state.queriedPartners.map((partner, idx) => (
                     <TouchableOpacity
-                      key={idx}
+                      key={partner.name}
                       style={styles.buttonContainer}
-                    // onPress={() =>
-                    //   this.props.navigation.navigate('ChatRoom', {
-                    //     chatroom: chatroom.name
-                    //   })
-                    // }
+                      onPress={() => {
+                        checkLockState(partner);
+                        setCurrentPartner(partner);
+
+                      }}
                     >
+                      {/* {renderModal(partner)} */}
+
                       <View style={styles.singleChatView}>
-                        <Text style={styles.buttonText}># {partner.name}</Text>
-                        <Ionicons name="md-people" size={25} color="grey">
-                          {' '}
-                        </Ionicons>
+                        <Text style={styles.buttonText}>
+                          {renderLock(partner)}{' '}
+                        </Text>
+
+                        <Text style={styles.buttonText}>
+                          {`${partner.name}`}
+                        </Text>
+                        <Text
+                          style={styles.subtitle}
+                        >{`\ntesting passcode: ${partner.passcode}`}</Text>
+
                       </View>
                     </TouchableOpacity>
                   ))
@@ -380,33 +389,6 @@ export class PartnerList extends Component {
                                 // key={partner.name}
                                 onPress={() => {
                                   checkPasscode(this.state.currentPartner);
-
-                                  console.log(
-                                    '\n=======onPress checkPasscode======\n'
-                                  );
-
-                                  // console.log('\npartnerName.name')
-                                  // console.log(partnerName.name)
-
-                                  // console.log('\npartnerName.passcode')
-                                  // console.log(partnerName.passcode)
-
-                                  // console.log('\npartnerName')
-                                  // console.log(partnerName)
-
-                                  console.log('\n(this.state.currentPartner)');
-                                  console.log(this.state.currentPartner);
-
-                                  console.log(
-                                    '\n(this.state.currentPartner.passcode)'
-                                  );
-                                  console.log(this.state.currentPartner.passcode);
-
-                                  // console.log('\npartner.passcode')
-                                  // console.log(partner.passcode)
-
-                                  // console.log('\npartner')
-                                  // console.log(partner)
                                 }}
                               >
                                 <Text style={styles.modalButtonSave}>Enter</Text>
@@ -421,29 +403,7 @@ export class PartnerList extends Component {
                           onPress={() => {
                             checkLockState(partner);
                             setCurrentPartner(partner);
-                            // renderModal(partner)
 
-                            console.log(
-                              '\n=======onPress checkLockState======\n'
-                            );
-
-                            console.log('\npartner.name');
-                            console.log(partner.name);
-
-                            console.log('\npartner.passcode');
-                            console.log(partner.passcode);
-
-                            console.log('\npartner');
-                            console.log(partner);
-
-                            // console.log('\npartnerName.name')
-                            // console.log(partnerName.name)
-
-                            // console.log('\npartnerName.passcode')
-                            // console.log(partnerName.passcode)
-
-                            // console.log('\npartnerName')
-                            // console.log(partnerName)
                           }}
                         >
                           {/* {renderModal(partner)} */}
@@ -468,13 +428,17 @@ export class PartnerList extends Component {
                         </TouchableOpacity>
                       </View>
                     ))
-                  ) : (
-                      <View>
-                        <Text>
-                          We are not yet partnered with this organization.
+                  ) : this.state.partners ? (
+                    <View>
+                      <Text style={styles.searchResultText}>
+                        We are not yet partnered with this organization.
                     </Text>
-                      </View>
-                    )}
+                    </View>
+                  )
+                      : (
+                        // return loading while grabbing data from database
+                        <MaterialIndicator color="black" />
+                      )}
               </ScrollView>
             </SafeAreaView>
             <TouchableOpacity onPress={() => contactAdmin()}>
@@ -484,17 +448,6 @@ export class PartnerList extends Component {
               </Text>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity onPress={() => this.unlock()}> */}
-            {/* <TouchableOpacity
-              onPress={() => this.setState({passcodeModal: true})}
-            >
-              <Text>
-                CLICK HERE TO TEST LOCK/UNLOCK BELOW{'\n'}
-                test password for unlocking = 1234{'\n'}
-              </Text>
-            </TouchableOpacity> */}
-
-            {/* {renderLock()} */}
           </KeyboardAvoidingView>
         </View>
 
@@ -576,6 +529,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 28,
     fontFamily: 'Futura-Light'
+  },
+  searchResultText: {
+    color: 'black',
+    fontWeight: '600',
+    fontSize: 22,
+    fontFamily: 'Futura-Light',
+    textAlign: 'center',
+    marginTop: 20,
   },
   searchbar: {
     marginLeft: 20,

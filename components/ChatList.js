@@ -7,7 +7,9 @@ import {
   SafeAreaView,
   ScrollView,
   KeyboardAvoidingView,
-  Alert
+  Alert,
+  Keyboard,
+  TouchableWithoutFeedback
 } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import Fire from '../Fire';
@@ -23,6 +25,14 @@ import HelpIcon from '../assets/icons/HelpIcon';
 import * as firebase from 'firebase';
 import BookmarkListIcon from './BookmarkListIcon';
 import BackButton from './BackButton';
+
+const DismissKeyboard = ({ children }) => (
+  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    {children}
+  </TouchableWithoutFeedback>
+);
+
+
 
 export default class ChatList extends React.Component {
   constructor(props) {
@@ -255,45 +265,46 @@ export default class ChatList extends React.Component {
     };
     return (
       <View style={styles.container}>
-        <View style={styles.innerView}>
+        <DismissKeyboard>
+          <View style={styles.innerView}>
 
-          <View style={styles.help}>
+            <View style={styles.help}>
 
-            {renderBookmarkOrBack()}
+              {renderBookmarkOrBack()}
 
 
-            {/* bookmark button */}
-            {/* <TouchableOpacity onPress={() => this.bookmark()}>
+              {/* bookmark button */}
+              {/* <TouchableOpacity onPress={() => this.bookmark()}>
               <BookmarkIcon />
             </TouchableOpacity> */}
 
-            {/* help button */}
+              {/* help button */}
 
-            <TouchableOpacity onPress={() => this.helpAlert()}>
-              {/* <AntDesign name="questioncircleo" size={20} color="black" /> */}
-              <HelpIcon />
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity onPress={() => this.helpAlert()}>
+                {/* <AntDesign name="questioncircleo" size={20} color="black" /> */}
+                <HelpIcon />
+              </TouchableOpacity>
+            </View>
 
-          {/* titles */}
+            {/* titles */}
 
-          {/* <Text style={styles.title}>
+            {/* <Text style={styles.title}>
 
             après
 
           </Text> */}
 
-          <Text style={styles.subtitle2}>{renderHeader()}</Text>
-        </View>
+            <Text style={styles.subtitle2}>{renderHeader()}</Text>
+          </View>
 
-        {/* <Text style={styles.subtitle}>
+          {/* <Text style={styles.subtitle}>
             Welcome.{'\n'}What type of support are you here for?
           </Text>
         </View> */}
 
-        {/* navigation to user profile for development purposes */}
+          {/* navigation to user profile for development purposes */}
 
-        {/* <View style={styles.testingView}>
+          {/* <View style={styles.testingView}>
           <Text style={styles.subtitle}> For testing purposes only:</Text>
 
           <TouchableOpacity
@@ -303,13 +314,13 @@ export default class ChatList extends React.Component {
           </TouchableOpacity>
         </View> */}
 
-        {/* <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => this.props.navigation.navigate('Resources')}>
             <Text style={styles.subtitle}>Resources</Text>
           </TouchableOpacity>
          */}
 
-        {/*
+          {/*
           <View
             style={{
               display: 'flex',
@@ -336,104 +347,105 @@ export default class ChatList extends React.Component {
 
  */}
 
-        {/* search bar - queries all chatrooms to the users query */}
-        <View style={styles.searchView}>
-          <View style={styles.searchbar}>
-            <Searchbar
-              theme={{ colors: { primary: 'black' } }}
-              placeholder="Search our message boards"
-              onChangeText={(query) => {
-                const queriedChatrooms = this.state.queriedChatrooms.filter(
-                  (chatroom) => {
-                    return chatroom.name
-                      .toLowerCase()
-                      .includes(query.toLowerCase());
+          {/* search bar - queries all chatrooms to the users query */}
+          <View style={styles.searchView}>
+            <View style={styles.searchbar}>
+              <Searchbar
+                theme={{ colors: { primary: 'black' } }}
+                placeholder="Search our message boards"
+                onChangeText={(query) => {
+                  const queriedChatrooms = this.state.queriedChatrooms.filter(
+                    (chatroom) => {
+                      return chatroom.name
+                        .toLowerCase()
+                        .includes(query.toLowerCase());
+                    }
+                  );
+                  if (query.length) {
+                    this.setState({ queriedChatrooms, query });
+                  } else {
+                    // if the user deletes their query, restore the list to its original form
+                    this.setState({
+                      queriedChatrooms: this.state.copyOfQueriedChatrooms
+                    });
                   }
-                );
-                if (query.length) {
-                  this.setState({ queriedChatrooms, query });
-                } else {
-                  // if the user deletes their query, restore the list to its original form
-                  this.setState({
-                    queriedChatrooms: this.state.copyOfQueriedChatrooms
-                  });
-                }
-              }}
-            />
-          </View>
-          {/* chatroom list */}
-          <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding">
-            <SafeAreaView>
-              <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                {/* if a query made, queried chatrooms displayed*/}
-                {this.state.queriedChatrooms.length ? (
-                  this.state.queriedChatrooms.map((chatroom) => (
-                    <TouchableOpacity
-                      key={chatroom.name}
-                      style={styles.buttonContainer}
-                      onPress={() =>
-                        this.props.navigation.navigate('ChatRoom', {
-                          chatroom: chatroom.name
-                        })
-                      }
-                    >
-                      <View style={styles.singleChatView}>
-                        <Text style={styles.buttonText}># {chatroom.name}</Text>
-                        <View style={styles.singleChatIcons}>
-                          <View style={{ paddingRight: 15 }}>
-                            <BookmarkListIcon
-                              chatroom={chatroom}
-                              bookmarkRemoved={this.bookmarkRemoved}
-                            />
-                          </View>
-
-                          <Ionicons name="md-people" size={25} color="grey">
-                            {' '}
-                            <Text style={styles.numOnline}>{chatroom.numOnline}</Text>
-                          </Ionicons>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                  ))
-                ) : // else allow user to create a new chatroom
-                  this.state.chatrooms.length ? (
-                    <View>
-                      <Text>
-                        No results. Would you like to create this chatroom?
-                    </Text>
+                }}
+              />
+            </View>
+            {/* chatroom list */}
+            <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding">
+              <SafeAreaView>
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                  {/* if a query made, queried chatrooms displayed*/}
+                  {this.state.queriedChatrooms.length ? (
+                    this.state.queriedChatrooms.map((chatroom) => (
                       <TouchableOpacity
-                        key={this.state.query}
+                        key={chatroom.name}
                         style={styles.buttonContainer}
-                        onPress={() => {
-                          Fire.shared.createChatRoom(
-                            this.state.query,
-                            this.state.partner,
-                            this.state.category
-                          );
+                        onPress={() =>
                           this.props.navigation.navigate('ChatRoom', {
-                            chatroom: this.state.query
-                          });
-                        }}
+                            chatroom: chatroom.name
+                          })
+                        }
                       >
-                        <Text style={styles.buttonText}>
-                          + {this.state.query}{' '}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  ) : this.state.bookmarks ? (
-                    <Text style={styles.searchResultText}>
-                      No bookmarks found. {'\n'} Press the help icon for more information.
-                    </Text>
-                  ) : (
-                        // return loading while grabbing data from database
-                        <MaterialIndicator color="black" />
-                      )}
-              </ScrollView>
-            </SafeAreaView>
-          </KeyboardAvoidingView>
-        </View>
+                        <View style={styles.singleChatView}>
+                          <Text style={styles.buttonText}># {chatroom.name}</Text>
+                          <View style={styles.singleChatIcons}>
+                            <View style={{ paddingRight: 15 }}>
+                              <BookmarkListIcon
+                                chatroom={chatroom}
+                                bookmarkRemoved={this.bookmarkRemoved}
+                              />
+                            </View>
 
-        <Navbar navigation={this.props.navigation} />
+                            <Ionicons name="md-people" size={25} color="grey">
+                              {' '}
+                              <Text style={styles.numOnline}>{chatroom.numOnline}</Text>
+                            </Ionicons>
+                          </View>
+                        </View>
+                      </TouchableOpacity>
+                    ))
+                  ) : // else allow user to create a new chatroom
+                    this.state.chatrooms.length ? (
+                      <View>
+                        <Text style={styles.searchResultText}>
+                          No results. Would you like to create this chatroom?
+                    </Text>
+                        <TouchableOpacity
+                          key={this.state.query}
+                          style={styles.buttonContainer}
+                          onPress={() => {
+                            Fire.shared.createChatRoom(
+                              this.state.query,
+                              this.state.partner,
+                              this.state.category
+                            );
+                            this.props.navigation.navigate('ChatRoom', {
+                              chatroom: this.state.query
+                            });
+                          }}
+                        >
+                          <Text style={styles.buttonText}>
+                            + {this.state.query}{' '}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    ) : this.state.bookmarks ? (
+                      <Text style={styles.searchResultText}>
+                        No bookmarks found. {'\n'} Press the help icon for more information.
+                      </Text>
+                    ) : (
+                          // return loading while grabbing data from database
+                          <MaterialIndicator color="black" />
+                        )}
+                </ScrollView>
+              </SafeAreaView>
+            </KeyboardAvoidingView>
+          </View>
+
+          <Navbar navigation={this.props.navigation} />
+        </DismissKeyboard>
       </View>
     );
   }
