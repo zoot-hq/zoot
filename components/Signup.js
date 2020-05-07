@@ -8,10 +8,18 @@ import {
   KeyboardAvoidingView,
   AsyncStorage,
   Alert,
-  Linking
+  Linking,
+  Keyboard, 
+  TouchableWithoutFeedback
 } from 'react-native';
 import Fire from '../Fire';
 import RNPickerSelect from 'react-native-picker-select';
+
+const DismissKeyboard = ({ children }) => (
+  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    {children}
+  </TouchableWithoutFeedback>
+);
 
 const roleList = [
   "I'm a New Mother.",
@@ -76,6 +84,7 @@ export default class SignupScreen extends React.Component {
       directionalOffsetThreshold: 80
     };
     return (
+      <DismissKeyboard>
       <View style={styles.container}>
         <KeyboardAvoidingView style={{ flex: 1 }}>
           <View style={styles.container}>
@@ -95,12 +104,6 @@ export default class SignupScreen extends React.Component {
                   blurOnSubmit={false}
                 />
               </View>
-<<<<<<< HEAD
-              {(this.state.error === 'username is required.' ||
-                this.state.error === 'username already taken.') && (
-                  <Text style={styles.error}>{this.state.error}</Text>
-                )}
-=======
               {(this.state.error === 'username is required.' && (
                 <Text style={styles.error}>{this.state.error}</Text>
               )) ||
@@ -111,7 +114,6 @@ export default class SignupScreen extends React.Component {
                   'username must not contain special characters' && (
                   <Text style={styles.error}>{this.state.error}</Text>
                 ))}
->>>>>>> 91f208887a976bb7d5b8623c211702461970e104
               <View style={styles.field}>
                 <Text style={styles.text}>email</Text>
                 <TextInput
@@ -306,6 +308,7 @@ export default class SignupScreen extends React.Component {
 
         </KeyboardAvoidingView>
       </View>
+      </DismissKeyboard>
     );
   }
 }

@@ -9,10 +9,18 @@ import {
   Linking,
   AsyncStorage,
   Alert,
-  Platform
+  Keyboard,
+  TouchableWithoutFeedback
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Fire from '../Fire';
+
+
+const DismissKeyboard = ({ children }) => (
+  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    {children}
+  </TouchableWithoutFeedback>
+);
 
 export default class LoginScreen extends React.Component {
   constructor() {
@@ -25,6 +33,8 @@ export default class LoginScreen extends React.Component {
       resetPasswordError: false
     };
   }
+
+
 
   resetPassword = async () => {
     try {
@@ -47,152 +57,150 @@ export default class LoginScreen extends React.Component {
     }
   };
 
+
+
   render() {
-    const keyboardVerticalOffset =
-      // Platform.OS === 'ios' ? 
-      40
-    //  : 
-    // 0
-
     return (
-      // <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
-      <KeyboardAvoidingView style={{ flex: 1 }}>
-        {/* // behavior='position' 
-        // keyboardVerticalOffset={keyboardVerticalOffset} */}
-
+      <DismissKeyboard>
         <View style={styles.container}>
-          <Text style={styles.title}>après</Text>
-          <View style={styles.field}>
-            <Text style={styles.text}>email</Text>
-            <TextInput
-              returnKeyType="next"
-              onSubmitEditing={() => this.passwordInput.focus()}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-              style={styles.input}
-              onChangeText={(email) => this.setState({ email })}
-            />
+          <KeyboardAvoidingView style={{ flex: 1 }}>
+            <View style={styles.container}>
+              <Text style={styles.title}>après</Text>
+              <View style={styles.field}>
+                <Text style={styles.text}>email</Text>
+                <TextInput
+                  type="email"
+                  returnKeyType="next"
+                  onSubmitEditing={() => this.passwordInput.focus()}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={styles.input}
+                  onChangeText={(email) => this.setState({ email })}
+                  blurOnSubmit={false}
+                />
 
-          </View>
-          <View style={styles.internalcontainer}>
-            <View style={styles.field}>
-              <Text style={styles.text}>password</Text>
-              <TextInput
-                returnKeyType="done"
-                secureTextEntry
-                style={styles.input}
-                onChangeText={(password) => this.setState({ password })}
-                blurOnSubmit={false}
-                ref={(input) => (this.passwordInput = input)}
-              />
-            </View>
-            <TouchableOpacity onPress={() => this.setState({ showResetPasswordForm: true })}>
-              <Text style={styles.forgot}>
-                Forgot your password? Click here. </Text>
-            </TouchableOpacity>
-            {!!this.state.error && (
-              <TouchableOpacity
-                onPress={() => this.setState({ showResetPasswordForm: true })}
-              >
-                <Text style={styles.error}>
-                  {' '}
-                  Invalid login credentials - click here to reset your password.{' '}
-                </Text>
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity
-              style={styles.buttonContainer}
-              onPress={async () => {
-                const status = await Fire.shared.login(
-                  this.state.email,
-                  this.state.password
-                );
-
-                // if login successful
-                if (!status) {
-                  // set user info into storage
-                  await AsyncStorage.setItem(
-                    'apresLoginEmail',
-                    this.state.email
-                  );
-                  await AsyncStorage.setItem(
-                    'apresLoginPassword',
-                    this.state.password
-                  );
-
-                  // navigate into app
-                  this.props.navigation.navigate('CategoryList');
-                } else {
-                  this.setState({ error: true });
-                }
-              }}
-            >
-
-              <Text style={styles.buttonText}>log in</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.eula}>
-            <Text style={styles.eulaText}>
-              By proceeding with logging in and clicking 'log in', you agree to
-              our terms as listed in our
-              <Text
-                style={styles.link}
-                onPress={() =>
-                  Linking.openURL(
-                    'http://gist.githubusercontent.com/lisjak/5196333df14d1f708563804a885a1b66/raw/8ed9e754f8cbddd156472f02487ef8bcf4ef52ff/apres-eula'
-                  )
-                }
-              >
-                {' '}
-                End-User License Agreement (EULA) of Après.
-              </Text>
-            </Text>
-          </View>
-
-          {/* password reset form - visible only when showResetPasswordForm on state is set to true */}
-          <View>
-            <Modal isVisible={this.state.showResetPasswordForm}>
-              <View style={styles.modal}>
+              </View>
+              <View style={styles.internalcontainer}>
                 <View style={styles.field}>
-                  <Text style={styles.text}>email</Text>
+                  <Text style={styles.text}>password</Text>
                   <TextInput
                     returnKeyType="done"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    autoCorrect={false}
+                    secureTextEntry
                     style={styles.input}
-                    onChangeText={(email) => this.setState({ email })}
+                    onChangeText={(password) => this.setState({ password })}
+                    blurOnSubmit={false}
+                    ref={(input) => (this.passwordInput = input)}
                   />
                 </View>
-                {!!this.state.resetPasswordError && (
-                  <TouchableOpacity>
-                    <Text style={styles.error}> email not found </Text>
+                <TouchableOpacity onPress={() => this.setState({ showResetPasswordForm: true })}>
+                  <Text style={styles.forgot}>
+                    Forgot your password? Click here. </Text>
+                </TouchableOpacity>
+                {!!this.state.error && (
+                  <TouchableOpacity
+                    onPress={() => this.setState({ showResetPasswordForm: true })}
+                  >
+                    <Text style={styles.error}>
+                      {' '}
+                  Invalid login credentials - click here to reset your password.{' '}
+                    </Text>
                   </TouchableOpacity>
                 )}
-                <View
-                // style={styles.formButtonContainer}
+                <TouchableOpacity
+                  style={styles.buttonContainer}
+                  onPress={async () => {
+                    const status = await Fire.shared.login(
+                      this.state.email,
+                      this.state.password
+                    );
+
+                    // if login successful
+                    if (!status) {
+                      // set user info into storage
+                      await AsyncStorage.setItem(
+                        'apresLoginEmail',
+                        this.state.email
+                      );
+                      await AsyncStorage.setItem(
+                        'apresLoginPassword',
+                        this.state.password
+                      );
+
+                      // navigate into app
+                      this.props.navigation.navigate('CategoryList');
+                    } else {
+                      this.setState({ error: true });
+                    }
+                  }}
                 >
-                  <TouchableOpacity
-                    style={styles.buttonContainer2}
-                    onPress={this.resetPassword}
-                  >
-                    <Text style={styles.formButtonText}>reset password</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.formButtonContainer}>
-                  <TouchableOpacity
-                    onPress={() => this.setState({ showResetPasswordForm: false })}
-                  >
-                    <Text style={styles.formButtonText}>cancel</Text>
-                  </TouchableOpacity>
-                </View>
+
+                  <Text style={styles.buttonText}>log in</Text>
+                </TouchableOpacity>
               </View>
-            </Modal>
-          </View>
+              <View style={styles.eula}>
+                <Text style={styles.eulaText}>
+                  By proceeding with logging in and clicking 'log in', you agree to
+                  our terms as listed in our
+              <Text
+                    style={styles.link}
+                    onPress={() =>
+                      Linking.openURL(
+                        'http://gist.githubusercontent.com/lisjak/5196333df14d1f708563804a885a1b66/raw/8ed9e754f8cbddd156472f02487ef8bcf4ef52ff/apres-eula'
+                      )
+                    }
+                  >
+                    {' '}
+                End-User License Agreement (EULA) of Après.
+              </Text>
+                </Text>
+              </View>
+
+              {/* password reset form - visible only when showResetPasswordForm on state is set to true */}
+              <View>
+                <Modal isVisible={this.state.showResetPasswordForm}>
+                  <View style={styles.modal}>
+                    <View style={styles.field}>
+                      <Text style={styles.text}>email</Text>
+                      <TextInput
+                        returnKeyType="done"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        style={styles.input}
+                        onChangeText={(email) => this.setState({ email })}
+                      />
+                    </View>
+                    {!!this.state.resetPasswordError && (
+                      <TouchableOpacity>
+                        <Text style={styles.error}> email not found </Text>
+                      </TouchableOpacity>
+                    )}
+                    <View
+                    // style={styles.formButtonContainer}
+                    >
+                      <TouchableOpacity
+                        style={styles.buttonContainer2}
+                        onPress={this.resetPassword}
+                      >
+                        <Text style={styles.formButtonText}>reset password</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.formButtonContainer}>
+                      <TouchableOpacity
+                        onPress={() => this.setState({ showResetPasswordForm: false })}
+                      >
+                        <Text style={styles.formButtonText}>cancel</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </Modal>
+              </View>
+
+            </View>
+          </KeyboardAvoidingView>
         </View>
-      </KeyboardAvoidingView>
-      // </TouchableWithoutFeedback>
+      </DismissKeyboard>
     );
   }
 }
