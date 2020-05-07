@@ -21,6 +21,8 @@ import {useFocusEffect} from '@react-navigation/native';
 
 import moment from 'moment';
 
+import Navbar from './Navbar';
+
 export default class HomeScreen extends React.Component {
   constructor() {
     super();
@@ -28,7 +30,8 @@ export default class HomeScreen extends React.Component {
       readyToLoad: false,
       expoPushToken: '',
       notification: {},
-      liveChatBegins: moment()
+      liveChatBegins: moment(),
+      notification: null
     };
     this.componentWillMount = this.componentWillMount.bind(this);
   }
@@ -72,6 +75,15 @@ export default class HomeScreen extends React.Component {
   //   });
   //   this.props.navigation.dispatch(resetAction);
   // }
+  changeTimezone = (date, ianatz) => {
+    const invdate = new Date(
+      date.toLocaleString('en-US', {
+        timeZone: ianatz
+      })
+    );
+    const diff = date.getTime() - invdate.getTime();
+    return new Date(date.getTime() + diff);
+  };
 
   async componentDidMount() {
     await this.registerForPushNotificationsAsync();
@@ -86,21 +98,36 @@ export default class HomeScreen extends React.Component {
     // notification (rather than just tapping the app icon to open it),
     // this function will fire on the next tick after the app starts
     // with the notification data.
+    Notifications.addListener((notification) => {
+      if (notification.origin === 'received' && Platform.OS === 'ios') {
+        this.setState({notification: notification});
+        Vibration.vibrate();
+        Alert.alert(
+          'Live chat starting!',
+          `It's happening! Our weekly live chat is starting now. Happy chatting!`,
+          [
+            {
+              text: 'Take me to the live chat',
+              onPress: () => {
+                console.log('navigating to live chat');
+                this.liveChat();
+              }
+            },
+            {
+              text: 'Not now',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel'
+            }
+          ]
+        );
+      }
+    });
     this.buildNotification();
-    this.listenForNotifications();
     setInterval(() => {
       this.buildNotification();
     }, 604800000);
     // this.buildNotification();
   }
-
-  listenForNotifications = () => {
-    Notifications.addListener((notification) => {
-      if (notification.origin === 'received' && Platform.OS === 'ios') {
-        Alert.alert(notification.title, notification.body);
-      }
-    });
-  };
 
   _handleNotification = (notification) => {
     Vibration.vibrate();
@@ -112,11 +139,10 @@ export default class HomeScreen extends React.Component {
     Notifications.scheduleLocalNotificationAsync(
       {
         to: this.state.expoPushToken,
-        sound: 'default',
         title: 'line 80',
         body: 'live notification!',
         data: {data: moment().format('MMMM D, YYYY h:mm A')},
-        _displayInForeground: true
+        ios: {_displayInForeground: true}
       },
       {time: this.state.liveChatBegins.add(30, 'seconds').valueOf()}
     );
@@ -127,6 +153,69 @@ export default class HomeScreen extends React.Component {
       },
       console.log('new timer for live chat', this.state.liveChatBegins)
     );
+  };
+
+  communityPopup = (timeToAcceptableFirebaseString) => {
+    Alert.alert(
+      'Before you enter, here is a reminder of our Community Guidelines',
+      `1. Après is intended to be a place of
+        acceptance, empathy and compassion Above
+        all else, try to be kind.
+        2. Think before you type.
+        3. If you see something unacceptable, please flag the comment for review.
+        4. If you experience a user who repeatedly behaves in an unacceptable manner, please flag the user for review.
+        5. If you are struggling in a way that feels overwhelming, please see our resources for access to professional mental healthcare providers, and get help.
+        6. We are open and love your feedback. Please send us your suggestions on how to improve your experience.`,
+      [
+        {
+          text: 'OK',
+          onPress: () =>
+            this.props.navigation.navigate('ChatRoom', {
+              chatroom: timeToAcceptableFirebaseString,
+              live: true
+            })
+        }
+      ]
+    );
+  };
+  liveChat = () => {
+    // get nyc time
+    const currTime = new Date();
+    const currNyTime = this.changeTimezone(currTime, 'America/New_York');
+    const liveChatTime = {
+      day: 4, //1,
+      hoursStart: 18, //16,
+      hoursEnd: 19, //17,
+      minutesEnd: 30
+    };
+
+    // if time is inside set time for live chat
+    if (
+      // currNyTime.getDay() === 3 &&
+      // (currNyTime.getHours() === 21 ||
+      //   (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30))
+      currNyTime.getDay() === liveChatTime.day &&
+      (currNyTime.getHours() === liveChatTime.hoursStart ||
+        (currNyTime.getHours() === liveChatTime.hoursEnd &&
+          currNyTime.getMinutes() < liveChatTime.minutesEnd))
+    ) {
+      const timeToAcceptableFirebaseString = `live-${
+        currNyTime.getMonth() + 1
+      }-${currNyTime.getDate()}-${currNyTime.getFullYear()}`;
+
+      Fire.shared.createLiveRoomIfDoesNotExist(
+        timeToAcceptableFirebaseString,
+        () => {
+          this.communityPopup(timeToAcceptableFirebaseString);
+        }
+      );
+    } else {
+      Alert.alert(
+        'Live Chat Unavailable',
+        'Sorry we missed you! Live chat is available every Wednesday from 9PM EST until 10:30PM EST. No invitation necessary!',
+        [{text: 'See you next time!'}]
+      );
+    }
   };
 
   async componentWillMount() {
