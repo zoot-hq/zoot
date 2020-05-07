@@ -40,12 +40,34 @@ export default class ChatRoom extends React.Component {
   componentDidMount = () => {
     // help icon
     this.helpAlert = () => {
-      Alert.alert(
-        'Help',
-        'Welcome to the message boards. \n\nReact to posts by longpressing icons beneath messages.\n\nPress the flag icon to flag abusive messages, and press the block icon to block abusive users.\n\nSwipe right to return to the home screen.',
-        [{ text: 'Got it!' }]
-      );
+      if (this.state.pm) {
+
+        Alert.alert(
+          'Help',
+          'Welcome to the message boards. \n\nReact and reply to posts by longpressing icons beneath messages.\nPress the flag icon to flag abusive messages, and press the block icon to block abusive users.\n\nPress the back button in the top left or swipe right to return to the home screen.',
+          [{ text: 'Got it!' }]
+        );
+
+      }
+      if (this.state.live) {
+
+        Alert.alert(
+          'Help',
+          'Welcome to live chat. \n\nReact to posts by longpressing icons beneath messages.\n\nPress the flag icon to flag abusive messages, and press the block icon to block abusive users.\n\nSwipe right to return to the home screen.',
+          [{ text: 'Got it!' }]
+        );
+
+      } else {
+
+        Alert.alert(
+          'Help',
+          'Welcome to the message boards. \n\nReact and reply to posts by longpressing icons beneath messages.\nPress the flag icon to flag abusive messages, and press the block icon to block abusive users.\n\nPress the back button in the top left or swipe right to return to the home screen.',
+          [{ text: 'Got it!' }]
+        );
+
+      }
     };
+
 
     // back alet
     this.back = () => {
