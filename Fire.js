@@ -408,12 +408,7 @@ class Fire {
     selectedRole
   ) => {
     try {
-      // check to see if username already exists
-      const status = await this.userExists(username, {exists: false});
-      if (status.exists || username === 'X') {
-        throw new Error('username already taken.');
-      }
-
+      await this.validateUsername(username);
       await firebase.auth().createUserWithEmailAndPassword(email, password);
       await firebase.auth().signInWithEmailAndPassword(email, password);
 
@@ -447,6 +442,17 @@ class Fire {
     }
   };
 
+  validateUsername = async (username) => {
+    if (username.length !== username.replace(/[^a-zA-Z0-9]/g, '').length) {
+      throw new Error('username must not contain special characters');
+    }
+    // check to see if username already exists
+    const status = await this.userExists(username, {exists: false});
+    if (status.exists || username === 'X') {
+      throw new Error('username already taken.');
+    }
+  };
+
   login = async (email, password) => {
     try {
       await firebase.auth().signInWithEmailAndPassword(email, password);
@@ -460,7 +466,7 @@ class Fire {
     const allNames = await firebase.database().ref('usernames');
     const namesObj = await allNames.once('value', (snapshot) => snapshot);
     for (let name in namesObj.val()) {
-      if (name === username) {
+      if (name.toLowerCase() === username.toLowerCase()) {
         status.exists = true;
       }
     }
