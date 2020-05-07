@@ -140,101 +140,175 @@ class Navbar extends React.Component {
   render() {
     return (
       <View>
-        <View style={styles.navbar}>
-          {/* <TouchableOpacity
-            onPress={() => this.props.navigation.replace('ChatList')}
-          > */}
+        <View>
+          <View style={styles.navbar}>
 
 
-          <TouchableOpacity
-            onPress={() => this.props.navigation.replace('CategoryList')}
-          >
-
-            <HomeIcon />
-
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => this.props.navigation.replace('UserPage')}
-          >
-            {/* <AntDesign name="user" size={30} color="black"></AntDesign> */}
-
-            <UserIcon />
+            <View style={{
+              alignItems: 'center',
+              flex: 1,
+            }}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.replace('CategoryList')}
+              >
 
 
-          </TouchableOpacity>
+                <HomeIcon />
 
-          <TouchableOpacity
-            onPress={() => this.props.navigation.replace('PMList')}
-          >
-            {/* <AntDesign name="message1" size={30} color="black" /> */}
-
-            <InboxIcon />
+              </TouchableOpacity>
+            </View>
 
 
-          </TouchableOpacity>
+            <View style={{
+              alignItems: 'center',
+              flex: 1,
+            }}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.replace('UserPage')}
+              >
 
-          <TouchableOpacity
-            onPress={this.liveChat}
-          >
-            {/* <Ionicons name="md-megaphone" size={30} color="black" /> */}
 
-            <LiveIcon />
+                <UserIcon />
 
 
-          </TouchableOpacity>
+              </TouchableOpacity>
+            </View>
 
-          <TouchableOpacity
-            onPress={() => this.props.navigation.replace('PartnerList')}
-          >
-            {/* <MaterialIcons name="account-balance" size={30} color="black" /> */}
 
-            <PartnerIcon />
-          </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => this.props.navigation.replace('Resources')}
-          >
-            {/* <AntDesign name="book" size={30} color="black" /> */}
 
-            <ResourceIcon />
+            <View style={{
+              alignItems: 'center',
+              flex: 1,
+            }}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.replace('PMList')}
+              >
 
-          </TouchableOpacity>
-        </View>
 
-        <View style={styles.notifications}>
-          <MaterialCommunityIcons
-            name="checkbox-blank-circle"
-            size={10}
-            color="transparent"
-          />
-          <MaterialCommunityIcons
-            name="checkbox-blank-circle"
-            size={10}
-            color="transparent"
-          />
-          <MaterialCommunityIcons
-            name="checkbox-blank-circle"
-            size={10}
-            color={this.state.numUnreadMessages ? 'blue' : 'transparent'}
-          />
-          <MaterialCommunityIcons
-            name="checkbox-blank-circle"
-            size={10}
-            color={this.state.liveChatAvailable ? 'green' : 'transparent'}
-          />
-          <MaterialCommunityIcons
-            name="checkbox-blank-circle"
-            size={10}
-            color="transparent"
-          />
-          <MaterialCommunityIcons
-            name="checkbox-blank-circle"
-            size={10}
-            color="transparent"
-          />
-        </View>
-      </View>
+                <InboxIcon />
+
+
+              </TouchableOpacity>
+            </View>
+
+
+
+            <View style={{
+              alignItems: 'center',
+              flex: 1,
+            }}>
+              <TouchableOpacity
+                onPress={this.liveChat}
+              >
+
+
+                <LiveIcon />
+
+
+              </TouchableOpacity>
+            </View>
+
+
+            <View style={{
+              alignItems: 'center',
+              flex: 1,
+            }}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.replace('PartnerList')}
+              >
+
+                <PartnerIcon />
+              </TouchableOpacity>
+            </View>
+
+
+
+            <View style={{
+              alignItems: 'center',
+              flex: 1,
+            }}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.replace('Resources')}
+              >
+
+
+                <ResourceIcon />
+
+              </TouchableOpacity>
+            </View>
+
+
+          </View >
+
+          <View style={styles.notifications}>
+            <View style={{
+              alignItems: 'center',
+              flex: 1,
+            }}>
+              <MaterialCommunityIcons
+                name="checkbox-blank-circle"
+                size={10}
+                color="transparent"
+              />
+            </View>
+            <View style={{
+              alignItems: 'center',
+              flex: 1,
+            }}>
+              <MaterialCommunityIcons
+                name="checkbox-blank-circle"
+                size={10}
+
+                color="transparent"
+              />
+            </View>
+            <View style={{
+              alignItems: 'center',
+              flex: 1,
+            }}>
+              <MaterialCommunityIcons
+                name="checkbox-blank-circle"
+                size={10}
+                color={this.state.numUnreadMessages ? 'blue' : 'transparent'}
+
+              />
+            </View>
+            <View style={{
+              alignItems: 'center',
+              flex: 1,
+            }}>
+              <MaterialCommunityIcons
+                name="checkbox-blank-circle"
+                size={10}
+                color={this.state.liveChatAvailable ? 'green' : 'transparent'}
+
+              />
+            </View>
+            <View style={{
+              alignItems: 'center',
+              flex: 1,
+            }}>
+              <MaterialCommunityIcons
+                name="checkbox-blank-circle"
+                size={10}
+                color="transparent"
+
+              />
+            </View>
+            <View style={{
+              alignItems: 'center',
+              flex: 1,
+            }}>
+              <MaterialCommunityIcons
+                name="checkbox-blank-circle"
+                size={10}
+                color="transparent"
+              />
+            </View>
+          </View>
+        </View >
+      </View >
     );
   }
 }
@@ -262,13 +336,13 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
     borderStyle: 'solid',
     borderWidth: 1,
-    padding: 20,
     paddingTop: 0,
+    paddingBottom: 20,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingLeft: 40,
-    paddingRight: 40
+    marginLeft: 40,
+    marginRight: 40,
   }
 });
 

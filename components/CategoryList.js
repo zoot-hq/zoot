@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   TextInput,
@@ -8,11 +8,11 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
 } from 'react-native';
-import {Searchbar} from 'react-native-paper';
-import {MaterialIndicator} from 'react-native-indicators';
-import {Ionicons, Feather, AntDesign} from '@expo/vector-icons';
+import { Searchbar } from 'react-native-paper';
+import { MaterialIndicator } from 'react-native-indicators';
+import { Ionicons, Feather, AntDesign } from '@expo/vector-icons';
 import * as firebase from 'firebase';
 import Fire from '../Fire';
 import {
@@ -36,6 +36,7 @@ import InfoIcon from '../assets/icons/InfoIcon';
 import ChevronIcon from '../assets/icons/ChevronIcon';
 
 import Navbar from './Navbar';
+import StatusBarSettings from './StatusBarSettings';
 
 export class CategoryList extends Component {
   constructor(props) {
@@ -59,7 +60,7 @@ export class CategoryList extends Component {
       Alert.alert(
         'Help',
         'Hey there! \n\n Après is proud to category with our organizations. \n\nUsers can privately interact with categoryed organizations on Après by requesting a secret access code from the real - world organizations which they belong to.',
-        [{text: 'Got it!'}]
+        [{ text: 'Got it!' }]
       );
     };
 
@@ -77,7 +78,7 @@ export class CategoryList extends Component {
 
     try {
       let categorys = await this.getcategoryNames();
-      this.setState({categoryNames: Object.values(categorys)});
+      this.setState({ categoryNames: Object.values(categorys) });
     } catch (error) {
       console.error(error);
     }
@@ -98,13 +99,13 @@ export class CategoryList extends Component {
   resetNavigation() {
     const resetAction = StackActions.reset({
       index: 0,
-      actions: [NavigationActions.navigate({routeName: 'CategoryList'})]
+      actions: [NavigationActions.navigate({ routeName: 'CategoryList' })]
     });
     this.props.navigation.dispatch(resetAction);
   }
 
   setCurrentCategory = (category) => {
-    this.setState({currentCategory: category});
+    this.setState({ currentCategory: category });
   };
 
   toggleDescription = (category) => {
@@ -151,6 +152,7 @@ export class CategoryList extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <StatusBarSettings />
         <View style={styles.innerView}>
           {/* bookmark button */}
           <View style={styles.help}>
@@ -178,7 +180,7 @@ export class CategoryList extends Component {
           {/* category list */}
           <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding">
             <SafeAreaView>
-              <ScrollView contentContainerStyle={{flexGrow: 1}}>
+              <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 {this.state.categoryNames
                   .slice(0)
                   .reverse()

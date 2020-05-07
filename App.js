@@ -37,7 +37,13 @@ console.log(
   `=========================== JS RELOAD at ${stringDate} ===============================`
 );
 
-<StatusBar hidden />
+// const App = () => {
+//   return (
+//     <StatusBar barStyle="dark-content" hidden={false} backgroundColor="#00BCD4" translucent={true} />
+//   )
+// }
+
+{/* <StatusBar hidden={false} barStyle="dark-content" /> */ }
 
 const navigator = createStackNavigator(
   {
@@ -115,6 +121,10 @@ const navigator = createStackNavigator(
       headerVisible: false
     }
   }
+
+
+
 );
 
 export default navigator;
+

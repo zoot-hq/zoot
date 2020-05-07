@@ -48,14 +48,7 @@ export default class Bubble extends React.Component {
     let replies = await this.getReplies(this.props.currentMessage);
     await this.setState({ replies: replies });
 
-    // reply alert
-    this.reply = () => {
-      Alert.alert(
-        'Reply in the reaction bar coming soon!',
-        'Currently you can reply by clicking a message!',
-        [{ text: 'OK!' }]
-      );
-    };
+
   }
 
   onLongPress() {
@@ -205,7 +198,7 @@ export default class Bubble extends React.Component {
               styles.username
             ]}
           >
-            {username}:
+            STARRRRR
           </Text>
         </TouchableOpacity>
       );
