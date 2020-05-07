@@ -41,30 +41,24 @@ export default class ChatRoom extends React.Component {
     // help icon
     this.helpAlert = () => {
       if (this.state.pm) {
-
         Alert.alert(
           'Help',
-          'Welcome to the message boards. \n\nReact and reply to posts by longpressing icons beneath messages.\nPress the flag icon to flag abusive messages, and press the block icon to block abusive users.\n\nPress the back button in the top left or swipe right to return to the home screen.',
+          'Ready to chat some more privately?\n When you start a private message with another user, it will appear here. \n\nTo get started, navigate to a message board, and longpress on a user\'s name.\n\n A new chat will then open up between you and that user, and it will also appear on this list.',
           [{ text: 'Got it!' }]
         );
-
       }
       if (this.state.live) {
-
         Alert.alert(
           'Help',
-          'Welcome to live chat. \n\nReact to posts by longpressing icons beneath messages.\n\nPress the flag icon to flag abusive messages, and press the block icon to block abusive users.\n\nSwipe right to return to the home screen.',
+          'Welcome to live chat with this week\'s star speaker! \n\nLive chat begins every Wednesday at 9:00PM EST and ends at 10:30PM EST. Once the live chat is over, you won\'t be able to access it again. \n\nReact and reply to posts by longpressing icons beneath messages. Press the flag icon to flag abusive messages, and press the block icon to block abusive users.\n\nPress the back button in the top left or swipe right to return to the home screen.',
           [{ text: 'Got it!' }]
         );
-
       } else {
-
         Alert.alert(
           'Help',
           'Welcome to the message boards. \n\nReact and reply to posts by longpressing icons beneath messages.\nPress the flag icon to flag abusive messages, and press the block icon to block abusive users.\n\nPress the back button in the top left or swipe right to return to the home screen.',
           [{ text: 'Got it!' }]
         );
-
       }
     };
 
