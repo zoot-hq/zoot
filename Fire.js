@@ -425,7 +425,8 @@ class Fire {
         monthsPostPartum,
         email,
         selectedRole,
-        unlockedPartners: {}
+        // the following property needs to be initialized with a value or it won't show up in the db, resulting in errors when the user navigates to the PartnerList page.
+        unlockedPartners: {testPartner: true}
       });
 
       // add username to usernames list:
