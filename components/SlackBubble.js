@@ -48,6 +48,10 @@ export default class Bubble extends React.Component {
     let replies = await this.getReplies(this.props.currentMessage);
     await this.setState({replies: replies});
 
+    if (this.props.currentMessage.isReply) {
+      this.getReplyReactions();
+    }
+
     // reply alert
     this.reply = () => {
       Alert.alert(
@@ -340,7 +344,7 @@ export default class Bubble extends React.Component {
     if (this.isSameUser()) return;
     Alert.alert(
       'Flag Message',
-      `You are about to flag this message as objectionable. Flagging the message will simple hide the message
+      `You are about to flag this message as objectionable. Flagging the message will simply hide the message
       from public view. To have the message removed, please choose the Contact Administrators option.`,
       [
         {text: 'Cancel', onPress: () => false},
@@ -359,7 +363,11 @@ export default class Bubble extends React.Component {
             style={{marginRight: 20}}
             onLongPress={() => this.react('likes')}
           >
-            <Foundation name="like" color="lightgrey" size={15}>
+            <Foundation
+              name="like"
+              color={this.state.likes.count > 0 ? '#595959' : 'lightgray'}
+              size={15}
+            >
               <Text style={styles.count}>
                 {' '}
                 {this.state.likes.count || null}
@@ -370,7 +378,11 @@ export default class Bubble extends React.Component {
             style={{marginRight: 20}}
             onLongPress={() => this.react('loves')}
           >
-            <Foundation name="heart" color="lightgrey" size={15}>
+            <Foundation
+              name="heart"
+              color={this.state.loves.count > 0 ? '#595959' : 'lightgray'}
+              size={15}
+            >
               <Text style={styles.count}>
                 {' '}
                 {this.state.loves.count || null}
@@ -382,7 +394,11 @@ export default class Bubble extends React.Component {
             style={{marginRight: 20}}
             onLongPress={() => this.react('lightbulbs')}
           >
-            <Foundation name="lightbulb" color="lightgrey" size={15}>
+            <Foundation
+              name="lightbulb"
+              color={this.state.lightbulbs.count > 0 ? '#595959' : 'lightgray'}
+              size={15}
+            >
               <Text style={styles.count}>
                 {' '}
                 {this.state.lightbulbs.count || null}
@@ -393,7 +409,11 @@ export default class Bubble extends React.Component {
             style={{marginRight: 20}}
             onLongPress={() => this.flag()}
           >
-            <Foundation name="flag" color="lightgrey" size={15}>
+            <Foundation
+              name="flag"
+              color={this.state.flags.count > 0 ? '#595959' : 'lightgray'}
+              size={15}
+            >
               <Text style={styles.count}>
                 {' '}
                 {this.state.flags.count || null}
@@ -518,6 +538,52 @@ export default class Bubble extends React.Component {
       return repliesArr;
     } else {
       return [];
+    }
+  }
+  async getReplyReactions() {
+    const likes = await firebase
+      .database()
+      .ref('chatrooms')
+      .child(this.props.currentMessage.room)
+      .child(this.props.currentMessage._id)
+      .child('likes')
+      .once('value')
+      .then((snapshot) => snapshot.val());
+    if (likes.count) {
+      this.setState({likes: likes});
+    }
+    const loves = await firebase
+      .database()
+      .ref('chatrooms')
+      .child(this.props.currentMessage.room)
+      .child(this.props.currentMessage._id)
+      .child('loves')
+      .once('value')
+      .then((snapshot) => snapshot.val());
+    if (loves.count) {
+      this.setState({loves: loves});
+    }
+    const lightbulbs = await firebase
+      .database()
+      .ref('chatrooms')
+      .child(this.props.currentMessage.room)
+      .child(this.props.currentMessage._id)
+      .child('lightbulbs')
+      .once('value')
+      .then((snapshot) => snapshot.val());
+    if (lightbulbs.count) {
+      this.setState({lightbulbs: lightbulbs});
+    }
+    const flags = await firebase
+      .database()
+      .ref('chatrooms')
+      .child(this.props.currentMessage.room)
+      .child(this.props.currentMessage._id)
+      .child('flags')
+      .once('value')
+      .then((snapshot) => snapshot.val());
+    if (flags.count) {
+      this.setState({flags: flags});
     }
   }
   submitReply = async () => {
