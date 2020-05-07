@@ -319,7 +319,14 @@ export default class ChatList extends React.Component {
                 this.setState({unsuccessfulSearch: true});
               }
               if (query.length) {
-                this.setState({queriedChatrooms, query});
+                if (query.length >= 20) {
+                  this.setState({
+                    error:
+                      'chatroom names must not be longer than 20 characters'
+                  });
+                } else {
+                  this.setState({queriedChatrooms, query, error: ''});
+                }
               } else {
                 // if the user deletes their query, restore the list to its original form
                 this.setState({
@@ -363,9 +370,13 @@ export default class ChatList extends React.Component {
                 ) : // else allow user to create a new chatroom
                 this.state.unsuccessfulSearch ? (
                   <View>
-                    <Text style={styles.subtitle}>
-                      No results. Would you like to create this chatroom?
-                    </Text>
+                    {this.state.error ? (
+                      <Text style={styles.subtitle}>{this.state.error}</Text>
+                    ) : (
+                      <Text style={styles.subtitle}>
+                        No results. Would you like to create this chatroom?
+                      </Text>
+                    )}
                     <TouchableOpacity
                       key={this.state.query}
                       style={styles.buttonContainer}
