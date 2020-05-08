@@ -8,9 +8,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
-  KeyboardAvoidingView,
-  Keyboard,
-  TouchableWithoutFeedback
+  KeyboardAvoidingView
 } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { MaterialIndicator } from 'react-native-indicators';
@@ -37,17 +35,7 @@ import HelpIcon from '../assets/icons/HelpIcon';
 
 import Navbar from './Navbar';
 
-
-
-
-const DismissKeyboard = ({ children }) => (
-  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-    {children}
-  </TouchableWithoutFeedback>
-);
-
-
-
+// firebase.auth().currentUser.unlockedPartners
 export class PartnerList extends Component {
   constructor() {
     super();
@@ -139,7 +127,7 @@ export class PartnerList extends Component {
   async getUnlockedPartnerNames() {
     let ref = firebase
       .database()
-      .ref(`users/${this.state.currentUserName}/unlockedPartners`);
+      .ref(`users/${Fire.shared.uid()}/unlockedPartners`);
     try {
       let query = await ref.once('value').then(function (snapshot) {
         return snapshot.val();
@@ -173,8 +161,6 @@ export class PartnerList extends Component {
   render() {
     renderLock = (partner) => {
       // if (this.state.unlockedPartners[partnerName]) {
-      // if (this.state.unlockedPartners) {
-
       console.log('\n=========renderLock======');
       console.log('\nthis.state.partner.name)' + partner.name);
       console.log(
@@ -182,18 +168,24 @@ export class PartnerList extends Component {
       );
       // console.log('\ntype of bject.values(this.state.unlockedPartners)' + typeof (Object.values(this.state.unlockedPartners)))
       // console.log('\ntype of this.state.unlockedPartners)' + typeof (this.state.unlockedPartners))
-      console.log(
-        '\nObject.values(this.state.unlockedPartners) ' +
-        Object.values(this.state.unlockedPartners)
-      );
+      // console.log(
+      //   '\nObject.values(this.state.unlockedPartners) ' +
+      //     Object.values(this.state.unlockedPartners)
+      // );
 
       // console.log('\npartner)' + (partner.name))
       // console.log('\nincludes ' + this.state.unlockedPartners.includes(partner.name))
-      console.log(this.state.unlockedPartners.hasOwnProperty('92Y'));
+      console.log(
+        this.state.unlockedPartners &&
+        this.state.unlockedPartners.hasOwnProperty('92Y')
+      );
       let partnerKey = this.state.currentPartner.name;
 
       // if ('partner.name' in this.state.unlockedPartners.hasOwnProperty) {
-      if (Object.values(this.state.unlockedPartners).includes(partner.name)) {
+      if (
+        this.state.unlockedPartners &&
+        Object.values(this.state.unlockedPartners).includes(partner.name)
+      ) {
         // if (this.state.unlockedPartners.includes(partner.name)) {
         return <Feather name="unlock" size={25} color="black" />;
       } else {
@@ -223,7 +215,10 @@ export class PartnerList extends Component {
       console.log('==============checkLockState============\n');
       console.log(this.state.unlockedPartners);
 
-      if (Object.values(this.state.unlockedPartners).includes(partner.name)) {
+      if (
+        this.state.unlockedPartners &&
+        Object.values(this.state.unlockedPartners).includes(partner.name)
+      ) {
         this.resetNavigation();
         this.props.navigation.navigate('ChatList', {
           partner: partner.name
@@ -257,7 +252,7 @@ export class PartnerList extends Component {
       });
       firebase
         .database()
-        .ref(`users/${this.state.currentUserName}/unlockedPartners`)
+        .ref(`users/${Fire.shared.uid()}/unlockedPartners`)
         .push(this.state.currentPartner.name);
       this.resetNavigation();
       this.props.navigation.navigate('ChatList', {
@@ -266,87 +261,86 @@ export class PartnerList extends Component {
     };
 
     return (
-      <DismissKeyboard>
-        <View style={styles.container}>
-          <View style={styles.innerView}>
-            {/* bookmark button */}
-            <View style={styles.help}>
-              <TouchableOpacity onPress={() => this.bookmark()}>
-                <BookmarkIcon />
-              </TouchableOpacity>
+      <View style={styles.container}>
+        <View style={styles.innerView}>
+          {/* bookmark button */}
+          <View style={styles.help}>
+            <TouchableOpacity onPress={() => this.bookmark()}>
+              <BookmarkIcon />
+            </TouchableOpacity>
 
-              {/* help button */}
+            {/* help button */}
 
-              <TouchableOpacity onPress={() => this.helpAlert()}>
-                {/* <AntDesign name="questioncircleo" size={20} color="black" /> */}
-                <HelpIcon />
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity onPress={() => this.helpAlert()}>
+              {/* <AntDesign name="questioncircleo" size={20} color="black" /> */}
+              <HelpIcon />
+            </TouchableOpacity>
+          </View>
 
-            {/* titles */}
-            {/* <Text style={styles.title}>après</Text> */}
-            <Text style={styles.subtitle2}>
-              {/* Hey there! Après is proud to partner with our organizations. Users
+          {/* titles */}
+          {/* <Text style={styles.title}>après</Text> */}
+          <Text style={styles.subtitle2}>
+            {/* Hey there! Après is proud to partner with our organizations. Users
             can privately interact with partnered organizations on Après by
             requesting a secret access code from the real- world organizations
             which they belong to. */}
             Partnered Organizations
           </Text>
-          </View>
-          <View style={styles.searchView}>
-            <View style={styles.searchbar}>
-              <Searchbar
-                theme={{ colors: { primary: 'black' } }}
-                placeholder="Search for a partner..."
-                onChangeText={(query) => {
-                  const queriedPartners = this.state.partnerNames.filter(
-                    (partner) => {
-                      return partner.name
-                        .toLowerCase()
-                        .includes(query.toLowerCase());
-                    }
-                  );
-                  this.setState({ queriedPartners, query });
-                  if (!query.length) {
-                    this.setState({ queriedPartners: this.state.partnerNames });
-                  }
-                }}
-              />
-            </View>
-            {/* partner board list */}
-            <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding">
-              <SafeAreaView>
-                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                  {/* if a query made, queried chatrooms displayed*/}
-                  {this.state.queriedPartners.length ? (
-                    this.state.queriedPartners.map((partner, idx) => (
-                      <TouchableOpacity
-                        key={partner.name}
-                        style={styles.buttonContainer}
-                        onPress={() => {
-                          checkLockState(partner);
-                          setCurrentPartner(partner);
+        </View>
+        <View style={styles.searchView}>
+          <Searchbar
+            theme={{ colors: { primary: 'black' } }}
+            placeholder="Search for a partnered organization"
+            onChangeText={(query) => {
+              const queriedPartners = this.state.partnerNames.filter(
+                (partner) => {
+                  return partner.name
+                    .toLowerCase()
+                    .includes(query.toLowerCase());
+                }
+              );
+              if (!queriedPartners.length) {
+                this.setState({ unsuccessfulSearch: true });
+              }
+              this.setState({ queriedPartners, query });
+              if (!query.length) {
+                this.setState({
+                  queriedPartners: this.state.partnerNames,
+                  unsuccessfulSearch: false
+                });
+              }
+            }}
+          />
+          {/* partner board list */}
+          <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding">
+            <SafeAreaView>
+              <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                {/* if a query made, queried chatrooms displayed*/}
 
-                        }}
-                      >
-                        {/* {renderModal(partner)} */}
-
-                        <View style={styles.singleChatView}>
-                          <Text style={styles.buttonText}>
-                            {renderLock(partner)}{' '}
-                          </Text>
-
-                          <Text style={styles.buttonText}>
-                            {`${partner.name}`}
-                          </Text>
-                          <Text
-                            style={styles.subtitle}
-                          >{`\ntesting passcode: ${partner.passcode}`}</Text>
-
-                        </View>
-                      </TouchableOpacity>
-                    ))
-                  ) : // else if a search has not run but the list of partners isn't empty, display all partners
+                {this.state.unsuccessfulSearch ? (
+                  <Text style={styles.subtitle}>
+                    We are not yet partnered with this organization.
+                  </Text>
+                ) : this.state.queriedPartners.length ? (
+                  this.state.queriedPartners.map((partner, idx) => (
+                    <TouchableOpacity
+                      key={idx}
+                      style={styles.buttonContainer}
+                    // onPress={() =>
+                    //   this.props.navigation.navigate('ChatRoom', {
+                    //     chatroom: chatroom.name
+                    //   })
+                    // }
+                    >
+                      <View style={styles.singleChatView}>
+                        <Text style={styles.buttonText}># {partner.name}</Text>
+                        <Ionicons name="md-people" size={25} color="grey">
+                          {' '}
+                        </Ionicons>
+                      </View>
+                    </TouchableOpacity>
+                  ))
+                ) : // else if a search has not run but the list of partners isn't empty, display all partners
                     this.state.partnerNames.length ? (
                       this.state.partnerNames.map((partner) => (
                         <View key={partner.name}>
@@ -402,6 +396,33 @@ export class PartnerList extends Component {
                                   // key={partner.name}
                                   onPress={() => {
                                     checkPasscode(this.state.currentPartner);
+
+                                    console.log(
+                                      '\n=======onPress checkPasscode======\n'
+                                    );
+
+                                    // console.log('\npartnerName.name')
+                                    // console.log(partnerName.name)
+
+                                    // console.log('\npartnerName.passcode')
+                                    // console.log(partnerName.passcode)
+
+                                    // console.log('\npartnerName')
+                                    // console.log(partnerName)
+
+                                    console.log('\n(this.state.currentPartner)');
+                                    console.log(this.state.currentPartner);
+
+                                    console.log(
+                                      '\n(this.state.currentPartner.passcode)'
+                                    );
+                                    console.log(this.state.currentPartner.passcode);
+
+                                    // console.log('\npartner.passcode')
+                                    // console.log(partner.passcode)
+
+                                    // console.log('\npartner')
+                                    // console.log(partner)
                                   }}
                                 >
                                   <Text style={styles.modalButtonSave}>Enter</Text>
@@ -416,7 +437,29 @@ export class PartnerList extends Component {
                             onPress={() => {
                               checkLockState(partner);
                               setCurrentPartner(partner);
+                              // renderModal(partner)
 
+                              console.log(
+                                '\n=======onPress checkLockState======\n'
+                              );
+
+                              console.log('\npartner.name');
+                              console.log(partner.name);
+
+                              console.log('\npartner.passcode');
+                              console.log(partner.passcode);
+
+                              console.log('\npartner');
+                              console.log(partner);
+
+                              // console.log('\npartnerName.name')
+                              // console.log(partnerName.name)
+
+                              // console.log('\npartnerName.passcode')
+                              // console.log(partnerName.passcode)
+
+                              // console.log('\npartnerName')
+                              // console.log(partnerName)
                             }}
                           >
                             {/* {renderModal(partner)} */}
@@ -441,32 +484,32 @@ export class PartnerList extends Component {
                           </TouchableOpacity>
                         </View>
                       ))
-                    ) : this.state.partners ? (
-                      <View>
-                        <Text style={styles.searchResultText}>
-                          We are not yet partnered with this organization.
-                    </Text>
-                      </View>
-                    )
-                        : (
-                          // return loading while grabbing data from database
-                          <MaterialIndicator color="black" />
-                        )}
-                </ScrollView>
-              </SafeAreaView>
-              <TouchableOpacity onPress={() => contactAdmin()}>
-                <Text style={styles.subtitle}>
-                  Interested in partnering with Après? Click here to send us an
-                  email!
+                    ) : null}
+              </ScrollView>
+            </SafeAreaView>
+            <TouchableOpacity onPress={() => contactAdmin()}>
+              <Text style={styles.subtitle}>
+                Interested in partnering with Après? Click here to send us an
+                email!
               </Text>
-              </TouchableOpacity>
+            </TouchableOpacity>
 
-            </KeyboardAvoidingView>
-          </View>
+            {/* <TouchableOpacity onPress={() => this.unlock()}> */}
+            {/* <TouchableOpacity
+              onPress={() => this.setState({passcodeModal: true})}
+            >
+              <Text>
+                CLICK HERE TO TEST LOCK/UNLOCK BELOW{'\n'}
+                test password for unlocking = 1234{'\n'}
+              </Text>
+            </TouchableOpacity> */}
 
-          <Navbar />
+            {/* {renderLock()} */}
+          </KeyboardAvoidingView>
         </View>
-      </DismissKeyboard>
+
+        <Navbar />
+      </View>
     );
   }
 }
@@ -535,8 +578,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 5,
     marginTop: 5,
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: 5
   },
   buttonText: {
     color: 'black',
@@ -544,17 +586,9 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontFamily: 'Futura-Light'
   },
-  searchResultText: {
-    color: 'black',
-    fontWeight: '600',
-    fontSize: 22,
-    fontFamily: 'Futura-Light',
-    textAlign: 'center',
-    marginTop: 20,
-  },
   searchbar: {
-    marginLeft: 20,
-    marginRight: 20,
+    color: 'black',
+    marginBottom: 20
   },
   numOnline: {
     fontSize: 20,

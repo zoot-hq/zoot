@@ -1,9 +1,9 @@
 {
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 70160,
-  "expoServerNgrokUrl": "https://26-3uu.lisjak.zoot.exp.direct",
-  "packagerNgrokUrl": "https://packager.26-3uu.lisjak.zoot.exp.direct",
-  "ngrokPid": 70178,
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
+  "expoServerNgrokUrl": "https://es-sz8.anonymous.zoot.exp.direct",
+  "packagerNgrokUrl": "https://packager.es-sz8.anonymous.zoot.exp.direct",
+  "ngrokPid": 66946,
   "devToolsPort": 19002
 }
