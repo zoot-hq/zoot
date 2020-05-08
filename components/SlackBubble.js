@@ -217,29 +217,29 @@ export default class Bubble extends React.Component {
     return null;
   };
 
-  // renderTime() {
-  //   if (this.props.currentMessage.createdAt) {
-  //     const { containerStyle, wrapperStyle, ...timeProps } = this.props;
-  //     if (this.props.renderTime) {
-  //       return this.props.renderTime(timeProps);
-  //     }
-  //     return (
-  //       <Time
-  //         {...timeProps}
-  //         containerStyle={{ left: [styles.timeContainer] }}
-  //         textStyle={{
-  //           left: [
-  //             styles.standardFont,
-  //             styles.headerItem,
-  //             styles.time,
-  //             timeProps.textStyle
-  //           ]
-  //         }}
-  //       />
-  //     );
-  //   }
-  //   return null;
-  // }
+  renderTime() {
+    if (this.props.currentMessage.createdAt) {
+      const {containerStyle, wrapperStyle, ...timeProps} = this.props;
+      if (this.props.renderTime) {
+        return this.props.renderTime(timeProps);
+      }
+      return (
+        <Time
+          {...timeProps}
+          containerStyle={{left: [styles.timeContainer]}}
+          textStyle={{
+            left: [
+              styles.standardFont,
+              styles.headerItem,
+              styles.time,
+              timeProps.textStyle
+            ]
+          }}
+        />
+      );
+    }
+    return null;
+  }
 
   renderCustomView() {
     if (this.props.renderCustomView) {
@@ -707,6 +707,8 @@ export default class Bubble extends React.Component {
                 ]}
               >
                 {this.renderUsername()}
+                {this.props.listViewProps.navigation.state.params.PM &&
+                  this.renderTime()}
                 {/* {this.renderMessageImage()} */}
                 {this.renderMessageText()}
               </View>
@@ -714,7 +716,7 @@ export default class Bubble extends React.Component {
               {/* render reactions on messages with the reaction feature */}
               {this.renderReactions()}
               {this.renderReplies()}
-              {/* this.state.newReply becomes true when a user clicks the message text/reply button */}
+              {/* this.state.newReply becomes true when a user clicks the reply button */}
               {this.state.newReply && (
                 <View>
                   {!this.props.currentMessage.level ||
@@ -745,7 +747,8 @@ export default class Bubble extends React.Component {
                   ) : (
                     <Text style={styles.slackMessageText}>
                       Sorry, this message has reached the maximum number of
-                      replies.
+                      replies. Consider sending a PM or adding a new top-level
+                      message.
                     </Text>
                   )}
                 </View>
