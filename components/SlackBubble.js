@@ -17,6 +17,7 @@ import {Feather, Foundation, MaterialIcons} from '@expo/vector-icons';
 import * as MailComposer from 'expo-mail-composer';
 import AllReplies from './AllReplies';
 import * as firebase from 'firebase';
+import moment from 'moment';
 
 import Fire from '../Fire';
 
@@ -219,14 +220,14 @@ export default class Bubble extends React.Component {
 
   // renderTime() {
   //   if (this.props.currentMessage.createdAt) {
-  //     const { containerStyle, wrapperStyle, ...timeProps } = this.props;
+  //     const {containerStyle, wrapperStyle, ...timeProps} = this.props;
   //     if (this.props.renderTime) {
   //       return this.props.renderTime(timeProps);
   //     }
   //     return (
   //       <Time
   //         {...timeProps}
-  //         containerStyle={{ left: [styles.timeContainer] }}
+  //         containerStyle={{left: [styles.timeContainer]}}
   //         textStyle={{
   //           left: [
   //             styles.standardFont,
@@ -707,6 +708,20 @@ export default class Bubble extends React.Component {
                 ]}
               >
                 {this.renderUsername()}
+                {/* render time next to username in PMs and live chat: */}
+                {this.props.currentMessage.user._id &&
+                  (this.props.listViewProps.navigation.state.params.live ||
+                    this.props.listViewProps.navigation.state.params.PM) && (
+                    <View style={styles.timestamp}>
+                      <Text style={styles.username}>
+                        (
+                        {moment(this.props.currentMessage.timestamp).format(
+                          'hh:mm a'
+                        )}
+                        )
+                      </Text>
+                    </View>
+                  )}
                 {/* {this.renderMessageImage()} */}
                 {this.renderMessageText()}
               </View>
@@ -714,7 +729,7 @@ export default class Bubble extends React.Component {
               {/* render reactions on messages with the reaction feature */}
               {this.renderReactions()}
               {this.renderReplies()}
-              {/* this.state.newReply becomes true when a user clicks the message text/reply button */}
+              {/* this.state.newReply becomes true when a user clicks the reply button */}
               {this.state.newReply && (
                 <View>
                   {!this.props.currentMessage.level ||
@@ -745,7 +760,8 @@ export default class Bubble extends React.Component {
                   ) : (
                     <Text style={styles.slackMessageText}>
                       Sorry, this message has reached the maximum number of
-                      replies.
+                      replies. Consider sending a PM or adding a new top-level
+                      message.
                     </Text>
                   )}
                 </View>
@@ -838,7 +854,12 @@ const styles = StyleSheet.create({
   time: {
     textAlign: 'left',
     fontSize: 12,
-    fontFamily: 'CormorantGaramond-Light'
+    fontFamily: 'CormorantGaramond-Light',
+    color: '#595959'
+  },
+  timestamp: {
+    flexDirection: 'row',
+    marginRight: 10
   },
   timeContainer: {
     marginLeft: 0,

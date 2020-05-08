@@ -253,6 +253,8 @@ export class PartnerList extends Component {
       });
     };
 
+    console.log('this.props.navigation:', this.props.navigation);
+
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
@@ -501,11 +503,7 @@ export class PartnerList extends Component {
           </KeyboardAvoidingView>
         </View>
 
-        <Navbar
-          liveChat={this.props.navigation.state.params.liveChat}
-          communityPopup={this.props.navigation.state.params.communityPopup}
-          changeTimeZone={this.props.navigation.state.params.changeTimeZone}
-        />
+        <Navbar />
       </View>
     );
   }

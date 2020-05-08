@@ -156,7 +156,7 @@ class Fire {
       user,
       room,
       timestamp: this.timestamp,
-      createdAt: Date.now(),
+      createdAt: new Date(this.timestamp),
       isReply: true,
       likes: {
         count: 0,
@@ -326,10 +326,8 @@ class Fire {
     };
 
     // enter message into room only if live
-    if (live || pm)
-      pm
-        ? firebase.database().ref('PMrooms').child(room).push(message)
-        : firebase.database().ref('livechatrooms').child(room).push(message);
+    if (live)
+      firebase.database().ref('livechatrooms').child(room).push(message);
 
     // update number of participants if not PM
     const ref = live ? 'livechatnames' : 'chatroomnames';
@@ -363,10 +361,8 @@ class Fire {
     };
 
     // enter message into room only if live
-    if (live || pm)
-      pm
-        ? firebase.database().ref('PMrooms').child(room).push(message)
-        : firebase.database().ref('livechatrooms').child(room).push(message);
+    if (live)
+      firebase.database().ref('livechatrooms').child(room).push(message);
 
     // update number of participants if not PM
     const ref = live ? 'livechatnames' : 'chatroomnames';

@@ -25,7 +25,11 @@ export default class Message extends React.Component {
   }
 
   renderDay() {
-    if (this.props.currentMessage.createdAt) {
+    if (
+      this.props.currentMessage.createdAt &&
+      !this.props.currentMessage.isReply &&
+      this.props.listViewProps.navigation.state.params.PM
+    ) {
       const dayProps = this.getInnerComponentProps();
       if (this.props.renderDay) {
         return this.props.renderDay(dayProps);
@@ -56,7 +60,7 @@ export default class Message extends React.Component {
 
     return (
       <View>
-        {/* {this.renderDay()} */}
+        {this.renderDay()}
         <View
           style={[
             styles.container,
