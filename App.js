@@ -1,7 +1,7 @@
 // Stack Navigation
 
-import React, { Component } from 'react';
-import { StatusBar } from 'react-native';
+import React, {Component} from 'react';
+import {StatusBar} from 'react-native';
 
 import ChatList from './components/ChatList';
 import ChatRoom from './components/ChatRoom';
@@ -13,13 +13,11 @@ import PMList from './components/PMList';
 import UserPage from './components/UserPage';
 import Resources from './components/Resources';
 import Navbar from './components/Navbar';
-import { createStackNavigator } from 'react-navigation';
+import {createStackNavigator} from 'react-navigation';
 import PartnerList from './components/PartnerList';
 import Splash from './components/Splash';
 import SplashContent from './components/SplashContent';
 import CategoryList from './components/CategoryList';
-
-
 
 // disabled yellow comments/alerts
 console.disableYellowBox = true;
@@ -37,6 +35,7 @@ console.log(
   `=========================== JS RELOAD at ${stringDate} ===============================`
 );
 
+<<<<<<< HEAD
 // const App = () => {
 //   return (
 //     <StatusBar barStyle="dark-content" hidden={false} backgroundColor="#00BCD4" translucent={true} />
@@ -44,6 +43,9 @@ console.log(
 // }
 
 {/* <StatusBar hidden={false} barStyle="dark-content" /> */ }
+=======
+<StatusBar hidden />;
+>>>>>>> b196eed58d22ccc93cd2295f3d2130c142aa144c
 
 const navigator = createStackNavigator(
   {
@@ -51,14 +53,14 @@ const navigator = createStackNavigator(
       name: 'Home',
       screen: Home,
       navigationOptions: {
-        gesturesEnabled: false,
+        gesturesEnabled: false
       }
     },
     Splash: {
       name: 'Splash',
       screen: Splash,
       navigationOptions: {
-        gesturesEnabled: false,
+        gesturesEnabled: false
       }
     },
     SplashContent,
@@ -68,35 +70,35 @@ const navigator = createStackNavigator(
       name: 'Signup',
       screen: Signup,
       navigationOptions: {
-        gesturesEnabled: true,
+        gesturesEnabled: true
       }
     },
     Login: {
       name: 'Login',
       screen: Login,
       navigationOptions: {
-        gesturesEnabled: true,
+        gesturesEnabled: true
       }
     },
     PMList: {
       name: 'PMList',
       screen: PMList,
       navigationOptions: {
-        gesturesEnabled: false,
+        gesturesEnabled: false
       }
     },
     UserPage: {
       name: 'UserPage',
       screen: UserPage,
       navigationOptions: {
-        gesturesEnabled: false,
+        gesturesEnabled: false
       }
     },
     Resources: {
       name: 'Resources',
       screen: Resources,
       navigationOptions: {
-        gesturesEnabled: false,
+        gesturesEnabled: false
       }
     },
     Navbar,
@@ -104,16 +106,16 @@ const navigator = createStackNavigator(
       name: 'PartnerList',
       screen: PartnerList,
       navigationOptions: {
-        gesturesEnabled: false,
+        gesturesEnabled: false
       }
     },
     CategoryList: {
       name: 'CategoryList',
       screen: CategoryList,
       navigationOptions: {
-        gesturesEnabled: false,
+        gesturesEnabled: false
       }
-    },
+    }
   },
   {
     headerMode: 'none',
