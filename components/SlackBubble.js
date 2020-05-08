@@ -17,6 +17,7 @@ import {Feather, Foundation, MaterialIcons} from '@expo/vector-icons';
 import * as MailComposer from 'expo-mail-composer';
 import AllReplies from './AllReplies';
 import * as firebase from 'firebase';
+import moment from 'moment';
 
 import Fire from '../Fire';
 
@@ -650,6 +651,10 @@ export default class Bubble extends React.Component {
     //   </View>
     // );
     const win = Dimensions.get('window');
+    console.log(
+      'moment applied to timestamp:',
+      moment(this.props.currentMessage.timestamp).format('hh:mm:ss a')
+    );
 
     return (
       <View style={[styles.container, this.props.containerStyle]}>
@@ -707,8 +712,17 @@ export default class Bubble extends React.Component {
                 ]}
               >
                 {this.renderUsername()}
-                {this.props.listViewProps.navigation.state.params.PM &&
-                  this.renderTime()}
+                {this.props.listViewProps.navigation.state.params.PM && (
+                  <View style={styles.timestamp}>
+                    <Text style={styles.time}>
+                      (
+                      {moment(this.props.currentMessage.timestamp).format(
+                        'hh:mm a'
+                      )}
+                      )
+                    </Text>
+                  </View>
+                )}
                 {/* {this.renderMessageImage()} */}
                 {this.renderMessageText()}
               </View>
@@ -842,6 +856,9 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontSize: 12,
     fontFamily: 'CormorantGaramond-Light'
+  },
+  timestamp: {
+    flexDirection: 'row'
   },
   timeContainer: {
     marginLeft: 0,

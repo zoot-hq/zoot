@@ -156,7 +156,7 @@ class Fire {
       user,
       room,
       timestamp: this.timestamp,
-      createdAt: Date.now(),
+      createdAt: new Date(this.timestamp),
       isReply: true,
       likes: {
         count: 0,
