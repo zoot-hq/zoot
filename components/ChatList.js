@@ -303,59 +303,74 @@ export default class ChatList extends React.Component {
           </TouchableOpacity>
         </View> */}
 
+          {/* <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('Resources')}>
+            <Text style={styles.subtitle}>Resources</Text>
+          </TouchableOpacity>
+         */}
 
+          {/*
+          <View
+            style={{
+              display: 'flex',
+              alignItems: 'space-between',
+              marginTop: 10,
+              flexDirection: 'row',
+              alignSelf: 'center'
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('PMList')}
+            >
+              <Ionicons name="ios-chatbubbles" size={30} color="grey"></Ionicons>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.liveChat}>
+              <MaterialIcons
+                name="speaker-phone"
+                size={30}
+                color={this.state.liveChatAvailable ? 'green' : 'grey'}
+              ></MaterialIcons>
+            </TouchableOpacity>
+          </View>
+        </View>
 
+ */}
 
           {/* search bar - queries all chatrooms to the users query */}
           <View style={styles.searchView}>
-            <View style={styles.searchbar}>
-              <Searchbar
-                theme={{ colors: { primary: 'black' } }}
-                placeholder="Search our message boards"
-                onChangeText={(query) => {
-                  const queriedChatrooms = this.state.queriedChatrooms.filter(
-                    (chatroom) => {
-                      return chatroom.name
-                        .toLowerCase()
-                        .includes(query.toLowerCase());
-                    }
-                  );
-                  if (query.length) {
-                    this.setState({ queriedChatrooms, query });
-                  } else {
-                    // if the user deletes their query, restore the list to its original form
-                    this.setState({
-                      queriedChatrooms: this.state.copyOfQueriedChatrooms
-                    });
+            <Searchbar
+              theme={{ colors: { primary: 'black' } }}
+              placeholder="Search our message boards"
+              onChangeText={(query) => {
+                const queriedChatrooms = this.state.queriedChatrooms.filter(
+                  (chatroom) => {
+                    return chatroom.name
+                      .toLowerCase()
+                      .includes(query.toLowerCase());
                   }
-                }}
-              />
-            </View>
-
-
-
-
-
-
-            {/* <DismissKeyboard> */}
-
-
-
-
-
-
-
-
+                );
+                if (!queriedChatrooms.length) {
+                  this.setState({ unsuccessfulSearch: true });
+                }
+                if (query.length) {
+                  if (query.length >= 20) {
+                    this.setState({
+                      error:
+                        'chatroom names must not be longer than 20 characters'
+                    });
+                  } else {
+                    this.setState({ queriedChatrooms, query, error: '' });
+                  }
+                } else {
+                  // if the user deletes their query, restore the list to its original form
+                  this.setState({
+                    queriedChatrooms: this.state.copyOfQueriedChatrooms,
+                    unsuccessfulSearch: false
+                  });
+                }
+              }}
+            />
             {/* chatroom list */}
-
-
-
-
-
-
-
-
-
             <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding">
               <SafeAreaView>
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -374,27 +389,28 @@ export default class ChatList extends React.Component {
                         <View style={styles.singleChatView}>
                           <Text style={styles.buttonText}># {chatroom.name}</Text>
                           <View style={styles.singleChatIcons}>
-                            <View style={{ paddingRight: 15 }}>
-                              <BookmarkListIcon
-                                chatroom={chatroom}
-                                bookmarkRemoved={this.bookmarkRemoved}
-                              />
-                            </View>
-
+                            <BookmarkListIcon
+                              chatroom={chatroom}
+                              bookmarkRemoved={this.bookmarkRemoved}
+                            />
                             <Ionicons name="md-people" size={25} color="grey">
                               {' '}
-                              <Text style={styles.numOnline}>{chatroom.numOnline}</Text>
+                              {chatroom.numOnline}
                             </Ionicons>
                           </View>
                         </View>
                       </TouchableOpacity>
                     ))
                   ) : // else allow user to create a new chatroom
-                    this.state.chatrooms.length ? (
+                    this.state.unsuccessfulSearch ? (
                       <View>
-                        <Text style={styles.searchResultText}>
-                          No results. Would you like to create this chatroom?
-                    </Text>
+                        {this.state.error ? (
+                          <Text style={styles.subtitle}>{this.state.error}</Text>
+                        ) : (
+                            <Text style={styles.subtitle}>
+                              No results. Would you like to create this chatroom?
+                            </Text>
+                          )}
                         <TouchableOpacity
                           key={this.state.query}
                           style={styles.buttonContainer}
@@ -412,12 +428,6 @@ export default class ChatList extends React.Component {
                           <Text style={styles.buttonText}>
                             + {this.state.query}{' '}
                           </Text>
-                        </TouchableOpacity>
-                      </View>
-                    ) : this.state.bookmarks ? (
-                      <Text style={styles.searchResultText}>
-                        No bookmarks found. {'\n'} Press the help icon for more information.
-                      </Text>
                     ) : (
                           // return loading while grabbing data from database
                           <MaterialIndicator color="black" />
@@ -429,7 +439,7 @@ export default class ChatList extends React.Component {
           </View>
 
 
-          <Navbar navigation={this.props.navigation} />
+              <Navbar navigation={this.props.navigation} />
 
 
         </View >
@@ -439,8 +449,8 @@ export default class ChatList extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  help: {
-    display: 'flex',
+            help: {
+            display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: 'white',
@@ -450,29 +460,29 @@ const styles = StyleSheet.create({
     zIndex: 999
   },
   chatroomlist: {
-    marginBottom: 30,
+            marginBottom: 30,
     height: 500
   },
   container: {
-    display: 'flex',
+            display: 'flex',
     flexDirection: 'column',
     backgroundColor: 'white',
     flex: 1
   },
   searchView: {
-    marginTop: 0,
+            marginTop: 0,
     marginRight: 20,
     marginLeft: 20,
     flex: 5
   },
   innerView: {
-    marginTop: 50,
+            marginTop: 50,
     marginRight: 20,
     marginLeft: 20,
     flex: 1
   },
   title: {
-    bottom: 10,
+            bottom: 10,
     fontSize: 120,
     fontWeight: '700',
     textAlign: 'center',
@@ -481,7 +491,7 @@ const styles = StyleSheet.create({
     marginTop: -15
   },
   subtitle: {
-    fontSize: 15,
+            fontSize: 15,
     fontWeight: '300',
     textAlign: 'center',
     marginBottom: 8,
@@ -489,7 +499,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   subtitle2: {
-    fontSize: 40,
+            fontSize: 40,
     fontWeight: '300',
     textAlign: 'center',
     letterSpacing: -1,
@@ -498,7 +508,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   buttonContainer: {
-    borderStyle: 'solid',
+            borderStyle: 'solid',
     borderWidth: 1,
     padding: 5,
     marginTop: 5,
@@ -506,13 +516,13 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   buttonText: {
-    color: 'black',
+            color: 'black',
     fontWeight: '600',
     fontSize: 22,
     fontFamily: 'Futura-Light'
   },
   searchResultText: {
-    color: 'black',
+            color: 'black',
     fontWeight: '600',
     fontSize: 22,
     fontFamily: 'Futura-Light',
@@ -520,28 +530,28 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   searchbar: {
-    marginLeft: 20,
+            marginLeft: 20,
     marginRight: 20,
   },
   singleChatView: {
-    display: 'flex',
+            display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
   },
   singleChatIcons: {
-    flexDirection: 'row',
+            flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end'
   },
   testingView: {
-    borderColor: 'red',
+            borderColor: 'red',
     borderStyle: 'dashed',
     borderWidth: 1,
     margin: 10
   },
   numOnline: {
-    fontSize: 20,
+            fontSize: 20,
     fontFamily: 'Futura-Light',
     color: 'gray'
   }
