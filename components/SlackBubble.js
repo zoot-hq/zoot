@@ -218,29 +218,29 @@ export default class Bubble extends React.Component {
     return null;
   };
 
-  renderTime() {
-    if (this.props.currentMessage.createdAt) {
-      const {containerStyle, wrapperStyle, ...timeProps} = this.props;
-      if (this.props.renderTime) {
-        return this.props.renderTime(timeProps);
-      }
-      return (
-        <Time
-          {...timeProps}
-          containerStyle={{left: [styles.timeContainer]}}
-          textStyle={{
-            left: [
-              styles.standardFont,
-              styles.headerItem,
-              styles.time,
-              timeProps.textStyle
-            ]
-          }}
-        />
-      );
-    }
-    return null;
-  }
+  // renderTime() {
+  //   if (this.props.currentMessage.createdAt) {
+  //     const {containerStyle, wrapperStyle, ...timeProps} = this.props;
+  //     if (this.props.renderTime) {
+  //       return this.props.renderTime(timeProps);
+  //     }
+  //     return (
+  //       <Time
+  //         {...timeProps}
+  //         containerStyle={{left: [styles.timeContainer]}}
+  //         textStyle={{
+  //           left: [
+  //             styles.standardFont,
+  //             styles.headerItem,
+  //             styles.time,
+  //             timeProps.textStyle
+  //           ]
+  //         }}
+  //       />
+  //     );
+  //   }
+  //   return null;
+  // }
 
   renderCustomView() {
     if (this.props.renderCustomView) {
@@ -712,6 +712,7 @@ export default class Bubble extends React.Component {
                 ]}
               >
                 {this.renderUsername()}
+                {/* render time in PMs: */}
                 {this.props.listViewProps.navigation.state.params.PM && (
                   <View style={styles.timestamp}>
                     <Text style={styles.time}>
@@ -855,10 +856,13 @@ const styles = StyleSheet.create({
   time: {
     textAlign: 'left',
     fontSize: 12,
-    fontFamily: 'CormorantGaramond-Light'
+    fontFamily: 'CormorantGaramond-Light',
+    color: '#595959'
   },
   timestamp: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 10
   },
   timeContainer: {
     marginLeft: 0,
