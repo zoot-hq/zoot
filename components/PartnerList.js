@@ -69,11 +69,14 @@ export class PartnerList extends Component {
 
     // bookmark alert
     this.bookmark = () => {
-      Alert.alert(
-        'Bookmarks coming soon!',
-        'Bookmarked boards are in the works. Hang tight!',
-        [{text: 'OK!'}]
-      );
+      this.props.navigation.navigate('ChatList', {
+        bookmarks: true
+      });
+      // Alert.alert(
+      //   'Bookmarks coming soon!',
+      //   'Bookmarked boards are in the works. Hang tight!',
+      //   [{ text: 'OK!' }]
+      // );
     };
 
     // testing
@@ -123,7 +126,7 @@ export class PartnerList extends Component {
   async getUnlockedPartnerNames() {
     let ref = firebase
       .database()
-      .ref(`users/${this.state.currentUserName}/unlockedPartners`);
+      .ref(`users/${Fire.shared.uid()}/unlockedPartners`);
     try {
       let query = await ref.once('value').then(function (snapshot) {
         return snapshot.val();
@@ -156,6 +159,7 @@ export class PartnerList extends Component {
 
   render() {
     renderLock = (partner) => {
+      // if (this.state.unlockedPartners[partnerName]) {
       console.log('\n=========renderLock======');
       console.log('\nthis.state.partner.name)' + partner.name);
       console.log(
@@ -163,15 +167,24 @@ export class PartnerList extends Component {
       );
       // console.log('\ntype of bject.values(this.state.unlockedPartners)' + typeof (Object.values(this.state.unlockedPartners)))
       // console.log('\ntype of this.state.unlockedPartners)' + typeof (this.state.unlockedPartners))
+      // console.log(
+      //   '\nObject.values(this.state.unlockedPartners) ' +
+      //     Object.values(this.state.unlockedPartners)
+      // );
+
+      // console.log('\npartner)' + (partner.name))
+      // console.log('\nincludes ' + this.state.unlockedPartners.includes(partner.name))
       console.log(
-        '\nObject.values(this.state.unlockedPartners) ' +
-          Object.values(this.state.unlockedPartners)
+        this.state.unlockedPartners &&
+          this.state.unlockedPartners.hasOwnProperty('92Y')
       );
-      console.log(this.state.unlockedPartners.hasOwnProperty('92Y'));
       let partnerKey = this.state.currentPartner.name;
 
       // if ('partner.name' in this.state.unlockedPartners.hasOwnProperty) {
-      if (Object.values(this.state.unlockedPartners).includes(partner.name)) {
+      if (
+        this.state.unlockedPartners &&
+        Object.values(this.state.unlockedPartners).includes(partner.name)
+      ) {
         // if (this.state.unlockedPartners.includes(partner.name)) {
         return <Feather name="unlock" size={25} color="black" />;
       } else {
@@ -181,6 +194,13 @@ export class PartnerList extends Component {
 
     checkPasscode = () => {
       console.log('\n=======checkPasscode======\n');
+
+      // console.log('\n(this.state.currentPartner)');
+      // console.log(this.state.currentPartner);
+
+      // console.log('\n(this.state.currentPartner.passcode)');
+      // console.log(this.state.currentPartner.passcode);
+
       if (this.state.passcode === this.state.currentPartner.passcode) {
         return this.unlock(this.state.currentPartner);
       } else {
@@ -189,10 +209,15 @@ export class PartnerList extends Component {
     };
 
     checkLockState = (partner) => {
+      // console.log('partnername in checklockstate line 183: ', partnerName);
+
       console.log('==============checkLockState============\n');
       console.log(this.state.unlockedPartners);
 
-      if (Object.values(this.state.unlockedPartners).includes(partner.name)) {
+      if (
+        this.state.unlockedPartners &&
+        Object.values(this.state.unlockedPartners).includes(partner.name)
+      ) {
         this.resetNavigation();
         this.props.navigation.navigate('ChatList', {
           partner: partner.name
@@ -220,7 +245,7 @@ export class PartnerList extends Component {
       });
       firebase
         .database()
-        .ref(`users/${this.state.currentUserName}/unlockedPartners`)
+        .ref(`users/${Fire.shared.uid()}/unlockedPartners`)
         .push(this.state.currentPartner.name);
       this.resetNavigation();
       this.props.navigation.navigate('ChatList', {
@@ -267,9 +292,15 @@ export class PartnerList extends Component {
                     .includes(query.toLowerCase());
                 }
               );
+              if (!queriedPartners.length) {
+                this.setState({unsuccessfulSearch: true});
+              }
               this.setState({queriedPartners, query});
               if (!query.length) {
-                this.setState({queriedPartners: this.state.partnerNames});
+                this.setState({
+                  queriedPartners: this.state.partnerNames,
+                  unsuccessfulSearch: false
+                });
               }
             }}
           />
@@ -278,7 +309,12 @@ export class PartnerList extends Component {
             <SafeAreaView>
               <ScrollView contentContainerStyle={{flexGrow: 1}}>
                 {/* if a query made, queried chatrooms displayed*/}
-                {this.state.queriedPartners.length ? (
+
+                {this.state.unsuccessfulSearch ? (
+                  <Text style={styles.subtitle}>
+                    We are not yet partnered with this organization.
+                  </Text>
+                ) : this.state.queriedPartners.length ? (
                   this.state.queriedPartners.map((partner, idx) => (
                     <TouchableOpacity
                       key={idx}
@@ -382,52 +418,7 @@ export class PartnerList extends Component {
                                 // console.log(partner)
                               }}
                             >
-                              {/* <Text style={styles.modalButtonSave}>Enter</Text> */}
-                              {/* )} */}
-                              {/* <TextInput
-                                returnKeyType="done"
-                                placeholder="Enter passcode..."
-                                placeholderTextColor="#bfbfbf"
-                                autoCapitalize="none"
-                                autoCorrect={false}
-                                style={styles.input}
-                                onChangeText={(passcode) =>
-                                  this.setState({passcode})
-                                }
-                              /> */}
-                              <View style={styles.modalButtonsContainer}>
-                                {/* <TouchableOpacity
-                                  style={{width: 150}}
-                                  onPress={() =>
-                                    this.setState({
-                                      passcodeModal: false,
-                                      error: false
-                                    })
-                                  }
-                                >
-                                  <Text style={styles.modalButtonCancel}>
-                                    Cancel
-                                  </Text>
-                                </TouchableOpacity> */}
-                                <TouchableOpacity
-                                  style={{
-                                    width: 150,
-                                    borderLeftWidth: 1,
-                                    borderLeftColor: 'gray'
-                                  }}
-                                  onPress={() => {
-                                    console.log(
-                                      'partner name in onpress: ',
-                                      partner.name
-                                    );
-                                    checkPasscode(partner.name);
-                                  }}
-                                >
-                                  <Text style={styles.modalButtonSave}>
-                                    Enter
-                                  </Text>
-                                </TouchableOpacity>
-                              </View>
+                              <Text style={styles.modalButtonSave}>Enter</Text>
                             </TouchableOpacity>
                           </View>
                         </View>
@@ -486,13 +477,7 @@ export class PartnerList extends Component {
                       </TouchableOpacity>
                     </View>
                   ))
-                ) : (
-                  <View>
-                    <Text>
-                      We are not yet partnered with this organization.
-                    </Text>
-                  </View>
-                )}
+                ) : null}
               </ScrollView>
             </SafeAreaView>
             <TouchableOpacity onPress={() => contactAdmin()}>

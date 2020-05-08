@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   Text,
   StyleSheet,
@@ -10,10 +10,9 @@ import {
 } from 'react-native';
 // import Select from "react-native-picker-select";
 
-import { Ionicons, Feather, AntDesign } from '@expo/vector-icons';
+import {Ionicons, Feather, AntDesign} from '@expo/vector-icons';
 import BookmarkIcon from '../assets/icons/BookmarkIcon';
 import HelpIcon from '../assets/icons/HelpIcon';
-
 
 import NavBar from './Navbar';
 
@@ -45,28 +44,28 @@ export default class Resources extends Component {
     }
   }
 
-
   componentWillMount() {
-
     // help alert
     this.helpAlert = () => {
       Alert.alert(
         'Help',
-        'Here you\'ll find the provided resources that we’ve curated just for you. \n\nTap the links to visit these external pages.',
-        [{ text: 'Got it!' }]
-      )
-    }
+        "Here you'll find the provided resources that we’ve curated just for you. \n\nTap the links to visit these external pages.",
+        [{text: 'Got it!'}]
+      );
+    };
 
     // bookmark alert
     this.bookmark = () => {
-      Alert.alert(
-        'Bookmarks coming soon!',
-        'Bookmarked boards are in the works. Hang tight!',
-        [{ text: 'OK!' }]
-      )
-    }
+      this.props.navigation.navigate('ChatList', {
+        bookmarks: true
+      });
+      // Alert.alert(
+      //   'Bookmarks coming soon!',
+      //   'Bookmarked boards are in the works. Hang tight!',
+      //   [{ text: 'OK!' }]
+      // )
+    };
   }
-
 
   render() {
     const pickerStyle = {
@@ -86,40 +85,25 @@ export default class Resources extends Component {
       placeholderColor: 'black'
     };
 
-
     return (
       <View style={styles.container}>
-
         <View style={styles.innerView}>
-
-
           {/* bookmark button */}
           <View style={styles.help}>
-
-            <TouchableOpacity
-              onPress={() => this.bookmark()}
-            >
+            <TouchableOpacity onPress={() => this.bookmark()}>
               <BookmarkIcon />
             </TouchableOpacity>
 
-
             {/* help button */}
 
-            <TouchableOpacity
-              onPress={() => this.helpAlert()}
-            >
+            <TouchableOpacity onPress={() => this.helpAlert()}>
               {/* <AntDesign name="questioncircleo" size={20} color="black" /> */}
               <HelpIcon />
             </TouchableOpacity>
-
           </View>
 
-
-
           {/* <Text style={styles.title}>après</Text> */}
-          <Text style={styles.subtitle2}>
-            Resources
-        </Text>
+          <Text style={styles.subtitle2}>Resources</Text>
 
           {/* <Select
           style={pickerStyle}
@@ -142,20 +126,20 @@ export default class Resources extends Component {
               style={styles.categoryTitle}
             >
               Maternal Mental Health
-          </Text>
+            </Text>
             <TouchableOpacity
               onPress={() => Linking.openURL('https://www.postpartum.net/')}
             >
               <Text style={styles.subtitle}>
                 Postpartum Support International
-            </Text>
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => Linking.openURL('https://womensmentalhealth.org/')}
             >
               <Text style={styles.subtitle}>
                 MGH Center for Women's Mental Health
-            </Text>
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() =>
@@ -164,7 +148,7 @@ export default class Resources extends Component {
             >
               <Text style={styles.subtitle}>
                 National Institute of Mental Health
-            </Text>
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() =>
@@ -177,13 +161,13 @@ export default class Resources extends Component {
             </TouchableOpacity>
             <Text style={styles.subtitle}>
               Crisis Text Line: Text “HELLO” to 741741
-          </Text>
+            </Text>
             <Text
               onLayout={(event) => this.setLocation('wellness', event)}
               style={styles.categoryTitle}
             >
               Wellness
-          </Text>
+            </Text>
             <TouchableOpacity
               onPress={() =>
                 Linking.openURL('https://www.youtube.com/user/yogawithadriene')
@@ -200,7 +184,7 @@ export default class Resources extends Component {
             >
               <Text style={styles.subtitle}>
                 Center for Mindfulness Guided Meditations
-            </Text>
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() =>
@@ -214,7 +198,7 @@ export default class Resources extends Component {
               style={styles.categoryTitle}
             >
               Infant & Child Development
-          </Text>
+            </Text>
             <TouchableOpacity
               onPress={() => Linking.openURL('https://www.llli.org/')}
             >
@@ -242,8 +226,6 @@ export default class Resources extends Component {
             {/* this empty View provides enough space below the resources that each category can scroll to the top when chosen */}
             <View style={styles.extraSpace}></View>
           </ScrollView>
-
-
         </View>
         <NavBar />
       </View>
@@ -260,7 +242,7 @@ const styles = StyleSheet.create({
     marginTop: -10,
     marginBottom: 20,
     height: 20,
-    zIndex: 999,
+    zIndex: 999
   },
   container: {
     display: 'flex',
@@ -269,7 +251,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   scroll: {
-    marginTop: -20,
+    marginTop: -20
   },
   title: {
     bottom: 10,
@@ -278,7 +260,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 15,
     fontFamily: 'CormorantGaramond-Light',
-    marginTop: -15,
+    marginTop: -15
   },
   subtitle: {
     fontSize: 18,
@@ -315,5 +297,5 @@ const styles = StyleSheet.create({
     marginRight: 20,
     marginLeft: 20,
     flex: 1
-  },
+  }
 });
