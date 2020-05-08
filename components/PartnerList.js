@@ -43,7 +43,6 @@ export class PartnerList extends Component {
       passcode: '',
       passcodeModal: false,
       partnerNames: [],
-      // partnerName: '',
       passcodes: [],
       queriedPartners: [],
       query: '',
@@ -234,12 +233,6 @@ export class PartnerList extends Component {
 
       console.log('\n=======setCurrentPartner======\n');
       console.log(this.state.unlockedPartners);
-
-      // console.log('\npartnerName.name')
-      // console.log(partnerName.name)
-
-      // console.log('\npartnerName.passcode')
-      // console.log(partnerName.passcode)
 
       console.log('\npartner');
       console.log(partner);
@@ -508,7 +501,11 @@ export class PartnerList extends Component {
           </KeyboardAvoidingView>
         </View>
 
-        <Navbar />
+        <Navbar
+          liveChat={this.props.navigation.state.params.liveChat}
+          communityPopup={this.props.navigation.state.params.communityPopup}
+          changeTimeZone={this.props.navigation.state.params.changeTimeZone}
+        />
       </View>
     );
   }
