@@ -253,6 +253,8 @@ export class PartnerList extends Component {
       });
     };
 
+    console.log('this.props.navigation:', this.props.navigation);
+
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
