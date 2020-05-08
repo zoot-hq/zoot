@@ -12,7 +12,6 @@ import {
 
 import * as Font from 'expo-font';
 import Fire from '../Fire';
-import * as firebase from 'firebase';
 
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
@@ -20,8 +19,6 @@ import {Notifications} from 'expo';
 import {useFocusEffect} from '@react-navigation/native';
 
 import moment from 'moment';
-
-import Navbar from './Navbar';
 
 export default class HomeScreen extends React.Component {
   constructor() {
@@ -67,14 +64,6 @@ export default class HomeScreen extends React.Component {
     }
   };
 
-  // delete this if not using!
-  // resetNavigation() {
-  //   const resetAction = StackActions.reset({
-  //     index: 0,
-  //     actions: [NavigationActions.navigate({routeName: 'CategoryList'})]
-  //   });
-  //   this.props.navigation.dispatch(resetAction);
-  // }
   changeTimezone = (date, ianatz) => {
     const invdate = new Date(
       date.toLocaleString('en-US', {
@@ -139,9 +128,8 @@ export default class HomeScreen extends React.Component {
     Notifications.scheduleLocalNotificationAsync(
       {
         to: this.state.expoPushToken,
-        title: 'line 80',
-        body: 'live notification!',
-        data: {data: moment().format('MMMM D, YYYY h:mm A')},
+        title: 'Live Chat starting!',
+        body: `It's happening! Our weekly live chat is starting now. Happy chatting!`,
         ios: {_displayInForeground: true}
       },
       {time: this.state.liveChatBegins.add(30, 'seconds').valueOf()}
@@ -178,14 +166,15 @@ export default class HomeScreen extends React.Component {
       ]
     );
   };
+
   liveChat = () => {
     // get nyc time
     const currTime = new Date();
     const currNyTime = this.changeTimezone(currTime, 'America/New_York');
     const liveChatTime = {
       day: 4, //1,
-      hoursStart: 18, //16,
-      hoursEnd: 19, //17,
+      hoursStart: 20, //16,
+      hoursEnd: 21, //17,
       minutesEnd: 30
     };
 

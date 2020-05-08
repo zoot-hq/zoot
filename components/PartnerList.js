@@ -516,7 +516,11 @@ export class PartnerList extends Component {
           </KeyboardAvoidingView>
         </View>
 
-        <Navbar />
+        <Navbar
+          liveChat={this.props.navigation.state.params.liveChat}
+          communityPopup={this.props.navigation.state.params.communityPopup}
+          changeTimeZone={this.props.navigation.state.params.changeTimeZone}
+        />
       </View>
     );
   }
