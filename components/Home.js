@@ -76,12 +76,35 @@ export default class HomeScreen extends React.Component {
 
   async componentDidMount() {
     await this.registerForPushNotificationsAsync();
-    console.log(
-      'moment js time in state ============== ',
-      this.state.liveChatBegins,
-      ', in unix ================ ',
-      this.state.liveChatBegins.valueOf()
-    );
+    const liveChatDay = 3;
+    const today = moment().isoWeekday();
+    if (today < liveChatDay) {
+      // set the date to the 3 of this week
+      this.setState({
+        liveChatBegins: moment().isoWeekday(liveChatDay).hour(21)
+      });
+    } else if (today === liveChatDay) {
+      const curHour = moment().hour();
+      const curMin = moment().minute();
+      // check if the hour is smaller than 9 pm.
+      if (curHour < 21) {
+        //if yes, schedule to today's livechat.
+        this.setState({liveChatBegins: moment().hour(21).minute(0)});
+      } else if (curHour === 21 || (curHour === 22 && curMin < 30)) {
+        // If it's equal to, check if it's under ten thirty. If so, schedule notif for right now.
+        this.setState({liveChatBegins: moment()});
+      } else {
+        //If it's greater than ten thirty, schedule wednesday next week
+        this.setState({
+          liveChatBegins: moment().add(1, 'weeks').isoWeekday(liveChatDay)
+        });
+      }
+    } else {
+      // use wednesday of next week
+      this.setState({
+        liveChatBegins: moment().add(1, 'weeks').isoWeekday(liveChatDay)
+      });
+    }
     // Handle notifications that are received or selected while the app
     // is open. If the app was closed and then opened by tapping the
     // notification (rather than just tapping the app icon to open it),
@@ -125,6 +148,10 @@ export default class HomeScreen extends React.Component {
   };
 
   buildNotification = () => {
+    console.log(
+      'in build notifications, the next chat begins ',
+      this.state.liveChatBegins
+    );
     Notifications.scheduleLocalNotificationAsync(
       {
         to: this.state.expoPushToken,
