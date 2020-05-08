@@ -17,6 +17,7 @@ import { Feather, Foundation, MaterialIcons } from '@expo/vector-icons';
 import * as MailComposer from 'expo-mail-composer';
 import AllReplies from './AllReplies';
 import * as firebase from 'firebase';
+import moment from 'moment';
 
 import Fire from '../Fire';
 
@@ -231,14 +232,14 @@ export default class Bubble extends React.Component {
 
   // renderTime() {
   //   if (this.props.currentMessage.createdAt) {
-  //     const { containerStyle, wrapperStyle, ...timeProps } = this.props;
+  //     const {containerStyle, wrapperStyle, ...timeProps} = this.props;
   //     if (this.props.renderTime) {
   //       return this.props.renderTime(timeProps);
   //     }
   //     return (
   //       <Time
   //         {...timeProps}
-  //         containerStyle={{ left: [styles.timeContainer] }}
+  //         containerStyle={{left: [styles.timeContainer]}}
   //         textStyle={{
   //           left: [
   //             styles.standardFont,
@@ -723,6 +724,20 @@ export default class Bubble extends React.Component {
                 ]}
               >
                 {this.renderUsername()}
+                {/* render time next to username in PMs and live chat: */}
+                {this.props.currentMessage.user._id &&
+                  (this.props.listViewProps.navigation.state.params.live ||
+                    this.props.listViewProps.navigation.state.params.PM) && (
+                    <View style={styles.timestamp}>
+                      <Text style={styles.username}>
+                        (
+                        {moment(this.props.currentMessage.timestamp).format(
+                        'hh:mm a'
+                      )}
+                        )
+                      </Text>
+                    </View>
+                  )}
                 {/* {this.renderMessageImage()} */}
                 {this.renderMessageText()}
               </View>
@@ -730,28 +745,41 @@ export default class Bubble extends React.Component {
               {/* render reactions on messages with the reaction feature */}
               {this.renderReactions()}
               {this.renderReplies()}
-              {/* this.state.newReply becomes true when a user clicks the message text/reply button */}
+              {/* this.state.newReply becomes true when a user clicks the reply button */}
               {this.state.newReply && (
                 <View>
-                  <TextInput
-                    returnKeyType="done"
-                    placeholder="Type your reply"
-                    placeholderTextColor="#bfbfbf"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    style={styles.input}
-                    onChangeText={(replyInput) => this.setState({ replyInput })}
-                  />
-                  <View style={styles.replyInputContainer}>
-                    <TouchableOpacity
-                      onPress={() => this.setState({ newReply: false })}
-                    >
-                      <Text style={styles.replyButton}>Cancel</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={this.submitReply}>
-                      <Text style={styles.replyButton}>Submit</Text>
-                    </TouchableOpacity>
-                  </View>
+                  {!this.props.currentMessage.level ||
+                    this.props.currentMessage.level < 5 ? (
+                      <View>
+                        <TextInput
+                          returnKeyType="done"
+                          placeholder="Type your reply"
+                          placeholderTextColor="#bfbfbf"
+                          autoCapitalize="none"
+                          autoCorrect={false}
+                          style={styles.input}
+                          onChangeText={(replyInput) =>
+                            this.setState({ replyInput })
+                          }
+                        />
+                        <View style={styles.replyInputContainer}>
+                          <TouchableOpacity
+                            onPress={() => this.setState({ newReply: false })}
+                          >
+                            <Text style={styles.replyButton}>Cancel</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity onPress={this.submitReply}>
+                            <Text style={styles.replyButton}>Submit</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    ) : (
+                      <Text style={styles.slackMessageText}>
+                        Sorry, this message has reached the maximum number of
+                        replies. Consider sending a PM or adding a new top-level
+                        message.
+                      </Text>
+                    )}
                 </View>
               )}
             </View>
@@ -842,7 +870,12 @@ const styles = StyleSheet.create({
   time: {
     textAlign: 'left',
     fontSize: 12,
-    fontFamily: 'CormorantGaramond-Light'
+    fontFamily: 'CormorantGaramond-Light',
+    color: '#595959'
+  },
+  timestamp: {
+    flexDirection: 'row',
+    marginRight: 10
   },
   timeContainer: {
     marginLeft: 0,
