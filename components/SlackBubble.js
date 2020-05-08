@@ -708,19 +708,20 @@ export default class Bubble extends React.Component {
                 ]}
               >
                 {this.renderUsername()}
-                {/* render time in live chat: */}
-                {(this.props.listViewProps.navigation.state.params.live ||
-                  this.props.listViewProps.navigation.state.params.PM) && (
-                  <View style={styles.timestamp}>
-                    <Text style={styles.username}>
-                      (
-                      {moment(this.props.currentMessage.timestamp).format(
-                        'hh:mm a'
-                      )}
-                      )
-                    </Text>
-                  </View>
-                )}
+                {/* render time next to username in PMs and live chat: */}
+                {this.props.currentMessage.user._id &&
+                  (this.props.listViewProps.navigation.state.params.live ||
+                    this.props.listViewProps.navigation.state.params.PM) && (
+                    <View style={styles.timestamp}>
+                      <Text style={styles.username}>
+                        (
+                        {moment(this.props.currentMessage.timestamp).format(
+                          'hh:mm a'
+                        )}
+                        )
+                      </Text>
+                    </View>
+                  )}
                 {/* {this.renderMessageImage()} */}
                 {this.renderMessageText()}
               </View>

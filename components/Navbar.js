@@ -91,14 +91,10 @@ class Navbar extends React.Component {
     const currTime = new Date();
     const currNyTime = this.changeTimezone(currTime, 'America/New_York');
     const liveChatTime = {
-      // day: 1,
-      // hoursStart: 16,
-      // hoursEnd: 17,
-      // minutesEnd: 30
-      day: 5,
-      hoursStart: 15,
-      hoursEnd: 16,
-      minutesEnd: 60
+      day: 1,
+      hoursStart: 16,
+      hoursEnd: 17,
+      minutesEnd: 30
     };
 
     // if time is inside set time for live chat
