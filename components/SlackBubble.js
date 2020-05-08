@@ -651,10 +651,6 @@ export default class Bubble extends React.Component {
     //   </View>
     // );
     const win = Dimensions.get('window');
-    console.log(
-      'moment applied to timestamp:',
-      moment(this.props.currentMessage.timestamp).format('hh:mm:ss a')
-    );
 
     return (
       <View style={[styles.container, this.props.containerStyle]}>
@@ -712,10 +708,11 @@ export default class Bubble extends React.Component {
                 ]}
               >
                 {this.renderUsername()}
-                {/* render time in PMs: */}
-                {this.props.listViewProps.navigation.state.params.PM && (
+                {/* render time in live chat: */}
+                {(this.props.listViewProps.navigation.state.params.live ||
+                  this.props.listViewProps.navigation.state.params.PM) && (
                   <View style={styles.timestamp}>
-                    <Text style={styles.time}>
+                    <Text style={styles.username}>
                       (
                       {moment(this.props.currentMessage.timestamp).format(
                         'hh:mm a'
@@ -861,7 +858,6 @@ const styles = StyleSheet.create({
   },
   timestamp: {
     flexDirection: 'row',
-    alignItems: 'center',
     marginRight: 10
   },
   timeContainer: {

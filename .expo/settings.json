@@ -3,6 +3,6 @@
   "lanType": "ip",
   "dev": true,
   "minify": false,
-  "urlRandomness": "vm-seg",
+  "urlRandomness": "sp-nut",
   "https": false
 }
