@@ -123,8 +123,8 @@ export default class Bubble extends React.Component {
     }
     if (this.props.currentMessage.deleted || this.state.deleted) {
       return (
-        <Text style={styles.slackMessageTextFlagged}>
-          The user has deleted this message.{' '}
+        <Text style={styles.deletedMessage}>
+          The user has deleted this message.
         </Text>
       );
     } else if (this.props.currentMessage.text) {
@@ -871,6 +871,11 @@ const styles = StyleSheet.create({
     marginRight: 0,
     fontFamily: 'Futura-Light',
     color: 'gray'
+  },
+  deletedMessage: {
+    fontFamily: 'Futura-Light',
+    color: 'gray',
+    alignSelf: 'flex-end'
   },
   container: {
     flex: 1,
