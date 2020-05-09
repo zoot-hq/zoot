@@ -41,7 +41,8 @@ export default class Bubble extends React.Component {
       indent: 0,
       newReply: false,
       replyInput: '',
-      showReplies: true
+      showReplies: true,
+      deleted: false
     };
   }
 
@@ -120,7 +121,13 @@ export default class Bubble extends React.Component {
         </TouchableOpacity>
       );
     }
-    if (this.props.currentMessage.text) {
+    if (this.props.currentMessage.deleted || this.state.deleted) {
+      return (
+        <Text style={styles.slackMessageTextFlagged}>
+          The user has deleted this message.{' '}
+        </Text>
+      );
+    } else if (this.props.currentMessage.text) {
       const {
         containerStyle,
         wrapperStyle,
@@ -423,6 +430,14 @@ export default class Bubble extends React.Component {
           </TouchableOpacity>
 
           {this.renderBlock()}
+
+          <TouchableOpacity
+            style={{marginRight: 20}}
+            onLongPress={() => this.deleteMessage()}
+          >
+            <Feather name="trash-2" color="lightgray" size={15} />
+          </TouchableOpacity>
+
           {/* replies can only have one level; you cannot reply to replies */}
           {!this.props.currentMessage.isReply && (
             <TouchableOpacity
@@ -453,6 +468,28 @@ export default class Bubble extends React.Component {
         </TouchableOpacity>
       );
     }
+  }
+
+  async deleteMessage() {
+    const roomRef = await firebase
+      .database()
+      .ref('chatrooms')
+      .child(this.props.currentMessage.room);
+    // if message is a reply, change deleted to 'true' in 'replies' of parent
+    if (this.props.currentMessage.isReply) {
+      await roomRef
+        .child(this.props.currentMessage.parentId)
+        .child('replies')
+        .child(this.props.currentMessage._id)
+        .update({deleted: true, react: false});
+    }
+    // else change deleted to true in root level message/duplicate
+    else {
+      await roomRef
+        .child(this.props.currentMessage._id)
+        .update({deleted: true, react: false});
+    }
+    this.setState({deleted: true});
   }
 
   renderReplies() {

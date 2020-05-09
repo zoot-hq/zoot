@@ -33,6 +33,7 @@ class Fire {
       base64,
       react,
       hidden,
+      deleted,
       isReply
     } = snapshot.val();
     const {key: _id} = snapshot;
@@ -50,6 +51,7 @@ class Fire {
       base64,
       react,
       hidden,
+      deleted,
       isReply
     };
     return message;
@@ -175,6 +177,7 @@ class Fire {
         users: {X: true}
       },
       hidden: false,
+      deleted: false,
       react: true,
       replies: [],
       parentId: parentId
@@ -215,6 +218,7 @@ class Fire {
           users: {X: true}
         },
         hidden: false,
+        deleted: false,
         react: true,
         replies: []
       };
