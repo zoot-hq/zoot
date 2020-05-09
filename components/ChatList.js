@@ -9,14 +9,14 @@ import {
   KeyboardAvoidingView,
   Alert
 } from 'react-native';
-import {Searchbar} from 'react-native-paper';
+import { Searchbar } from 'react-native-paper';
 import Fire from '../Fire';
-import {MaterialIndicator} from 'react-native-indicators';
-import {Notifications} from 'expo';
+import { MaterialIndicator } from 'react-native-indicators';
+import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
-import {Ionicons, MaterialIcons, AntDesign, Feather} from '@expo/vector-icons';
-import {componentDidMount as loadNavbar} from './Navbar';
+import { Ionicons, MaterialIcons, AntDesign, Feather } from '@expo/vector-icons';
+import { componentDidMount as loadNavbar } from './Navbar';
 import Navbar from './Navbar';
 import BookmarkIcon from '../assets/icons/BookmarkIcon';
 import HelpIcon from '../assets/icons/HelpIcon';
@@ -45,14 +45,14 @@ export default class ChatList extends React.Component {
       Alert.alert(
         'Help',
         "Welcome to après!\n\n This is your home page.\n\n Use the navbar to navigate to your user page, your personal messages, live chat, our partnered boards, and the resources page. \n\n Search our message boards for a topic you're interested in. Don't see it already? Press the + icon to create it, and start the conversation! ",
-        [{text: 'Got it!'}]
+        [{ text: 'Got it!' }]
       );
     };
 
     // bookmark alert
     this.bookmark = () => {
       this.getBookmarkedChats();
-      this.setState({bookmarks: true});
+      this.setState({ bookmarks: true });
       // Alert.alert(
       //   'Bookmarks coming soon!',
       //   'Bookmarked boards are in the works. Hang tight!',
@@ -61,7 +61,7 @@ export default class ChatList extends React.Component {
     };
 
     // This updates the partner property in the state successfully
-    const {params} = this.props.navigation.state;
+    const { params } = this.props.navigation.state;
     if (params) {
       const partner = params.partner ? params.partner : null;
       const category = params.category ? params.category : null;
@@ -138,7 +138,7 @@ export default class ChatList extends React.Component {
     // set what the app does when a user clicks on notification
     this._notificationSubscription = Notifications.addListener(
       (notification) => {
-        const {pm, room} = notification.data;
+        const { pm, room } = notification.data;
 
         // if notification is due to pm
         if (pm) {
@@ -204,7 +204,7 @@ export default class ChatList extends React.Component {
         livechatnotif,
         schedulingOptions
       );
-    } catch (error) {}
+    } catch (error) { }
   };
 
   componentWillUnmount() {
@@ -305,7 +305,7 @@ export default class ChatList extends React.Component {
         {/* search bar - queries all chatrooms to the users query */}
         <View style={styles.searchView}>
           <Searchbar
-            theme={{colors: {primary: 'black'}}}
+            theme={{ colors: { primary: 'black' } }}
             placeholder="Search our message boards"
             onChangeText={(query) => {
               const queriedChatrooms = this.state.queriedChatrooms.filter(
@@ -316,7 +316,7 @@ export default class ChatList extends React.Component {
                 }
               );
               if (!queriedChatrooms.length) {
-                this.setState({unsuccessfulSearch: true});
+                this.setState({ unsuccessfulSearch: true });
               }
               if (query.length) {
                 if (query.length >= 20) {
@@ -325,7 +325,7 @@ export default class ChatList extends React.Component {
                       'chatroom names must not be longer than 20 characters'
                   });
                 } else {
-                  this.setState({queriedChatrooms, query, error: ''});
+                  this.setState({ queriedChatrooms, query, error: '' });
                 }
               } else {
                 // if the user deletes their query, restore the list to its original form
@@ -339,7 +339,7 @@ export default class ChatList extends React.Component {
           {/* chatroom list */}
           <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding">
             <SafeAreaView>
-              <ScrollView contentContainerStyle={{flexGrow: 1}}>
+              <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 {/* if a query made, queried chatrooms displayed*/}
                 {this.state.queriedChatrooms.length ? (
                   this.state.queriedChatrooms.map((chatroom) => (
@@ -368,42 +368,42 @@ export default class ChatList extends React.Component {
                     </TouchableOpacity>
                   ))
                 ) : // else allow user to create a new chatroom
-                this.state.unsuccessfulSearch ? (
-                  <View>
-                    {this.state.error ? (
-                      <Text style={styles.subtitle}>{this.state.error}</Text>
-                    ) : (
-                      <Text style={styles.subtitle}>
-                        No results. Would you like to create this chatroom?
-                      </Text>
-                    )}
-                    <TouchableOpacity
-                      key={this.state.query}
-                      style={styles.buttonContainer}
-                      onPress={() => {
-                        Fire.shared.createChatRoom(
-                          this.state.query,
-                          this.state.partner,
-                          this.state.category
-                        );
-                        this.props.navigation.navigate('ChatRoom', {
-                          chatroom: this.state.query
-                        });
-                      }}
-                    >
-                      <Text style={styles.buttonText}>
-                        + {this.state.query}{' '}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                ) : this.state.bookmarks ? (
-                  <Text style={styles.subtitle2}>
-                    You have not bookmarked any chatrooms yet.
-                  </Text>
-                ) : (
-                  // return loading while grabbing data from database
-                  <MaterialIndicator color="black" />
-                )}
+                  this.state.unsuccessfulSearch ? (
+                    <View>
+                      {this.state.error ? (
+                        <Text style={styles.subtitle}>{this.state.error}</Text>
+                      ) : (
+                          <Text style={styles.subtitle}>
+                            No results. Would you like to create this chatroom?
+                          </Text>
+                        )}
+                      <TouchableOpacity
+                        key={this.state.query}
+                        style={styles.buttonContainer}
+                        onPress={() => {
+                          Fire.shared.createChatRoom(
+                            this.state.query,
+                            this.state.partner,
+                            this.state.category
+                          );
+                          this.props.navigation.navigate('ChatRoom', {
+                            chatroom: this.state.query
+                          });
+                        }}
+                      >
+                        <Text style={styles.buttonText}>
+                          + {this.state.query}{' '}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  ) : this.state.bookmarks ? (
+                    <Text style={styles.subtitle2}>
+                      You have not bookmarked any chatrooms yet.
+                    </Text>
+                  ) : (
+                        // return loading while grabbing data from database
+                        <MaterialIndicator color="black" />
+                      )}
               </ScrollView>
             </SafeAreaView>
           </KeyboardAvoidingView>
