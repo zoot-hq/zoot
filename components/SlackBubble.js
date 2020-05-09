@@ -430,13 +430,14 @@ export default class Bubble extends React.Component {
           </TouchableOpacity>
 
           {this.renderBlock()}
-
-          <TouchableOpacity
-            style={{marginRight: 20}}
-            onLongPress={() => this.deleteMessage()}
-          >
-            <Feather name="trash-2" color="lightgray" size={15} />
-          </TouchableOpacity>
+          {this.isSameUser() && (
+            <TouchableOpacity
+              style={{marginRight: 20}}
+              onLongPress={() => this.deleteMessage()}
+            >
+              <Feather name="trash-2" color="lightgray" size={15} />
+            </TouchableOpacity>
+          )}
 
           {/* replies can only have one level; you cannot reply to replies */}
           {!this.props.currentMessage.isReply && (
