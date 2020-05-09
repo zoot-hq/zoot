@@ -423,13 +423,15 @@ export default class Bubble extends React.Component {
           </TouchableOpacity>
 
           {this.renderBlock()}
-
-          <TouchableOpacity
-            style={{marginRight: 20}}
-            onPress={() => this.setState({newReply: true})}
-          >
-            <Feather name="corner-right-down" color="lightgrey" size={15} />
-          </TouchableOpacity>
+          {/* replies can only have one level; you cannot reply to replies */}
+          {!this.props.currentMessage.isReply && (
+            <TouchableOpacity
+              style={{marginRight: 20}}
+              onPress={() => this.setState({newReply: true})}
+            >
+              <Feather name="corner-right-down" color="lightgrey" size={15} />
+            </TouchableOpacity>
+          )}
 
           {this.renderDisplayReplies()}
         </View>
@@ -550,7 +552,7 @@ export default class Bubble extends React.Component {
       .child('likes')
       .once('value')
       .then((snapshot) => snapshot.val());
-    if (likes.count) {
+    if (likes && likes.count) {
       this.setState({likes: likes});
     }
     const loves = await firebase
@@ -561,7 +563,7 @@ export default class Bubble extends React.Component {
       .child('loves')
       .once('value')
       .then((snapshot) => snapshot.val());
-    if (loves.count) {
+    if (loves && loves.count) {
       this.setState({loves: loves});
     }
     const lightbulbs = await firebase
@@ -572,7 +574,7 @@ export default class Bubble extends React.Component {
       .child('lightbulbs')
       .once('value')
       .then((snapshot) => snapshot.val());
-    if (lightbulbs.count) {
+    if (lightbulbs && lightbulbs.count) {
       this.setState({lightbulbs: lightbulbs});
     }
     const flags = await firebase
@@ -583,7 +585,7 @@ export default class Bubble extends React.Component {
       .child('flags')
       .once('value')
       .then((snapshot) => snapshot.val());
-    if (flags.count) {
+    if (flags && flags.count) {
       this.setState({flags: flags});
     }
   }
