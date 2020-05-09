@@ -1,7 +1,7 @@
 // Stack Navigation
 
-import React, {Component} from 'react';
-import {StatusBar} from 'react-native';
+import React, { Component } from 'react';
+import { StatusBar } from 'react-native';
 
 import ChatList from './components/ChatList';
 import ChatRoom from './components/ChatRoom';
@@ -13,7 +13,7 @@ import PMList from './components/PMList';
 import UserPage from './components/UserPage';
 import Resources from './components/Resources';
 import Navbar from './components/Navbar';
-import {createStackNavigator} from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 import PartnerList from './components/PartnerList';
 import Splash from './components/Splash';
 import SplashContent from './components/SplashContent';
@@ -35,7 +35,13 @@ console.log(
   `=========================== JS RELOAD at ${stringDate} ===============================`
 );
 
-<StatusBar hidden />;
+// const App = () => {
+//   return (
+//     <StatusBar barStyle="dark-content" hidden={false} backgroundColor="#00BCD4" translucent={true} />
+//   )
+// }
+
+{/* <StatusBar hidden={false} barStyle="dark-content" /> */ }
 
 const navigator = createStackNavigator(
   {
@@ -113,6 +119,10 @@ const navigator = createStackNavigator(
       headerVisible: false
     }
   }
+
+
+
 );
 
 export default navigator;
+

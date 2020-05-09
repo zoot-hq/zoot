@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   TextInput,
@@ -10,9 +10,9 @@ import {
   ScrollView,
   KeyboardAvoidingView
 } from 'react-native';
-import {Searchbar} from 'react-native-paper';
-import {MaterialIndicator} from 'react-native-indicators';
-import {Ionicons, Feather, AntDesign} from '@expo/vector-icons';
+import { Searchbar } from 'react-native-paper';
+import { MaterialIndicator } from 'react-native-indicators';
+import { Ionicons, Feather, AntDesign } from '@expo/vector-icons';
 import * as firebase from 'firebase';
 import Fire from '../Fire';
 import {
@@ -56,14 +56,14 @@ export class PartnerList extends Component {
   async componentDidMount() {
     const unlockedPartners = await this.getUnlockedPartnerNames();
 
-    this.setState({unlockedPartners: unlockedPartners});
+    this.setState({ unlockedPartners: unlockedPartners });
 
     // help alert
     this.helpAlert = () => {
       Alert.alert(
         'Help',
         'Hey there! \n\n Après is proud to partner with our organizations. \n\nUsers can privately interact with partnered organizations on Après by requesting a secret access code from the real - world organizations which they belong to.',
-        [{text: 'Got it!'}]
+        [{ text: 'Got it!' }]
       );
     };
 
@@ -81,7 +81,7 @@ export class PartnerList extends Component {
 
     // testing
     this.noGo = () => {
-      Alert.alert('Wrong password!', 'Please try again.', [{text: 'OK'}]);
+      Alert.alert('Wrong password!', 'Please try again.', [{ text: 'OK' }]);
     };
 
     contactAdmin = async () => {
@@ -92,7 +92,7 @@ export class PartnerList extends Component {
       };
       try {
         await MailComposer.composeAsync(options);
-        this.setState({contactFormModal: false});
+        this.setState({ contactFormModal: false });
       } catch (error) {
         if (error === 'Mail services are not available.') {
           this.setState({
@@ -105,7 +105,7 @@ export class PartnerList extends Component {
 
     try {
       let partners = await this.getPartnerNames();
-      this.setState({partnerNames: Object.values(partners)});
+      this.setState({ partnerNames: Object.values(partners) });
     } catch (error) {
       console.error(error);
     }
@@ -152,7 +152,7 @@ export class PartnerList extends Component {
   resetNavigation() {
     const resetAction = StackActions.reset({
       index: 0,
-      actions: [NavigationActions.navigate({routeName: 'PartnerList'})]
+      actions: [NavigationActions.navigate({ routeName: 'PartnerList' })]
     });
     this.props.navigation.dispatch(resetAction);
   }
@@ -176,7 +176,7 @@ export class PartnerList extends Component {
       // console.log('\nincludes ' + this.state.unlockedPartners.includes(partner.name))
       console.log(
         this.state.unlockedPartners &&
-          this.state.unlockedPartners.hasOwnProperty('92Y')
+        this.state.unlockedPartners.hasOwnProperty('92Y')
       );
       let partnerKey = this.state.currentPartner.name;
 
@@ -223,13 +223,13 @@ export class PartnerList extends Component {
           partner: partner.name
         });
       } else {
-        this.setState({passcodeModal: true});
+        this.setState({ passcodeModal: true });
         // console.log(this.state.passcodeModal + 'this.state.passcodeModal checklockModal')
       }
     };
 
     setCurrentPartner = (partner) => {
-      this.setState({currentPartner: partner});
+      this.setState({ currentPartner: partner });
 
       console.log('\n=======setCurrentPartner======\n');
       console.log(this.state.unlockedPartners);
@@ -284,7 +284,7 @@ export class PartnerList extends Component {
         </View>
         <View style={styles.searchView}>
           <Searchbar
-            theme={{colors: {primary: 'black'}}}
+            theme={{ colors: { primary: 'black' } }}
             placeholder="Search for a partnered organization"
             onChangeText={(query) => {
               const queriedPartners = this.state.partnerNames.filter(
@@ -295,9 +295,9 @@ export class PartnerList extends Component {
                 }
               );
               if (!queriedPartners.length) {
-                this.setState({unsuccessfulSearch: true});
+                this.setState({ unsuccessfulSearch: true });
               }
-              this.setState({queriedPartners, query});
+              this.setState({ queriedPartners, query });
               if (!query.length) {
                 this.setState({
                   queriedPartners: this.state.partnerNames,
@@ -309,7 +309,7 @@ export class PartnerList extends Component {
           {/* partner board list */}
           <KeyboardAvoidingView style={styles.chatroomlist} behavior="padding">
             <SafeAreaView>
-              <ScrollView contentContainerStyle={{flexGrow: 1}}>
+              <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 {/* if a query made, queried chatrooms displayed*/}
 
                 {this.state.unsuccessfulSearch ? (
@@ -321,11 +321,11 @@ export class PartnerList extends Component {
                     <TouchableOpacity
                       key={idx}
                       style={styles.buttonContainer}
-                      // onPress={() =>
-                      //   this.props.navigation.navigate('ChatRoom', {
-                      //     chatroom: chatroom.name
-                      //   })
-                      // }
+                    // onPress={() =>
+                    //   this.props.navigation.navigate('ChatRoom', {
+                    //     chatroom: chatroom.name
+                    //   })
+                    // }
                     >
                       <View style={styles.singleChatView}>
                         <Text style={styles.buttonText}># {partner.name}</Text>
@@ -336,150 +336,150 @@ export class PartnerList extends Component {
                     </TouchableOpacity>
                   ))
                 ) : // else if a search has not run but the list of partners isn't empty, display all partners
-                this.state.partnerNames.length ? (
-                  this.state.partnerNames.map((partner) => (
-                    <View key={partner.name}>
-                      <Modal
-                        modalData={this.state.modalData}
-                        isVisible={this.state.passcodeModal}
-                        state={this.currentPartner}
-                      >
-                        <View style={styles.modal}>
-                          <Text style={styles.modalTitle}>Enter Passcode</Text>
-                          {this.state.error ? (
-                            <Text style={styles.modalText}>
-                              {this.state.error}
-                            </Text>
-                          ) : (
-                            <Text style={styles.modalText}>
-                              Your organization will provide you with a secret
-                              passcode to access thier private message boards on
-                              Après.
-                            </Text>
-                          )}
-                          <TextInput
-                            returnKeyType="done"
-                            placeholder="Enter passcode..."
-                            placeholderTextColor="#bfbfbf"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            style={styles.input}
-                            onChangeText={(passcode) =>
-                              this.setState({passcode})
-                            }
-                          />
-                          <View style={styles.modalButtonsContainer}>
-                            <TouchableOpacity
-                              style={{width: 150}}
-                              onPress={() =>
-                                this.setState({
-                                  passcodeModal: false,
-                                  error: false
-                                })
-                              }
-                            >
-                              <Text style={styles.modalButtonCancel}>
-                                Cancel
+                    this.state.partnerNames.length ? (
+                      this.state.partnerNames.map((partner) => (
+                        <View key={partner.name}>
+                          <Modal
+                            modalData={this.state.modalData}
+                            isVisible={this.state.passcodeModal}
+                            state={this.currentPartner}
+                          >
+                            <View style={styles.modal}>
+                              <Text style={styles.modalTitle}>Enter Passcode</Text>
+                              {this.state.error ? (
+                                <Text style={styles.modalText}>
+                                  {this.state.error}
+                                </Text>
+                              ) : (
+                                  <Text style={styles.modalText}>
+                                    Your organization will provide you with a secret
+                                    passcode to access thier private message boards on
+                                    Après.
+                                  </Text>
+                                )}
+                              <TextInput
+                                returnKeyType="done"
+                                placeholder="Enter passcode..."
+                                placeholderTextColor="#bfbfbf"
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                style={styles.input}
+                                onChangeText={(passcode) =>
+                                  this.setState({ passcode })
+                                }
+                              />
+                              <View style={styles.modalButtonsContainer}>
+                                <TouchableOpacity
+                                  style={{ width: 150 }}
+                                  onPress={() =>
+                                    this.setState({
+                                      passcodeModal: false,
+                                      error: false
+                                    })
+                                  }
+                                >
+                                  <Text style={styles.modalButtonCancel}>
+                                    Cancel
                               </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                              style={{
-                                width: 150,
-                                borderLeftWidth: 1,
-                                borderLeftColor: 'gray'
-                              }}
-                              // key={partner.name}
-                              onPress={() => {
-                                checkPasscode(this.state.currentPartner);
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                  style={{
+                                    width: 150,
+                                    borderLeftWidth: 1,
+                                    borderLeftColor: 'gray'
+                                  }}
+                                  // key={partner.name}
+                                  onPress={() => {
+                                    checkPasscode(this.state.currentPartner);
 
-                                console.log(
-                                  '\n=======onPress checkPasscode======\n'
-                                );
+                                    console.log(
+                                      '\n=======onPress checkPasscode======\n'
+                                    );
 
-                                // console.log('\npartnerName.name')
-                                // console.log(partnerName.name)
+                                    // console.log('\npartnerName.name')
+                                    // console.log(partnerName.name)
 
-                                // console.log('\npartnerName.passcode')
-                                // console.log(partnerName.passcode)
+                                    // console.log('\npartnerName.passcode')
+                                    // console.log(partnerName.passcode)
 
-                                // console.log('\npartnerName')
-                                // console.log(partnerName)
+                                    // console.log('\npartnerName')
+                                    // console.log(partnerName)
 
-                                console.log('\n(this.state.currentPartner)');
-                                console.log(this.state.currentPartner);
+                                    console.log('\n(this.state.currentPartner)');
+                                    console.log(this.state.currentPartner);
 
-                                console.log(
-                                  '\n(this.state.currentPartner.passcode)'
-                                );
-                                console.log(this.state.currentPartner.passcode);
+                                    console.log(
+                                      '\n(this.state.currentPartner.passcode)'
+                                    );
+                                    console.log(this.state.currentPartner.passcode);
 
-                                // console.log('\npartner.passcode')
-                                // console.log(partner.passcode)
+                                    // console.log('\npartner.passcode')
+                                    // console.log(partner.passcode)
 
-                                // console.log('\npartner')
-                                // console.log(partner)
-                              }}
-                            >
-                              <Text style={styles.modalButtonSave}>Enter</Text>
-                            </TouchableOpacity>
-                          </View>
-                        </View>
-                      </Modal>
+                                    // console.log('\npartner')
+                                    // console.log(partner)
+                                  }}
+                                >
+                                  <Text style={styles.modalButtonSave}>Enter</Text>
+                                </TouchableOpacity>
+                              </View>
+                            </View>
+                          </Modal>
 
-                      <TouchableOpacity
-                        key={partner.name}
-                        style={styles.buttonContainer}
-                        onPress={() => {
-                          checkLockState(partner);
-                          setCurrentPartner(partner);
-                          // renderModal(partner)
+                          <TouchableOpacity
+                            key={partner.name}
+                            style={styles.buttonContainer}
+                            onPress={() => {
+                              checkLockState(partner);
+                              setCurrentPartner(partner);
+                              // renderModal(partner)
 
-                          console.log(
-                            '\n=======onPress checkLockState======\n'
-                          );
+                              console.log(
+                                '\n=======onPress checkLockState======\n'
+                              );
 
-                          console.log('\npartner.name');
-                          console.log(partner.name);
+                              console.log('\npartner.name');
+                              console.log(partner.name);
 
-                          console.log('\npartner.passcode');
-                          console.log(partner.passcode);
+                              console.log('\npartner.passcode');
+                              console.log(partner.passcode);
 
-                          console.log('\npartner');
-                          console.log(partner);
+                              console.log('\npartner');
+                              console.log(partner);
 
-                          // console.log('\npartnerName.name')
-                          // console.log(partnerName.name)
+                              // console.log('\npartnerName.name')
+                              // console.log(partnerName.name)
 
-                          // console.log('\npartnerName.passcode')
-                          // console.log(partnerName.passcode)
+                              // console.log('\npartnerName.passcode')
+                              // console.log(partnerName.passcode)
 
-                          // console.log('\npartnerName')
-                          // console.log(partnerName)
-                        }}
-                      >
-                        {/* {renderModal(partner)} */}
+                              // console.log('\npartnerName')
+                              // console.log(partnerName)
+                            }}
+                          >
+                            {/* {renderModal(partner)} */}
 
-                        <View style={styles.singleChatView}>
-                          <Text style={styles.buttonText}>
-                            {renderLock(partner)}{' '}
-                          </Text>
+                            <View style={styles.singleChatView}>
+                              <Text style={styles.buttonText}>
+                                {renderLock(partner)}{' '}
+                              </Text>
 
-                          <Text style={styles.buttonText}>
-                            {`${partner.name}`}
-                          </Text>
-                          <Text
-                            style={styles.subtitle}
-                          >{`\ntesting passcode: ${partner.passcode}`}</Text>
-                          {/* {`\ntesting partner: ${partner.name}`} */}
+                              <Text style={styles.buttonText}>
+                                {`${partner.name}`}
+                              </Text>
+                              <Text
+                                style={styles.subtitle}
+                              >{`\ntesting passcode: ${partner.passcode}`}</Text>
+                              {/* {`\ntesting partner: ${partner.name}`} */}
 
-                          {/* <Ionicons name="md-people" size={25} color="grey">
+                              {/* <Ionicons name="md-people" size={25} color="grey">
                           {' '}
                         </Ionicons> */}
+                            </View>
+                          </TouchableOpacity>
                         </View>
-                      </TouchableOpacity>
-                    </View>
-                  ))
-                ) : null}
+                      ))
+                    ) : null}
               </ScrollView>
             </SafeAreaView>
             <TouchableOpacity onPress={() => contactAdmin()}>
@@ -669,9 +669,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 10
   },
-  root: {flex: 1, padding: 20},
-  title: {textAlign: 'center', fontSize: 30},
-  codeFiledRoot: {marginTop: 20},
+  root: { flex: 1, padding: 20 },
+  title: { textAlign: 'center', fontSize: 30 },
+  codeFiledRoot: { marginTop: 20 },
   cell: {
     width: 40,
     height: 40,

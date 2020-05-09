@@ -8,10 +8,18 @@ import {
   KeyboardAvoidingView,
   AsyncStorage,
   Alert,
-  Linking
+  Linking,
+  Keyboard, 
+  TouchableWithoutFeedback
 } from 'react-native';
 import Fire from '../Fire';
 import RNPickerSelect from 'react-native-picker-select';
+
+const DismissKeyboard = ({ children }) => (
+  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    {children}
+  </TouchableWithoutFeedback>
+);
 
 const roleList = [
   "I'm a New Mother.",
@@ -25,7 +33,7 @@ const roleList = [
   "I'm Parent Recovering from Loss.",
   "I'm an Other Role Not Described Here.",
   "I'd Prefer Not to Disclose."
-].map((role) => ({label: role, value: role}));
+].map((role) => ({ label: role, value: role }));
 
 export default class SignupScreen extends React.Component {
   constructor() {
@@ -56,7 +64,7 @@ export default class SignupScreen extends React.Component {
             4. If you experience a user who repeatedly behaves in an unacceptable manner, please flag the user for review.
             5. If you are struggling in a way that feels overwhelming, please see our resources for access to professional mental healthcare providers, and get help.
             6. We are open and love your feedback. Please send us your suggestions on how to improve your experience.`,
-      [{text: 'OK', onPress: () => this.handleSubmit()}]
+      [{ text: 'OK', onPress: () => this.handleSubmit() }]
     );
   };
 
@@ -76,8 +84,9 @@ export default class SignupScreen extends React.Component {
       directionalOffsetThreshold: 80
     };
     return (
+      <DismissKeyboard>
       <View style={styles.container}>
-        <KeyboardAvoidingView style={{flex: 1}}>
+        <KeyboardAvoidingView style={{ flex: 1 }}>
           <View style={styles.container}>
             <Text style={styles.title}>après</Text>
             <View style={styles.internalcontainer}>
@@ -90,7 +99,7 @@ export default class SignupScreen extends React.Component {
                   autoCapitalize="none"
                   autoCorrect={false}
                   style={styles.input}
-                  onChangeText={(username) => this.setState({username})}
+                  onChangeText={(username) => this.setState({ username })}
                   ref={(input) => (this.username = input)}
                   blurOnSubmit={false}
                 />
@@ -115,7 +124,7 @@ export default class SignupScreen extends React.Component {
                   autoCapitalize="none"
                   autoCorrect={false}
                   style={styles.input}
-                  onChangeText={(email) => this.setState({email})}
+                  onChangeText={(email) => this.setState({ email })}
                   ref={(input) => (this.email = input)}
                   keyboardType="email-address"
                   blurOnSubmit={false}
@@ -123,9 +132,9 @@ export default class SignupScreen extends React.Component {
               </View>
               {(this.state.error === 'The email address is badly formatted.' ||
                 this.state.error ===
-                  'The email address is already in use by another account.') && (
-                <Text style={styles.error}>{this.state.error}</Text>
-              )}
+                'The email address is already in use by another account.') && (
+                  <Text style={styles.error}>{this.state.error}</Text>
+                )}
               <View style={styles.field}>
                 <Text style={styles.text}>password</Text>
                 <TextInput
@@ -133,7 +142,7 @@ export default class SignupScreen extends React.Component {
                   secureTextEntry
                   onSubmitEditing={() => this.birthday.focus()}
                   style={styles.input}
-                  onChangeText={(password) => this.setState({password})}
+                  onChangeText={(password) => this.setState({ password })}
                   ref={(input) => (this.password = input)}
                   blurOnSubmit={false}
                 />
@@ -141,9 +150,9 @@ export default class SignupScreen extends React.Component {
               {(this.state.error ===
                 'The password must be 6 characters long or more.' ||
                 this.state.error ===
-                  'Password should be at least 6 characters') && (
-                <Text style={styles.error}>{this.state.error}</Text>
-              )}
+                'Password should be at least 6 characters') && (
+                  <Text style={styles.error}>{this.state.error}</Text>
+                )}
               {/* <View style={styles.field}>
               <Text style={styles.text}>birthday (ddmmyyyy)</Text>
               <TextInput
@@ -202,7 +211,7 @@ export default class SignupScreen extends React.Component {
             </View> */}
               <View style={styles.roleIdOuterWrap}>
                 <Text
-                  style={[{marginTop: 12, alignSelf: 'center'}, styles.text]}
+                  style={[{ marginTop: 12, alignSelf: 'center' }, styles.text]}
                 >
                   {' '}
                   What best describes you?
@@ -212,7 +221,7 @@ export default class SignupScreen extends React.Component {
                 <View style={styles.roleIdInnerWrap}>
                   <View>
                     <RNPickerSelect
-                      style={{...pickerSelectStyles}}
+                      style={{ ...pickerSelectStyles }}
                       onValueChange={(value) => {
                         this.setState({
                           selectedRole: value
@@ -259,7 +268,7 @@ export default class SignupScreen extends React.Component {
                   );
                   // if error occured, put it on state
                   if (status) {
-                    this.setState({error: status.message});
+                    this.setState({ error: status.message });
                   }
                   // if everything is good
                   else {
@@ -270,11 +279,12 @@ export default class SignupScreen extends React.Component {
                 <Text style={styles.buttonText}>sign up</Text>
               </TouchableOpacity>
 
+
               <View style={styles.eula}>
                 <Text style={styles.eulaText}>
                   By proceeding with signing in and clicking 'sign up', you
                   agree to our terms as listed in our
-                </Text>
+                
                 <Text
                   style={styles.link}
                   onPress={() =>
@@ -283,13 +293,22 @@ export default class SignupScreen extends React.Component {
                     )
                   }
                 >
-                  End-User License Agreement (EULA) of Après.
+                  {' '}
+                End-User License Agreement (EULA) of Après.
+                </Text>
                 </Text>
               </View>
+
             </View>
+
+
+
           </View>
+
+
         </KeyboardAvoidingView>
       </View>
+      </DismissKeyboard>
     );
   }
 }
@@ -312,13 +331,21 @@ const styles = StyleSheet.create({
     flex: 0,
     paddingBottom: 10
   },
+  eula: {
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    textAlign: 'justify',
+    flex: 0,
+    paddingBottom: 10
+  },
   eulaText: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-end',
     marginRight: 50,
     marginLeft: 50,
-    letterSpacing: 1,
+    letterSpacing: 0,
     fontFamily: 'Futura-Light',
     textAlign: 'center',
     lineHeight: 15
@@ -330,7 +357,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginRight: 50,
     marginLeft: 50,
-    letterSpacing: 1,
+    letterSpacing: 0,
     fontFamily: 'Futura-Light',
     textAlign: 'center'
   },
@@ -339,7 +366,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 20,
-    marginTop: 0,
+    marginTop: -25,
     fontFamily: 'CormorantGaramond-Light'
   },
   field: {
