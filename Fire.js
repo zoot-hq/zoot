@@ -33,6 +33,7 @@ class Fire {
       base64,
       react,
       hidden,
+      deleted,
       isReply
     } = snapshot.val();
     const {key: _id} = snapshot;
@@ -50,6 +51,7 @@ class Fire {
       base64,
       react,
       hidden,
+      deleted,
       isReply
     };
     return message;
@@ -175,8 +177,10 @@ class Fire {
         users: {X: true}
       },
       hidden: false,
+      deleted: false,
       react: true,
-      replies: []
+      replies: [],
+      parentId: parentId
     };
     firebase
       // If a reply is made to a reply, the reply ID is duplicated at the root of the chatroom as if it's a new message, except that its only child in the DB is 'replies'. If we decide to allow the user to delete replies, they should be deleted from both locations.
@@ -214,6 +218,7 @@ class Fire {
           users: {X: true}
         },
         hidden: false,
+        deleted: false,
         react: true,
         replies: []
       };

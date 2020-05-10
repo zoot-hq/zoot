@@ -41,7 +41,8 @@ export default class Bubble extends React.Component {
       indent: 0,
       newReply: false,
       replyInput: '',
-      showReplies: true
+      showReplies: true,
+      deleted: false
     };
   }
 
@@ -109,7 +110,13 @@ export default class Bubble extends React.Component {
         </TouchableOpacity>
       );
     }
-    if (this.props.currentMessage.text) {
+    if (this.props.currentMessage.deleted || this.state.deleted) {
+      return (
+        <Text style={styles.deletedMessage}>
+          The user has deleted this message.
+        </Text>
+      );
+    } else if (this.props.currentMessage.text) {
       const {
         containerStyle,
         wrapperStyle,
@@ -435,13 +442,33 @@ export default class Bubble extends React.Component {
           </TouchableOpacity>
 
           {this.renderBlock()}
+          {this.isSameUser() && (
+            <TouchableOpacity
+              style={{marginRight: 20}}
+              onLongPress={() => this.deleteMessage()}
+            >
+              <Feather name="trash-2" color="lightgray" size={15} />
+            </TouchableOpacity>
+          )}
 
+<<<<<<< HEAD
+          {/* replies can only have one level; you cannot reply to replies */}
+          {!this.props.currentMessage.isReply && (
+            <TouchableOpacity
+              style={{marginRight: 20}}
+              onPress={() => this.setState({newReply: true})}
+            >
+              <Feather name="corner-right-down" color="lightgrey" size={15} />
+            </TouchableOpacity>
+          )}
+=======
           <TouchableOpacity
             style={{ marginRight: 20 }}
             onPress={() => this.setState({ newReply: true })}
           >
             <Feather name="corner-right-down" color="lightgrey" size={15} />
           </TouchableOpacity>
+>>>>>>> master
 
           {this.renderDisplayReplies()}
         </View>
@@ -463,6 +490,28 @@ export default class Bubble extends React.Component {
         </TouchableOpacity>
       );
     }
+  }
+
+  async deleteMessage() {
+    const roomRef = await firebase
+      .database()
+      .ref('chatrooms')
+      .child(this.props.currentMessage.room);
+    // if message is a reply, change deleted to 'true' in 'replies' of parent
+    if (this.props.currentMessage.isReply) {
+      await roomRef
+        .child(this.props.currentMessage.parentId)
+        .child('replies')
+        .child(this.props.currentMessage._id)
+        .update({deleted: true, react: false});
+    }
+    // else change deleted to true in root level message/duplicate
+    else {
+      await roomRef
+        .child(this.props.currentMessage._id)
+        .update({deleted: true, react: false});
+    }
+    this.setState({deleted: true});
   }
 
   renderReplies() {
@@ -562,8 +611,13 @@ export default class Bubble extends React.Component {
       .child('likes')
       .once('value')
       .then((snapshot) => snapshot.val());
+<<<<<<< HEAD
+    if (likes && likes.count) {
+      this.setState({likes: likes});
+=======
     if (likes.count) {
       this.setState({ likes: likes });
+>>>>>>> master
     }
     const loves = await firebase
       .database()
@@ -573,8 +627,13 @@ export default class Bubble extends React.Component {
       .child('loves')
       .once('value')
       .then((snapshot) => snapshot.val());
+<<<<<<< HEAD
+    if (loves && loves.count) {
+      this.setState({loves: loves});
+=======
     if (loves.count) {
       this.setState({ loves: loves });
+>>>>>>> master
     }
     const lightbulbs = await firebase
       .database()
@@ -584,8 +643,13 @@ export default class Bubble extends React.Component {
       .child('lightbulbs')
       .once('value')
       .then((snapshot) => snapshot.val());
+<<<<<<< HEAD
+    if (lightbulbs && lightbulbs.count) {
+      this.setState({lightbulbs: lightbulbs});
+=======
     if (lightbulbs.count) {
       this.setState({ lightbulbs: lightbulbs });
+>>>>>>> master
     }
     const flags = await firebase
       .database()
@@ -595,8 +659,13 @@ export default class Bubble extends React.Component {
       .child('flags')
       .once('value')
       .then((snapshot) => snapshot.val());
+<<<<<<< HEAD
+    if (flags && flags.count) {
+      this.setState({flags: flags});
+=======
     if (flags.count) {
       this.setState({ flags: flags });
+>>>>>>> master
     }
   }
   submitReply = async () => {
@@ -847,6 +916,11 @@ const styles = StyleSheet.create({
     marginRight: 0,
     fontFamily: 'Futura-Light',
     color: 'gray'
+  },
+  deletedMessage: {
+    fontFamily: 'Futura-Light',
+    color: 'gray',
+    alignSelf: 'flex-end'
   },
   container: {
     flex: 1,
