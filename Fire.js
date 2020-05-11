@@ -151,11 +151,12 @@ class Fire {
   };
 
   // send replies to the backend
-  sendReply = async (newReply, room, parentId) => {
-    const {text, user} = newReply;
+  sendReply = async (newReply, room, roomType, parentId) => {
+    const {text, user, mention} = newReply;
     const reply = {
       text,
       user,
+      mention,
       room,
       timestamp: this.timestamp,
       createdAt: new Date(this.timestamp),
@@ -179,13 +180,11 @@ class Fire {
       hidden: false,
       deleted: false,
       react: true,
-      replies: [],
       parentId: parentId
     };
     firebase
-      // If a reply is made to a reply, the reply ID is duplicated at the root of the chatroom as if it's a new message, except that its only child in the DB is 'replies'. If we decide to allow the user to delete replies, they should be deleted from both locations.
       .database()
-      .ref('chatrooms')
+      .ref(roomType)
       .child(room)
       .child(parentId)
       .child('replies')
@@ -709,19 +708,25 @@ class Fire {
 
   // this function updates the database in increasing the reaction type of
   // a message by 1
-  react(message, reactionType, updatedCount) {
-    const {room, _id} = message;
-    const ref = firebase.database().ref('chatrooms').child(room).child(_id);
+  react(message, reactionType, updatedCount, roomType) {
+    const {room, _id, parentId} = message;
+    const ref = firebase.database().ref(roomType).child(room);
+    const messageRef = message.isReply
+      ? ref.child(parentId).child('replies').child(_id)
+      : ref.child(_id);
 
     // set number of likes/loves
-    ref.child(reactionType).set({count: updatedCount});
+    messageRef.child(reactionType).set({count: updatedCount});
 
     //set users object
-    ref.child(reactionType).child('users').set(message[reactionType].users);
+    messageRef
+      .child(reactionType)
+      .child('users')
+      .set(message[reactionType].users);
 
     if (reactionType === 'flags' && updatedCount) {
-      ref.child('hidden').set(true);
-      ref.child('react').set(false);
+      messageRef.child('hidden').set(true);
+      messageRef.child('react').set(false);
     }
   }
 
