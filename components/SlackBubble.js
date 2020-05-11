@@ -459,14 +459,12 @@ export default class Bubble extends React.Component {
           )}
 
           {/* replies can only have one level; you cannot reply to replies */}
-          {!this.props.currentMessage.isReply && (
-            <TouchableOpacity
-              style={{marginRight: 20}}
-              onPress={() => this.setState({newReply: true})}
-            >
-              <Feather name="corner-right-down" color="lightgrey" size={15} />
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity
+            style={{marginRight: 20}}
+            onPress={() => this.setState({newReply: true})}
+          >
+            <Feather name="corner-right-down" color="lightgrey" size={15} />
+          </TouchableOpacity>
 
           {this.renderDisplayReplies()}
         </View>
@@ -491,9 +489,10 @@ export default class Bubble extends React.Component {
   }
 
   async deleteMessage() {
+    const roomType = this.getRoomType();
     const roomRef = await firebase
       .database()
-      .ref('chatrooms')
+      .ref(roomType)
       .child(this.props.currentMessage.room);
     // if message is a reply, change deleted to 'true' in 'replies' of parent
     if (this.props.currentMessage.isReply) {
@@ -516,13 +515,6 @@ export default class Bubble extends React.Component {
     if (this.state.showReplies) {
       return (
         <View>
-          {/* {this.state.showReplies ? (
-             <View>
-               <TouchableOpacity
-                 onPress={() => this.setState({ showReplies: false })}
-               >
-                 <Text style={styles.replyButton}>Hide all replies</Text>
-               </TouchableOpacity> */}
           <AllReplies
             {...this.props}
             // parentIndent indents the reply +10 spaces from its parent message
@@ -530,14 +522,6 @@ export default class Bubble extends React.Component {
             replies={this.state.replies}
           />
         </View>
-        //   ) : (
-        //       <TouchableOpacity
-        //         onPress={() => this.setState({ showReplies: true })}
-        //       >
-        //         <Text style={styles.replyButton}>Show all replies</Text>
-        //       </TouchableOpacity>
-        //     )}
-        // </View>
       );
     }
   }
@@ -587,13 +571,8 @@ export default class Bubble extends React.Component {
       let repliesObj = replies.val();
       let repliesArr = [];
       for (let reply in repliesObj) {
-        // make the id a property on the reply object instead of its key to make the data more accessible
+        // make the id a property on the reply object as well as its key to make the data more accessible (is this still necessary?)
         repliesObj[reply]._id = reply;
-        // if (!parent.isReply) {
-        //   repliesObj[reply].level = 1;
-        // } else {
-        //   repliesObj[reply].level = parent.level + 1;
-        // }
         repliesArr.push(repliesObj[reply]);
       }
       return repliesArr;
@@ -601,53 +580,8 @@ export default class Bubble extends React.Component {
       return [];
     }
   }
-  // async getReplyReactions() {
-  //   const likes = await firebase
-  //     .database()
-  //     .ref('chatrooms')
-  //     .child(this.props.currentMessage.room)
-  //     .child(this.props.currentMessage._id)
-  //     .child('likes')
-  //     .once('value')
-  //     .then((snapshot) => snapshot.val());
-  //   if (likes && likes.count) {
-  //     this.setState({likes: likes});
-  //   }
-  //   const loves = await firebase
-  //     .database()
-  //     .ref('chatrooms')
-  //     .child(this.props.currentMessage.room)
-  //     .child(this.props.currentMessage._id)
-  //     .child('loves')
-  //     .once('value')
-  //     .then((snapshot) => snapshot.val());
-  //   if (loves && loves.count) {
-  //     this.setState({loves: loves});
-  //   }
-  //   const lightbulbs = await firebase
-  //     .database()
-  //     .ref('chatrooms')
-  //     .child(this.props.currentMessage.room)
-  //     .child(this.props.currentMessage._id)
-  //     .child('lightbulbs')
-  //     .once('value')
-  //     .then((snapshot) => snapshot.val());
-  //   if (lightbulbs && lightbulbs.count) {
-  //     this.setState({lightbulbs: lightbulbs});
-  //   }
-  //   const flags = await firebase
-  //     .database()
-  //     .ref('chatrooms')
-  //     .child(this.props.currentMessage.room)
-  //     .child(this.props.currentMessage._id)
-  //     .child('flags')
-  //     .once('value')
-  //     .then((snapshot) => snapshot.val());
-  //   if (flags && flags.count) {
-  //     this.setState({flags: flags});
-  //   }
-  // }
   submitReply = async () => {
+    // send the reply to db
     this.sendReply();
     // then remove the input box from render (since we're finished with it)
     this.setState({newReply: false});
