@@ -125,23 +125,27 @@ export default class Bubble extends React.Component {
         return this.props.renderMessageText(messageTextProps);
       }
       return (
-        // pressing the text opens a TextInput box to add a reply
-        // <TouchableOpacity onPress={() => this.setState({ newReply: true })}>
-
-        <MessageText
-          {...messageTextProps}
-          textStyle={{
-            left: [
-              styles.standardFont,
-              styles.slackMessageText,
-              messageTextProps.textStyle,
-              messageTextStyle,
-              styles.testingYellow
-            ]
-          }}
-        />
-
-        // </TouchableOpacity>
+        // <MessageText
+        //   {...messageTextProps}
+        //   textStyle={{
+        //     left: [
+        //       styles.standardFont,
+        //       styles.slackMessageText,
+        //       messageTextProps.textStyle,
+        //       messageTextStyle,
+        //       styles.testingYellow
+        //     ]
+        //   }}
+        // />
+        <View style={{flexDirection: 'row'}}>
+          <Text style={styles.username}>
+            {this.props.currentMessage.user.name}
+            {this.props.currentMessage.mention}{' '}
+            <Text style={styles.slackMessageText}>
+              {this.props.currentMessage.text}
+            </Text>
+          </Text>
+        </View>
       );
     }
     return null;
@@ -582,18 +586,27 @@ export default class Bubble extends React.Component {
   }
   submitReply = async () => {
     // send the reply to db
-    this.sendReply();
+    await this.sendReply();
     // then remove the input box from render (since we're finished with it)
     this.setState({newReply: false});
     // get all the replies from the database including the recently added reply
-    let replies = await this.getReplies(this.props.currentMessage);
+    // let replies = await this.getReplies(this.props.currentMessage);
     // put all the retrieved replies on the state to display them
     await this.setState({replies: replies});
   };
   sendReply = async () => {
+    let mentionedUser = '';
+    let parentId = this.props.currentMessage._id;
+    if (this.props.currentMessage.isReply) {
+      // include the name of the user to mention
+      mentionedUser = '@' + this.props.currentMessage.user.name;
+      // and make sure it gets added as a child of this message's parent (so they're in the same thread, not nested at a new level)
+      parentId = this.props.currentMessage.parentId;
+    }
     // format message to go to Fire.shared.send()
     const message = {
       text: this.state.replyInput,
+      mention: mentionedUser,
       user: {name: Fire.shared.username(), _id: Fire.shared.uid()}
     };
     const roomType = this.getRoomType();
@@ -602,7 +615,7 @@ export default class Bubble extends React.Component {
       message,
       this.props.currentMessage.room,
       roomType,
-      this.props.currentMessage._id
+      parentId
     );
   };
 
@@ -677,34 +690,34 @@ export default class Bubble extends React.Component {
                 onLayout={(event) => {
                   messageViewWidth = event.nativeEvent.layout.width;
                 }}
-                style={[
-                  this.props.currentMessage.isReply
-                    ? {
-                        // maxWidth: win.width,
-                        flexDirection: 'row', // F
-                        flexWrap: 'wrap',
-                        flex: 1
-                        // alignContent: 'flex-start',
-                        // maxWidth: win.width,
-                        // alignSelf: 'baseline',
-                        // borderColor: 'blue',
-                        // borderStyle: 'dashed',
-                        // borderWidth: 2,
-                      }
-                    : {
-                        flex: 1,
-                        // maxWidth: win.width,
-                        flexDirection: 'row', // F
-                        flexWrap: 'wrap'
-                        // alignContent: 'flex-start',
-                        // alignSelf: 'baseline',
-                        // borderColor: 'blue',
-                        // borderStyle: 'solid',
-                        // borderWidth: 2,
-                      }
-                ]}
+                // style={[
+                //   this.props.currentMessage.isReply
+                //     ? {
+                //         // maxWidth: win.width,
+                //         flexDirection: 'row', // F
+                //         flexWrap: 'wrap',
+                //         flex: 1
+                //         // alignContent: 'flex-start',
+                //         // maxWidth: win.width,
+                //         // alignSelf: 'baseline',
+                //         // borderColor: 'blue',
+                //         // borderStyle: 'dashed',
+                //         // borderWidth: 2,
+                //       }
+                //     : {
+                //         flex: 1,
+                //         // maxWidth: win.width,
+                //         flexDirection: 'row', // F
+                //         flexWrap: 'wrap'
+                //         // alignContent: 'flex-start',
+                //         // alignSelf: 'baseline',
+                //         // borderColor: 'blue',
+                //         // borderStyle: 'solid',
+                //         // borderWidth: 2,
+                //       }
+                // ]}
               >
-                {this.renderUsername()}
+                {/* {this.renderUsername()} */}
                 {/* render time next to username in PMs and live chat: */}
                 {this.props.currentMessage.user._id &&
                   (this.props.listViewProps.navigation.state.params.live ||
@@ -729,38 +742,32 @@ export default class Bubble extends React.Component {
               {/* this.state.newReply becomes true when a user clicks the reply button */}
               {this.state.newReply && (
                 <View>
-                  {!this.props.currentMessage.level ||
-                  this.props.currentMessage.level < 5 ? (
-                    <View>
-                      <TextInput
-                        returnKeyType="done"
-                        placeholder="Type your reply"
-                        placeholderTextColor="#bfbfbf"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        style={styles.input}
-                        onChangeText={(replyInput) =>
-                          this.setState({replyInput})
-                        }
-                      />
-                      <View style={styles.replyInputContainer}>
-                        <TouchableOpacity
-                          onPress={() => this.setState({newReply: false})}
-                        >
-                          <Text style={styles.replyButton}>Cancel</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={this.submitReply}>
-                          <Text style={styles.replyButton}>Submit</Text>
-                        </TouchableOpacity>
-                      </View>
+                  <View>
+                    {this.props.currentMessage.isReply && (
+                      <Text style={styles.username}>
+                        @{this.props.currentMessage.user.name}:
+                      </Text>
+                    )}
+                    <TextInput
+                      returnKeyType="done"
+                      placeholder="Type your reply"
+                      placeholderTextColor="#bfbfbf"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      style={styles.input}
+                      onChangeText={(replyInput) => this.setState({replyInput})}
+                    />
+                    <View style={styles.replyInputContainer}>
+                      <TouchableOpacity
+                        onPress={() => this.setState({newReply: false})}
+                      >
+                        <Text style={styles.replyButton}>Cancel</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={this.submitReply}>
+                        <Text style={styles.replyButton}>Submit</Text>
+                      </TouchableOpacity>
                     </View>
-                  ) : (
-                    <Text style={styles.slackMessageText}>
-                      Sorry, this message has reached the maximum number of
-                      replies. Consider sending a PM or adding a new top-level
-                      message.
-                    </Text>
-                  )}
+                  </View>
                 </View>
               )}
             </View>
@@ -795,7 +802,6 @@ const styles = StyleSheet.create({
     // borderColor: 'hotpink',
     // borderWidth: 2,
     alignSelf: 'baseline',
-    flex: 0,
     flexDirection: 'row', // F
     flexWrap: 'wrap'
     // fontWeight: "900",
@@ -809,7 +815,8 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     marginRight: 0,
     fontFamily: 'Futura-Light',
-    color: 'black'
+    color: 'black',
+    flexWrap: 'wrap'
   },
   testingYellow: {
     flexWrap: 'wrap',

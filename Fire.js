@@ -152,10 +152,11 @@ class Fire {
 
   // send replies to the backend
   sendReply = async (newReply, room, roomType, parentId) => {
-    const {text, user} = newReply;
+    const {text, user, mention} = newReply;
     const reply = {
       text,
       user,
+      mention,
       room,
       timestamp: this.timestamp,
       createdAt: new Date(this.timestamp),
@@ -179,11 +180,9 @@ class Fire {
       hidden: false,
       deleted: false,
       react: true,
-      replies: [],
       parentId: parentId
     };
     firebase
-      // If a reply is made to a reply, the reply ID is duplicated at the root of the chatroom as if it's a new message, except that its only child in the DB is 'replies'. If we decide to allow the user to delete replies, they should be deleted from both locations.
       .database()
       .ref(roomType)
       .child(room)
