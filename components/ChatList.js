@@ -53,11 +53,6 @@ export default class ChatList extends React.Component {
     this.bookmark = () => {
       this.getBookmarkedChats();
       this.setState({ bookmarks: true });
-      // Alert.alert(
-      //   'Bookmarks coming soon!',
-      //   'Bookmarked boards are in the works. Hang tight!',
-      //   [{text: 'OK!'}]
-      // );
     };
 
     // This updates the partner property in the state successfully
@@ -227,6 +222,7 @@ export default class ChatList extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
+
           {/* bookmark button */}
           <View style={styles.help}>
             <TouchableOpacity onPress={() => this.bookmark()}>
@@ -234,73 +230,16 @@ export default class ChatList extends React.Component {
             </TouchableOpacity>
 
             {/* help button */}
-
             <TouchableOpacity onPress={() => this.helpAlert()}>
-              {/* <AntDesign name="questioncircleo" size={20} color="black" /> */}
               <HelpIcon />
             </TouchableOpacity>
+
           </View>
 
-          {/* titles */}
-
-          {/* <Text style={styles.title}>
-
-            après
-
-          </Text> */}
-
+          {/* title */}
           <Text style={styles.subtitle2}>{renderHeader()}</Text>
+
         </View>
-
-        {/* <Text style={styles.subtitle}>
-            Welcome.{'\n'}What type of support are you here for?
-          </Text>
-        </View> */}
-
-        {/* navigation to user profile for development purposes */}
-
-        {/* <View style={styles.testingView}>
-          <Text style={styles.subtitle}> For testing purposes only:</Text>
-
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('CategoryList')}
-          >
-            <Text style={styles.subtitle}>CategoryList</Text>
-          </TouchableOpacity>
-        </View> */}
-
-        {/* <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Resources')}>
-            <Text style={styles.subtitle}>Resources</Text>
-          </TouchableOpacity>
-         */}
-
-        {/*
-          <View
-            style={{
-              display: 'flex',
-              alignItems: 'space-between',
-              marginTop: 10,
-              flexDirection: 'row',
-              alignSelf: 'center'
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('PMList')}
-            >
-              <Ionicons name="ios-chatbubbles" size={30} color="grey"></Ionicons>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={this.liveChat}>
-              <MaterialIcons
-                name="speaker-phone"
-                size={30}
-                color={this.state.liveChatAvailable ? 'green' : 'grey'}
-              ></MaterialIcons>
-            </TouchableOpacity>
-          </View>
-        </View>
-
- */}
 
         {/* search bar - queries all chatrooms to the users query */}
         <View style={styles.searchView}>
