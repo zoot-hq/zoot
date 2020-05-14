@@ -9,7 +9,8 @@ import {
   SafeAreaView,
   ScrollView,
   KeyboardAvoidingView,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Keyboard
 } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { MaterialIndicator } from 'react-native-indicators';
