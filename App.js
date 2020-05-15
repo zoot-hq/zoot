@@ -19,6 +19,8 @@ import Splash from './components/Splash';
 import SplashContent from './components/SplashContent';
 import CategoryList from './components/CategoryList';
 
+import LottieSplash from './components/LottieSplash';
+
 // disabled yellow comments/alerts
 console.disableYellowBox = true;
 console.ignoredYellowBox = ['Warning: Each', 'Warning: Failed'];
@@ -60,6 +62,7 @@ const navigator = createStackNavigator(
       }
     },
     SplashContent,
+    LottieSplash,
     ChatList,
     ChatRoom,
     Signup: {

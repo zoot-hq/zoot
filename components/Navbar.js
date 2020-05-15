@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet, View, TouchableOpacity, Alert, Image} from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Alert, Image } from 'react-native';
 import {
   AntDesign,
   Ionicons,
@@ -7,8 +7,8 @@ import {
   MaterialCommunityIcons
 } from '@expo/vector-icons';
 import Fire from '../Fire';
-import {withNavigation} from 'react-navigation';
-import Svg, {Circle, Rect} from 'react-native-svg';
+import { withNavigation } from 'react-navigation';
+import Svg, { Circle, Rect } from 'react-native-svg';
 
 import HomeIcon from '../assets/icons/HomeIcon.js';
 
@@ -44,7 +44,7 @@ class Navbar extends React.Component {
 
   getNumUnreadMessages = () => {
     Fire.shared.getNumUnreadMessages((num) => {
-      this.setState({numUnreadMessages: +num});
+      this.setState({ numUnreadMessages: +num });
     });
   };
 
@@ -83,7 +83,7 @@ class Navbar extends React.Component {
       (currNyTime.getHours() === 21 ||
         (currNyTime.getHours() === 22 && currNyTime.getMinutes() < 30))
     )
-      this.setState({liveChatAvailable: true});
+      this.setState({ liveChatAvailable: true });
   };
 
   liveChat = () => {
@@ -109,7 +109,7 @@ class Navbar extends React.Component {
     ) {
       const timeToAcceptableFirebaseString = `live-${
         currNyTime.getMonth() + 1
-      }-${currNyTime.getDate()}-${currNyTime.getFullYear()}`;
+        }-${currNyTime.getDate()}-${currNyTime.getFullYear()}`;
 
       Fire.shared.createLiveRoomIfDoesNotExist(
         timeToAcceptableFirebaseString,
@@ -121,7 +121,7 @@ class Navbar extends React.Component {
       Alert.alert(
         'Live Chat Unavailable',
         'Sorry we missed you! Live chat is available every Wednesday from 9PM EST until 10:30PM EST. No invitation necessary!',
-        [{text: 'See you next time!'}]
+        [{ text: 'See you next time!' }]
       );
     }
   };
@@ -216,6 +216,20 @@ class Navbar extends React.Component {
                 <ResourceIcon />
               </TouchableOpacity>
             </View>
+
+            <View
+              style={{
+                alignItems: 'center',
+                flex: 1
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => this.props.navigation.replace('LottieSplash')}
+              >
+                <MaterialCommunityIcons name="test-tube" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
+
           </View>
 
           <View style={styles.notifications}>
