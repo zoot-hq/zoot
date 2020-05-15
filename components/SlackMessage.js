@@ -40,8 +40,8 @@ export default class Message extends React.Component {
   }
 
   renderBubble() {
-    const addNewReplyMethod = this.props.addNewReply
-      ? this.props.addNewReply
+    const renderNewReplyMethod = this.props.renderNewReply
+      ? this.props.renderNewReply
       : null;
     const bubbleProps = this.getInnerComponentProps();
     if (this.props.renderBubble) {
@@ -49,7 +49,7 @@ export default class Message extends React.Component {
     }
     return (
       <View styles={{marginBottom: 20}}>
-        <Bubble {...bubbleProps} addNewReply={addNewReplyMethod} />
+        <Bubble {...bubbleProps} renderNewReply={renderNewReplyMethod} />
       </View>
     );
   }

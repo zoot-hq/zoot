@@ -8,11 +8,11 @@ export default class AllReplies extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      replies: this.props.replies || []
+      replies: this.props.replies
     };
-    this.addNewReply = this.addNewReply.bind(this);
+    this.renderNewReply = this.renderNewReply.bind(this);
   }
-  addNewReply(message) {
+  renderNewReply(message) {
     const newReplies = this.state.replies.slice();
     newReplies.push(message);
     this.setState({replies: newReplies});
@@ -34,7 +34,7 @@ export default class AllReplies extends Component {
             >
               <SlackMessage
                 {...this.props}
-                addNewReply={this.addNewReply}
+                renderNewReply={this.renderNewReply}
                 currentMessage={reply}
               />
             </View>

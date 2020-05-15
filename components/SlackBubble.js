@@ -47,7 +47,7 @@ export default class Bubble extends React.Component {
   }
 
   async componentWillMount() {
-    let replies = await this.getReplies(this.props.currentMessage);
+    let replies = await this.getReplies(this.props.currentMessage._id);
     await this.setState({replies: replies});
   }
 
@@ -598,7 +598,7 @@ export default class Bubble extends React.Component {
       const newestReplies = await this.getReplies(
         this.props.currentMessage.parentId
       );
-      this.props.addNewReply(newestReplies[newestReplies.length - 1]);
+      this.props.renderNewReply(newestReplies[newestReplies.length - 1]);
     }
   };
   sendReply = async () => {
