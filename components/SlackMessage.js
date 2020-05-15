@@ -40,13 +40,16 @@ export default class Message extends React.Component {
   }
 
   renderBubble() {
+    const addNewReplyMethod = this.props.addNewReply
+      ? this.props.addNewReply
+      : null;
     const bubbleProps = this.getInnerComponentProps();
     if (this.props.renderBubble) {
       return this.props.renderBubble(bubbleProps);
     }
     return (
       <View styles={{marginBottom: 20}}>
-        <Bubble {...bubbleProps} />
+        <Bubble {...bubbleProps} addNewReply={addNewReplyMethod} />
       </View>
     );
   }
