@@ -552,13 +552,13 @@ export default class Bubble extends React.Component {
     }
   }
 
-  async getReplies(parent) {
+  async getReplies(parentId) {
     const roomType = this.getRoomType();
     const ref = await firebase
       .database()
       .ref(roomType)
-      .child(parent.room)
-      .child(parent._id);
+      .child(this.props.currentMessage.room)
+      .child(parentId);
     let replies = await ref
       .child('replies')
       .once('value')
@@ -589,10 +589,17 @@ export default class Bubble extends React.Component {
     await this.sendReply();
     // then remove the input box from render (since we're finished with it)
     this.setState({newReply: false});
-    // get all the replies from the database including the recently added reply
-    // let replies = await this.getReplies(this.props.currentMessage);
-    // put all the retrieved replies on the state to display them
-    await this.setState({replies: replies});
+    if (!this.props.currentMessage.isReply) {
+      // get all the replies from the database including the recently added reply
+      let replies = await this.getReplies(this.props.currentMessage._id);
+      // put all the retrieved replies on the state to display them
+      await this.setState({replies: replies});
+    } else {
+      const newestReplies = await this.getReplies(
+        this.props.currentMessage.parentId
+      );
+      this.props.addNewReply(newestReplies[newestReplies.length - 1]);
+    }
   };
   sendReply = async () => {
     let mentionedUser = '';
