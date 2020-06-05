@@ -1,9 +1,9 @@
 {
-  "expoServerPort": null,
+  "expoServerPort": 19000,
   "expoServerNgrokUrl": "https://ht-fnr.anonymous.zoot.exp.direct",
   "packagerNgrokUrl": "https://packager.ht-fnr.anonymous.zoot.exp.direct",
-  "ngrokPid": 45897,
+  "ngrokPid": 69878,
   "devToolsPort": 19002,
-  "packagerPort": null,
-  "packagerPid": null
+  "packagerPort": 19001,
+  "packagerPid": 69867
 }

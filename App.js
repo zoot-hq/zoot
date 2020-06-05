@@ -1,7 +1,7 @@
 // Stack Navigation
 
-import React, { Component } from 'react';
-import { StatusBar } from 'react-native';
+import React, {Component} from 'react';
+import {StatusBar} from 'react-native';
 
 import ChatList from './components/ChatList';
 import ChatRoom from './components/ChatRoom';
@@ -13,11 +13,12 @@ import PMList from './components/PMList';
 import UserPage from './components/UserPage';
 import Resources from './components/Resources';
 import Navbar from './components/Navbar';
-import { createStackNavigator } from 'react-navigation';
+import {createStackNavigator} from 'react-navigation';
 import PartnerList from './components/PartnerList';
 import Splash from './components/Splash';
 import SplashContent from './components/SplashContent';
 import CategoryList from './components/CategoryList';
+import ThreadScreen from './components/ThreadScreen';
 
 // disabled yellow comments/alerts
 console.disableYellowBox = true;
@@ -41,7 +42,9 @@ console.log(
 //   )
 // }
 
-{/* <StatusBar hidden={false} barStyle="dark-content" /> */ }
+{
+  /* <StatusBar hidden={false} barStyle="dark-content" /> */
+}
 
 const navigator = createStackNavigator(
   {
@@ -111,6 +114,13 @@ const navigator = createStackNavigator(
       navigationOptions: {
         gesturesEnabled: false
       }
+    },
+    ThreadScreen: {
+      name: 'ThreadScreen',
+      screen: ThreadScreen,
+      navigationOptions: {
+        gesturesEnabled: false
+      }
     }
   },
   {
@@ -119,10 +129,6 @@ const navigator = createStackNavigator(
       headerVisible: false
     }
   }
-
-
-
 );
 
 export default navigator;
-

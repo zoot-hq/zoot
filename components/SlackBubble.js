@@ -465,7 +465,12 @@ export default class Bubble extends React.Component {
           {/* replies can only have one level; you cannot reply to replies */}
           <TouchableOpacity
             style={{marginRight: 20}}
-            onPress={() => this.setState({newReply: true})}
+            onPress={() => {
+              this.props.listViewProps.navigation.navigate('ThreadScreen', {
+                rootMessage: this.props.currentMessage,
+                replies: this.state.replies
+              });
+            }}
           >
             <Feather name="corner-right-down" color="lightgrey" size={15} />
           </TouchableOpacity>
