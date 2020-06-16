@@ -30,7 +30,14 @@ export default class ChatRoom extends React.Component {
       replies: []
     };
   }
+  renderMessage(props) {
+    const {
+      currentMessage: {text: currText}
+    } = props;
 
+    let messageTextStyle;
+    return <SlackMessage {...props} messageTextStyle={messageTextStyle} />;
+  }
   // // returns true if a user has scrolled to the top of all messages, false otherwise
   // isCloseToTop({ layoutMeasurement, contentOffset, contentSize }) {
   //   const paddingToTop = 80;
@@ -87,10 +94,29 @@ export default class ChatRoom extends React.Component {
               user={this.state.user}
               renderMessage={this.renderMessage}
               renderAvatar={null}
-              sendImage={this.sendImage}
+              // sendImage={this.sendImage}
               renderLoading={() => <MaterialIndicator color="black" />}
               // renderChatFooter={this.renderChatFooter}
             />
+            {/* <GiftedChat
+              messages={this.state.replies}
+              listViewProps={{
+                scrollEventThrottle: 400,
+                navigation: this.props.navigation
+              }}
+              onSend={(messages) =>
+                Fire.shared.send(
+                  messages,
+                  this.state.room,
+                  this.state.pm,
+                  this.state.live
+                )
+              }
+              renderMessage={this.renderMessage}
+              user={this.state.user}
+              renderAvatar={null}
+              renderLoading={() => <MaterialIndicator color="black" />}
+            /> */}
           </View>
         </View>
       </View>
