@@ -269,12 +269,14 @@ export default class Bubble extends React.Component {
   }
 
   getRoomType() {
-    const roomType = this.props.listViewProps.navigation.state.params.live
-      ? 'livechatrooms'
-      : this.props.listViewProps.navigation.state.params.PM
-      ? 'PMrooms'
-      : 'chatrooms';
-    return roomType;
+    if (this.props.listViewProps) {
+      const roomType = this.props.listViewProps.navigation.state.params.live
+        ? 'livechatrooms'
+        : this.props.listViewProps.navigation.state.params.PM
+        ? 'PMrooms'
+        : 'chatrooms';
+      return roomType;
+    }
   }
 
   react(reactionType) {
@@ -466,9 +468,14 @@ export default class Bubble extends React.Component {
           <TouchableOpacity
             style={{marginRight: 20}}
             onPress={() => {
+              console.log(
+                'user id on current message: ',
+                this.props.currentMessage.user._id
+              );
               this.props.listViewProps.navigation.navigate('ThreadScreen', {
                 rootMessage: this.props.currentMessage,
-                replies: this.state.replies
+                replies: this.state.replies,
+                ...this.props
               });
             }}
           >

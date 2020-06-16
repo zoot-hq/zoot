@@ -20,22 +20,39 @@ import BackIcon from '../assets/icons/BackIcon';
 import HelpIcon from '../assets/icons/HelpIcon';
 
 import BackButton from './BackButton';
+import AllReplies from './AllReplies';
 
 export default class ChatRoom extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      rootMessage: this.props.navigation.state.params.rootMessage,
-      replies: this.props.navigation.state.params.replies
+      rootMessage: {},
+      replies: []
     };
   }
 
+  // // returns true if a user has scrolled to the top of all messages, false otherwise
+  // isCloseToTop({ layoutMeasurement, contentOffset, contentSize }) {
+  //   const paddingToTop = 80;
+  //   return (
+  //     contentSize.height - layoutMeasurement.height - paddingToTop <=
+  //     contentOffset.y
+  //   );
+  // }
   componentDidMount = () => {
     // get the root message from props and set it to state
+    this.setState({
+      rootMessage: this.props.navigation.state.params.rootMessage,
+      replies: this.props.navigation.state.params.replies
+    });
     // get the replies and set them to state
   };
 
   render() {
+    console.log(
+      'thread screen render method line 40 root message ',
+      this.state.rootMessage
+    );
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
@@ -47,16 +64,16 @@ export default class ChatRoom extends React.Component {
           <View style={{flex: 1, marginBottom: 40}}>
             <Text style={styles.subtitle2}>Message Thread Screen</Text>
             <Text style={styles.subtitle}>subtitle</Text>
-            {/* <GiftedChat
-              messages={this.state.messages}
+            <GiftedChat
+              messages={[this.state.rootMessage]}
               listViewProps={{
                 scrollEventThrottle: 400,
-                onScroll: ({nativeEvent}) => {
-                  if (this.isCloseToTop(nativeEvent) && !this.state.isLoading) {
-                    this.setState({isLoading: true});
-                    this.loadEarlier();
-                  }
-                },
+                // onScroll: ({nativeEvent}) => {
+                //   if (this.isCloseToTop(nativeEvent) && !this.state.isLoading) {
+                //     this.setState({isLoading: true});
+                //     this.loadEarlier();
+                //   }
+                // },
                 navigation: this.props.navigation
               }}
               onSend={(messages) =>
@@ -73,7 +90,7 @@ export default class ChatRoom extends React.Component {
               sendImage={this.sendImage}
               renderLoading={() => <MaterialIndicator color="black" />}
               // renderChatFooter={this.renderChatFooter}
-            /> */}
+            />
           </View>
         </View>
       </View>

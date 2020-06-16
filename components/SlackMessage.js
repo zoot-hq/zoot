@@ -38,8 +38,9 @@ export default class Message extends React.Component {
     }
     return null;
   }
-
+  // this method is called in the main render method to render the actions after the message text
   renderBubble() {
+    // if this slack message was rendered via the AllReplies component, meaning it's rendering a reply, it has to keep passing down the "render new reply" method from that component.
     const renderNewReplyMethod = this.props.renderNewReply
       ? this.props.renderNewReply
       : null;
