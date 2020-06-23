@@ -26,8 +26,9 @@ export default class ChatRoom extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      rootMessage: {},
-      replies: []
+      rootMessage: this.props.navigation.state.params.rootMessage || null,
+      replies: this.props.navigation.state.params.replies || null,
+      addReply: this.props.navigation.state.params.addReply
     };
   }
   renderMessage(props) {
@@ -36,7 +37,13 @@ export default class ChatRoom extends React.Component {
     } = props;
 
     let messageTextStyle;
-    return <SlackMessage {...props} messageTextStyle={messageTextStyle} />;
+    return (
+      <SlackMessage
+        {...props}
+        messageTextStyle={messageTextStyle}
+        render={this.renderMessage}
+      />
+    );
   }
   // // returns true if a user has scrolled to the top of all messages, false otherwise
   // isCloseToTop({ layoutMeasurement, contentOffset, contentSize }) {
@@ -46,20 +53,10 @@ export default class ChatRoom extends React.Component {
   //     contentOffset.y
   //   );
   // }
-  componentDidMount = () => {
-    // get the root message from props and set it to state
-    this.setState({
-      rootMessage: this.props.navigation.state.params.rootMessage,
-      replies: this.props.navigation.state.params.replies
-    });
-    // get the replies and set them to state
-  };
 
   render() {
-    console.log(
-      'thread screen render method line 40 root message ',
-      this.state.rootMessage
-    );
+    let {navigation} = this.props;
+    console.log('is user on state?????????', this.state.user);
     return (
       <View style={styles.container}>
         <View style={styles.innerView}>
@@ -71,6 +68,12 @@ export default class ChatRoom extends React.Component {
           <View style={{flex: 1, marginBottom: 40}}>
             <Text style={styles.subtitle2}>Message Thread Screen</Text>
             <Text style={styles.subtitle}>subtitle</Text>
+            {/* <SlackMessage
+              currentMessage={navigation.state.params.rootMessage}
+              {...this.props}
+              listViewProps={(navigation = {navigation})}
+              renderMessage={this.renderMessage}
+            /> */}
             <GiftedChat
               messages={[this.state.rootMessage]}
               listViewProps={{
@@ -81,7 +84,8 @@ export default class ChatRoom extends React.Component {
                 //     this.loadEarlier();
                 //   }
                 // },
-                navigation: this.props.navigation
+                navigation: this.props.navigation,
+                isRootInThreadScreen: true
               }}
               onSend={(messages) =>
                 Fire.shared.send(
@@ -94,29 +98,9 @@ export default class ChatRoom extends React.Component {
               user={this.state.user}
               renderMessage={this.renderMessage}
               renderAvatar={null}
-              // sendImage={this.sendImage}
               renderLoading={() => <MaterialIndicator color="black" />}
               // renderChatFooter={this.renderChatFooter}
             />
-            {/* <GiftedChat
-              messages={this.state.replies}
-              listViewProps={{
-                scrollEventThrottle: 400,
-                navigation: this.props.navigation
-              }}
-              onSend={(messages) =>
-                Fire.shared.send(
-                  messages,
-                  this.state.room,
-                  this.state.pm,
-                  this.state.live
-                )
-              }
-              renderMessage={this.renderMessage}
-              user={this.state.user}
-              renderAvatar={null}
-              renderLoading={() => <MaterialIndicator color="black" />}
-            /> */}
           </View>
         </View>
       </View>
@@ -185,7 +169,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 10,
     fontFamily: 'Futura-Light',
-    marginTop: 2
+    marginTop: 2,
+    flex: 1
   },
   chatFooter: {
     borderTopColor: 'black',

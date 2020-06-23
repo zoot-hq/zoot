@@ -1,20 +1,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {
-  View,
-  ViewPropTypes,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Vibration
-} from 'react-native';
-import {Avatar, Day, utils} from 'react-native-gifted-chat';
+import {Text, View, ViewPropTypes, StyleSheet} from 'react-native';
+import {Day, utils} from 'react-native-gifted-chat';
 import Bubble from './SlackBubble';
 
 const {isSameUser, isSameDay} = utils;
 
 export default class Message extends React.Component {
+  componentDidMount() {
+    console.log('component did mount firing in slack message');
+  }
   getInnerComponentProps() {
+    console.log('getInnerComponentProps firing in slack message');
     const {containerStyle, ...props} = this.props;
     return {
       ...props,
@@ -24,30 +21,32 @@ export default class Message extends React.Component {
     };
   }
 
-  renderDay() {
-    if (
-      this.props.currentMessage.createdAt &&
-      !this.props.currentMessage.isReply &&
-      this.props.listViewProps.navigation.state.params.PM
-    ) {
-      const dayProps = this.getInnerComponentProps();
-      if (this.props.renderDay) {
-        return this.props.renderDay(dayProps);
-      }
-      return <Day {...dayProps} />;
-    }
-    return null;
-  }
+  // renderDay() {
+  //   console.log(this.props.renderDay, 'render day is here - line 21');
+  //   if (
+  //     this.props.currentMessage.createdAt &&
+  //     !this.props.currentMessage.isReply &&
+  //     this.props.listViewProps.navigation.state.params.PM
+  //   ) {
+  //     const dayProps = this.getInnerComponentProps();
+  //     if (this.props.renderDay) {
+  //       return this.props.renderDay(dayProps);
+  //     }
+  //     return <Day {...dayProps} />;
+  //   }
+  //   return null;
+  // }
   // this method is called in the main render method to render the actions after the message text
   renderBubble() {
+    console.log('render bubble firing in slack message');
     // if this slack message was rendered via the AllReplies component, meaning it's rendering a reply, it has to keep passing down the "render new reply" method from that component.
     const renderNewReplyMethod = this.props.renderNewReply
       ? this.props.renderNewReply
       : null;
     const bubbleProps = this.getInnerComponentProps();
-    if (this.props.renderBubble) {
-      return this.props.renderBubble(bubbleProps);
-    }
+    // if (this.props.renderBubble) {
+    //   return this.props.renderBubble(bubbleProps);
+    // }
     return (
       <View styles={{marginBottom: 20}}>
         <Bubble {...bubbleProps} renderNewReply={renderNewReplyMethod} />
@@ -60,11 +59,14 @@ export default class Message extends React.Component {
   }
 
   render() {
+    console.log(
+      '>>>>>>> render firing in slack message<<<<<<<',
+      this.props.currentMessage.text
+    );
     const marginBottom = 10;
-
     return (
       <View>
-        {this.renderDay()}
+        {/* {this.renderDay()} */}
         <View
           style={[
             styles.container,
@@ -74,9 +76,6 @@ export default class Message extends React.Component {
               flexDirection: 'row',
               flexWrap: 'wrap',
               alignSelf: 'baseline',
-              // borderColor: 'green',
-              // borderStyle: 'solid',
-              // borderWidth: 2,
               margin: 2
             },
             this.props.containerStyle

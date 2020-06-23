@@ -28,7 +28,6 @@ let messageViewWidth;
 export default class Bubble extends React.Component {
   constructor(props) {
     super(props);
-    this.onLongPress = this.onLongPress.bind(this);
     this.state = {
       likes: this.props.currentMessage.likes || null,
       loves: this.props.currentMessage.loves || null,
@@ -42,50 +41,19 @@ export default class Bubble extends React.Component {
       newReply: false,
       replyInput: '',
       showReplies: true,
-      deleted: false
+      deleted: false,
+      // a flag to determine if the message being displayed is coming from the Thread Screen or not. If it is, we want to display the replies. If not, we just want to display a navigation option to go to the Thread Screen.
+      isRootInThreadScreen: this.props.responseThread || false
     };
+    this.renderReactions = this.renderReactions.bind(this);
+    this.renderReplies = this.renderReplies.bind(this);
+    this.renderMessageText = this.renderMessageText.bind(this);
+    this.renderDisplayReplies = this.renderDisplayReplies.bind(this);
   }
 
   async componentWillMount() {
     let replies = await this.getReplies(this.props.currentMessage._id);
     await this.setState({replies: replies});
-  }
-
-  onLongPress() {
-    // const messageUsername = this.props.currentMessage.user.name
-    // const currentUserId = Fire.shared.username()
-    // const room = this.props.currentMessage.room
-    // if (this.props.currentMessage.text && (messageUsername != currentUsername) && this.props.currentMessage.react){
-    //   const options = [
-    //     this.state.likes.users[currentUsername] ? 'Unlike' : 'Like',
-    //     this.state.loves.users[currentUsername] ? 'Unlove' : 'Love',
-    //     this.state.lightbulbs.users[currentUsername] ? 'Unlightbulb' : 'Lightbulb',
-    //     this.state.flags.users[currentUsername] ? 'Unflag' : 'Flag',
-    //     'Cancel'
-    //   ];
-    //   const cancelButtonIndex = options.length - 1;
-    //   this.context.actionSheet().showActionSheetWithOptions({
-    //     options,
-    //     cancelButtonIndex,
-    //   },
-    //   (buttonIndex) => {
-    //     switch (buttonIndex) {
-    //       case 0:
-    //         // Clipboard.setString(this.props.currentMessage.text);
-    //         this.react('likes')
-    //         break;
-    //       case 1:
-    //         this.react('loves')
-    //         break;
-    //       case 2:
-    //         this.react('lightbulbs')
-    //         break;
-    //       case 3:
-    //           this.react('flags')
-    //           break;
-    //     }
-    //   });
-    // }
   }
 
   unhideMessage = () => {
@@ -95,7 +63,7 @@ export default class Bubble extends React.Component {
     });
   };
 
-  renderMessageText = () => {
+  renderMessageText() {
     // check if message should be hidden
     if (this.state.hidden && !this.isSameUser()) {
       return (
@@ -121,9 +89,15 @@ export default class Bubble extends React.Component {
         messageTextStyle,
         ...messageTextProps
       } = this.props;
+      console.log();
       if (this.props.renderMessageText) {
         return this.props.renderMessageText(messageTextProps);
       }
+      let mention = this.props.currentMessage.mention ? (
+        this.props.currentMessage.mention
+      ) : (
+        <Text />
+      );
       return (
         // <MessageText
         //   {...messageTextProps}
@@ -140,7 +114,7 @@ export default class Bubble extends React.Component {
         <View style={{flexDirection: 'row'}}>
           <Text style={styles.username}>
             {this.props.currentMessage.user.name}
-            {this.props.currentMessage.mention}{' '}
+            {mention}{' '}
             <Text style={styles.slackMessageText}>
               {this.props.currentMessage.text}
             </Text>
@@ -149,7 +123,7 @@ export default class Bubble extends React.Component {
       );
     }
     return null;
-  };
+  }
 
   renderMessageImage = () => {
     if (this.props.currentMessage.base64) {
@@ -388,7 +362,7 @@ export default class Bubble extends React.Component {
     );
   };
 
-  renderReactions = () => {
+  renderReactions() {
     if (this.state.react || this.isSameUser())
       return (
         <View style={{display: 'flex', flexDirection: 'row', marginBottom: 15}}>
@@ -468,11 +442,9 @@ export default class Bubble extends React.Component {
           <TouchableOpacity
             style={{marginRight: 20}}
             onPress={() => {
-              console.log(
-                'user id on current message: ',
-                this.props.currentMessage.user._id
-              );
+              console.log('navigation clicked');
               this.props.listViewProps.navigation.navigate('ThreadScreen', {
+                addReply: true,
                 rootMessage: this.props.currentMessage,
                 replies: this.state.replies,
                 ...this.props
@@ -485,7 +457,7 @@ export default class Bubble extends React.Component {
           {this.renderDisplayReplies()}
         </View>
       );
-  };
+  }
 
   renderBlock() {
     const messageUserId = this.props.currentMessage.user._id;
@@ -546,19 +518,26 @@ export default class Bubble extends React.Component {
     if (this.state.replies.length) {
       return (
         <View>
-          {this.state.showReplies ? (
+          {/* {this.state.showReplies ? (
             <TouchableOpacity
               onPress={() => this.setState({showReplies: false})}
             >
-              <Text style={styles.replyButton}>Hide replies</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              onPress={() => this.setState({showReplies: true})}
-            >
-              <Text style={styles.replyButton}>Show replies</Text>
-            </TouchableOpacity>
-          )}
+              <Text style={styles.replyButton}>See replies</Text>
+            </TouchableOpacity> */}
+          {/* ) : ( */}
+          <TouchableOpacity
+            onPress={() =>
+              this.props.listViewProps.navigation.navigate('ThreadScreen', {
+                addReply: false,
+                rootMessage: this.props.currentMessage,
+                replies: this.state.replies,
+                ...this.props
+              })
+            }
+          >
+            <Text style={styles.replyButton}>See replies</Text>
+          </TouchableOpacity>
+          {/* )} */}
         </View>
       );
     }
@@ -675,13 +654,14 @@ export default class Bubble extends React.Component {
     //     {/* {this.renderTicks()} */}
     //   </View>
     // );
-
+    console.log(
+      '>>>>>>> render firing in slack bubble<<<<<<<',
+      this.props.currentMessage.text
+    );
     const win = Dimensions.get('window');
-
     return (
       <View style={[styles.container, this.props.containerStyle]}>
         <TouchableOpacity
-          onLongPress={this.onLongPress}
           accessibilityTraits="text"
           {...this.props.touchableProps}
         >
@@ -757,7 +737,7 @@ export default class Bubble extends React.Component {
 
               {/* render reactions on messages with the reaction feature */}
               {this.renderReactions()}
-              {this.renderReplies()}
+              {/* {this.renderReplies()} */}
               {/* this.state.newReply becomes true when a user clicks the reply button */}
               {this.state.newReply && (
                 <View>
@@ -810,21 +790,11 @@ const styles = StyleSheet.create({
   standardFont: {
     fontSize: 16
   },
-  // messageContainer: {
-  //   flexDirection: 'row',
-  //   maxWidth: messageViewWidth
-  // },
   username: {
     fontFamily: 'Futura-Medium',
-    // height: 20,
-    // marginTop: 2,
-    // borderColor: 'hotpink',
-    // borderWidth: 2,
     alignSelf: 'baseline',
-    // flexDirection: 'row', // F
     flexWrap: 'wrap',
     alignItems: 'flex-start'
-    // fontWeight: "900",
   },
   // username: {
   //   // fontWeight: 'bold',

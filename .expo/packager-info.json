@@ -2,8 +2,8 @@
   "expoServerPort": 19000,
   "expoServerNgrokUrl": "https://ht-fnr.anonymous.zoot.exp.direct",
   "packagerNgrokUrl": "https://packager.ht-fnr.anonymous.zoot.exp.direct",
-  "ngrokPid": 47558,
+  "ngrokPid": 88379,
   "devToolsPort": 19002,
   "packagerPort": 19001,
-  "packagerPid": 47528
+  "packagerPid": 88365
 }
