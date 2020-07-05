@@ -191,7 +191,7 @@ class Navbar extends React.Component {
               </TouchableOpacity>
             </View>
 
-            <View
+            {/* <View
               style={{
                 alignItems: 'center',
                 flex: 1
@@ -202,7 +202,7 @@ class Navbar extends React.Component {
               >
                 <PartnerIcon />
               </TouchableOpacity>
-            </View>
+            </View> */}
 
             <View
               style={{

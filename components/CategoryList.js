@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'black',
     fontWeight: '600',
-    fontSize: 42,
+    fontSize: 36,
     fontFamily: 'Futura-Light',
     padding: 15
   },
