@@ -217,7 +217,7 @@ class Navbar extends React.Component {
               </TouchableOpacity>
             </View>
 
-            <View
+            {/* <View
               style={{
                 alignItems: 'center',
                 flex: 1
@@ -228,7 +228,7 @@ class Navbar extends React.Component {
               >
                 <MaterialCommunityIcons name="test-tube" size={24} color="black" />
               </TouchableOpacity>
-            </View>
+            </View> */}
 
           </View>
 
