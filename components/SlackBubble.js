@@ -516,7 +516,7 @@ export default class Bubble extends React.Component {
   }
 
   renderReplies() {
-    if (this.state.showReplies) {
+    if (this.state.replies.length && this.state.showReplies) {
       return (
         <View>
           <AllReplies
@@ -606,7 +606,7 @@ export default class Bubble extends React.Component {
     let parentId = this.props.currentMessage._id;
     if (this.props.currentMessage.isReply) {
       // include the name of the user to mention
-      mentionedUser = '@' + this.props.currentMessage.user.name;
+      mentionedUser = ' @' + this.props.currentMessage.user.name;
       // and make sure it gets added as a child of this message's parent (so they're in the same thread, not nested at a new level)
       parentId = this.props.currentMessage.parentId;
     }
@@ -804,13 +804,14 @@ const styles = StyleSheet.create({
   // },
   username: {
     fontFamily: 'Futura-Medium',
-    height: 20,
+    // height: 20,
     // marginTop: 2,
     // borderColor: 'hotpink',
     // borderWidth: 2,
     alignSelf: 'baseline',
-    flexDirection: 'row', // F
-    flexWrap: 'wrap'
+    // flexDirection: 'row', // F
+    flexWrap: 'wrap',
+    alignItems: 'flex-start'
     // fontWeight: "900",
   },
   // username: {
